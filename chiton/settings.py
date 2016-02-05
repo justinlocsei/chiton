@@ -77,6 +77,7 @@ DATABASES = {
 # ==============================================================================
 
 ALLOWED_HOSTS = config["allowed_hosts"]
+APPEND_SLASH = False
 CSRF_COOKIE_SECURE = True
 ROOT_URLCONF = "chiton.urls"
 SECURE_BROWSER_XSS_FILTER = True
