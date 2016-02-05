@@ -1,8 +1,10 @@
+import json
 import os
 
-from chiton.core.environment import load_config
+from chiton.core.environment import use_config
 
-config = load_config(os.environ["CHITON_CONFIG_FILE"])
+with open(os.environ["CHITON_CONFIG_FILE"]) as config_file:
+    config = use_config(json.load(config_file))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

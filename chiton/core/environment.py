@@ -1,62 +1,57 @@
-import json
-from voluptuous import All, Required, Length, MultipleInvalid, Optional, Schema
+from voluptuous import All, Length, MultipleInvalid, Schema
 
 from chiton.core.exceptions import ConfigurationError
 
-DEFAULT_CONFIG = {
-    "allowed_hosts": [],
-    "debug": False,
-    "secret_key": None,
-    "static_url": "/static/"
-}
 
-CONFIG_VALIDATOR = Schema({
-    Optional("allowed_hosts"): [str],
-    Optional("debug"): bool,
-    Required("secret_key"): All(str, Length(min=32)),
-    Optional("static_url"): All(str, Length(min=1))
-})
-
-
-def load_config(path):
+def use_config(user_data={}):
     """Load an external JSON configuration file.
 
     The contents of the JSON file are deeply merged with the defaults, ensuring
     that the returned value is always valid.
 
     Args:
-        path (str): An absolute path to a JSON configuration file
+        user_data (dict): The user customizations to apply to the base configuration
 
     Returns:
-        chiton.core.environment.Configuration: The parsed configuration file
+        dict: The merged configuration file
+
+    Raises:
+        chiton.core.exceptions.ConfigurationError: If the user settings are invalid
     """
-    with open(path) as json_config:
-        config = json.load(json_config)
+    try:
+        _validate_config(user_data)
+    except MultipleInvalid as e:
+        raise ConfigurationError("Invalid configuration: %s" % e)
 
-    return config
+    config_data = _default_config()
+    config_data.update(user_data)
+
+    return config_data
 
 
-class Configuration(object):
-    """Configuration for an environment."""
+def _default_config():
+    """Define the default configuration data."""
+    return {
+        "allowed_hosts": [],
+        "debug": False,
+        "secret_key": None,
+        "static_url": "/static/"
+    }
 
-    def __init__(self, settings):
-        self._config = self._apply_to_defaults(settings)
 
-        validation_error = self._validate(self._config)
-        if validation_error:
-            raise ConfigurationError(validation_error)
+def _validate_config(config):
+    """Validate configuration data, raising an error for invalid data."""
+    Schema({
+        "allowed_hosts": [str],
+        "debug": bool,
+        "secret_key": All(str, Length(min=1)),
+        "static_url": All(str, Length(min=1), _MediaUrl())
+    })(config)
 
-    def _apply_to_defaults(self, settings):
-        """Create a dict combining the user values and the default values."""
-        merged = DEFAULT_CONFIG.copy()
-        merged.update(settings)
-        return merged
 
-    def _validate(self, settings):
-        """Validate the settings, returning an error when they are invalid."""
-        try:
-            CONFIG_VALIDATOR(settings)
-        except MultipleInvalid as e:
-            return e
-        else:
-            return None
+def _MediaUrl():
+    """Ensure that a URL is a Django-style media URL ending in a slash."""
+    def validator(value):
+        if not value.endswith("/"):
+            raise ValueError("%s does not have a trailing slash" % value)
+    return validator
