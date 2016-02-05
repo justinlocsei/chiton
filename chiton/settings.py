@@ -76,6 +76,9 @@ DATABASES = {
 # ==============================================================================
 
 ALLOWED_HOSTS = config["allowed_hosts"]
+CSRF_COOKIE_SECURE = True
 ROOT_URLCONF = "chiton.urls"
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 STATIC_URL = config["static_url"]
 WSGI_APPLICATION = "chiton.wsgi.application"
