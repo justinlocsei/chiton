@@ -5,7 +5,13 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Run a development server on a port set by an environment variable"
+    help = "Run a development server on a and address port set by environment variables"
 
     def handle(self, *arg, **kwargs):
-        call_command("runserver", os.environ.get("CHITON_SERVER_PORT"))
+        address = os.environ.get("CHITON_SERVER_ADDRESS")
+        port = os.environ.get("CHITON_SERVER_PORT")
+
+        bindings = [address, port]
+        binding = ":".join([str(b) for b in bindings if b])
+
+        call_command("runserver", binding)
