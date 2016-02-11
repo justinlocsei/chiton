@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 class Command(BaseCommand):
     help = "Run a development server on a and address port set by environment variables"
 
-    def handle(self, *arg, **kwargs):
+    def handle(self, *arg, **options):
         address = os.environ.get("CHITON_SERVER_ADDRESS")
         port = os.environ.get("CHITON_SERVER_PORT")
 
