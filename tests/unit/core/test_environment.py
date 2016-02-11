@@ -1,4 +1,4 @@
-from django.test import TestCase
+from unittest import TestCase
 
 from chiton.core.environment import use_config
 from chiton.core.exceptions import ConfigurationError
