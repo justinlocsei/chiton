@@ -82,9 +82,9 @@ DATABASES = {
 
 ALLOWED_HOSTS = config["allowed_hosts"]
 APPEND_SLASH = True
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = config["use_https"]
 ROOT_URLCONF = "chiton.urls"
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = config["use_https"]
+SECURE_CONTENT_TYPE_NOSNIFF = config["use_https"]
 STATIC_URL = config["static_url"]
 WSGI_APPLICATION = "chiton.wsgi.application"
