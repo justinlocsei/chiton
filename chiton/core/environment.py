@@ -33,6 +33,7 @@ def _default_config():
     """Define the default configuration data."""
     return {
         "allowed_hosts": [],
+        "database": {},
         "debug": False,
         "secret_key": None,
         "static_url": "/static/"
@@ -43,6 +44,13 @@ def _validate_config(config):
     """Validate configuration data, raising an error for invalid data."""
     Schema({
         "allowed_hosts": [str],
+        "database": Schema({
+            "engine": All(str, Length(min=1)),
+            "host": All(str, Length(min=1)),
+            "name": All(str, Length(min=1)),
+            "password": All(str, Length(min=1)),
+            "port": All(int),
+        }),
         "debug": bool,
         "secret_key": All(str, Length(min=1)),
         "static_url": All(str, Length(min=1), _MediaUrl())

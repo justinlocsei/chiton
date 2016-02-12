@@ -54,6 +54,54 @@ class UseConfigTestCase(TestCase):
         config = use_config()
         self.assertEqual(config["debug"], False)
 
+    def test_database_default(self):
+        """It defaults to an empty database dict."""
+        config = use_config()
+        self.assertEqual(config["database"], {})
+
+    def test_database_minimal(self):
+        """It accepts minimal database information."""
+        config = use_config({
+            "database": {
+                "engine": "sqlite3",
+                "name": "test.sqlite3"
+            }
+        })
+
+        self.assertEqual(config["database"]["engine"], "sqlite3")
+        self.assertEqual(config["database"]["name"], "test.sqlite3")
+
+    def test_database_full(self):
+        """It accepts a full database configuration."""
+        config = use_config({
+            "database": {
+                "engine": "postgresql",
+                "host": "localhost",
+                "name": "test",
+                "password": "secret",
+                "port": 1234
+            }
+        })
+
+        self.assertEqual(config["database"]["name"], "test")
+
+    def test_database_validation(self):
+        """It expects non-empty strings for all non-port parameters."""
+        for param in ["engine", "host", "name", "password"]:
+            config = use_config({"database": {param: "valid"}})
+            self.assertEqual(config["database"][param], "valid")
+
+            with self.assertRaises(ConfigurationError):
+                use_config({"database": {param: ""}})
+
+    def test_database_port(self):
+        """It expects a numeric database port."""
+        config = use_config({"database": {"port": 1234}})
+        self.assertEqual(config["database"]["port"],1234)
+
+        with self.assertRaises(ConfigurationError):
+            use_config({"database": {"port": "1234"}})
+
     def test_secret_key(self):
         """It expects a non-empty string for the secret key."""
         config = use_config({"secret_key": "secret"})
