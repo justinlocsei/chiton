@@ -97,7 +97,7 @@ class UseConfigTestCase(TestCase):
     def test_database_port(self):
         """It expects a numeric database port."""
         config = use_config({"database": {"port": 1234}})
-        self.assertEqual(config["database"]["port"],1234)
+        self.assertEqual(config["database"]["port"], 1234)
 
         with self.assertRaises(ConfigurationError):
             use_config({"database": {"port": "1234"}})
