@@ -140,3 +140,11 @@ class UseConfigTestCase(TestCase):
         """It allows a static URL to be an absolute URL."""
         config = use_config({"static_url": "http://example.com/"})
         self.assertEqual(config["static_url"], "http://example.com/")
+
+    def test_use_https(self):
+        """It expects a boolean for the HTTPS setting."""
+        config = use_config({"use_https": True})
+        self.assertTrue(config["use_https"])
+
+        with self.assertRaises(ConfigurationError):
+            use_config({"use_https": 1})
