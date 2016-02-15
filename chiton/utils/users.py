@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 def ensure_superuser_exists(username, email, password):
@@ -14,6 +15,7 @@ def ensure_superuser_exists(username, email, password):
 
     Returns:
         django.contrib.auth.models.User: The superuser
+        bool: Whether the user was created or modified
 
     Raises:
         django.core.exceptions.ValidationError: If the user cannot be saved
@@ -22,13 +24,30 @@ def ensure_superuser_exists(username, email, password):
         superuser = User.objects.get(username=username)
     except User.DoesNotExist:
         superuser = User.objects.create_superuser(username, email, password)
-    else:
-        superuser.email = email
-        superuser.is_staff = True
-        superuser.is_superuser = True
+        try:
+            superuser.full_clean()
+        except ValidationError as e:
+            superuser.delete()
+            raise e
+        return (superuser, True)
+
+    before_fields = _get_superuser_fingerprint(superuser)
+
+    superuser.email = email
+    superuser.is_staff = True
+    superuser.is_superuser = True
+    if not superuser.check_password(password):
         superuser.set_password(password)
 
     superuser.full_clean()
     superuser.save()
 
-    return superuser
+    after_fields = _get_superuser_fingerprint(superuser)
+
+    return (superuser, before_fields != after_fields)
+
+
+def _get_superuser_fingerprint(user):
+    """Get a fingerprint of a superuser from the value of their key fields."""
+    fields = ["email", "is_staff", "is_superuser", "password"]
+    return [getattr(user, field) for field in fields]
