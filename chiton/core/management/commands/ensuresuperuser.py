@@ -16,4 +16,9 @@ class Command(BaseCommand):
         password = options['password']
         username = options['username']
 
-        ensure_superuser_exists(username, email, password)
+        superuser, modified = ensure_superuser_exists(username, email, password)
+
+        if modified:
+            self.stdout.write("User modified")
+        else:
+            self.stdout.write("User not modified")
