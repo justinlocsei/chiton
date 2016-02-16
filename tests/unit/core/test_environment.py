@@ -116,6 +116,22 @@ class UseConfigTestCase(TestCase):
         config = use_config()
         self.assertIsNone(config["secret_key"])
 
+    def test_static_root(self):
+        """It expects a non-empty string for the static root."""
+        config = use_config({"static_root": "/tmp"})
+        self.assertEqual(config["static_root"], "/tmp")
+
+        with self.assertRaises(ConfigurationError):
+            use_config({"static_root": ""})
+
+    def test_static_root_absolute(self):
+        """It expects an absolute path for the static root."""
+        config = use_config({"static_root": "/tmp/dir"})
+        self.assertEqual(config["static_root"], "/tmp/dir")
+
+        with self.assertRaises(ConfigurationError):
+            use_config({"static_root": "tmp/dir"})
+
     def test_static_url(self):
         """It expects a non-empty string for the static URL."""
         config = use_config({"static_url": "/assets/"})

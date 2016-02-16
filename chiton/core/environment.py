@@ -1,3 +1,5 @@
+import os.path
+
 from voluptuous import All, Length, MultipleInvalid, Schema
 
 from chiton.core.exceptions import ConfigurationError
@@ -36,6 +38,7 @@ def _default_config():
         "database": {},
         "debug": False,
         "secret_key": None,
+        "static_root": None,
         "static_url": "/static/",
         "use_https": False
     }
@@ -55,9 +58,18 @@ def _validate_config(config):
         }),
         "debug": bool,
         "secret_key": All(str, Length(min=1)),
+        "static_root": All(str, Length(min=1), _AbsolutePath()),
         "static_url": All(str, Length(min=1), _MediaUrl()),
         "use_https": All(bool)
     })(config)
+
+
+def _AbsolutePath():
+    """Ensure that a string is an absolute file path."""
+    def validator(value):
+        if not os.path.isabs(value):
+            raise ValueError("%s must be an absolute path" % value)
+    return validator
 
 
 def _MediaUrl():
