@@ -79,7 +79,8 @@ class UseConfigTestCase(TestCase):
                 "host": "localhost",
                 "name": "test",
                 "password": "secret",
-                "port": 1234
+                "port": 1234,
+                "user": "test"
             }
         })
 
@@ -87,7 +88,7 @@ class UseConfigTestCase(TestCase):
 
     def test_database_validation(self):
         """It expects non-empty strings for all non-port parameters."""
-        for param in ["engine", "host", "name", "password"]:
+        for param in ["engine", "host", "name", "password", "user"]:
             config = use_config({"database": {param: "valid"}})
             self.assertEqual(config["database"][param], "valid")
 

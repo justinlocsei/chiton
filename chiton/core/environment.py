@@ -51,6 +51,7 @@ def _validate_config(config):
             "name": All(str, Length(min=1)),
             "password": All(str, Length(min=1)),
             "port": All(int),
+            "user": All(str, Length(min=1))
         }),
         "debug": bool,
         "secret_key": All(str, Length(min=1)),
