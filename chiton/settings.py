@@ -78,6 +78,12 @@ DATABASES = {
     }
 }
 
+# Assets
+# ==============================================================================
+
+STATIC_ROOT = config["static_root"]
+STATIC_URL = config["static_url"]
+
 # Serving
 # ==============================================================================
 
@@ -87,5 +93,4 @@ CSRF_COOKIE_SECURE = config["use_https"]
 ROOT_URLCONF = "chiton.urls"
 SECURE_BROWSER_XSS_FILTER = config["use_https"]
 SECURE_CONTENT_TYPE_NOSNIFF = config["use_https"]
-STATIC_URL = config["static_url"]
 WSGI_APPLICATION = "chiton.wsgi.application"
