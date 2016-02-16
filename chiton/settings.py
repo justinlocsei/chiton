@@ -73,7 +73,8 @@ DATABASES = {
         "HOST": config["database"].get("host"),
         "NAME": config["database"]["name"],
         "PASSWORD": config["database"].get("password"),
-        "PORT": config["database"].get("port")
+        "PORT": config["database"].get("port"),
+        "USER": config["database"].get("user")
     }
 }
 
