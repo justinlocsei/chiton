@@ -33,7 +33,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "chiton.core"
+    "chiton.core",
+    "chiton.closet",
+    "chiton.rack",
+    "chiton.runway"
 ]
 
 MIDDLEWARE_CLASSES = [
