@@ -35,6 +35,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    "mptt",
+
     "chiton.core.apps.Config",
     "chiton.closet.apps.Config",
     "chiton.rack.apps.Config",
