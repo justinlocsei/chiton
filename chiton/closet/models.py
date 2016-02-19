@@ -23,7 +23,7 @@ class Brand(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_("name"))
     slug = AutoSlugField(max_length=255, populate_from="name", verbose_name=_("slug"), unique=True)
-    url = models.URLField(max_length=255, verbose_name=_("URL"), null=True)
+    url = models.URLField(max_length=255, verbose_name=_("URL"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("brand")
