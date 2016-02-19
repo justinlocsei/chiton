@@ -23,8 +23,6 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-AUTOSLUG_SLUGIFY_FUNCTION = 'autoslug.utils.translit_short'
-
 # Application
 # ==============================================================================
 
