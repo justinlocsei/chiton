@@ -49,5 +49,5 @@ def ensure_superuser_exists(username, email, password):
 
 def _get_superuser_fingerprint(user):
     """Get a fingerprint of a superuser from the value of their key fields."""
-    fields = ["email", "is_staff", "is_superuser", "password"]
+    fields = ['email', 'is_staff', 'is_superuser', 'password']
     return [getattr(user, field) for field in fields]

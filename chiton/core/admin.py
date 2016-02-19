@@ -4,9 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 
 class AdminSite(admin.AdminSite):
 
-    site_header = _("Chiton")
-    site_title = _("Chiton")
-    index_title = _("Chiton administration")
+    site_header = _('Chiton')
+    site_title = _('Chiton')
+    index_title = _('Chiton administration')
 
 
-site = AdminSite(name="chiton")
+site = AdminSite(name='chiton')

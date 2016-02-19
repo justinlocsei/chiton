@@ -23,7 +23,7 @@ def use_config(user_data={}):
     try:
         _validate_config(user_data)
     except MultipleInvalid as e:
-        raise ConfigurationError("Invalid configuration: %s" % e)
+        raise ConfigurationError('Invalid configuration: %s' % e)
 
     config_data = _default_config()
     config_data.update(user_data)
@@ -34,33 +34,33 @@ def use_config(user_data={}):
 def _default_config():
     """Define the default configuration data."""
     return {
-        "allowed_hosts": [],
-        "database": {},
-        "debug": False,
-        "secret_key": None,
-        "static_root": None,
-        "static_url": "/static/",
-        "use_https": False
+        'allowed_hosts': [],
+        'database': {},
+        'debug': False,
+        'secret_key': None,
+        'static_root': None,
+        'static_url': '/static/',
+        'use_https': False
     }
 
 
 def _validate_config(config):
     """Validate configuration data, raising an error for invalid data."""
     Schema({
-        "allowed_hosts": [str],
-        "database": Schema({
-            "engine": All(str, Length(min=1)),
-            "host": All(str, Length(min=1)),
-            "name": All(str, Length(min=1)),
-            "password": All(str, Length(min=1)),
-            "port": All(int),
-            "user": All(str, Length(min=1))
+        'allowed_hosts': [str],
+        'database': Schema({
+            'engine': All(str, Length(min=1)),
+            'host': All(str, Length(min=1)),
+            'name': All(str, Length(min=1)),
+            'password': All(str, Length(min=1)),
+            'port': All(int),
+            'user': All(str, Length(min=1))
         }),
-        "debug": bool,
-        "secret_key": All(str, Length(min=1)),
-        "static_root": All(str, Length(min=1), _AbsolutePath()),
-        "static_url": All(str, Length(min=1), _MediaUrl()),
-        "use_https": All(bool)
+        'debug': bool,
+        'secret_key': All(str, Length(min=1)),
+        'static_root': All(str, Length(min=1), _AbsolutePath()),
+        'static_url': All(str, Length(min=1), _MediaUrl()),
+        'use_https': All(bool)
     })(config)
 
 
@@ -68,13 +68,13 @@ def _AbsolutePath():
     """Ensure that a string is an absolute file path."""
     def validator(value):
         if not os.path.isabs(value):
-            raise ValueError("%s must be an absolute path" % value)
+            raise ValueError('%s must be an absolute path' % value)
     return validator
 
 
 def _MediaUrl():
     """Ensure that a URL is a Django-style media URL ending in a slash."""
     def validator(value):
-        if not value.endswith("/"):
-            raise ValueError("%s does not have a trailing slash" % value)
+        if not value.endswith('/'):
+            raise ValueError('%s does not have a trailing slash' % value)
     return validator

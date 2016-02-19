@@ -3,7 +3,7 @@ import os
 
 from chiton.core.environment import use_config
 
-with open(os.environ["CHITON_CONFIG_FILE"]) as config_file:
+with open(os.environ['CHITON_CONFIG_FILE']) as config_file:
     config = use_config(json.load(config_file))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -11,63 +11,63 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Environment
 # ==============================================================================
 
-DEBUG = config["debug"]
-SECRET_KEY = config["secret_key"]
+DEBUG = config['debug']
+SECRET_KEY = config['secret_key']
 
 # Locale
 # ==============================================================================
 
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-AUTOSLUG_SLUGIFY_FUNCTION = "autoslug.utils.translit_short"
+AUTOSLUG_SLUGIFY_FUNCTION = 'autoslug.utils.translit_short'
 
 # Application
 # ==============================================================================
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 
-    "mptt",
+    'mptt',
 
-    "chiton.core.apps.Config",
-    "chiton.closet.apps.Config",
-    "chiton.rack.apps.Config",
-    "chiton.runway.apps.Config"
+    'chiton.core.apps.Config',
+    'chiton.closet.apps.Config',
+    'chiton.rack.apps.Config',
+    'chiton.runway.apps.Config'
 ]
 
 MIDDLEWARE_CLASSES = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
-            "debug": config["debug"]
+            'debug': config['debug']
         },
     },
 ]
@@ -76,29 +76,29 @@ TEMPLATES = [
 # ==============================================================================
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.%s" % config["database"]["engine"],
-        "HOST": config["database"].get("host"),
-        "NAME": config["database"]["name"],
-        "PASSWORD": config["database"].get("password"),
-        "PORT": config["database"].get("port"),
-        "USER": config["database"].get("user")
+    'default': {
+        'ENGINE': 'django.db.backends.%s' % config['database']['engine'],
+        'HOST': config['database'].get('host'),
+        'NAME': config['database']['name'],
+        'PASSWORD': config['database'].get('password'),
+        'PORT': config['database'].get('port'),
+        'USER': config['database'].get('user')
     }
 }
 
 # Assets
 # ==============================================================================
 
-STATIC_ROOT = config["static_root"]
-STATIC_URL = config["static_url"]
+STATIC_ROOT = config['static_root']
+STATIC_URL = config['static_url']
 
 # Serving
 # ==============================================================================
 
-ALLOWED_HOSTS = config["allowed_hosts"]
+ALLOWED_HOSTS = config['allowed_hosts']
 APPEND_SLASH = True
-CSRF_COOKIE_SECURE = config["use_https"]
-ROOT_URLCONF = "chiton.urls"
-SECURE_BROWSER_XSS_FILTER = config["use_https"]
-SECURE_CONTENT_TYPE_NOSNIFF = config["use_https"]
-WSGI_APPLICATION = "chiton.wsgi.application"
+CSRF_COOKIE_SECURE = config['use_https']
+ROOT_URLCONF = 'chiton.urls'
+SECURE_BROWSER_XSS_FILTER = config['use_https']
+SECURE_CONTENT_TYPE_NOSNIFF = config['use_https']
+WSGI_APPLICATION = 'chiton.wsgi.application'

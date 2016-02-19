@@ -9,4 +9,4 @@ def resolve_binding(address, port=None):
         str: The binding as an address:port string
     """
     bindings = [address, port]
-    return ":".join([str(b) for b in bindings if b])
+    return ':'.join([str(b) for b in bindings if b])
