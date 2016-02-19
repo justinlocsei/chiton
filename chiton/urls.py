@@ -1,5 +1,6 @@
 from django.conf.urls import url
-from django.contrib import admin
+
+from chiton.core import admin
 
 urlpatterns = [
     url(r'^stockroom/', admin.site.urls),
