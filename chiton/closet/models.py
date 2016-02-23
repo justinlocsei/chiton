@@ -9,6 +9,8 @@ class Garment(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_('name'))
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
+    line = models.ForeignKey('Line', on_delete=models.CASCADE, verbose_name=_('line'))
+    category = models.ForeignKey('GarmentCategory', on_delete=models.CASCADE, verbose_name=_('category'))
 
     class Meta:
         verbose_name = _('garment')
