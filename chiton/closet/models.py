@@ -7,8 +7,8 @@ from mptt.models import MPTTModel, TreeForeignKey, TreeManager
 class GarmentManager(models.Manager):
     """A custom manager for garments."""
 
-    def get_by_natural_key(self, slug, line_slug):
-        return self.get(slug=slug, line__slug=line_slug)
+    def get_by_natural_key(self, slug, brand_slug):
+        return self.get(slug=slug, brand__slug=brand_slug)
 
 
 class Garment(models.Model):
@@ -18,7 +18,7 @@ class Garment(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_('name'))
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    line = models.ForeignKey('Line', on_delete=models.CASCADE, verbose_name=_('line'))
+    brand = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name=_('brand'))
     category = models.ForeignKey('GarmentCategory', on_delete=models.CASCADE, verbose_name=_('category'))
 
     class Meta:
@@ -29,7 +29,7 @@ class Garment(models.Model):
         return self.name
 
     def natural_key(self):
-        return (self.slug, self.line.slug)
+        return (self.slug, self.brand.slug)
 
 
 class BrandManager(models.Manager):
@@ -57,33 +57,6 @@ class Brand(models.Model):
 
     def natural_key(self):
         return (self.slug,)
-
-
-class LineManager(models.Manager):
-    """A custom manager for clothing lines."""
-
-    def get_by_natural_key(self, slug, brand_slug):
-        return self.get(slug=slug, brand__slug=brand_slug)
-
-
-class Line(models.Model):
-    """A line of clothing offered by a brand."""
-
-    objects = LineManager()
-
-    name = models.CharField(max_length=255, verbose_name=_('name'))
-    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name=_('brand'))
-
-    class Meta:
-        verbose_name = _('line')
-        verbose_name_plural = _('lines')
-
-    def __str__(self):
-        return self.name
-
-    def natural_key(self):
-        return (self.slug, self.brand.slug)
 
 
 class GarmentCategoryManager(TreeManager):

@@ -8,8 +8,8 @@ from chiton.core.admin import site
 @admin.register(models.Garment, site=site)
 class GarmentAdmin(admin.ModelAdmin):
 
-    list_display = ('name', 'line', 'category')
-    list_filter = ('line', 'category')
+    list_display = ('name', 'brand', 'category')
+    list_filter = ('brand', 'category')
     ordering = ('name',)
     search_fields = ['name']
 
@@ -19,14 +19,6 @@ class BrandAdmin(admin.ModelAdmin):
 
     ordering = ('name',)
     search_fields = ['name']
-
-
-@admin.register(models.Line, site=site)
-class LineAdmin(admin.ModelAdmin):
-
-    list_display = ('name', 'brand')
-    list_filter = ('brand',)
-    ordering = ('name', 'brand__name')
 
 
 @admin.register(models.GarmentCategory, site=site)
