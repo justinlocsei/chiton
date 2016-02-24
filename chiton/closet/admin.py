@@ -22,7 +22,8 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(models.GarmentCategory, site=site)
 class GarmentCategoryAdmin(admin.ModelAdmin):
-    pass
+
+    ordering = ('name',)
 
 
 @admin.register(models.GarmentOption, site=site)
