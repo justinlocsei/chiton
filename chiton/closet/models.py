@@ -1,7 +1,6 @@
 from autoslug import AutoSlugField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from mptt.models import MPTTModel, TreeForeignKey, TreeManager
 
 
 class GarmentManager(models.Manager):
@@ -59,28 +58,24 @@ class Brand(models.Model):
         return (self.slug,)
 
 
-class GarmentCategoryManager(TreeManager):
+class GarmentCategoryManager(models.Manager):
     """A custom manager for garment categories."""
 
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
 
-class GarmentCategory(MPTTModel):
+class GarmentCategory(models.Model):
     """The category in which a garment belongs, such as shirt or pants."""
 
     objects = GarmentCategoryManager()
 
     name = models.CharField(max_length=255, verbose_name=_('name'))
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    parent = TreeForeignKey('self', null=True, blank=True)
 
     class Meta:
         verbose_name = _('garment category')
         verbose_name_plural = _('garment categories')
-
-    class MPTTMeta:
-        order_insertion_by = ['name']
 
     def __str__(self):
         return self.name

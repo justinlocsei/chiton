@@ -1,5 +1,4 @@
 from django.contrib import admin
-from mptt.admin import MPTTModelAdmin
 
 from chiton.closet import models
 from chiton.core.admin import site
@@ -22,7 +21,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.GarmentCategory, site=site)
-class GarmentCategoryAdmin(MPTTModelAdmin):
+class GarmentCategoryAdmin(admin.ModelAdmin):
     pass
 
 
