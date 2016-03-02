@@ -18,7 +18,6 @@ class Garment(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('name'))
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name=_('brand'))
-    category = models.ForeignKey('GarmentCategory', on_delete=models.CASCADE, verbose_name=_('category'))
 
     class Meta:
         verbose_name = _('garment')
@@ -57,31 +56,6 @@ class Brand(models.Model):
     def natural_key(self):
         return (self.slug,)
 
-
-class GarmentCategoryManager(models.Manager):
-    """A custom manager for garment categories."""
-
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
-
-
-class GarmentCategory(models.Model):
-    """The category in which a garment belongs, such as shirt or pants."""
-
-    objects = GarmentCategoryManager()
-
-    name = models.CharField(max_length=255, verbose_name=_('name'))
-    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-
-    class Meta:
-        verbose_name = _('garment category')
-        verbose_name_plural = _('garment categories')
-
-    def __str__(self):
-        return self.name
-
-    def natural_key(self):
-        return (self.slug,)
 
 
 class GarmentOption(models.Model):
