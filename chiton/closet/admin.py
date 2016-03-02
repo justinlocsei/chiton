@@ -16,6 +16,7 @@ class GarmentAdmin(admin.ModelAdmin):
 @admin.register(models.Brand, site=site)
 class BrandAdmin(admin.ModelAdmin):
 
+    list_display = ('name', 'age_lower', 'age_upper')
     ordering = ('name',)
     search_fields = ['name']
 

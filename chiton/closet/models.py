@@ -2,6 +2,8 @@ from autoslug import AutoSlugField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from chiton.core.validators import validate_loose_range
+
 
 class GarmentManager(models.Manager):
     """A custom manager for garments."""
@@ -44,7 +46,8 @@ class Brand(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_('name'))
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    url = models.URLField(max_length=255, verbose_name=_('URL'), null=True, blank=True)
+    age_lower = models.PositiveSmallIntegerField(verbose_name=_('lower target age'), null=True, blank=True)
+    age_upper = models.PositiveSmallIntegerField(verbose_name=_('upper target age'), null=True, blank=True)
 
     class Meta:
         verbose_name = _('brand')
@@ -55,6 +58,10 @@ class Brand(models.Model):
 
     def natural_key(self):
         return (self.slug,)
+
+    def clean(self):
+        """Ensure correct ordering of the age range."""
+        validate_loose_range(self.age_lower, self.age_upper)
 
 
 class GarmentOption(models.Model):

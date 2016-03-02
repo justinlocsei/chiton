@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from chiton.closet.models import Brand, Garment
@@ -25,3 +26,15 @@ class BrandTestCase(TestCase):
 
         found = Brand.objects.get_by_natural_key('chanel')
         self.assertEqual(brand.pk, found.pk)
+
+    def test_clean_age_range(self):
+        """It requires a properly ordered age range."""
+        brand = Brand.objects.create(name="Ann Taylor")
+        brand.age_lower = 50
+        brand.age_upper = 25
+
+        with self.assertRaises(ValidationError):
+            brand.full_clean()
+
+        brand.age_upper = 75
+        self.assertIsNone(brand.full_clean())
