@@ -57,7 +57,6 @@ class Brand(models.Model):
         return (self.slug,)
 
 
-
 class GarmentOption(models.Model):
     """An option for a garment, such as its fit or sleeve length."""
 
