@@ -21,8 +21,8 @@ class Garment(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name=_('brand'))
-    sleeve_length = models.CharField(max_length=15, choices=SLEEVE_LENGTH_CHOICES, verbose_name=_('sleeve length'), null=True, blank=True)
-    bottom_length = models.CharField(max_length=15, choices=BOTTOM_LENGTH_CHOICES, verbose_name=_('bottom length'), null=True, blank=True)
+    sleeve_length = models.CharField(max_length=15, choices=SLEEVE_LENGTH_CHOICES, verbose_name=_('sleeve length'), null=True)
+    bottom_length = models.CharField(max_length=15, choices=BOTTOM_LENGTH_CHOICES, verbose_name=_('bottom length'), null=True)
     description = models.TextField(verbose_name=_('description'), help_text=_('A public description'), null=True, blank=True)
     notes = models.TextField(verbose_name=_('notes'), help_text=_('Internal information'), null=True, blank=True)
 
