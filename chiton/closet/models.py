@@ -17,7 +17,7 @@ class Garment(models.Model):
 
     objects = GarmentManager()
 
-    name = models.CharField(max_length=255, verbose_name=_('name'))
+    name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name=_('brand'))
 
