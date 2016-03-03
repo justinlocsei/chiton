@@ -30,3 +30,15 @@ BOTTOM_LENGTH_CHOICES = (
     (BOTTOM_LENGTHS['ANKLE'], _('Ankle')),
     (BOTTOM_LENGTHS['LONG'], _('Long'))
 )
+
+EMPHASES = {
+    'WEAK': -1,
+    'NEUTRAL': 0,
+    'STRONG': 1
+}
+
+EMPHASIS_CHOICES = (
+    (EMPHASES['WEAK'], _('Weak')),
+    (EMPHASES['NEUTRAL'], _('Neutral')),
+    (EMPHASES['STRONG'], _('Strong'))
+)
