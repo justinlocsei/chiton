@@ -2,6 +2,7 @@ from autoslug import AutoSlugField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from chiton.closet.data import BOTTOM_LENGTH_CHOICES, SLEEVE_LENGTH_CHOICES
 from chiton.core.validators import validate_loose_range
 
 
@@ -20,6 +21,8 @@ class Garment(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name=_('brand'))
+    sleeve_length = models.CharField(max_length=15, choices=SLEEVE_LENGTH_CHOICES, verbose_name=_('sleeve length'), null=True, blank=True)
+    bottom_length = models.CharField(max_length=15, choices=BOTTOM_LENGTH_CHOICES, verbose_name=_('bottom length'), null=True, blank=True)
 
     class Meta:
         verbose_name = _('garment')
