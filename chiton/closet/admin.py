@@ -1,3 +1,4 @@
+from adminsortable2.admin import SortableAdminMixin
 from django.contrib import admin
 
 from chiton.closet import models
@@ -13,10 +14,9 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Formality, site=site)
-class FormalityAdmin(admin.ModelAdmin):
+class FormalityAdmin(SortableAdminMixin, admin.ModelAdmin):
 
     list_display = ('name',)
-    ordering = ('name',)
 
 
 @admin.register(models.Garment, site=site)
