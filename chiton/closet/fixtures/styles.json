@@ -1,0 +1,44 @@
+[
+{
+    "model": "chiton_closet.style",
+    "fields": {
+        "name": "Bold, Powerful"
+    }
+},
+{
+    "model": "chiton_closet.style",
+    "fields": {
+        "name": "Caring, Empathetic"
+    }
+},
+{
+    "model": "chiton_closet.style",
+    "fields": {
+        "name": "Classy, Elegant"
+    }
+},
+{
+    "model": "chiton_closet.style",
+    "fields": {
+        "name": "Creative, Fun"
+    }
+},
+{
+    "model": "chiton_closet.style",
+    "fields": {
+        "name": "Natural, Comfortable"
+    }
+},
+{
+    "model": "chiton_closet.style",
+    "fields": {
+        "name": "Responsible, Trustworthy"
+    }
+},
+{
+    "model": "chiton_closet.style",
+    "fields": {
+        "name": "Sleek, Efficient"
+    }
+}
+]
