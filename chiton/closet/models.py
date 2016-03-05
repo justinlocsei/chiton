@@ -31,6 +31,7 @@ class Garment(models.Model):
     description = models.TextField(verbose_name=_('description'), help_text=_('A public description'), null=True, blank=True)
     notes = models.TextField(verbose_name=_('notes'), help_text=_('Internal information'), null=True, blank=True)
     is_busty = models.BooleanField(verbose_name=_('is for busty women'), default=False)
+    styles = models.ManyToManyField('Style', verbose_name=_('styles'))
 
     class Meta:
         verbose_name = _('garment')
@@ -74,3 +75,29 @@ class Brand(models.Model):
     def clean(self):
         """Ensure correct ordering of the age range."""
         validate_loose_range(self.age_lower, self.age_upper)
+
+
+class StyleManager(models.Manager):
+    """A custom manager for styles."""
+
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
+
+
+class Style(models.Model):
+    """A style conveyed by a garment."""
+
+    objects = StyleManager()
+
+    name = models.CharField(max_length=255, verbose_name=_('name'), unique=True)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('style')
+        verbose_name_plural = _('styles')
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        return (self.name,)

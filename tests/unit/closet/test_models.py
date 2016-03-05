@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from chiton.closet.models import Brand, Garment
+from chiton.closet.models import Brand, Garment, Style
 
 
 class GarmentTestCase(TestCase):
@@ -38,3 +38,14 @@ class BrandTestCase(TestCase):
 
         brand.age_upper = 75
         self.assertIsNone(brand.full_clean())
+
+
+class StyleTestCase(TestCase):
+
+    def test_natural_key(self):
+        """It uses its name."""
+        style = Style.objects.create(name="Nervous, Skittish")
+        self.assertEqual(style.natural_key(), ('Nervous, Skittish',))
+
+        found = Style.objects.get_by_natural_key('Nervous, Skittish')
+        self.assertEqual(style.pk, found.pk)
