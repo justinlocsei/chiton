@@ -26,3 +26,10 @@ class StyleAdmin(admin.ModelAdmin):
 
     list_display = ('name',)
     ordering = ('name',)
+
+
+@admin.register(models.Formality, site=site)
+class FormalityAdmin(admin.ModelAdmin):
+
+    list_display = ('name',)
+    ordering = ('name',)

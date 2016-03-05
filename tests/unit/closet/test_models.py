@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from chiton.closet.models import Brand, Garment, Style
+from chiton.closet.models import Brand, Formality, Garment, Style
 
 
 class GarmentTestCase(TestCase):
@@ -49,3 +49,14 @@ class StyleTestCase(TestCase):
 
         found = Style.objects.get_by_natural_key('nervous-skittish')
         self.assertEqual(style.pk, found.pk)
+
+
+class FormalityTestCase(TestCase):
+
+    def test_natural_key(self):
+        """It uses its slug."""
+        formality = Formality.objects.create(slug="snappy-boardroom")
+        self.assertEqual(formality.natural_key(), ('snappy-boardroom',))
+
+        found = Formality.objects.get_by_natural_key('snappy-boardroom')
+        self.assertEqual(formality.pk, found.pk)
