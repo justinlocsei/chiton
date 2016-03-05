@@ -43,9 +43,9 @@ class BrandTestCase(TestCase):
 class StyleTestCase(TestCase):
 
     def test_natural_key(self):
-        """It uses its name."""
-        style = Style.objects.create(name="Nervous, Skittish")
-        self.assertEqual(style.natural_key(), ('Nervous, Skittish',))
+        """It uses its slug."""
+        style = Style.objects.create(slug="nervous-skittish")
+        self.assertEqual(style.natural_key(), ('nervous-skittish',))
 
-        found = Style.objects.get_by_natural_key('Nervous, Skittish')
+        found = Style.objects.get_by_natural_key('nervous-skittish')
         self.assertEqual(style.pk, found.pk)

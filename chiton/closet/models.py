@@ -80,8 +80,8 @@ class Brand(models.Model):
 class StyleManager(models.Manager):
     """A custom manager for styles."""
 
-    def get_by_natural_key(self, name):
-        return self.get(name=name)
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
 
 
 class Style(models.Model):
@@ -90,6 +90,7 @@ class Style(models.Model):
     objects = StyleManager()
 
     name = models.CharField(max_length=255, verbose_name=_('name'), unique=True)
+    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
 
     class Meta:
         ordering = ('name',)
@@ -100,4 +101,4 @@ class Style(models.Model):
         return self.name
 
     def natural_key(self):
-        return (self.name,)
+        return (self.slug,)
