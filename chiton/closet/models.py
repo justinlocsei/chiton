@@ -32,6 +32,7 @@ class Garment(models.Model):
     notes = models.TextField(verbose_name=_('notes'), help_text=_('Internal information'), null=True, blank=True)
     is_busty = models.BooleanField(verbose_name=_('is for busty women'), default=False)
     styles = models.ManyToManyField('Style', verbose_name=_('styles'))
+    formalities = models.ManyToManyField('Formality', verbose_name=_('levels of formality'))
 
     class Meta:
         verbose_name = _('garment')
