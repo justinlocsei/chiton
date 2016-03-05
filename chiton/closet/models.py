@@ -30,6 +30,7 @@ class Garment(models.Model):
     pant_rise = models.CharField(max_length=15, choices=data.PANT_RISE_CHOICES, verbose_name=_('pant rise'), null=True)
     description = models.TextField(verbose_name=_('description'), help_text=_('A public description'), null=True, blank=True)
     notes = models.TextField(verbose_name=_('notes'), help_text=_('Internal information'), null=True, blank=True)
+    is_busty = models.BooleanField(verbose_name=_('is for busty women'), default=False)
 
     class Meta:
         verbose_name = _('garment')
