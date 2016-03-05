@@ -42,3 +42,15 @@ EMPHASIS_CHOICES = (
     (EMPHASES['NEUTRAL'], _('Neutral')),
     (EMPHASES['STRONG'], _('Strong'))
 )
+
+PANT_RISES = {
+    'LOW': 'low',
+    'NORMAL': 'normal',
+    'HIGH': 'high'
+}
+
+PANT_RISE_CHOICES = (
+    (PANT_RISES['LOW'], _('Low')),
+    (PANT_RISES['NORMAL'], _('Normal')),
+    (PANT_RISES['HIGH'], _('High'))
+)
