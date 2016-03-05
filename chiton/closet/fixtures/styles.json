@@ -2,43 +2,50 @@
 {
     "model": "chiton_closet.style",
     "fields": {
-        "name": "Bold, Powerful"
+        "name": "Bold, Powerful",
+        "slug": "bold-powerful"
     }
 },
 {
     "model": "chiton_closet.style",
     "fields": {
-        "name": "Caring, Empathetic"
+        "name": "Caring, Empathetic",
+        "slug": "caring-empathetic"
     }
 },
 {
     "model": "chiton_closet.style",
     "fields": {
-        "name": "Classy, Elegant"
+        "name": "Classy, Elegant",
+        "slug": "classy-elegant"
     }
 },
 {
     "model": "chiton_closet.style",
     "fields": {
-        "name": "Creative, Fun"
+        "name": "Creative, Fun",
+        "slug": "creative-fun"
     }
 },
 {
     "model": "chiton_closet.style",
     "fields": {
-        "name": "Natural, Comfortable"
+        "name": "Natural, Comfortable",
+        "slug": "natural-comfortable"
     }
 },
 {
     "model": "chiton_closet.style",
     "fields": {
-        "name": "Responsible, Trustworthy"
+        "name": "Responsible, Trustworthy",
+        "slug": "responsible-trustworthy"
     }
 },
 {
     "model": "chiton_closet.style",
     "fields": {
-        "name": "Sleek, Efficient"
+        "name": "Sleek, Efficient",
+        "slug": "sleek-efficient"
     }
 }
 ]
