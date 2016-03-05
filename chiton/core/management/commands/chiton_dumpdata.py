@@ -1,15 +1,21 @@
 from django.core.management.base import BaseCommand
 
 from chiton.closet.apps import Config as Closet
-from chiton.closet.models import Style
+from chiton.closet.models import Formality, Style
 from chiton.core.data import create_fixture
 
 
 class Command(BaseCommand):
-    help = 'Create fixtures from the core closet model data'
+    help = 'Create fixtures of all core data'
 
     def handle(self, *arg, **options):
         fixtures = [
+            {
+                'app': Closet,
+                'label': 'formalities',
+                'natural_keys': True,
+                'queryset': Formality.objects.all()
+            },
             {
                 'app': Closet,
                 'label': 'styles',
