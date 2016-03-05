@@ -19,8 +19,3 @@ class BrandAdmin(admin.ModelAdmin):
     list_display = ('name', 'age_lower', 'age_upper')
     ordering = ('name',)
     search_fields = ['name']
-
-
-@admin.register(models.GarmentOption, site=site)
-class GarmentOptionAdmin(admin.ModelAdmin):
-    pass
