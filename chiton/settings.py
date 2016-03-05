@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'adminsortable2',
+
     'chiton.core.apps.Config',
     'chiton.closet.apps.Config',
     'chiton.rack.apps.Config',
