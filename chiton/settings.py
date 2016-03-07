@@ -100,3 +100,9 @@ ROOT_URLCONF = 'chiton.urls'
 SECURE_BROWSER_XSS_FILTER = config['use_https']
 SECURE_CONTENT_TYPE_NOSNIFF = config['use_https']
 WSGI_APPLICATION = 'chiton.wsgi.application'
+
+# API Credentials
+# ==============================================================================
+
+AWS_ADVERTISING_ACCESS_KEY_ID = config['aws_advertising_access_key_id']
+AWS_ADVERTISING_SECRET_ACCESS_KEY = config['aws_advertising_secret_access_key']

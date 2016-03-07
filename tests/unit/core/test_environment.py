@@ -41,6 +41,22 @@ class UseConfigTestCase(TestCase):
         config = use_config()
         self.assertEqual(config['allowed_hosts'], [])
 
+    def test_aws_advertising_access_key_id(self):
+        """It expects a non-empty string for the AWS Product Advertising access key ID."""
+        config = use_config({'aws_advertising_access_key_id': 'access'})
+        self.assertEqual(config['aws_advertising_access_key_id'], 'access')
+
+        with self.assertRaises(ConfigurationError):
+            use_config({'aws_advertising_access_key_id': ''})
+
+    def test_aws_advertising_secret_access_key(self):
+        """It expects a non-empty string for the AWS Product Advertising secret access key."""
+        config = use_config({'aws_advertising_secret_access_key': 'secret'})
+        self.assertEqual(config['aws_advertising_secret_access_key'], 'secret')
+
+        with self.assertRaises(ConfigurationError):
+            use_config({'aws_advertising_secret_access_key': ''})
+
     def test_debug(self):
         """It expects a boolean value for the debug state."""
         config = use_config({'debug': True})

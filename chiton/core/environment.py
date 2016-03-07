@@ -48,6 +48,8 @@ def _validate_config(config):
     """Validate configuration data, raising an error for invalid data."""
     Schema({
         'allowed_hosts': [str],
+        'aws_advertising_access_key_id': All(str, Length(min=1)),
+        'aws_advertising_secret_access_key': All(str, Length(min=1)),
         'database': Schema({
             'engine': All(str, Length(min=1)),
             'host': All(str, Length(min=1)),
