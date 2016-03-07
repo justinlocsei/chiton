@@ -1,4 +1,5 @@
 import os.path
+import re
 
 from voluptuous import All, Length, MultipleInvalid, Schema
 
@@ -49,6 +50,7 @@ def _validate_config(config):
     Schema({
         'allowed_hosts': [str],
         'aws_advertising_access_key_id': All(str, Length(min=1)),
+        'aws_advertising_associate_tag': All(str, Length(min=1), _AmazonAssociateTag()),
         'aws_advertising_secret_access_key': All(str, Length(min=1)),
         'database': Schema({
             'engine': All(str, Length(min=1)),
@@ -71,6 +73,14 @@ def _AbsolutePath():
     def validator(value):
         if not os.path.isabs(value):
             raise ValueError('%s must be an absolute path' % value)
+    return validator
+
+
+def _AmazonAssociateTag():
+    """Ensure that a string is an Amazon associate tag."""
+    def validator(value):
+        if not re.search('-2\d$', value):
+            raise ValueError('%s must be an Amazon associate tag' % value)
     return validator
 
 

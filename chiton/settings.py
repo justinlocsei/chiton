@@ -105,4 +105,5 @@ WSGI_APPLICATION = 'chiton.wsgi.application'
 # ==============================================================================
 
 AWS_ADVERTISING_ACCESS_KEY_ID = config['aws_advertising_access_key_id']
+AWS_ADVERTISING_ASSOCIATE_TAG = config['aws_advertising_associate_tag']
 AWS_ADVERTISING_SECRET_ACCESS_KEY = config['aws_advertising_secret_access_key']

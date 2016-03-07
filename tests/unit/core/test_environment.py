@@ -49,6 +49,14 @@ class UseConfigTestCase(TestCase):
         with self.assertRaises(ConfigurationError):
             use_config({'aws_advertising_access_key_id': ''})
 
+    def test_aws_advertising_associate_tag(self):
+        """It expects a string that ends in a known ID for the AWS Product Advertising associate tag."""
+        config = use_config({'aws_advertising_associate_tag': 'associate-tag-20'})
+        self.assertEqual(config['aws_advertising_associate_tag'], 'associate-tag-20')
+
+        with self.assertRaises(ConfigurationError):
+            use_config({'aws_advertising_associate_tag': 'associate-tag'})
+
     def test_aws_advertising_secret_access_key(self):
         """It expects a non-empty string for the AWS Product Advertising secret access key."""
         config = use_config({'aws_advertising_secret_access_key': 'secret'})
