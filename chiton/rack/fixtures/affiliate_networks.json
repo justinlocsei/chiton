@@ -1,0 +1,9 @@
+[
+{
+    "model": "chiton_rack.affiliatenetwork",
+    "fields": {
+        "name": "Amazon Associates",
+        "slug": "amazon"
+    }
+}
+]

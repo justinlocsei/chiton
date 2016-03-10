@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand
 
 from chiton.closet.apps import Config as Closet
 from chiton.closet.models import Formality, Style
+from chiton.rack.apps import Config as Rack
+from chiton.rack.models import AffiliateNetwork
 from chiton.core.data import create_fixture
 
 
@@ -21,6 +23,12 @@ class Command(BaseCommand):
                 'label': 'styles',
                 'natural_keys': True,
                 'queryset': Style.objects.all()
+            },
+            {
+                'app': Rack,
+                'label': 'affiliate_networks',
+                'natural_keys': True,
+                'queryset': AffiliateNetwork.objects.all()
             }
         ]
 
