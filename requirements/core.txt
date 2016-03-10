@@ -1,6 +1,8 @@
+bottlenose==0.6.3
 django==1.9.2
 django-admin-sortable2==0.6.2
 django-autoslug==1.9.3
 psycopg2==2.6.1
 Unidecode==0.04.19
 voluptuous==0.8.8
+xmltodict==0.10.1
