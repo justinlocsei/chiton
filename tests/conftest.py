@@ -1,1 +1,1 @@
-from .helpers.vcr import amazon_api_request
+from .helpers.vcr import amazon_api_request  # noqa
