@@ -1,0 +1,41 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept-Encoding: [gzip]
+      Connection: [close]
+      Host: [webservices.amazon.com]
+      User-Agent: [Python-urllib/3.5]
+    method: GET
+    uri: http://webservices.amazon.com/onca/xml?AWSAccessKeyId=AKIAICX5P6DP2Q7VOBEA&AssociateTag=covyoubas-dev-20&ItemId=B00ZGRB7UO&Operation=ItemLookup&ResponseGroup=Small&Service=AWSECommerceService&Timestamp=2016-03-11T02%3A25%3A53Z&Version=2011-08-01&Signature=hIQcgUnVQkah5R5kwRDPI4xdeFxVPN6yk5bsBWV5hDw%3D
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAORXbW/bNhD+K4KBABswmXqJ5CRQVMhx0xpNE8VWnKHfKJGWiOhtJGXH+/U9WbYl
+        JYXRrkOBZf4kHu+ODx8+PJ6dd89ZqqwoF6zILwf6UBso71xnKml2UxRPVTmjoixyQRXwy8XlIJGy
+        vEBoTUNB+YpFVAxxhv8u8mFUZMh7nL+/KrKM8ojOm3lkaLquameqpg9c566kHEtYa0b/qqiQrvMx
+        CPyPFBOAAIPth3KLM3o5eIAVvJjmcqAscFqBxd/IpMjViqcpC5E5tCAjamLqj26mXf4pcbF9Zhgm
+        JipdnhP1VKOhGmojXbU089Qi5nJknp07qPV3PB5XGSwr2s8dItieF8GWxSe6mZIDLO/T1Jte/Wn5
+        9sQ37keLu/F7r0a2j36dR4giYljSAMeHLFGx2hRViIVK6Eo1tKMZ6gPqIBhr2pcPs/Ho4e5o1IH9
+        Q2B70EcD9yr4wAvw3AfPM5ymR+N2GmiZeq2Po/EBy+BQcNauCWqyVc1UdT3QjAvDurDML0dTLBpt
+        dxO0cjyCnMU5lhVvsSfT+yh+yBf3TzixZtbTejbxp6fPhF4/L/xbe/NkhWL8uLCSyfqynxp1FLXT
+        mc+LWkcsj+stutpQ02xzpLW/gyJfeDro9RWqD7FNDWMBkBlxA15RB+1HvUu99yTBpqSuN5/egmMz
+        cBptua2mYKoxOT0duNvzr4F2jc4Cc7bF5+MYUtcefVOT7gUS1NsNHAdA6kHYGhwfc+CxNzm3HdQx
+        OxMqMUvrlR5mN+6+Xq3X3ToV4AQgqWPMoZzMk4JLdZ5SuqKqp96wnCJSonbxE/O6FNGJOdFPDHte
+        hSLirKy3MyVg/NbtBz+JY5h8ealhImX501VBKMw+ZwYYItA3DAzNsOoRp0DVqp7WbevcMju2eoNg
+        79LS321zxrCAaD9rRg6I3YBGSc4inCpNpKhTtNPOz3EmIbtKsMR99n4hZ+aZrWn6cc62TKGWn28z
+        5RGiBIUyxuFGmdGYCck3301WXCK+i0EhZECYEJXBOsNEZilQguFGD7UesF8rrn+dqEdKCFSpn+Nq
+        3ST5P9DFRJLCpv8ZTbvgt8xTQNNU8ZRrzmhOfoSlsi5EePkWShAwcFUJWUDDBPdqxej6++s13/qj
+        khekiuQbYeNuuYR+7kfUUNQRan1Z6rryX2IBvXjMPSk5CytJYfwZ59USR3WDyt3mZXZQz+j4zcE3
+        XZlXltAiQSvWszoBkyndxSvwznnzG2X7wCvbB15pHnileeCVCYdG9A8QIlF+0+3fHdSEN0C76FDT
+        w6FdY4pe/510vwYAAP//oCpPXnkOAAA=
+    headers:
+      Connection: [Keep-Alive]
+      Content-Encoding: [gzip]
+      Content-Type: [text/xml;charset=UTF-8]
+      Date: ['Fri, 11 Mar 2016 02:25:53 GMT']
+      Keep-Alive: ['timeout=2, max=12']
+      Server: [Apache-Coyote/1.1]
+      Vary: ['Accept-Encoding,User-Agent']
+    status: {code: 200, message: OK}
+version: 1
