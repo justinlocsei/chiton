@@ -36,6 +36,9 @@ def _default_config():
     """Define the default configuration data."""
     return {
         'allowed_hosts': [],
+        'aws_advertising_access_key_id': None,
+        'aws_advertising_associate_tag': None,
+        'aws_advertising_secret_access_key': None,
         'database': {},
         'debug': False,
         'secret_key': None,
