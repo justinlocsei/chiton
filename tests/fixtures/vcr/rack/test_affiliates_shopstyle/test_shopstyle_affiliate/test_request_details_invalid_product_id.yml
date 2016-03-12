@@ -1,0 +1,27 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: http://api.shopstyle.com/api/v2/products/0000000000?format=json
+  response:
+    body: {string: '{"errorCode":404,"errorName":"InvalidProductId","errorMessage":"Invalid
+        product id: 0000000000","detailedErrors":[]}'}
+    headers:
+      Cache-Control: [max-age=1800]
+      Connection: [keep-alive]
+      Content-Length: ['116']
+      Content-Type: [application/json;charset=UTF-8]
+      Date: ['Sat, 12 Mar 2016 17:14:53 GMT']
+      Expires: ['Sat, 12 Mar 2016 17:44:54 GMT']
+      P3P: [CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVA IVD CONi HIS OUR DELi SAMi
+          IND UNI INT CNT"]
+      Server: [Apache-Coyote/1.1]
+      X-API-Response-Time: [2ms]
+      X-Powered-By: [Store#8b56E1F4F1@shopstyleprodapi11]
+    status: {code: 404, message: Not Found}
+version: 1
