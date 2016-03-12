@@ -89,3 +89,19 @@ class TestBaseAffiliate:
 
         with pytest.raises(LookupError):
             Child().request_details('guid')
+
+    def test_request_details_for_display(self):
+        """It allows a child affiliate to package details for display."""
+        class Child(Affiliate):
+            def provide_details(self, guid):
+                return {'name': 'Full'}
+
+            def provide_details_for_display(self, guid):
+                return {'name': 'Display'}
+
+        child = Child()
+        details = child.request_details('1234')
+        for_display = child.request_details('1234', for_display=True)
+
+        assert details['name'] == 'Full'
+        assert for_display['name'] == 'Display'

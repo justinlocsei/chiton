@@ -29,11 +29,14 @@ class Affiliate:
         overview = self.provide_overview(url)
         return self._validate_overview(overview)
 
-    def request_details(self, guid):
+    def request_details(self, guid, for_display=False):
         """Request detailed information on an item.
 
         Args:
             guid (str): The item's unique ID
+
+        Keyword Args:
+            for_display (bool): Whether the details are being used for display purposes
 
         Returns:
             dict: A dictionary with the details
@@ -41,30 +44,24 @@ class Affiliate:
         Raises:
             chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
         """
-        details = self.provide_details(guid)
+        if for_display:
+            details = self.provide_details_for_display(guid)
+        else:
+            details = self.provide_details(guid)
+
         return self._validate_details(details)
 
     def provide_overview(self, url):
-        """Allow a child affiliate to return an item's overview.
-
-        Args:
-            url (str): The item's URL
-
-        Returns:
-            dict: A dictionary with the overview data
-        """
+        """Allow a child affiliate to return an item's overview."""
         raise NotImplementedError()
 
     def provide_details(self, guid):
-        """Allow a child affiliate to return an item's details.
-
-        Args:
-            guid (str): The item's unique ID
-
-        Returns:
-            dict: A dictionary with the details
-        """
+        """Allow a child affiliate to return an item's details."""
         raise NotImplementedError()
+
+    def provide_details_for_display(self, guid):
+        """Allow a child affiliate to return an item's details for display purposes."""
+        return self.provide_details(guid)
 
     def _validate_overview(self, overview):
         """Validate an overview, raising an error if it is invalid.
