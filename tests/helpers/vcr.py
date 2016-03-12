@@ -24,7 +24,7 @@ def amazon_api_request(request):
 
     return partial(vcr.use_cassette,
         request_to_cassette_path(request),
-        filter_query_parameters=['Signature', 'Timestamp'])
+        filter_query_parameters=['AssociateTag', 'AWSAccessKeyId', 'Signature', 'Timestamp'])
 
 
 @pytest.fixture
