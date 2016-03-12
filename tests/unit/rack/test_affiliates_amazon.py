@@ -20,10 +20,8 @@ class TestAmazonAffiliate:
         affiliate = Affiliate()
 
         with amazon_api_request():
-            with pytest.raises(LookupError) as e:
+            with pytest.raises(LookupError):
                 affiliate.request_overview('http://www.amazon.com/dp/0000000000')
-
-        assert '0000000000' in str(e.value)
 
     def test_request_overview_invalid_url(self):
         """It raises an error when an invalid URL is used."""
