@@ -53,9 +53,7 @@ class Affiliate:
             chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
         """
         details = self.provide_details(guid)
-        if not isinstance(details, dict):
-            raise LookupError('Details must be provided as a dict')
-        return details
+        return self._validate_details(details)
 
     def provide_details(self, guid):
         """Allow a child affiliate to return an item's details.
@@ -91,3 +89,20 @@ class Affiliate:
             raise LookupError('Invalid overview format: %s' % e)
 
         return overview
+
+    def _validate_details(self, details):
+        """Validate an item's details, raising an error if they are invalid.
+
+        Args:
+            details (dict): Details about an affiliate item
+
+        Returns:
+            dict: Valid details
+
+        Raises:
+            chiton.rack.affiliates.exceptions.LookupError: If the response is invalid
+        """
+        if not isinstance(details, dict):
+            raise LookupError('Details must be provided as a dict')
+
+        return details
