@@ -25,3 +25,12 @@ def amazon_api_request(request):
     return partial(vcr.use_cassette,
         request_to_cassette_path(request),
         filter_query_parameters=['Signature', 'Timestamp'])
+
+
+@pytest.fixture
+def shopstyle_api_request(request):
+    vcr = VCR()
+
+    return partial(vcr.use_cassette,
+        request_to_cassette_path(request),
+        filter_query_parameters=['pid'])
