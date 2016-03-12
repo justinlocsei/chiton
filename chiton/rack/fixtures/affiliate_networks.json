@@ -5,5 +5,12 @@
         "name": "Amazon Associates",
         "slug": "amazon"
     }
+},
+{
+    "model": "chiton_rack.affiliatenetwork",
+    "fields": {
+        "name": "Shopstyle",
+        "slug": "shopstyle"
+    }
 }
 ]
