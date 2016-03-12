@@ -1,11 +1,11 @@
 from django.utils.module_loading import import_string
 
 
-def create_affiliate_from_slug(slug):
-    """Create an Affiliate class instance from an affiliate slug.
+def create_affiliate(slug=None):
+    """Create an Affiliate class instance appropriate for the input.
 
-    Args:
-        slug (str): The slug of an affiliate
+    Keyword Args:
+        slug (str): The slug for the affiliate
 
     Returns:
         chiton.rack.affiliates.base.Affiliate: The affiliate class
