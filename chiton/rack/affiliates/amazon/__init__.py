@@ -20,7 +20,7 @@ class Affiliate(BaseAffiliate):
 
         connection = self._connect()
         response = connection.ItemLookup(ItemId=asin, ResponseGroup='Small')
-        validated = self._validate_response(response['ItemLookupResponse'], asin)
+        validated = self._validate_response(response, asin)
 
         item = validated['Items']['Item']
         name = item.get('ItemAttributes', {}).get('Title')
@@ -29,6 +29,13 @@ class Affiliate(BaseAffiliate):
             'guid': item['ASIN'],
             'name': name
         }
+
+    def provide_details(self, asin):
+        connection = self._connect()
+        response = connection.ItemLookup(ItemId=asin, ResponseGroup='ItemAttributes')
+        validated = self._validate_response(response, asin)
+
+        return validated['Items']['Item']['ItemAttributes']
 
     def _connect(self):
         """Return a connection to the Product Advertising API.
@@ -58,10 +65,11 @@ class Affiliate(BaseAffiliate):
         Raises:
             chiton.rack.affiliates.exceptions.LookupError: If the request errored out
         """
-        errors = response['Items']['Request'].get('Errors')
+        lookup = response['ItemLookupResponse']
+        errors = lookup['Items']['Request'].get('Errors')
         if errors:
             error = errors['Error']
             raise LookupError('Invalid lookup for ASIN %s: %s (%s)' % (
                 asin, error['Code'], error['Message']))
 
-        return response
+        return lookup

@@ -31,3 +31,20 @@ class TestAmazonAffiliate:
 
         with pytest.raises(LookupError):
             affiliate.request_overview('http://www.amazon.com')
+
+    def test_request_details_valid_asin(self, amazon_api_request):
+        """It returns item details when given a valid ASIN."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            details = affiliate.request_details('B00ZGRB7UO')
+            assert details['Department'] == 'womens'
+            assert details['Brand'] == 'Tahari'
+
+    def test_request_details_invalid_asin(self, amazon_api_request):
+        """It raises an error when looking up details for an inavlid ASIN."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            with pytest.raises(LookupError):
+                affiliate.request_details('0000000000')
