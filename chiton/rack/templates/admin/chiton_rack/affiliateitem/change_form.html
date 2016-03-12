@@ -8,4 +8,9 @@
             {% blocktrans with network=original.network.name %}View on {{ network }}{% endblocktrans %}
         </a>
     </li>
+    <li>
+        <a href="{% url 'admin:affiliate-item-api-details' original.pk|admin_urlquote %}">
+            {% trans "API information" %}
+        </a>
+    </li>
 {% endblock %}

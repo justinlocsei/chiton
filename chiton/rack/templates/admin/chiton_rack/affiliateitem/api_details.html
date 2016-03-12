@@ -1,0 +1,18 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+    <h2>{{ item.network.name }} API Details</h2>
+
+    <style>
+        {{ api_response_styles }}
+
+        .highlight {
+            padding: 0.5em;
+        }
+        .highlight pre {
+            margin: 0;
+        }
+    </style>
+
+    {{ api_response_json | safe }}
+{% endblock %}
