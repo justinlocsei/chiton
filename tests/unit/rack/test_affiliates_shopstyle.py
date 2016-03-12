@@ -46,3 +46,20 @@ class TestShopstyleAffiliate:
         with shopstyle_api_request():
             with pytest.raises(LookupError):
                 affiliate.request_details('0000000000')
+
+    def test_request_details_for_display(self, shopstyle_api_request):
+        """It filters out images when displaying the API response."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            details = affiliate.request_details('471281504')
+            for_display = affiliate.request_details('471281504', for_display=True)
+
+        assert 'alternateImages' in details
+        assert 'alternateImages' not in for_display
+
+        assert 'image' in details
+        assert 'image' not in for_display
+
+        assert len([c for c in details['colors'] if 'image' in c]) > 0
+        assert len([c for c in for_display['colors'] if 'image' in c]) == 0

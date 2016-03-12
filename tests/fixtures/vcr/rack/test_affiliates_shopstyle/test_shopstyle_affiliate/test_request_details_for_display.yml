@@ -1,0 +1,118 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: http://api.shopstyle.com/api/v2/products/471281504?format=json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+xb/4/aNhT/V6xo6q4SEDvfCKeulbrTtJvatRrrWmmbKsd2wG2IkeOUsur+9z0n
+        HATuOALjVG7qLxH4vef3ee/Z75MQ88WR3DkP+sSLSYiDjpPTiXDOnQtVJpnoJlrQwgiOkoz+I7TT
+        cRJNcy74r7XaL70ftZihrdplvq6/VZGVWouczUHnzfACBqZaMrAgg7iHF99e0ERkoPAdDIKGzIdG
+        sY/OudGl6DhF/eXPLw5TmdLO+ZfrWBItR2ODRloZo5wrUJX/iIY8dq6uOvubYXy7nfyk9PwWfeId
+        5odEB9oFh8a1Z2AH+iF7utmSvm3q+1bnwCzviWrLWtumfiCoPWPfVvBdbrYUfmuKD1woW5KwPZp9
+        S2/1/+44WhgqM1GZ2K7ohM6yH9aNzhpXDW2p4sXBbUqZYjSzQyJ//2YIGlwUTMupkSqH0edlIXNR
+        FIjRoqQZMmNqvi8QzedmLPMRSkqDEqXh4zP0Vnz/SaCRMuhDWRhQFahS6qHfx7JA/NaOikAyoVyg
+        VKsJopBbQcFWfDalBqWUQs4ZmkkzBiHIsmyOcmixiGs6FR1UKDRXJcDLwXM9iXWcUI2Mqj8qqrlW
+        IKhgJXOYFADkFj5FKZACBGFUXqCzmQAXTE0mIueoAKesCrKcVnEjpbnQHfisytH4cQ+9VtkcroJ+
+        7GYAJkNQx4zqHhqCRga6aEo5rzLwArLIe+hCzxHLBM176HIyVdr00Ks8AxlSuZ1rCPVGj9BP0qCL
+        qsYFsksAsTHVpkBPyuwpepLJp7+DSFX5UdoGIY3NaKbUx94TF+SV0nPF5ygT+ciMz5EXIt+N/3Ia
+        8mEmBBTsWsP3EHG9NY2fJTiliQKtsZxeC1xAYYkwk+zjG215bmzM9Nx16VT2irGaFmaeiR7k0aXM
+        riMr+EMW0vy2WLfPJP9hyeSPpvCtlNyPMO76PvaDIMDdwBLnlI7EmofZbLbhYep+6DJYy92N5dWt
+        l5e7dPNsuxs5AT92o9hcF/bDcAIL7XpkcUdQj8GdwhJQAYi0KFSpmSg2ccmJ2/fd0INr6EVeKjDt
+        Yy/up0nQ9/1wEPg4SZIQe+8LO3Hvw3QEk88kN2Pn3Pc6zljYZgO3PHBXAXmE3fd2JawHfl6qwE5+
+        94LqVRgL0IvBe0D9ObMzb8KOG7jJTeDxDeTEQn8puCwnG9AXg22hF+2hT6qZ714464ER0igIuVGR
+        SrweGKlqcltJ9qtI+7D2iicKVvF4ONyMx4rX4wEliOfy9Vjl4rbd0ZS0jW3yn/YIwbhRE+9GDBjf
+        qIlnY3guCrMBvhq6hz2SwLzroPteA/QAby6kSrwOGpQA9Cu485A53cz6cvg+wS/rfmvJ76Ha6ynz
+        4kZTge69kbJKvJ4yUILbqvq2Z5cvGx3NjNA5NeLSEkFRPZodmQrCwKUDuNIBieIAU5KmkR/044Sk
+        oRAeZqHoB+GpUUFL1KdIBS2hPzQqaBfWw6SCw/fI16SClqhPkwr2BX9EKmjn+phUsMuXYx/Fvz0C
+        fHsEOMG+/+0R4NT6/rdHgP/RI8DR+z5P3AGF64BCx2Nxn/s+wyGhnLBY8IBGjNMoOrW+3xL1Kfb9
+        ltAfWt9vF9bD7PuH75Gv2fdboj7Nvr8v+CP2/Xauj9n3d/ly7Ku06tVb/ZPPrS/57u/twCB00wiu
+        aSRSnsSYxeGgzwLqiyBJQ9wPKQ1xfGoU0RL1KVJES+gPjSLahfUwKeLwPfI1KaIl6tOkiH3BH5Ei
+        2rk+JkXs8lWdwZhRw8Zrr6Hvyl/kuSmGa4o5D6OQ+wwePRJBvYBQEYE7PPDI9e9ajOYql4xmP65o
+        qAJG8OqwxvOsFMBV9ill7XzI/VETDl3B4CoYTbFPfR70acRJEJDY6weYCh4T4Z8aNbVEfYrU1BL6
+        Q6OmdmE9TGo6fI98TWpqifo0qWlf8Eekpnauj0lNu3wdQE2Eu/4Arv6gn3Du4Qh7CfU8xjn1uM8H
+        NGF939tJTY3Dhm/H0lTc9HfnmoP+bJztbMwyXJxkrH+RG6ymePduiM7w4/og5OqY5+Gmh9t6Wy1j
+        0rAEQ2/dMNhu6K8MwS7oRuuW0cGW8XbLRoFeorO4SzbiJNtTtNv2jiT1V7Yv0BnxuiTYML4jUbuN
+        78hVs7DWOuqS+HF9VpZRI0ZKS9FYwjWzFM1brOsB2DXa/Lo5Wp2SBY/8smlupxefjYZNfAFe7ArC
+        JOxiwG6jyYDGXiouUyl4LYu62O9WGUwor0+a2I0jxEull38aWPxToQGplu84CJloNSuEu8C24NQ7
+        Dj1OtXg1yy2ylGaFsIeKc2P7dPX16l8AAAD//wMAs0L0mm8xAAA=
+    headers:
+      Cache-Control: [max-age=1800]
+      Connection: [keep-alive]
+      Content-Encoding: [gzip]
+      Content-Type: [application/json;charset=UTF-8]
+      Date: ['Sat, 12 Mar 2016 17:47:32 GMT']
+      Expires: ['Sat, 12 Mar 2016 18:17:33 GMT']
+      Last-Modified: ['Sat, 12 Mar 2016 16:48:21 GMT']
+      P3P: [CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVA IVD CONi HIS OUR DELi SAMi
+          IND UNI INT CNT"]
+      Server: [Apache-Coyote/1.1]
+      Vary: [Accept-Encoding]
+      X-API-Response-Time: [5ms]
+      X-Powered-By: [Store#8b56E1F4F1@shopstyleprodapi33]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: http://api.shopstyle.com/api/v2/products/471281504?format=json
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Cache-Control: [max-age=1800]
+      Connection: [keep-alive]
+      Content-Encoding: [gzip]
+      Content-Type: [application/json;charset=UTF-8]
+      Date: ['Sat, 12 Mar 2016 17:47:32 GMT']
+      Expires: ['Sat, 12 Mar 2016 18:17:33 GMT']
+      Last-Modified: ['Sat, 12 Mar 2016 16:48:21 GMT']
+      P3P: [CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVA IVD CONi HIS OUR DELi SAMi
+          IND UNI INT CNT"]
+      Server: [Apache-Coyote/1.1]
+      Vary: [Accept-Encoding]
+      X-API-Response-Time: [5ms]
+      X-Powered-By: [Store#8b56E1F4F1@shopstyleprodapi11]
+    status: {code: 200, message: OK}
+version: 1
