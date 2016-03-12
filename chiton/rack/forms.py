@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.rack.models import AffiliateItem
-from chiton.rack.affiliates import create_affiliate
+from chiton.rack.affiliates import create_affiliate_from_slug
 
 api_field_options = {
     'help_text': _('This is automatically populated by the API'),
@@ -33,7 +33,7 @@ class AffiliateItemURLForm(forms.ModelForm):
         url = self.cleaned_data.get('url')
 
         if network and url:
-            affiliate = create_affiliate(network.slug)
+            affiliate = create_affiliate_from_slug(network.slug)
             response = affiliate.request_overview(url)
             self.cleaned_data['guid'] = response['guid']
             self.cleaned_data['name'] = response['name']
