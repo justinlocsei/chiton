@@ -13,7 +13,7 @@ class Affiliate(BaseAffiliate):
     def configure(self):
         self._connection = None
 
-    def request_overview(self, url):
+    def provide_overview(self, url):
         asin = extract_asin_from_url(url)
         if asin is None:
             raise LookupError('No ASIN could be extracted from the URL %s' % url)
