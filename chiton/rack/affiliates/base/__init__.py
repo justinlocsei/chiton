@@ -29,17 +29,6 @@ class Affiliate:
         overview = self.provide_overview(url)
         return self._validate_overview(overview)
 
-    def provide_overview(self, url):
-        """Allow a child affiliate to return an item's overview.
-
-        Args:
-            url (str): The item's URL
-
-        Returns:
-            dict: A dictionary with the overview data
-        """
-        raise NotImplementedError()
-
     def request_details(self, guid):
         """Request detailed information on an item.
 
@@ -54,6 +43,17 @@ class Affiliate:
         """
         details = self.provide_details(guid)
         return self._validate_details(details)
+
+    def provide_overview(self, url):
+        """Allow a child affiliate to return an item's overview.
+
+        Args:
+            url (str): The item's URL
+
+        Returns:
+            dict: A dictionary with the overview data
+        """
+        raise NotImplementedError()
 
     def provide_details(self, guid):
         """Allow a child affiliate to return an item's details.
