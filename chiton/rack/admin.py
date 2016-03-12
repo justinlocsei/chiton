@@ -37,7 +37,7 @@ class AffiliateItemAdmin(admin.ModelAdmin):
         item = models.AffiliateItem.objects.get(pk=pk)
 
         affiliate = create_affiliate(slug=item.network.slug)
-        overview = affiliate.request_details(item.guid)
+        overview = affiliate.request_details(item.guid, display=True)
 
         api_response = json.dumps(overview, sort_keys=True, indent=4)
         api_json = pygments.highlight(api_response, JsonLexer(), HtmlFormatter())
