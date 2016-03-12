@@ -140,6 +140,14 @@ class UseConfigTestCase(TestCase):
         config = use_config()
         self.assertIsNone(config['secret_key'])
 
+    def test_shopstyle_uid(self):
+        """It expects a non-empty string for the Shopstyle UID."""
+        config = use_config({'shopstyle_uid': 'uid'})
+        self.assertEqual(config['shopstyle_uid'], 'uid')
+
+        with self.assertRaises(ConfigurationError):
+            use_config({'shopstyle_uid': None})
+
     def test_static_root(self):
         """It expects a non-empty string for the static root."""
         config = use_config({'static_root': '/tmp'})
