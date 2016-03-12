@@ -40,6 +40,34 @@ class Affiliate:
         """
         raise NotImplementedError()
 
+    def request_details(self, guid):
+        """Request detailed information on an item.
+
+        Args:
+            guid (str): The item's unique ID
+
+        Returns:
+            dict: A dictionary with the details
+
+        Raises:
+            chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
+        """
+        details = self.provide_details(guid)
+        if not isinstance(details, dict):
+            raise LookupError('Details must be provided as a dict')
+        return details
+
+    def provide_details(self, guid):
+        """Allow a child affiliate to return an item's details.
+
+        Args:
+            guid (str): The item's unique ID
+
+        Returns:
+            dict: A dictionary with the details
+        """
+        raise NotImplementedError()
+
     def _validate_overview(self, overview):
         """Validate an overview, raising an error if it is invalid.
 

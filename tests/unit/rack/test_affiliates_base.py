@@ -71,3 +71,21 @@ class TestBaseAffiliate:
             Child().request_overview('url')
 
         assert 'oxblood' in str(e)
+
+    def test_request_details(self):
+        """It returns a child affiliate's raw overview."""
+        class Child(Affiliate):
+            def provide_details(self, guid):
+                return {'id': guid}
+
+        details = Child().request_details('guid')
+        assert details['id'] == 'guid'
+
+    def test_request_details_dict(self):
+        """It ensures that a child affiliate's overview is a dict."""
+        class Child(Affiliate):
+            def provide_details(self, guid):
+                return None
+
+        with pytest.raises(LookupError):
+            Child().request_details('guid')
