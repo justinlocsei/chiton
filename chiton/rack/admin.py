@@ -52,6 +52,11 @@ class AffiliateItemAdmin(admin.ModelAdmin):
         ))
 
 
+class AffiliateItemInline(admin.TabularInline):
+    form = AffiliateItemURLForm
+    model = models.AffiliateItem
+
+
 @admin.register(models.AffiliateNetwork, site=site)
 class AffiliateNetworkAdmin(admin.ModelAdmin):
 
