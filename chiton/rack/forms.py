@@ -24,7 +24,7 @@ class AffiliateItemURLForm(forms.ModelForm):
 
     class Meta:
         model = AffiliateItem
-        fields = ['network', 'url', 'guid', 'name']
+        fields = ['garment', 'network', 'url', 'guid', 'name']
 
     def clean(self):
         """Get overview data from the affiliate if a URL and network are set."""
