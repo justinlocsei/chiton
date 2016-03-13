@@ -1,5 +1,6 @@
 from adminsortable2.admin import SortableAdminMixin
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet import models
 from chiton.core.admin import site
@@ -26,6 +27,21 @@ class GarmentAdmin(admin.ModelAdmin):
     list_filter = ('brand',)
     ordering = ('name',)
     search_fields = ['name']
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'brand')
+        }),
+        (_('Weighting'), {
+            'fields': ('formalities', 'styles', 'shoulder_emphasis', 'waist_emphasis', 'hip_emphasis')
+        }),
+        (_('Dimensions'), {
+            'fields': ('sleeve_length', 'bottom_length', 'pant_rise', 'is_busty')
+        }),
+        (_('Details'), {
+            'fields': ('description', 'notes')
+        })
+    )
 
 
 @admin.register(models.Style, site=site)
