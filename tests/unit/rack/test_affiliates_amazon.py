@@ -12,8 +12,9 @@ class TestAmazonAffiliate:
 
         with amazon_api_request():
             overview = affiliate.request_overview('http://www.amazon.com/dp/B00ZGRB7UO')
-            assert overview['guid'] == 'B00ZGRB7UO'
-            assert overview['name'] == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red (16)'
+
+        assert overview['guid'] == 'B00ZGRB7UO'
+        assert overview['name'] == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red (16)'
 
     def test_request_overview_invalid_asin(self, amazon_api_request):
         """It raises an error when an invalid ASIN is used."""
@@ -36,8 +37,9 @@ class TestAmazonAffiliate:
 
         with amazon_api_request():
             details = affiliate.request_details('B00ZGRB7UO')
-            assert details['Department'] == 'womens'
-            assert details['Brand'] == 'Tahari'
+
+        assert details['Department'] == 'womens'
+        assert details['Brand'] == 'Tahari'
 
     def test_request_details_invalid_asin(self, amazon_api_request):
         """It raises an error when looking up details for an inavlid ASIN."""

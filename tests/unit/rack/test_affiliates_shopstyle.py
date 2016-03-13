@@ -12,8 +12,9 @@ class TestShopstyleAffiliate:
 
         with shopstyle_api_request():
             overview = affiliate.request_overview('http://api.shopstyle.com/action/apiVisitRetailer?id=471281504')
-            assert overview['guid'] == '471281504'
-            assert overview['name'] == 'J.Crew Double-breasted blazer'
+
+        assert overview['guid'] == '471281504'
+        assert overview['name'] == 'J.Crew Double-breasted blazer'
 
     def test_request_overview_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when an invalid product ID is used."""
@@ -36,8 +37,9 @@ class TestShopstyleAffiliate:
 
         with shopstyle_api_request():
             details = affiliate.request_details('471281504')
-            assert details['brand']['name'] == 'J.Crew'
-            assert details['categories'][0]['name'] == 'Blazers'
+
+        assert details['brand']['name'] == 'J.Crew'
+        assert details['categories'][0]['name'] == 'Blazers'
 
     def test_request_details_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when looking up details for an inavlid product ID."""
