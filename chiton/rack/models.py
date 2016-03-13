@@ -36,7 +36,7 @@ class AffiliateItem(models.Model):
     url = models.TextField(verbose_name=_('URL'))
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     guid = models.CharField(max_length=255, verbose_name=_('GUID'))
-    created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True, db_index=True)
+    last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
 
     class Meta:
         verbose_name = _('affiliate item')
