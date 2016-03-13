@@ -1,6 +1,6 @@
 [
 {
-    "model": "chiton_closet.formality",
+    "model": "chiton_runway.formality",
     "fields": {
         "name": "Casual",
         "slug": "casual",
@@ -8,7 +8,7 @@
     }
 },
 {
-    "model": "chiton_closet.formality",
+    "model": "chiton_runway.formality",
     "fields": {
         "name": "Dressy casual",
         "slug": "dressy-casual",
@@ -16,7 +16,7 @@
     }
 },
 {
-    "model": "chiton_closet.formality",
+    "model": "chiton_runway.formality",
     "fields": {
         "name": "Business casual",
         "slug": "business-casual",
@@ -24,7 +24,7 @@
     }
 },
 {
-    "model": "chiton_closet.formality",
+    "model": "chiton_runway.formality",
     "fields": {
         "name": "Dressy business casual",
         "slug": "dressy-business-casual",
@@ -32,7 +32,7 @@
     }
 },
 {
-    "model": "chiton_closet.formality",
+    "model": "chiton_runway.formality",
     "fields": {
         "name": "Executive casual",
         "slug": "executive-casual",
@@ -40,7 +40,7 @@
     }
 },
 {
-    "model": "chiton_closet.formality",
+    "model": "chiton_runway.formality",
     "fields": {
         "name": "Executive",
         "slug": "executive",

@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from chiton.closet import data
 from chiton.closet.model_fields import EmphasisField
 from chiton.core.validators import validate_loose_range
+from chiton.runway.models import Formality, Style
 
 
 class GarmentManager(models.Manager):
@@ -31,8 +32,8 @@ class Garment(models.Model):
     description = models.TextField(verbose_name=_('description'), help_text=_('A public description'), null=True, blank=True)
     notes = models.TextField(verbose_name=_('notes'), help_text=_('Internal information'), null=True, blank=True)
     is_busty = models.NullBooleanField(verbose_name=_('is for busty women'))
-    styles = models.ManyToManyField('Style', verbose_name=_('styles'))
-    formalities = models.ManyToManyField('Formality', verbose_name=_('levels of formality'))
+    styles = models.ManyToManyField(Style, verbose_name=_('styles'))
+    formalities = models.ManyToManyField(Formality, verbose_name=_('levels of formality'))
 
     class Meta:
         verbose_name = _('garment')
@@ -76,58 +77,3 @@ class Brand(models.Model):
     def clean(self):
         """Ensure correct ordering of the age range."""
         validate_loose_range(self.age_lower, self.age_upper)
-
-
-class StyleManager(models.Manager):
-    """A custom manager for styles."""
-
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
-
-
-class Style(models.Model):
-    """A style conveyed by a garment."""
-
-    objects = StyleManager()
-
-    name = models.CharField(max_length=255, verbose_name=_('name'), unique=True)
-    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-
-    class Meta:
-        ordering = ('name',)
-        verbose_name = _('style')
-        verbose_name_plural = _('styles')
-
-    def __str__(self):
-        return self.name
-
-    def natural_key(self):
-        return (self.slug,)
-
-
-class FormalityManager(models.Manager):
-    """A custom manager for formalities."""
-
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
-
-
-class Formality(models.Model):
-    """A level of formality."""
-
-    objects = FormalityManager()
-
-    name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
-    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
-
-    class Meta:
-        ordering = ('position',)
-        verbose_name = _('level of formality')
-        verbose_name_plural = _('levels of formality')
-
-    def __str__(self):
-        return self.name
-
-    def natural_key(self):
-        return (self.slug,)

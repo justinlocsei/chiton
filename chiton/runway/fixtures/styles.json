@@ -1,48 +1,48 @@
 [
 {
-    "model": "chiton_closet.style",
+    "model": "chiton_runway.style",
     "fields": {
         "name": "Bold, Powerful",
         "slug": "bold-powerful"
     }
 },
 {
-    "model": "chiton_closet.style",
+    "model": "chiton_runway.style",
     "fields": {
         "name": "Caring, Empathetic",
         "slug": "caring-empathetic"
     }
 },
 {
-    "model": "chiton_closet.style",
+    "model": "chiton_runway.style",
     "fields": {
         "name": "Classy, Elegant",
         "slug": "classy-elegant"
     }
 },
 {
-    "model": "chiton_closet.style",
+    "model": "chiton_runway.style",
     "fields": {
         "name": "Creative, Fun",
         "slug": "creative-fun"
     }
 },
 {
-    "model": "chiton_closet.style",
+    "model": "chiton_runway.style",
     "fields": {
         "name": "Natural, Comfortable",
         "slug": "natural-comfortable"
     }
 },
 {
-    "model": "chiton_closet.style",
+    "model": "chiton_runway.style",
     "fields": {
         "name": "Responsible, Trustworthy",
         "slug": "responsible-trustworthy"
     }
 },
 {
-    "model": "chiton_closet.style",
+    "model": "chiton_runway.style",
     "fields": {
         "name": "Sleek, Efficient",
         "slug": "sleek-efficient"
