@@ -6,7 +6,7 @@ from chiton.core.environment import use_config
 with open(os.environ['CHITON_CONFIG_FILE']) as config_file:
     config = use_config(json.load(config_file))
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CHITON_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Environment
 # ==============================================================================
