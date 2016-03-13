@@ -7,7 +7,7 @@ from chiton.rack.affiliates.exceptions import LookupError
 
 api_field_options = {
     'help_text': _('This is automatically populated by the API'),
-    'widget': forms.TextInput(attrs={'size': 100, 'readonly': True})
+    'widget': forms.TextInput(attrs={'readonly': True})
 }
 
 
@@ -20,7 +20,7 @@ class AffiliateItemURLForm(forms.ModelForm):
 
     guid = forms.CharField(required=False, label=_('GUID'), **api_field_options)
     name = forms.CharField(required=False, label=_('Name'), **api_field_options)
-    url = forms.CharField(required=True, label=_('URL'), widget=forms.URLInput(attrs={'size': 100}))
+    url = forms.CharField(required=True, label=_('URL'), widget=forms.URLInput)
 
     class Meta:
         model = AffiliateItem
