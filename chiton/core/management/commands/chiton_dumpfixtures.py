@@ -4,7 +4,7 @@ from chiton.core.fixtures import load_fixtures
 
 
 class Command(BaseCommand):
-    help = 'Create fixtures of all core data'
+    help = 'Create fixture files for all core data'
 
     def handle(self, *arg, **options):
         for fixture in load_fixtures():
