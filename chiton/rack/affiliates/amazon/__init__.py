@@ -16,7 +16,7 @@ class Affiliate(BaseAffiliate):
     def provide_overview(self, url):
         asin = extract_asin_from_url(url)
         if asin is None:
-            raise LookupError('No ASIN could be extracted from the URL %s' % url)
+            raise LookupError('No ASIN could be extracted from the URL: %s' % url)
 
         connection = self._connect()
         response = connection.ItemLookup(ItemId=asin, ResponseGroup='Small')

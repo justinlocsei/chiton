@@ -16,7 +16,7 @@ class Affiliate(BaseAffiliate):
     def provide_overview(self, url):
         product_id = extract_product_id_from_api_url(url)
         if product_id is None:
-            raise LookupError('No product ID could be extracted from the URL %s' % url)
+            raise LookupError('No product ID could be extracted from the URL: %s' % url)
 
         response = self._request_product(product_id)
         parsed = self._validate_response(response, product_id)
