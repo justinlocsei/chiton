@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from chiton.rack.models import AffiliateItem
 from chiton.rack.affiliates import create_affiliate
+from chiton.rack.affiliates.exceptions import LookupError
 
 api_field_options = {
     'help_text': _('This is automatically populated by the API'),
@@ -34,6 +35,11 @@ class AffiliateItemURLForm(forms.ModelForm):
 
         if network and url:
             affiliate = create_affiliate(slug=network.slug)
-            response = affiliate.request_overview(url)
+
+            try:
+                response = affiliate.request_overview(url)
+            except LookupError as e:
+                raise forms.ValidationError(str(e))
+
             self.cleaned_data['guid'] = response['guid']
             self.cleaned_data['name'] = response['name']
