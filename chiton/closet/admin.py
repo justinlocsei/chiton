@@ -1,4 +1,5 @@
 from adminsortable2.admin import SortableAdminMixin
+from django import db, forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
@@ -44,6 +45,10 @@ class GarmentAdmin(admin.ModelAdmin):
             'fields': ('description', 'notes')
         })
     )
+
+    formfield_overrides = {
+        db.models.TextField: {'widget': forms.Textarea(attrs={'cols': 60, 'rows': 2})}
+    }
 
 
 @admin.register(models.Style, site=site)
