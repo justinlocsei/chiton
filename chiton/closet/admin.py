@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet import models
 from chiton.core.admin import site
+from chiton.rack.admin import AffiliateItemInline
 
 
 @admin.register(models.Brand, site=site)
@@ -23,6 +24,7 @@ class FormalityAdmin(SortableAdminMixin, admin.ModelAdmin):
 @admin.register(models.Garment, site=site)
 class GarmentAdmin(admin.ModelAdmin):
 
+    inlines = [AffiliateItemInline]
     list_display = ('name', 'brand')
     list_filter = ('brand',)
     ordering = ('name',)
