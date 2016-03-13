@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from chiton.closet.models import Garment
+
 
 class AffiliateNetworkManager(models.Manager):
     """A custom manager for affiliates."""
@@ -36,6 +38,7 @@ class AffiliateItem(models.Model):
     url = models.TextField(verbose_name=_('URL'))
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     guid = models.CharField(max_length=255, verbose_name=_('GUID'))
+    garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'))
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
 
     class Meta:
