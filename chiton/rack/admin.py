@@ -19,7 +19,7 @@ class AffiliateItemAdmin(admin.ModelAdmin):
     form = AffiliateItemURLForm
     list_display = ('name', 'guid', 'network_name', 'created_at')
     list_filter = ('network',)
-    ordering = ('created_at',)
+    ordering = ('-created_at',)
 
     def network_name(self, obj):
         return obj.network.name
