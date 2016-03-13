@@ -1,4 +1,7 @@
+import os.path
+
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from chiton.closet.apps import Config as Closet
 from chiton.closet.models import Formality, Style
@@ -33,9 +36,9 @@ class Command(BaseCommand):
         ]
 
         for fixture in fixtures:
-            file_path = create_fixture(
-                fixture['queryset'],
-                fixture['label'],
-                fixture['app'].name,
-                natural_keys=fixture['natural_keys'])
-            self.stdout.write('A %s fixture was created at %s' % (fixture['label'], file_path))
+            app_paths = [path for path in fixture['app'].name.split('.') if path != 'chiton']
+            app_dir = os.path.join(settings.CHITON_ROOT, *app_paths)
+            destination = os.path.join(app_dir, 'fixtures', '%s.json' % fixture['label'])
+
+            create_fixture(fixture['queryset'], destination, natural_keys=fixture['natural_keys'])
+            self.stdout.write('A %s fixture was created at %s' % (fixture['label'], destination))
