@@ -1,7 +1,6 @@
 from django.conf.urls import url
 from django.contrib import admin
 from django.template.response import TemplateResponse
-from django.utils.translation import ugettext_lazy as _
 import json
 import pygments
 from pygments.lexers import JsonLexer
@@ -17,19 +16,9 @@ from chiton.rack.forms import AffiliateItemURLForm
 class AffiliateItemAdmin(admin.ModelAdmin):
 
     form = AffiliateItemURLForm
-    list_display = ('name', 'network_name', 'garment_name', 'last_modified')
+    list_display = ('name', 'network', 'garment', 'last_modified')
     list_filter = ('network',)
     ordering = ('-last_modified',)
-
-    def garment_name(self, obj):
-        return obj.garment.name
-    garment_name.admin_order_field = 'garment__name'
-    garment_name.short_description = _('Garment')
-
-    def network_name(self, obj):
-        return obj.network.name
-    network_name.admin_order_field = 'network__name'
-    network_name.short_description = _('Affiliate Network')
 
     def get_urls(self):
         core = super().get_urls()
