@@ -54,6 +54,12 @@ class Category(models.Model):
         verbose_name = _('category')
         verbose_name_plural = _('categories')
 
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        return (self.slug,)
+
 
 class ProperietyManager(models.Manager):
     """A custom manager for proprieties."""

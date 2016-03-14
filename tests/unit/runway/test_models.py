@@ -17,6 +17,18 @@ class TestBasic:
 
 
 @pytest.mark.django_db
+class TestCategory:
+
+    def test_natural_key(self):
+        """It uses its slug."""
+        category = Category.objects.create(slug="leisure-wear")
+        assert category.natural_key() == ('leisure-wear',)
+
+        found = Category.objects.get_by_natural_key('leisure-wear')
+        assert category.pk == found.pk
+
+
+@pytest.mark.django_db
 class TestFormality:
 
     def test_natural_key(self):
