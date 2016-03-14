@@ -2,7 +2,6 @@ from functools import partial
 import os.path
 
 from inflection import underscore
-import pytest
 from vcr import VCR
 
 
@@ -18,7 +17,6 @@ def request_to_cassette_path(request):
     return os.path.join(*paths)
 
 
-@pytest.fixture
 def amazon_api_request(request):
     vcr = VCR()
 
@@ -27,7 +25,6 @@ def amazon_api_request(request):
         filter_query_parameters=['AssociateTag', 'AWSAccessKeyId', 'Signature', 'Timestamp'])
 
 
-@pytest.fixture
 def shopstyle_api_request(request):
     vcr = VCR()
 
