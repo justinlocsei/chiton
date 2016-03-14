@@ -1,0 +1,44 @@
+[
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Dresses",
+        "slug": "dresses"
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Hosiery",
+        "slug": "hosiery"
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Overshirts",
+        "slug": "overshirt"
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Pants",
+        "slug": "pants"
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Shirts",
+        "slug": "shirt"
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Skirts",
+        "slug": "skirts"
+    }
+}
+]
