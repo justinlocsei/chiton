@@ -1,6 +1,6 @@
 import pytest
 
-from chiton.runway.models import Basic, Formality, Propriety, Style
+from chiton.runway.models import Basic, Category, Formality, Propriety, Style
 
 
 @pytest.mark.django_db
@@ -8,7 +8,8 @@ class TestBasic:
 
     def test_natural_key(self):
         """It uses its slug."""
-        basic = Basic.objects.create(slug="cargo-shorts")
+        category = Category.objects.create(name="Leisure wear")
+        basic = Basic.objects.create(slug="cargo-shorts", category=category)
         assert basic.natural_key() == ('cargo-shorts',)
 
         found = Basic.objects.get_by_natural_key('cargo-shorts')
@@ -32,7 +33,8 @@ class TestPropriety:
 
     def test_natural_key(self):
         """It uses the slug of its basic and formality as well as its weight."""
-        basic = Basic.objects.create(slug="cargo-shorts")
+        category = Category.objects.create(name="Leisure wear")
+        basic = Basic.objects.create(slug="cargo-shorts", category=category)
         formality = Formality.objects.create(slug="snappy-boardroom")
 
         propriety = Propriety.objects.create(basic=basic, formality=formality, weight=1)

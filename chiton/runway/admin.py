@@ -17,6 +17,12 @@ class BasicAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
+@admin.register(models.Category, site=site)
+class CategoryAdmin(admin.ModelAdmin):
+
+    list_display = ('name',)
+
+
 @admin.register(models.Formality, site=site)
 class FormalityAdmin(SortableAdminMixin, admin.ModelAdmin):
 

@@ -19,6 +19,7 @@ class Basic(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_('name'), unique=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
+    category = models.ForeignKey('Category', verbose_name=_('category'))
     formalities = models.ManyToManyField('Formality', verbose_name=_('levels of formality'), through='Propriety')
 
     class Meta:
@@ -31,6 +32,27 @@ class Basic(models.Model):
 
     def natural_key(self):
         return (self.slug,)
+
+
+class CategoryManager(models.Manager):
+    """A custom manager for categories."""
+
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
+class Category(models.Model):
+    """A category for a basic."""
+
+    objects = CategoryManager()
+
+    name = models.CharField(max_length=255, verbose_name=_('name'), unique=True)
+    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
 
 
 class ProperietyManager(models.Manager):
