@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from chiton.closet import data
 from chiton.closet.model_fields import EmphasisField
 from chiton.core.validators import validate_loose_range
-from chiton.runway.models import Formality, Style
+from chiton.runway.models import Basic, Formality, Style
 
 
 class GarmentManager(models.Manager):
@@ -23,6 +23,7 @@ class Garment(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name=_('brand'))
+    basic = models.ForeignKey(Basic, on_delete=models.CASCADE, verbose_name=_('basic type'))
     shoulder_emphasis = EmphasisField(verbose_name=_('shoulder emphasis'))
     waist_emphasis = EmphasisField(verbose_name=_('waist emphasis'))
     hip_emphasis = EmphasisField(verbose_name=_('hip emphasis'))

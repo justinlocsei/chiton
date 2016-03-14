@@ -26,7 +26,7 @@ class GarmentAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'brand')
+            'fields': ('name', 'brand', 'basic')
         }),
         (_('Weighting'), {
             'fields': ('formalities', 'styles', 'shoulder_emphasis', 'waist_emphasis', 'hip_emphasis')
