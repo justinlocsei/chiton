@@ -9,7 +9,7 @@ class TestBrand:
 
     def test_natural_key(self):
         """It uses its slug."""
-        brand = Brand.objects.create(name="Chanel")
+        brand = Brand.objects.create(name="Chanel", slug="chanel")
         assert brand.natural_key() == ('chanel',)
 
         found = Brand.objects.get_by_natural_key('chanel')
@@ -31,11 +31,12 @@ class TestBrand:
 @pytest.mark.django_db
 class TestGarment:
 
-    def test_natural_key(self):
+    def test_natural_key(self, basic_factory):
         """It uses its slug and the slug of its brand."""
-        brand = Brand.objects.create(name="Givenchy")
+        basic = basic_factory()
+        brand = Brand.objects.create(name="Givenchy", slug="givenchy")
 
-        garment = Garment.objects.create(name="Cocktail Dress", brand=brand)
+        garment = Garment.objects.create(name="Cocktail Dress", slug="cocktail-dress", brand=brand, basic=basic)
         assert garment.natural_key() == ('cocktail-dress', 'givenchy')
 
         found = Garment.objects.get_by_natural_key('cocktail-dress', 'givenchy')
