@@ -2,6 +2,7 @@ import os.path
 
 from django.conf import settings
 from django.core import serializers
+from inflection import underscore
 
 from chiton.core.exceptions import FilesystemError
 
@@ -9,22 +10,17 @@ from chiton.core.exceptions import FilesystemError
 class Fixture:
     """A representation of a fixture for a single application model."""
 
-    def __init__(self, app, label, queryset, use_natural_keys=True):
+    def __init__(self, model_class, queryset):
         """Create a new fixture.
 
         Args:
-            app (django.apps.AppConfig): An application's configuration instance
-            label (str): A label for the fixture
+            model_class (django.db.models.Model): The model class for the fixture
             queryset (django.db.models.query.QuerySet): A queryset of models
-
-        Keyword Args:
-            use_natural_keys (bool): Whether to use natural keys when creating the fixture
-
         """
-        self.app = app
-        self.label = label
+        self.model_class = model_class
         self.queryset = queryset
-        self.use_natural_keys = use_natural_keys
+
+        self.label = underscore(model_class.__name__)
 
     def find(self):
         """Return the absolute path to the fixture's file.
@@ -32,7 +28,8 @@ class Fixture:
         Returns:
             str: The path to the fixture file
         """
-        app_paths = [path for path in self.app.name.split('.') if path != 'chiton']
+        app_name = self.model_class._meta.app_config.name
+        app_paths = [path for path in app_name.split('.') if path != 'chiton']
         app_dir = os.path.join(settings.CHITON_ROOT, *app_paths)
 
         return os.path.join(app_dir, 'fixtures', '%s.json' % self.label)
@@ -59,8 +56,8 @@ class Fixture:
                 self.queryset,
                 stream=fixture,
                 indent=4,
-                use_natural_foreign_keys=self.use_natural_keys,
-                use_natural_primary_keys=self.use_natural_keys
+                use_natural_foreign_keys=True,
+                use_natural_primary_keys=True
             )
 
         return destination
