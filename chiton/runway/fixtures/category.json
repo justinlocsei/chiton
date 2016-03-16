@@ -17,7 +17,7 @@
     "model": "chiton_runway.category",
     "fields": {
         "name": "Overshirts",
-        "slug": "overshirt"
+        "slug": "overshirts"
     }
 },
 {
@@ -31,7 +31,7 @@
     "model": "chiton_runway.category",
     "fields": {
         "name": "Shirts",
-        "slug": "shirt"
+        "slug": "shirts"
     }
 },
 {

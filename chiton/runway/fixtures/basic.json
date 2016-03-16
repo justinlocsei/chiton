@@ -5,7 +5,7 @@
         "name": "Black camisole",
         "slug": "black-camisole",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 },
@@ -15,7 +15,7 @@
         "name": "Black cardigan",
         "slug": "black-cardigan",
         "category": [
-            "overshirt"
+            "overshirts"
         ]
     }
 },
@@ -45,7 +45,7 @@
         "name": "Black shell",
         "slug": "black-shell",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 },
@@ -65,7 +65,7 @@
         "name": "Black sweater",
         "slug": "black-sweater",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 },
@@ -85,7 +85,7 @@
         "name": "Black T-shirt",
         "slug": "black-t-shirt",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 },
@@ -95,7 +95,7 @@
         "name": "Casual black blazer",
         "slug": "casual-black-blazer",
         "category": [
-            "overshirt"
+            "overshirts"
         ]
     }
 },
@@ -125,7 +125,7 @@
         "name": "Formal black blazer",
         "slug": "formal-black-blazer",
         "category": [
-            "overshirt"
+            "overshirts"
         ]
     }
 },
@@ -175,7 +175,7 @@
         "name": "Tunic",
         "slug": "tunic",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 },
@@ -185,7 +185,7 @@
         "name": "White button-down",
         "slug": "white-button-down",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 },
@@ -195,7 +195,7 @@
         "name": "White camisole",
         "slug": "white-camisole",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 },
@@ -205,7 +205,7 @@
         "name": "White shell",
         "slug": "white-shell",
         "category": [
-            "shirt"
+            "shirts"
         ]
     }
 }
