@@ -42,3 +42,13 @@ class TestExtractASINFromURL:
         """It extracts the ASIN from a product view URL with tracking."""
         url = 'http://www.amazon.com/gp/product/glance/B00ZGRB7S6/ref=sr_1_13'
         assert extract_asin_from_url(url) == 'B00ZGRB7S6'
+
+    def test_short_url(self):
+        """It extracts the ASIN from a bare URL without the www subdomain."""
+        url = 'http://amazon.com/dp/B00ZGRB7S6'
+        assert extract_asin_from_url(url) == 'B00ZGRB7S6'
+
+    def test_similar(self):
+        """It ignores an ASIN not found on amazon.com."""
+        url = 'http://www.amazon.co.uk/dp/B00ZGRB7S6'
+        assert extract_asin_from_url(url) is None
