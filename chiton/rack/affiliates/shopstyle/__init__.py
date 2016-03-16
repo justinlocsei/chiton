@@ -6,12 +6,11 @@ from chiton.rack.affiliates.shopstyle.urls import extract_product_id_from_api_ur
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
 
-# The base endpoint for the Shopstyle API
-API_URL = 'http://api.shopstyle.com/api/v2'
-
 
 class Affiliate(BaseAffiliate):
     """An affiliate for Shopstyle."""
+
+    _API_URL = 'http://api.shopstyle.com/api/v2'
 
     def provide_overview(self, url):
         product_id = extract_product_id_from_api_url(url)
@@ -50,7 +49,7 @@ class Affiliate(BaseAffiliate):
         Returns:
             requests.Response: The API response
         """
-        endpoint = '%s/products/%s' % (API_URL, product_id)
+        endpoint = '%s/products/%s' % (self._API_URL, product_id)
         return requests.get(endpoint, params={
             'format': 'json',
             'pid': settings.SHOPSTYLE_UID

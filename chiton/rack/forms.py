@@ -5,11 +5,6 @@ from chiton.rack.models import AffiliateItem
 from chiton.rack.affiliates import create_affiliate
 from chiton.rack.affiliates.exceptions import LookupError
 
-api_field_options = {
-    'help_text': _('This is automatically populated by the API'),
-    'widget': forms.TextInput(attrs={'readonly': True})
-}
-
 
 class AffiliateItemURLForm(forms.ModelForm):
     """A form that fetches additional data on an affiliate item from its URL.
@@ -18,8 +13,13 @@ class AffiliateItemURLForm(forms.ModelForm):
     more data on the item via the network's API.
     """
 
-    guid = forms.CharField(required=False, label=_('GUID'), **api_field_options)
-    name = forms.CharField(required=False, label=_('Name'), **api_field_options)
+    _API_FIELD_OPTIONS = {
+        'help_text': _('This is automatically populated by the API'),
+        'widget': forms.TextInput(attrs={'readonly': True})
+    }
+
+    guid = forms.CharField(required=False, label=_('GUID'), **_API_FIELD_OPTIONS)
+    name = forms.CharField(required=False, label=_('Name'), **_API_FIELD_OPTIONS)
     url = forms.CharField(required=True, label=_('URL'), widget=forms.URLInput)
 
     class Meta:
