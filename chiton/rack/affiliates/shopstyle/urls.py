@@ -1,6 +1,7 @@
 from urllib.parse import parse_qs, urlparse
 
-API_URL = 'api.shopstyle.com/action/apiVisitRetailer'
+API_HOST = 'api.shopstyle.com'
+API_PATH = '/action/apiVisitRetailer'
 
 
 def extract_product_id_from_api_url(url):
@@ -12,13 +13,13 @@ def extract_product_id_from_api_url(url):
     Returns:
         str: The item's product ID, or None
     """
-    if API_URL not in url:
+    parsed = urlparse(url)
+    if parsed.hostname != API_HOST or parsed.path != API_PATH:
         return None
 
-    query = urlparse(url).query
-    parsed = parse_qs(query)
+    query = parse_qs(parsed.query)
 
-    if 'id' in parsed:
-        return parsed['id'][0]
+    if 'id' in query:
+        return query['id'][0]
     else:
         return None

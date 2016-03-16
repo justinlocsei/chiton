@@ -17,3 +17,8 @@ class TestExtractProductIDFromAPIURL:
         """It returns None if no query string is present."""
         url = 'http://api.shopstyle.com/action/apiVisitRetailer'
         assert extract_product_id_from_api_url(url) is None
+
+    def test_api_url_similar(self):
+        """It ignores product IDs not found at shopstyle.com."""
+        url = 'http://api.shopstyle.co.uk/action/apiVisitRetailer?id=471281504&pid=uid3600-33034440-48'
+        assert extract_product_id_from_api_url(url) is None
