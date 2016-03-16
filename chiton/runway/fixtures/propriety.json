@@ -1,0 +1,962 @@
+[
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-camisole"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-camisole"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-camisole"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-camisole"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-camisole"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-camisole"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-cardigan"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-cardigan"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-cardigan"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-cardigan"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-leggings"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "mildly"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-leggings"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-leggings"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-pants"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-pants"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-pants"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-pants"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-pants"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-shell"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-shell"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-shell"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-shell"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-shell"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-skirt"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-skirt"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-skirt"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-skirt"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-skirt"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-sweater"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-sweater"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-sweater"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-sweater"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-sweater"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "mildly"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-sweater"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-tights"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-tights"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-tights"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-tights"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-tights"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-t-shirt"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-t-shirt"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-t-shirt"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "black-t-shirt"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "casual-black-blazer"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "casual-black-blazer"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "casual-black-blazer"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "mildly"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "casual-black-dress"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "casual-black-dress"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "casual-black-dress"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "dark-jeans"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "dark-jeans"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "formal-black-blazer"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "formal-black-blazer"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "formal-black-dress"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "formal-black-dress"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "khakis"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "khakis"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "nude-pantyhose"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "nude-pantyhose"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "skirt"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "skirt"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "skirt"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "mildly"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "skirt"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "skirt"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "very"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "tunic"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "tunic"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "tunic"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-button-down"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "somewhat"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-button-down"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "mildly"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-camisole"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-camisole"
+        ],
+        "formality": [
+            "casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-camisole"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-camisole"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-camisole"
+        ],
+        "formality": [
+            "executive"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-camisole"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-shell"
+        ],
+        "formality": [
+            "business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-shell"
+        ],
+        "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-shell"
+        ],
+        "formality": [
+            "dressy-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-shell"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "white-shell"
+        ],
+        "formality": [
+            "executive-casual"
+        ],
+        "importance": "always"
+    }
+}
+]

@@ -1,0 +1,212 @@
+[
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black camisole",
+        "slug": "black-camisole",
+        "category": [
+            "shirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black cardigan",
+        "slug": "black-cardigan",
+        "category": [
+            "overshirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black leggings",
+        "slug": "black-leggings",
+        "category": [
+            "pants"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black pants",
+        "slug": "black-pants",
+        "category": [
+            "pants"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black shell",
+        "slug": "black-shell",
+        "category": [
+            "shirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black skirt",
+        "slug": "black-skirt",
+        "category": [
+            "skirts"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black sweater",
+        "slug": "black-sweater",
+        "category": [
+            "shirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black tights",
+        "slug": "black-tights",
+        "category": [
+            "hosiery"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Black T-shirt",
+        "slug": "black-t-shirt",
+        "category": [
+            "shirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Casual black blazer",
+        "slug": "casual-black-blazer",
+        "category": [
+            "overshirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Casual black dress",
+        "slug": "casual-black-dress",
+        "category": [
+            "dresses"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Dark jeans",
+        "slug": "dark-jeans",
+        "category": [
+            "pants"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Formal black blazer",
+        "slug": "formal-black-blazer",
+        "category": [
+            "overshirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Formal black dress",
+        "slug": "formal-black-dress",
+        "category": [
+            "dresses"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Khakis",
+        "slug": "khakis",
+        "category": [
+            "pants"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Nude pantyhose",
+        "slug": "nude-pantyhose",
+        "category": [
+            "hosiery"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Skirt",
+        "slug": "skirt",
+        "category": [
+            "skirts"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Tunic",
+        "slug": "tunic",
+        "category": [
+            "shirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "White button-down",
+        "slug": "white-button-down",
+        "category": [
+            "shirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "White camisole",
+        "slug": "white-camisole",
+        "category": [
+            "shirt"
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "White shell",
+        "slug": "white-shell",
+        "category": [
+            "shirt"
+        ]
+    }
+}
+]

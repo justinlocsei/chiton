@@ -67,6 +67,10 @@ class ProperietyManager(models.Manager):
     def get_by_natural_key(self, basic, formality, importance):
         return self.get(basic__slug=basic, formality__slug=formality, importance=importance)
 
+    def for_export(self):
+        """Return a set of all proprieties sorted deterministically for export."""
+        return self.all().order_by('basic__name', 'formality__slug', 'importance')
+
 
 class Propriety(models.Model):
     """A relation between a basic and a level of formality."""
