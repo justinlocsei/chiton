@@ -1,0 +1,49 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+    <style>
+        .c--proprieties {
+            width: 100%;
+        }
+        .c--proprieties thead th:first-child {
+            border-left: 1px solid #eee;
+        }
+        .c--proprieties thead th:last-child {
+            border-right: 1px solid #eee;
+        }
+        .c--proprieties tbody td,
+        .c--proprieties tbody th {
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+        }
+        .c--proprieties__formality {
+            text-align: center;
+        }
+    </style>
+
+    <table class="c--proprieties">
+        <thead>
+            <tr>
+                <th>Basic</th>
+                <th>Category</th>
+                {% for formality in formalities %}
+                    <th class="c--proprieties__formality">{{ forloop.counter }}: {{ formality }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for basic in basics %}
+                <tr>
+                    <th>{{ basic.name }}</th>
+                    <td>{{ basic.category }}</td>
+                    {% for importance in basic.importances %}
+                        <td class="c--proprieties__formality">{{ importance }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

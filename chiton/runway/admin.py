@@ -1,5 +1,8 @@
 from adminsortable2.admin import SortableAdminMixin
+from django.conf.urls import url
 from django.contrib import admin
+from django.template.response import TemplateResponse
+from django.utils.translation import ugettext_lazy as _
 
 from chiton.core.admin import site
 from chiton.runway import models
@@ -15,6 +18,41 @@ class BasicAdmin(admin.ModelAdmin):
 
     inlines = (ProprietyInline,)
     list_display = ('name',)
+
+    def get_urls(self):
+        core = super().get_urls()
+        custom = [
+            url(r'^proprieties-table/$', self.admin_site.admin_view(self.proprieties_table), name='basic-proprieties-table')
+        ]
+        return custom + core
+
+    def proprieties_table(self, request):
+        basics = models.Basic.objects.all()
+        formalities = models.Formality.objects.all()
+
+        basic_data = []
+        for basic in basics:
+            proprieties = models.Propriety.objects.filter(basic=basic)
+            importances = []
+            for formality in formalities:
+                display = ''
+                for propriety in proprieties:
+                    if propriety.formality == formality:
+                        display = propriety.get_importance_display()
+                importances.append(display)
+
+            basic_data.append({
+                'name': basic.name,
+                'category': basic.category.name,
+                'importances': importances
+            })
+
+        return TemplateResponse(request, 'admin/chiton_runway/basic/proprieties_table.html', dict(
+            self.admin_site.each_context(request),
+            basics=basic_data,
+            formalities=formalities,
+            title=_('Basic proprieties table')
+        ))
 
 
 @admin.register(models.Category, site=site)
