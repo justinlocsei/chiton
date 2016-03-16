@@ -32,7 +32,7 @@ class FormalityAdmin(SortableAdminMixin, admin.ModelAdmin):
 @admin.register(models.Propriety, site=site)
 class ProprietyAdmin(admin.ModelAdmin):
 
-    list_display = ('basic', 'formality', 'weight')
+    list_display = ('basic', 'formality', 'importance')
 
 
 @admin.register(models.Style, site=site)

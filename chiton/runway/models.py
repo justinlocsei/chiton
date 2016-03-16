@@ -64,8 +64,8 @@ class Category(models.Model):
 class ProperietyManager(models.Manager):
     """A custom manager for proprieties."""
 
-    def get_by_natural_key(self, basic, formality, weight):
-        return self.get(basic__slug=basic, formality__slug=formality, weight=weight)
+    def get_by_natural_key(self, basic, formality, importance):
+        return self.get(basic__slug=basic, formality__slug=formality, importance=importance)
 
 
 class Propriety(models.Model):
@@ -75,14 +75,14 @@ class Propriety(models.Model):
 
     basic = models.ForeignKey(Basic, on_delete=models.CASCADE, verbose_name=_('basic'))
     formality = models.ForeignKey('Formality', on_delete=models.CASCADE, verbose_name=_('level of formality'))
-    weight = models.PositiveSmallIntegerField(choices=data.PROPRIETY_WEIGHT_CHOICES, verbose_name=_('recommend for a person who dresses at this level'))
+    importance = models.CharField(max_length=25, choices=data.PROPRIETY_IMPORTANCE_CHOICES, verbose_name=_('importance'))
 
     class Meta:
         verbose_name = _('propriety')
         verbose_name_plural = _('proprieties')
 
     def natural_key(self):
-        return (self.basic.slug, self.formality.slug, self.weight)
+        return (self.basic.slug, self.formality.slug, self.importance)
 
 
 class StyleManager(models.Manager):

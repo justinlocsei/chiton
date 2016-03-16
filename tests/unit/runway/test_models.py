@@ -1,5 +1,6 @@
 import pytest
 
+from chiton.runway import data
 from chiton.runway.models import Basic, Category, Formality, Propriety, Style
 
 
@@ -43,14 +44,15 @@ class TestFormality:
 class TestPropriety:
 
     def test_natural_key(self, category_factory):
-        """It uses the slug of its basic and formality as well as its weight."""
+        """It uses the slug of its basic and formality as well as its importance."""
+        importance = data.PROPRIETY_IMPORTANCE_CHOICES[0][0]
         basic = Basic.objects.create(name="Cargo Shorts", slug="cargo-shorts", category=category_factory())
         formality = Formality.objects.create(name="Snappy Boardroom", slug="snappy-boardroom")
 
-        propriety = Propriety.objects.create(basic=basic, formality=formality, weight=1)
-        assert propriety.natural_key() == ('cargo-shorts', 'snappy-boardroom', 1)
+        propriety = Propriety.objects.create(basic=basic, formality=formality, importance=importance)
+        assert propriety.natural_key() == ('cargo-shorts', 'snappy-boardroom', importance)
 
-        found = Propriety.objects.get_by_natural_key('cargo-shorts', 'snappy-boardroom', 1)
+        found = Propriety.objects.get_by_natural_key('cargo-shorts', 'snappy-boardroom', importance)
         assert propriety.pk == found.pk
 
 
