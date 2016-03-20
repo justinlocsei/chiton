@@ -41,29 +41,29 @@ class TestUseConfig:
         config = use_config()
         assert config['allowed_hosts'] == []
 
-    def test_aws_advertising_access_key_id(self):
-        """It expects a non-empty string for the AWS Product Advertising access key ID."""
-        config = use_config({'aws_advertising_access_key_id': 'access'})
-        assert config['aws_advertising_access_key_id'] == 'access'
+    def test_amazon_associates_aws_access_key_id(self):
+        """It expects a non-empty string for the Amazon Associates AWS access key ID."""
+        config = use_config({'amazon_associates_aws_access_key_id': 'access'})
+        assert config['amazon_associates_aws_access_key_id'] == 'access'
 
         with pytest.raises(ConfigurationError):
-            use_config({'aws_advertising_access_key_id': ''})
+            use_config({'amazon_associates_aws_access_key_id': ''})
 
-    def test_aws_advertising_associate_tag(self):
-        """It expects a string that ends in a known ID for the AWS Product Advertising associate tag."""
-        config = use_config({'aws_advertising_associate_tag': 'associate-tag-20'})
-        assert config['aws_advertising_associate_tag'] == 'associate-tag-20'
-
-        with pytest.raises(ConfigurationError):
-            use_config({'aws_advertising_associate_tag': 'associate-tag'})
-
-    def test_aws_advertising_secret_access_key(self):
-        """It expects a non-empty string for the AWS Product Advertising secret access key."""
-        config = use_config({'aws_advertising_secret_access_key': 'secret'})
-        assert config['aws_advertising_secret_access_key'] == 'secret'
+    def test_amazon_associates_aws_secret_access_key(self):
+        """It expects a non-empty string for the Amazon Associates AWS secret access key."""
+        config = use_config({'amazon_associates_aws_secret_access_key': 'secret'})
+        assert config['amazon_associates_aws_secret_access_key'] == 'secret'
 
         with pytest.raises(ConfigurationError):
-            use_config({'aws_advertising_secret_access_key': ''})
+            use_config({'amazon_associates_aws_secret_access_key': ''})
+
+    def test_amazon_associates_tracking_id(self):
+        """It expects a string that ends in a known region ID for the Amazon Associates tracking ID."""
+        config = use_config({'amazon_associates_tracking_id': 'tracking-id-20'})
+        assert config['amazon_associates_tracking_id'] == 'tracking-id-20'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'amazon_associates_tracking_id': 'tracking-id'})
 
     def test_debug(self):
         """It expects a boolean value for the debug state."""

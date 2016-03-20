@@ -36,9 +36,9 @@ def _default_config():
     """Define the default configuration data."""
     return {
         'allowed_hosts': [],
-        'aws_advertising_access_key_id': None,
-        'aws_advertising_associate_tag': None,
-        'aws_advertising_secret_access_key': None,
+        'amazon_associates_aws_access_key_id': None,
+        'amazon_associates_aws_secret_access_key': None,
+        'amazon_associates_tracking_id': None,
         'database': {},
         'debug': False,
         'secret_key': None,
@@ -53,9 +53,9 @@ def _validate_config(config):
     """Validate configuration data, raising an error for invalid data."""
     Schema({
         'allowed_hosts': [str],
-        'aws_advertising_access_key_id': All(str, Length(min=1)),
-        'aws_advertising_associate_tag': All(str, Length(min=1), _AmazonAssociateTag()),
-        'aws_advertising_secret_access_key': All(str, Length(min=1)),
+        'amazon_associates_aws_access_key_id': All(str, Length(min=1)),
+        'amazon_associates_aws_secret_access_key': All(str, Length(min=1)),
+        'amazon_associates_tracking_id': All(str, Length(min=1), _AmazonAssociatesTrackingID()),
         'database': Schema({
             'engine': All(str, Length(min=1)),
             'host': All(str, Length(min=1)),
@@ -81,11 +81,11 @@ def _AbsolutePath():
     return validator
 
 
-def _AmazonAssociateTag():
-    """Ensure that a string is an Amazon associate tag."""
+def _AmazonAssociatesTrackingID():
+    """Ensure that a string is an Amazon Associates tracking ID."""
     def validator(value):
         if not re.search('-2\d$', value):
-            raise ValueError('%s must be an Amazon associate tag' % value)
+            raise ValueError('%s must be an Amazon Associates tracking ID' % value)
     return validator
 
 

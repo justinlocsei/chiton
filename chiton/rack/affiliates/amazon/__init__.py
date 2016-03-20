@@ -38,16 +38,16 @@ class Affiliate(BaseAffiliate):
         return validated['Items']['Item']['ItemAttributes']
 
     def _connect(self):
-        """Return a connection to the Product Advertising API.
+        """Return a connection to the Amazon Associates API.
 
         Returns:
             bottlenose.Amazon: A connection to the API
         """
         if not self._connection:
             self._connection = bottlenose.Amazon(
-                settings.AWS_ADVERTISING_ACCESS_KEY_ID,
-                settings.AWS_ADVERTISING_SECRET_ACCESS_KEY,
-                settings.AWS_ADVERTISING_ASSOCIATE_TAG,
+                settings.AMAZON_ASSOCIATES_AWS_ACCESS_KEY_ID,
+                settings.AMAZON_ASSOCIATES_AWS_SECRET_ACCESS_KEY,
+                settings.AMAZON_ASSOCIATES_TRACKING_ID,
                 Parser=xmltodict.parse)
 
         return self._connection

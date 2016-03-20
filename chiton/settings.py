@@ -104,8 +104,8 @@ WSGI_APPLICATION = 'chiton.wsgi.application'
 # API Credentials
 # ==============================================================================
 
-AWS_ADVERTISING_ACCESS_KEY_ID = config['aws_advertising_access_key_id']
-AWS_ADVERTISING_ASSOCIATE_TAG = config['aws_advertising_associate_tag']
-AWS_ADVERTISING_SECRET_ACCESS_KEY = config['aws_advertising_secret_access_key']
+AMAZON_ASSOCIATES_TRACKING_ID = config['amazon_associates_tracking_id']
+AMAZON_ASSOCIATES_AWS_ACCESS_KEY_ID = config['amazon_associates_aws_access_key_id']
+AMAZON_ASSOCIATES_AWS_SECRET_ACCESS_KEY = config['amazon_associates_aws_secret_access_key']
 
 SHOPSTYLE_UID = config['shopstyle_uid']
