@@ -1,10 +1,11 @@
 from itertools import chain
 
+import chiton.closet.fixtures as closet
 import chiton.rack.fixtures as rack
 import chiton.runway.fixtures as runway
 
 # All known application fixtures
-APP_FIXTURES = [rack, runway]
+APP_FIXTURES = [closet, rack, runway]
 
 
 def load_fixtures():
