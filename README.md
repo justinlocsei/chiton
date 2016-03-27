@@ -40,8 +40,6 @@ you will now be able to interact with the Django application.
 
 The following management commands are available:
 
-* `chiton_devserver`: Run a development server on an address and port set by
-  environment variables.
 * `chiton_dumpfixtures`: Create or update fixture files for core data.
 * `chiton_ensuresuperuser`: Ensure that a superuser exists with an email,
   username, and password provided as arguments.
