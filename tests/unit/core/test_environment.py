@@ -189,11 +189,3 @@ class TestUseConfig:
         """It allows a static URL to be an absolute URL."""
         config = use_config({'static_url': 'http://example.com/'})
         assert config['static_url'] == 'http://example.com/'
-
-    def test_use_https(self):
-        """It expects a boolean for the HTTPS setting."""
-        config = use_config({'use_https': True})
-        assert config['use_https']
-
-        with pytest.raises(ConfigurationError):
-            use_config({'use_https': 1})

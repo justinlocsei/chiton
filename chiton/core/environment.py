@@ -44,8 +44,7 @@ def _default_config():
         'secret_key': None,
         'shopstyle_uid': None,
         'static_root': None,
-        'static_url': '/static/',
-        'use_https': False
+        'static_url': '/static/'
     }
 
 
@@ -68,8 +67,7 @@ def _validate_config(config):
         'secret_key': All(str, Length(min=1)),
         'shopstyle_uid': All(str, Length(min=1)),
         'static_root': All(str, Length(min=1), _AbsolutePath()),
-        'static_url': All(str, Length(min=1), _MediaUrl()),
-        'use_https': All(bool)
+        'static_url': All(str, Length(min=1), _MediaUrl())
     })(config)
 
 

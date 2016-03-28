@@ -27,8 +27,7 @@ represented as JavaScript that maps directly to JSON:
     "secret_key": null,       // The Django secret key to use
     "shopstyle_uid": null,    // The Shopstyle API UID
     "static_root": null,      // The root directory for static files
-    "static_url": "/static/", // The root URL for static files
-    "use_https": false        // Whether to use HTTPS
+    "static_url": "/static/"  // The root URL for static files
 }
 ```
 

@@ -95,10 +95,10 @@ STATIC_URL = config['static_url']
 
 ALLOWED_HOSTS = config['allowed_hosts']
 APPEND_SLASH = True
-CSRF_COOKIE_SECURE = config['use_https']
+CSRF_COOKIE_SECURE = True
 ROOT_URLCONF = 'chiton.urls'
-SECURE_BROWSER_XSS_FILTER = config['use_https']
-SECURE_CONTENT_TYPE_NOSNIFF = config['use_https']
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 WSGI_APPLICATION = 'chiton.wsgi.application'
 
 # API Credentials
