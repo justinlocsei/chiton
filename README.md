@@ -12,6 +12,7 @@ represented as JavaScript that maps directly to JSON:
 
 ```javascript
 {
+    "allowed_hosts": [],                             // The list of allowed hosts
     "amazon_associates_aws_access_key_id": null,     // The access key ID for the Amazon Associates AWS user
     "amazon_associates_tracking_id": null,           // The Amazon Associates tracking ID
     "amazon_associates_aws_secret_access_key": null, // The secret access key for the Amazon Associates AWS user
