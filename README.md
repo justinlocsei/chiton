@@ -12,6 +12,10 @@ represented as JavaScript that maps directly to JSON:
 
 ```javascript
 {
+    "admins": [{
+        "email": null, // The email address for an admin user
+        "name": null   // The full name of an admin user
+    }],
     "allowed_hosts": [],                             // The list of allowed hosts
     "amazon_associates_aws_access_key_id": null,     // The access key ID for the Amazon Associates AWS user
     "amazon_associates_tracking_id": null,           // The Amazon Associates tracking ID
@@ -25,7 +29,11 @@ represented as JavaScript that maps directly to JSON:
         "user": null      // The database user
     },
     "debug": false,           // Whether to run in debug mode
+    "file_logging": false,    // Whether to log to a file
+    "log_file": null,         // The absolute path to the log file
+    "log_level": "INFO",      // The log level to use
     "secret_key": null,       // The Django secret key to use
+    "server_email": null,     // The email address from which server messages are sent
     "shopstyle_uid": null,    // The Shopstyle API UID
     "static_root": null,      // The root directory for static files
     "static_url": "/static/"  // The root URL for static files
