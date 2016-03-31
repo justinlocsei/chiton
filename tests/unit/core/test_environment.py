@@ -155,6 +155,14 @@ class TestUseConfig:
         config = use_config()
         assert config['secret_key'] is None
 
+    def test_server_email(self):
+        """It expects a non-empty string for the server email."""
+        config = use_config({'server_email': 'noreply@example.com'})
+        assert config['server_email'] == 'noreply@example.com'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'server_email': ''})
+
     def test_shopstyle_uid(self):
         """It expects a non-empty string for the Shopstyle UID."""
         config = use_config({'shopstyle_uid': 'uid'})
