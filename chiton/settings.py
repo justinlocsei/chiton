@@ -98,7 +98,7 @@ LOGGING = {
         },
         'file': {
             'class': 'logging.FileHandler',
-            'filename': os.path.join(config['log_dir'], 'django.log')
+            'filename': config['log_file']
         }
     },
     'loggers': {

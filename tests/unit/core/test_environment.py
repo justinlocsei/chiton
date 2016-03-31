@@ -155,26 +155,21 @@ class TestUseConfig:
         config = use_config()
         assert not config['file_logging']
 
-    def test_log_dir(self):
-        """It expects a non-empty string for the log directory."""
-        config = use_config({'log_dir': '/tmp'})
-        assert config['log_dir'] == '/tmp'
+    def test_log_file(self):
+        """It expects a non-empty string for the log file."""
+        config = use_config({'log_file': '/tmp/test.log'})
+        assert config['log_file'] == '/tmp/test.log'
 
         with pytest.raises(ConfigurationError):
-            use_config({'log_dir': ''})
+            use_config({'log_file': ''})
 
-    def test_log_dir_absolute(self):
-        """It expects an absolute path for the log directory."""
-        config = use_config({'log_dir': '/tmp/dir'})
-        assert config['log_dir'] == '/tmp/dir'
+    def test_log_file_absolute(self):
+        """It expects an absolute path for the log file."""
+        config = use_config({'log_file': '/tmp/dir/test.log'})
+        assert config['log_file'] == '/tmp/dir/test.log'
 
         with pytest.raises(ConfigurationError):
-            use_config({'log_dir': 'tmp/dir'})
-
-    def test_log_dir_default(self):
-        """It defaults to the temp directory."""
-        config = use_config()
-        assert config['log_dir'] == '/tmp'
+            use_config({'log_file': 'test.log'})
 
     def test_log_level(self):
         """It expects a known log level."""
