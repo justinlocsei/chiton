@@ -90,6 +90,27 @@ DATABASES = {
 ADMINS = [(a.get('name'), a.get('email')) for a in config['admins']]
 SERVER_EMAIL = config['server_email']
 
+LOGGING = {
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(config['log_dir'], 'django.log')
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file' if config['file_logging'] else 'console'],
+            'level': config['log_level'],
+            'propagate': True
+        }
+    },
+    'version': 1
+}
+
 # Assets
 # ==============================================================================
 

@@ -142,6 +142,61 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'database': {'port': '1234'}})
 
+    def test_file_logging(self):
+        """It expects a boolean value for using file logging."""
+        config = use_config({'file_logging': True})
+        assert config['file_logging']
+
+        with pytest.raises(ConfigurationError):
+            use_config({'file_logging': 1})
+
+    def test_file_logging_default(self):
+        """It defaults to console logging."""
+        config = use_config()
+        assert not config['file_logging']
+
+    def test_log_dir(self):
+        """It expects a non-empty string for the log directory."""
+        config = use_config({'log_dir': '/tmp'})
+        assert config['log_dir'] == '/tmp'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'log_dir': ''})
+
+    def test_log_dir_absolute(self):
+        """It expects an absolute path for the log directory."""
+        config = use_config({'log_dir': '/tmp/dir'})
+        assert config['log_dir'] == '/tmp/dir'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'log_dir': 'tmp/dir'})
+
+    def test_log_dir_default(self):
+        """It defaults to the temp directory."""
+        config = use_config()
+        assert config['log_dir'] == '/tmp'
+
+    def test_log_level(self):
+        """It expects a known log level."""
+        config = use_config({'log_level': 'DEBUG'})
+        assert config['log_level'] == 'DEBUG'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'log_level': 'CUSTOM'})
+
+    def test_log_level_case_sensitive(self):
+        """It uses a case-sensitive check when matching the log level."""
+        config = use_config({'log_level': 'ERROR'})
+        assert config['log_level'] == 'ERROR'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'log_level': 'error'})
+
+    def test_log_level_default(self):
+        """It defaults to info logging."""
+        config = use_config()
+        assert config['log_level'] == 'INFO'
+
     def test_secret_key(self):
         """It expects a non-empty string for the secret key."""
         config = use_config({'secret_key': 'secret'})

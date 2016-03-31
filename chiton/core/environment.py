@@ -6,6 +6,10 @@ from voluptuous import All, Length, MultipleInvalid, Schema
 from chiton.core.exceptions import ConfigurationError
 
 
+# All known log levels
+LOG_LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
+
+
 def use_config(user_data={}):
     """Load an external JSON configuration file.
 
@@ -42,6 +46,9 @@ def _default_config():
         'amazon_associates_tracking_id': None,
         'database': {},
         'debug': False,
+        'file_logging': False,
+        'log_dir': '/tmp',
+        'log_level': 'INFO',
         'secret_key': None,
         'server_email': None,
         'shopstyle_uid': None,
@@ -70,6 +77,9 @@ def _validate_config(config):
             'user': All(str, Length(min=1))
         }),
         'debug': bool,
+        'file_logging': bool,
+        'log_dir': All(str, Length(min=1), _AbsolutePath()),
+        'log_level': All(str, Length(min=1), _LogLevel()),
         'secret_key': All(str, Length(min=1)),
         'server_email': All(str, Length(min=1)),
         'shopstyle_uid': All(str, Length(min=1)),
@@ -91,6 +101,14 @@ def _AmazonAssociatesTrackingID():
     def validator(value):
         if not re.search('-2\d$', value):
             raise ValueError('%s must be an Amazon Associates tracking ID' % value)
+    return validator
+
+
+def _LogLevel():
+    """Ensure that a string is a known log level."""
+    def validator(value):
+        if value not in LOG_LEVELS:
+            raise ValueError('%s must be a log level (%s)' % (value, ', '.join(LOG_LEVELS)))
     return validator
 
 
