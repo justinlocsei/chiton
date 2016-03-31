@@ -28,6 +28,21 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'secret_key': None})
 
+    def test_admins(self):
+        """It expects a list of admin dicts."""
+        config = use_config({'admins': [
+            {'name': 'Tester', 'email': 'tester@example.com'}
+        ]})
+        assert config['admins'] == [{'name': 'Tester', 'email': 'tester@example.com'}]
+
+        with pytest.raises(ConfigurationError):
+            use_config({'admins': [{'name': ''}]})
+
+    def test_admins_default(self):
+        """It uses an empty list of admins by default."""
+        config = use_config()
+        assert config['admins'] == []
+
     def test_allowed_hosts(self):
         """It expects hosts to be a list of strings."""
         config = use_config({'allowed_hosts': ['localhost']})

@@ -35,6 +35,7 @@ def use_config(user_data={}):
 def _default_config():
     """Define the default configuration data."""
     return {
+        'admins': [],
         'allowed_hosts': [],
         'amazon_associates_aws_access_key_id': None,
         'amazon_associates_aws_secret_access_key': None,
@@ -51,6 +52,10 @@ def _default_config():
 def _validate_config(config):
     """Validate configuration data, raising an error for invalid data."""
     Schema({
+        'admins': [Schema({
+            'email': All(str, Length(min=1)),
+            'name': All(str, Length(min=1)),
+        })],
         'allowed_hosts': [str],
         'amazon_associates_aws_access_key_id': All(str, Length(min=1)),
         'amazon_associates_aws_secret_access_key': All(str, Length(min=1)),
