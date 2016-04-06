@@ -1,0 +1,1 @@
+recursive-include chiton *.html *.json
