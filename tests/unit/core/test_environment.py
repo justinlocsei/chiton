@@ -80,6 +80,22 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'amazon_associates_tracking_id': 'tracking-id'})
 
+    def test_backups_aws_access_key_id(self):
+        """It expects a non-empty string for the AWS backups user's access key ID."""
+        config = use_config({'backups_aws_access_key_id': 'access'})
+        assert config['backups_aws_access_key_id'] == 'access'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'backups_aws_access_key_id': ''})
+
+    def test_backups_aws_secret_access_key(self):
+        """It expects a non-empty string for the AWS backups user's secret access key."""
+        config = use_config({'backups_aws_secret_access_key': 'secret'})
+        assert config['backups_aws_secret_access_key'] == 'secret'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'backups_aws_secret_access_key': ''})
+
     def test_debug(self):
         """It expects a boolean value for the debug state."""
         config = use_config({'debug': True})

@@ -135,4 +135,7 @@ AMAZON_ASSOCIATES_TRACKING_ID = config['amazon_associates_tracking_id']
 AMAZON_ASSOCIATES_AWS_ACCESS_KEY_ID = config['amazon_associates_aws_access_key_id']
 AMAZON_ASSOCIATES_AWS_SECRET_ACCESS_KEY = config['amazon_associates_aws_secret_access_key']
 
+BACKUPS_AWS_ACCESS_KEY_ID = config['backups_aws_access_key_id']
+BACKUPS_AWS_SECRET_ACCESS_KEY = config['backups_aws_secret_access_key']
+
 SHOPSTYLE_UID = config['shopstyle_uid']

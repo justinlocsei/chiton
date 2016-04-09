@@ -44,6 +44,8 @@ def _default_config():
         'amazon_associates_aws_access_key_id': None,
         'amazon_associates_aws_secret_access_key': None,
         'amazon_associates_tracking_id': None,
+        'backups_aws_access_key_id': None,
+        'backups_aws_secret_access_key': None,
         'database': {},
         'debug': False,
         'file_logging': False,
@@ -68,6 +70,8 @@ def _validate_config(config):
         'amazon_associates_aws_access_key_id': All(str, Length(min=1)),
         'amazon_associates_aws_secret_access_key': All(str, Length(min=1)),
         'amazon_associates_tracking_id': All(str, Length(min=1), _AmazonAssociatesTrackingID()),
+        'backups_aws_access_key_id': All(str, Length(min=1)),
+        'backups_aws_secret_access_key': All(str, Length(min=1)),
         'database': Schema({
             'engine': All(str, Length(min=1)),
             'host': All(str, Length(min=1)),
