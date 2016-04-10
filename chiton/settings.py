@@ -137,5 +137,6 @@ AMAZON_ASSOCIATES_AWS_SECRET_ACCESS_KEY = config['amazon_associates_aws_secret_a
 
 BACKUPS_AWS_ACCESS_KEY_ID = config['backups_aws_access_key_id']
 BACKUPS_AWS_SECRET_ACCESS_KEY = config['backups_aws_secret_access_key']
+BACKUPS_S3_BUCKET = config['backups_s3_bucket']
 
 SHOPSTYLE_UID = config['shopstyle_uid']

@@ -72,6 +72,7 @@ def _validate_config(config):
         'amazon_associates_tracking_id': All(str, Length(min=1), _AmazonAssociatesTrackingID()),
         'backups_aws_access_key_id': All(str, Length(min=1)),
         'backups_aws_secret_access_key': All(str, Length(min=1)),
+        'backups_s3_bucket': All(str, Length(min=1)),
         'database': Schema({
             'engine': All(str, Length(min=1)),
             'host': All(str, Length(min=1)),

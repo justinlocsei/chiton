@@ -96,6 +96,14 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'backups_aws_secret_access_key': ''})
 
+    def test_backups_s3_bucket(self):
+        """It expects a non-empty string for the AWS backups S3 bucket name."""
+        config = use_config({'backups_s3_bucket': 'bucket'})
+        assert config['backups_s3_bucket'] == 'bucket'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'backups_s3_bucket': ''})
+
     def test_debug(self):
         """It expects a boolean value for the debug state."""
         config = use_config({'debug': True})

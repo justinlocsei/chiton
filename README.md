@@ -22,6 +22,7 @@ represented as JavaScript that maps directly to JSON:
     "amazon_associates_aws_secret_access_key": null, // The secret access key for the Amazon Associates AWS user
     "backups_aws_access_key_id": null,               // The access key ID for the AWS backups user
     "backups_aws_secret_access_key": null,           // The secret access key for the AWS backups user
+    "backups_s3_bucket": null,                       // The name of the S3 bucket that holds backups
     "database": {
         "engine": null,   // The Django database adapter to use
         "host": null,     // The host for the database
