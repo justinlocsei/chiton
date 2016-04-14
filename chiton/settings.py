@@ -123,6 +123,7 @@ LOGGING = {
 
 STATIC_ROOT = config['static_root']
 STATIC_URL = config['static_url']
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Serving
 # ==============================================================================
