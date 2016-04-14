@@ -135,6 +135,14 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'default_email': ''})
 
+    def test_environment(self):
+        """It expects a non-empty string for the environment name."""
+        config = use_config({'environment': 'staging'})
+        assert config['environment'] == 'staging'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'environment': ''})
+
     def test_file_logging(self):
         """It expects a boolean value for using file logging."""
         config = use_config({'file_logging': True})
