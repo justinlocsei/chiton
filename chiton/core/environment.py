@@ -55,7 +55,8 @@ def _default_config():
         'server_email': None,
         'shopstyle_uid': None,
         'static_root': None,
-        'static_url': '/static/'
+        'static_url': '/static/',
+        'track_errors': False
     }
 
 
@@ -85,7 +86,8 @@ def _validate_config(config):
         'server_email': All(str, Length(min=1)),
         'shopstyle_uid': All(str, Length(min=1)),
         'static_root': All(str, Length(min=1), _AbsolutePath()),
-        'static_url': All(str, Length(min=1), _MediaUrl())
+        'static_url': All(str, Length(min=1), _MediaUrl()),
+        'track_errors': bool
     })(config)
 
 

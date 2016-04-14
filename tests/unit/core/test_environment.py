@@ -271,3 +271,16 @@ class TestUseConfig:
         """It allows a static URL to be an absolute URL."""
         config = use_config({'static_url': 'http://example.com/'})
         assert config['static_url'] == 'http://example.com/'
+
+    def test_track_errors(self):
+        """It expects a boolean value for the error-tracking state."""
+        config = use_config({'track_errors': True})
+        assert config['track_errors']
+
+        with pytest.raises(ConfigurationError):
+            use_config({'track_errors': 1})
+
+    def test_track_errors_default(self):
+        """It defaults to not tracking errors."""
+        config = use_config()
+        assert not config['track_errors']
