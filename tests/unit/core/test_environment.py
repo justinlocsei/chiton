@@ -198,6 +198,14 @@ class TestUseConfig:
         config = use_config()
         assert config['secret_key'] is None
 
+    def test_sentry_dsn(self):
+        """It expects a non-empty string for the Sentry DSN."""
+        config = use_config({'sentry_dsn': 'dsn'})
+        assert config['sentry_dsn'] == 'dsn'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'sentry_dsn': ''})
+
     def test_server_email(self):
         """It expects a non-empty string for the server email."""
         config = use_config({'server_email': 'noreply@example.com'})
