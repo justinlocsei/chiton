@@ -127,6 +127,14 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'database': {'port': '1234'}})
 
+    def test_default_email(self):
+        """It expects a non-empty string for the default email address."""
+        config = use_config({'default_email': 'noreply@example.com'})
+        assert config['default_email'] == 'noreply@example.com'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'default_email': ''})
+
     def test_file_logging(self):
         """It expects a boolean value for using file logging."""
         config = use_config({'file_logging': True})

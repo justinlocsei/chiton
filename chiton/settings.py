@@ -84,10 +84,14 @@ DATABASES = {
     }
 }
 
-# Logging
+# Email
 # ==============================================================================
 
+DEFAULT_FROM_EMAIL = config['default_email']
 SERVER_EMAIL = config['server_email']
+
+# Logging
+# ==============================================================================
 
 LOGGING = {
     'disable_existing_loggers': False,

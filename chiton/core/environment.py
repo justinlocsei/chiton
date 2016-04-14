@@ -45,6 +45,7 @@ def _default_config():
         'amazon_associates_tracking_id': None,
         'database': {},
         'debug': False,
+        'default_email': None,
         'file_logging': False,
         'log_file': None,
         'log_level': 'INFO',
@@ -72,6 +73,7 @@ def _validate_config(config):
             'user': All(str, Length(min=1))
         }),
         'debug': bool,
+        'default_email': All(str, Length(min=1)),
         'file_logging': bool,
         'log_file': All(str, Length(min=1), _AbsolutePath()),
         'log_level': All(str, Length(min=1), _LogLevel()),
