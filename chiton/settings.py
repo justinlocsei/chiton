@@ -87,7 +87,6 @@ DATABASES = {
 # Logging
 # ==============================================================================
 
-ADMINS = [(a.get('name'), a.get('email')) for a in config['admins']]
 SERVER_EMAIL = config['server_email']
 
 LOGGING = {
