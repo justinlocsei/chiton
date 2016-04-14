@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'adminsortable2',
+    'raven.contrib.django.raven_compat',
 
     'chiton.core.apps.Config',
     'chiton.closet.apps.Config',
@@ -51,6 +52,8 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware'
 ]
 
 TEMPLATES = [
@@ -116,6 +119,10 @@ LOGGING = {
         }
     },
     'version': 1
+}
+
+RAVEN_CONFIG = {
+    'dsn': config['sentry_dsn']
 }
 
 # Assets
