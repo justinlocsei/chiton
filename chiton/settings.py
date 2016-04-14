@@ -121,9 +121,11 @@ LOGGING = {
     'version': 1
 }
 
-RAVEN_CONFIG = {
-    'dsn': config['sentry_dsn']
-}
+if config['track_errors']:
+    RAVEN_CONFIG = {
+        'dsn': config['sentry_dsn'],
+        'site': config['environment'].capitalize()
+    }
 
 # Assets
 # ==============================================================================
