@@ -88,6 +88,10 @@ DATABASES = {
 # ==============================================================================
 
 DEFAULT_FROM_EMAIL = config['default_email']
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ''
+EMAIL_PORT = 25
 SERVER_EMAIL = config['server_email']
 
 # Logging
