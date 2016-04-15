@@ -12,6 +12,7 @@ CHITON_ROOT = os.path.dirname(os.path.abspath(__file__))
 # ==============================================================================
 
 DEBUG = config['debug']
+ENVIRONMENT_NAME = config['environment']
 SECRET_KEY = config['secret_key']
 
 # Locale
