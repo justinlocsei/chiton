@@ -17,7 +17,8 @@ class ProprietyInline(admin.TabularInline):
 class BasicAdmin(admin.ModelAdmin):
 
     inlines = (ProprietyInline,)
-    list_display = ('name',)
+    list_display = ('name', 'category')
+    list_filter = ('category',)
 
     def get_urls(self):
         core = super().get_urls()
