@@ -52,7 +52,7 @@ class BasicAdmin(admin.ModelAdmin):
             self.admin_site.each_context(request),
             basics=basic_data,
             formalities=formalities,
-            title=_('Basic proprieties table')
+            title=_('Basics grid')
         ))
 
 
