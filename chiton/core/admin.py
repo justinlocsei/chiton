@@ -8,7 +8,7 @@ from django.views.i18n import javascript_catalog
 
 class AdminSite(admin.AdminSite):
 
-    index_title = _('Administration')
+    index_title = _('Data management')
     site_header = _('Cover Your Basics (%(environment)s)') % {'environment': settings.ENVIRONMENT_NAME.capitalize()}
     site_title = _('Cover Your Basics')
 
