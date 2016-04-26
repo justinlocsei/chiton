@@ -1,5 +1,6 @@
 from django import db, forms
 from django.contrib import admin
+from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet import models
@@ -19,7 +20,7 @@ class BrandAdmin(admin.ModelAdmin):
 class GarmentAdmin(admin.ModelAdmin):
 
     inlines = [AffiliateItemInline]
-    list_display = ('name', 'brand', 'basic')
+    list_display = ('name', 'brand', 'basic', 'affiliate_view_links')
     list_filter = ('basic',)
     ordering = ('name',)
     search_fields = ['name']
@@ -42,3 +43,12 @@ class GarmentAdmin(admin.ModelAdmin):
     formfield_overrides = {
         db.models.TextField: {'widget': forms.Textarea(attrs={'cols': 60, 'rows': 2})}
     }
+
+    def affiliate_view_links(self, garment):
+        affiliate_items = garment.affiliate_items.all().order_by('network__name')
+        links = [
+            '<a href="%s" target="_blank">%s</a>' % (i.url, i.network)
+            for i in affiliate_items
+        ]
+        return format_html('<br>'.join(links))
+    affiliate_view_links.short_description = _('Links')
