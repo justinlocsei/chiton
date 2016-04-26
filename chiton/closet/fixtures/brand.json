@@ -56,6 +56,15 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Anthropologie",
+        "slug": "anthropologie",
+        "age_lower": 20,
+        "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Antonio Melani",
         "slug": "antonio-melani",
         "age_lower": 40,
@@ -92,6 +101,15 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "August Silk",
+        "slug": "august-silk",
+        "age_lower": 35,
+        "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Banana Republic",
         "slug": "banana-republic",
         "age_lower": 25,
@@ -119,10 +137,28 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "BDG",
+        "slug": "bdg",
+        "age_lower": 20,
+        "age_upper": 35
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Bisou Bisou",
         "slug": "bisou-bisou",
         "age_lower": 35,
         "age_upper": 45
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Boden New British",
+        "slug": "boden-new-british",
+        "age_lower": 35,
+        "age_upper": 50
     }
 },
 {
@@ -146,10 +182,37 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Cable & Gauge",
+        "slug": "cable-gauge",
+        "age_lower": 30,
+        "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Calida",
+        "slug": "calida",
+        "age_lower": 20,
+        "age_upper": 35
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Calvin Klein",
         "slug": "calvin-klein",
         "age_lower": 30,
         "age_upper": 40
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Caslon",
+        "slug": "caslon",
+        "age_lower": 35,
+        "age_upper": 50
     }
 },
 {
@@ -168,6 +231,24 @@
         "slug": "chicos",
         "age_lower": 50,
         "age_upper": 80
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Chloe",
+        "slug": "chloe",
+        "age_lower": 35,
+        "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Cinema Etoile",
+        "slug": "cinema-etoile",
+        "age_lower": 20,
+        "age_upper": 40
     }
 },
 {
@@ -204,6 +285,24 @@
         "slug": "croft-barrow",
         "age_lower": 45,
         "age_upper": 55
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Dale of Norway",
+        "slug": "dale-of-norway",
+        "age_lower": 35,
+        "age_upper": 55
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Dana Buchman",
+        "slug": "dana-buchman",
+        "age_lower": 45,
+        "age_upper": 60
     }
 },
 {
@@ -335,6 +434,15 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Flexees",
+        "slug": "flexees",
+        "age_lower": 20,
+        "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Forever 21",
         "slug": "forever-21",
         "age_lower": 20,
@@ -371,6 +479,15 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Givenchy",
+        "slug": "givenchy",
+        "age_lower": 30,
+        "age_upper": 45
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Gloria Vanderbilt",
         "slug": "gloria-vanderbilt",
         "age_lower": 50,
@@ -393,6 +510,15 @@
         "slug": "halogen",
         "age_lower": 40,
         "age_upper": 55
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Hinge",
+        "slug": "hinge",
+        "age_lower": 20,
+        "age_upper": 40
     }
 },
 {
@@ -452,6 +578,15 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Jockey",
+        "slug": "jockey",
+        "age_lower": 20,
+        "age_upper": 60
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Joie",
         "slug": "joie",
         "age_lower": 25,
@@ -501,6 +636,15 @@
         "slug": "kensie",
         "age_lower": 20,
         "age_upper": 30
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Label+thread",
+        "slug": "labelthread",
+        "age_lower": 25,
+        "age_upper": 40
     }
 },
 {
@@ -587,10 +731,37 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Lysse",
+        "slug": "lysse",
+        "age_lower": 20,
+        "age_upper": 35
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "Madewell",
         "slug": "madewell",
         "age_lower": 35,
         "age_upper": 45
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Magaschoni",
+        "slug": "magaschoni",
+        "age_lower": 25,
+        "age_upper": 45
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Maidenform",
+        "slug": "maidenform",
+        "age_lower": 20,
+        "age_upper": 80
     }
 },
 {
@@ -623,10 +794,37 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Neiman Marcus",
+        "slug": "neiman-marcus",
+        "age_lower": 30,
+        "age_upper": 60
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "New York & Co.",
         "slug": "new-york-co",
         "age_lower": 20,
         "age_upper": 30
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "PACT",
+        "slug": "pact",
+        "age_lower": 20,
+        "age_upper": 30
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Patagonia",
+        "slug": "patagonia",
+        "age_lower": 25,
+        "age_upper": 50
     }
 },
 {
@@ -645,6 +843,51 @@
         "slug": "ralph-lauren",
         "age_lower": 25,
         "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Reypo",
+        "slug": "reypo",
+        "age_lower": 20,
+        "age_upper": 45
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Sheface",
+        "slug": "sheface",
+        "age_lower": 25,
+        "age_upper": 40
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Shimera",
+        "slug": "shimera",
+        "age_lower": 20,
+        "age_upper": 60
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Simply Be",
+        "slug": "simply-be",
+        "age_lower": 30,
+        "age_upper": 60
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Spanx",
+        "slug": "spanx",
+        "age_lower": 20,
+        "age_upper": 80
     }
 },
 {
@@ -686,6 +929,15 @@
 {
     "model": "chiton_closet.brand",
     "fields": {
+        "name": "Tees by Tina",
+        "slug": "tees-by-tina",
+        "age_lower": 20,
+        "age_upper": 45
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
         "name": "The Limited",
         "slug": "the-limited",
         "age_lower": 20,
@@ -699,6 +951,15 @@
         "slug": "theory",
         "age_lower": 30,
         "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Topshop",
+        "slug": "topshop",
+        "age_lower": 20,
+        "age_upper": 40
     }
 },
 {
@@ -744,6 +1005,15 @@
         "slug": "worthington",
         "age_lower": 25,
         "age_upper": 50
+    }
+},
+{
+    "model": "chiton_closet.brand",
+    "fields": {
+        "name": "Yummie",
+        "slug": "yummie",
+        "age_lower": 20,
+        "age_upper": 40
     }
 },
 {
