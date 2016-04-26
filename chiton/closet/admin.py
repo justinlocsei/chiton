@@ -19,8 +19,8 @@ class BrandAdmin(admin.ModelAdmin):
 class GarmentAdmin(admin.ModelAdmin):
 
     inlines = [AffiliateItemInline]
-    list_display = ('name', 'brand')
-    list_filter = ('brand',)
+    list_display = ('name', 'brand', 'basic')
+    list_filter = ('basic',)
     ordering = ('name',)
     search_fields = ['name']
 
