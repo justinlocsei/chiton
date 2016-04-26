@@ -38,7 +38,7 @@ class AffiliateItem(models.Model):
     url = models.TextField(verbose_name=_('URL'))
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     guid = models.CharField(max_length=255, verbose_name=_('GUID'))
-    garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'))
+    garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'), related_name='affiliate_items')
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
 
     class Meta:
