@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'chiton.core.apps.Config',
     'chiton.closet.apps.Config',
     'chiton.rack.apps.Config',
-    'chiton.runway.apps.Config'
+    'chiton.runway.apps.Config',
+    'chiton.wintour.apps.Config'
 ]
 
 MIDDLEWARE_CLASSES = [
