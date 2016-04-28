@@ -20,7 +20,7 @@ class BrandAdmin(admin.ModelAdmin):
 class GarmentAdmin(admin.ModelAdmin):
 
     inlines = [AffiliateItemInline]
-    list_display = ('name', 'brand', 'basic', 'affiliate_view_links')
+    list_display = ('name', 'care', 'brand', 'basic', 'affiliate_view_links', 'created_at', 'updated_at')
     list_filter = ('basic',)
     ordering = ('name',)
     search_fields = ['name']
@@ -36,7 +36,7 @@ class GarmentAdmin(admin.ModelAdmin):
             'fields': ('sleeve_length', 'bottom_length', 'pant_rise', 'is_busty', 'is_plus_sized')
         }),
         (_('Details'), {
-            'fields': ('description', 'notes')
+            'fields': ('care', 'description', 'notes')
         })
     )
 

@@ -34,8 +34,11 @@ class Garment(models.Model):
     notes = models.TextField(verbose_name=_('notes'), help_text=_('Internal information'), null=True, blank=True)
     is_busty = models.NullBooleanField(verbose_name=_('is for busty women'))
     is_plus_sized = models.BooleanField(verbose_name=_('is for plus-sized women'), default=False)
+    care = models.CharField(max_length=25, choices=data.CARE_CHOICES, verbose_name=_('care instructions'), null=True, blank=True)
     styles = models.ManyToManyField(Style, verbose_name=_('styles'))
     formalities = models.ManyToManyField(Formality, verbose_name=_('levels of formality'))
+    created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name=_('updated at'), auto_now=True)
 
     class Meta:
         verbose_name = _('garment')

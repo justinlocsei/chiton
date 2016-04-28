@@ -54,3 +54,17 @@ PANT_RISE_CHOICES = (
     (PANT_RISES['NORMAL'], _('Normal')),
     (PANT_RISES['HIGH'], _('High'))
 )
+
+CARE_TYPES = {
+    'MACHINE_MACHINE': 'machine_machine',
+    'MACHINE_AIR': 'machine_air',
+    'HAND_WASH': 'hand_wash',
+    'DRY_CLEAN': 'dry_clean'
+}
+
+CARE_CHOICES = (
+    (CARE_TYPES['MACHINE_MACHINE'], _('Machine wash and dry')),
+    (CARE_TYPES['MACHINE_AIR'], _('Machine wash, air dry')),
+    (CARE_TYPES['HAND_WASH'], _('Hand wash')),
+    (CARE_TYPES['DRY_CLEAN'], _('Dry clean'))
+)
