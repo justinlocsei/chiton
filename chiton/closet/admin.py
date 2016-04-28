@@ -20,7 +20,7 @@ class BrandAdmin(admin.ModelAdmin):
 class GarmentAdmin(admin.ModelAdmin):
 
     inlines = [AffiliateItemInline]
-    list_display = ('name', 'brand', 'basic', 'affiliate_view_links')
+    list_display = ('name', 'brand', 'basic', 'affiliate_view_links', 'created_at', 'updated_at')
     list_filter = ('basic',)
     ordering = ('name',)
     search_fields = ['name']

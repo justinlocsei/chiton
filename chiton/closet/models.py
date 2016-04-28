@@ -37,6 +37,8 @@ class Garment(models.Model):
     care = models.CharField(max_length=25, choices=data.CARE_CHOICES, verbose_name=_('care instructions'), null=True, blank=True)
     styles = models.ManyToManyField(Style, verbose_name=_('styles'))
     formalities = models.ManyToManyField(Formality, verbose_name=_('levels of formality'))
+    created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name=_('updated at'), auto_now=True)
 
     class Meta:
         verbose_name = _('garment')
