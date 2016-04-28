@@ -36,7 +36,7 @@ class GarmentAdmin(admin.ModelAdmin):
             'fields': ('sleeve_length', 'bottom_length', 'pant_rise', 'is_busty', 'is_plus_sized')
         }),
         (_('Details'), {
-            'fields': ('description', 'notes')
+            'fields': ('care', 'description', 'notes')
         })
     )
 
