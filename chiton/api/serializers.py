@@ -3,6 +3,7 @@ from rest_framework import serializers
 from chiton.runway.models import Formality, Style
 from chiton.wintour.models import FormalityExpectation, WardrobeProfile
 
+
 class FormalityExpectationSerializer(serializers.ModelSerializer):
     formality = serializers.SlugRelatedField(slug_field='slug', queryset=Formality.objects.all())
 
