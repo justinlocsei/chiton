@@ -49,7 +49,7 @@ class Person(models.Model):
 class FormalityExpectation(models.Model):
     """How often a level of formality is expected for a profile."""
 
-    profile = models.ForeignKey('WardrobeProfile', on_delete=models.CASCADE, verbose_name=_('wardrobe profile'))
+    profile = models.ForeignKey('WardrobeProfile', on_delete=models.CASCADE, verbose_name=_('wardrobe profile'), related_name='expectations')
     formality = models.ForeignKey(Formality, on_delete=models.CASCADE, verbose_name=_('level of formality'))
     frequency = models.CharField(max_length=25, choices=data.FORMALITY_FREQUENCY_CHOICES, verbose_name=_('frequency'))
 
@@ -64,7 +64,6 @@ class WardrobeProfile(models.Model):
     shape = models.CharField(max_length=25, choices=data.BODY_SHAPE_CHOICES, verbose_name=_('body shape'))
     age = models.PositiveSmallIntegerField(verbose_name=_('age'))
     styles = models.ManyToManyField(Style, verbose_name=_('styles'))
-    formalities = models.ManyToManyField(Formality, verbose_name=_('formalities'), through=FormalityExpectation)
     created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name=_('person'), null=True, blank=True)
 

@@ -13,11 +13,11 @@ class FormalityExpectationSerializer(serializers.ModelSerializer):
 
 class WardrobeProfileSerializer(serializers.ModelSerializer):
     styles = serializers.SlugRelatedField(slug_field='slug', many=True, queryset=Style.objects.all())
-    formalities = FormalityExpectationSerializer(source='formalityexpectation_set', many=True)
+    expectations = FormalityExpectationSerializer(many=True)
 
     class Meta:
         model = WardrobeProfile
-        fields = ('age', 'formalities', 'shape', 'styles')
+        fields = ('age', 'expectations', 'shape', 'styles')
 
     def validate_styles(self, value):
         """Ensure that at least one style is provided."""
@@ -32,15 +32,15 @@ class WardrobeProfileSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, data):
-        """Associate styles and formalities with the profile after creation."""
-        formalities = data.pop('formalityexpectation_set')
+        """Associate styles and formality expectations with the profile after creation."""
+        expectations = data.pop('expectations')
         styles = data.pop('styles')
 
         profile = WardrobeProfile.objects.create(**data)
         profile.styles.add(*styles)
 
-        for formality in formalities:
-            formality['profile'] = profile
-            FormalityExpectation.objects.create(**formality)
+        for expectation in expectations:
+            expectation['profile'] = profile
+            FormalityExpectation.objects.create(**expectation)
 
         return profile
