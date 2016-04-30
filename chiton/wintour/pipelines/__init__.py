@@ -119,7 +119,7 @@ class BasePipeline:
         Returns:
             dict: The recommendations
         """
-        garments = self.provide_garments()
+        garments = self.provide_garments().select_related('basic')
 
         filters = self.provide_filters()
         facets = self.provide_facets()
