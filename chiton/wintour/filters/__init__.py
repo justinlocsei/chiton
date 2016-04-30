@@ -1,13 +1,8 @@
-class BaseFilter:
+from chiton.wintour.pipelines import PipelineStep
+
+
+class BaseFilter(PipelineStep):
     """The class for all filters."""
-
-    def __init__(self, profile):
-        """Create a filter instance for a wardrobe profile.
-
-        Args:
-            profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
-        """
-        self.profile = profile
 
     def apply(self, garments):
         """Apply the filter to a set of garments.

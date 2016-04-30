@@ -1,13 +1,19 @@
-class BaseWeight:
+from chiton.wintour.pipelines import PipelineStep
+
+
+class BaseWeight(PipelineStep):
     """The base class for all weights."""
 
-    def __init__(self, profile):
-        """Create a weight instance for a wardrobe profile.
+    def configure(self, importance=1):
+        """Track the importance factor for the weight.
 
-        Args:
-            profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
+        The importance factor should be a positive integer used as a multiplier
+        when applying the weight in the context of other pipeline weights.
+
+        Keyword Args:
+            importance (int): A multiplier indicating the weight's importance
         """
-        self.profile = profile
+        self.importance = importance
 
     def apply(self, garment):
         """Return the weight value to apply to a garment.

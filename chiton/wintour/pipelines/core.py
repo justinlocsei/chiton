@@ -3,7 +3,7 @@ from chiton.wintour.filters.availability import AvailabilityFilter
 from chiton.wintour.filters.basic import BasicFilter
 from chiton.wintour.filters.body_shape import BodyShapeFilter
 from chiton.wintour.filters.formality import FormalityFilter
-from chiton.wintour.pipelines import BasePipeline, PipelineWeight
+from chiton.wintour.pipelines import BasePipeline
 from chiton.wintour.weights.age import AgeWeight
 from chiton.wintour.weights.body_shape import BodyShapeWeight
 from chiton.wintour.weights.bust import BustWeight
@@ -16,22 +16,22 @@ class CorePipeline(BasePipeline):
 
     def provide_filters(self):
         return [
-            AvailabilityFilter,
-            BasicFilter,
-            BodyShapeFilter,
-            FormalityFilter
+            AvailabilityFilter(),
+            BasicFilter(),
+            BodyShapeFilter(),
+            FormalityFilter()
         ]
 
     def provide_weights(self):
         return [
-            PipelineWeight(AgeWeight),
-            PipelineWeight(BodyShapeWeight),
-            PipelineWeight(BustWeight),
-            PipelineWeight(PantRiseWeight),
-            PipelineWeight(StyleWeight, importance=2)
+            AgeWeight(),
+            BodyShapeWeight(),
+            BustWeight(),
+            PantRiseWeight(),
+            StyleWeight(importance=2)
         ]
 
     def provide_facets(self):
         return [
-            PriceFacet
+            PriceFacet()
         ]
