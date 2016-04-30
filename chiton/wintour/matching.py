@@ -1,7 +1,7 @@
 from chiton.wintour.pipelines.core import CorePipeline
 
 
-def make_recommendations(profile, pipeline_class=CorePipeline, serialize=False):
+def make_recommendations(profile, pipeline_class=CorePipeline):
     """Return garment recommendations for a wardrobe profile.
 
     Args:
@@ -9,39 +9,68 @@ def make_recommendations(profile, pipeline_class=CorePipeline, serialize=False):
 
     Keyword Args:
         pipeline (chiton.wintour.pipelines.BasePipeline): The pipeline to use
-        serialize (bool): Whether the dict should be serializable
 
     Returns:
         dict: The recommendations
     """
     pipeline = pipeline_class()
-    recs = pipeline.make_recommendations(profile)
+    return pipeline.make_recommendations(profile)
 
-    if not serialize:
-        return recs
 
+def serialize_recommendations(recommendations):
+    """Serialize generated recommendations as a primitive-only dictionary.
+
+    Args:
+        recommendations (dict): A dict of recommendations with model instances
+
+    Returns:
+        dict: The recommenations as a dict of primitives
+    """
     serialized = {}
-    for basic, values in recs.items():
+    for basic, values in recommendations.items():
         value = {
             'facets': {},
-            'garments': _serialize_garments(values['garments'])
+            'garments': _serialize_weighted_garments(values['garments'])
         }
 
         for facet, garments in values['facets'].items():
-            value['facets'][facet.slug] = _serialize_garments(garments)
+            value['facets'][facet.slug] = _serialize_weighted_garments(garments)
 
         serialized[basic.slug] = value
 
     return serialized
 
 
-def _serialize_garments(garments):
-    """Serialize a list of Garment models.
+def _serialize_weighted_garments(garments):
+    """Serialize a list of weighted garments.
 
     Args:
-        garments (list): One or more Garment model instances
+        garments (list): One or more dicts describing a garment and a weight
 
     Returns:
-        list: The serialized garments
+        list: The serialized weighted garments
     """
-    return []
+    return [_serialize_weighted_garment(garment) for garment in garments]
+
+
+def _serialize_weighted_garment(weighted):
+    """Serialize a single weighted garment.
+
+    Args:
+        weighted (dict): A dictionary describing the garment and its weight
+
+    Returns:
+        dict: A primitive representation of the garment and its weight
+    """
+    garment = weighted['garment']
+
+    garment_dict = {
+        'name': garment.name,
+        'slug': garment.slug,
+        'brand': garment.brand.name
+    }
+
+    return {
+        'garment': garment_dict,
+        'weight': weighted['weight']
+    }

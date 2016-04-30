@@ -8,7 +8,7 @@ from pygments.formatters import HtmlFormatter
 
 from chiton.core.admin import site
 from chiton.wintour import models
-from chiton.wintour.matching import make_recommendations
+from chiton.wintour.matching import make_recommendations, serialize_recommendations
 
 
 class FormalityExpectationInline(admin.TabularInline):
@@ -38,7 +38,8 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
     def recommendations(self, request, pk):
         profile = models.WardrobeProfile.objects.get(pk=pk)
-        recs_dict = make_recommendations(profile, serialize=True)
+        recs = make_recommendations(profile)
+        recs_dict = serialize_recommendations(recs)
 
         profile_dict = {
             'age': profile.age,
