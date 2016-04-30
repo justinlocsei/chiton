@@ -37,10 +37,15 @@ class BasicAdmin(admin.ModelAdmin):
             importances = []
             for formality in formalities:
                 display = ''
+                weight = ''
                 for propriety in proprieties:
                     if propriety.formality == formality:
                         display = propriety.get_importance_display()
-                importances.append(display)
+                        weight = propriety.importance
+                importances.append({
+                    'name': display,
+                    'weight': weight
+                })
 
             basic_data.append({
                 'name': basic.name,
