@@ -43,7 +43,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         profile_dict = {
             'age': profile.age,
             'expectations': [
-                {'formality': e.formality.name, 'frequency': e.frequency}
+                {'formality': e.formality.name, 'frequency': e.get_frequency_display()}
                 for e in profile.expectations.all()
             ],
             'shape': profile.shape,
