@@ -51,7 +51,7 @@ class FormalityExpectation(models.Model):
 
     profile = models.ForeignKey('WardrobeProfile', on_delete=models.CASCADE, verbose_name=_('wardrobe profile'), related_name='expectations')
     formality = models.ForeignKey(Formality, on_delete=models.CASCADE, verbose_name=_('level of formality'))
-    frequency = models.CharField(max_length=25, choices=data.FORMALITY_FREQUENCY_CHOICES, verbose_name=_('frequency'))
+    frequency = models.CharField(max_length=25, choices=data.EXPECTATION_FREQUENCY_CHOICES, verbose_name=_('frequency'))
 
     class Meta:
         verbose_name = _('formality expectation')

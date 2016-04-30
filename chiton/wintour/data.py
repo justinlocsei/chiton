@@ -17,7 +17,7 @@ BODY_SHAPE_CHOICES = (
     (BODY_SHAPES['RECTANGLE'], _('Rectangle'))
 )
 
-FORMALITY_FREQUENCIES = {
+EXPECTATION_FREQUENCIES = {
     'NEVER': 'never',
     'RARELY': 'rarely',
     'SOMETIMES': 'sometimes',
@@ -25,10 +25,10 @@ FORMALITY_FREQUENCIES = {
     'ALWAYS': 'always'
 }
 
-FORMALITY_FREQUENCY_CHOICES = (
-    (FORMALITY_FREQUENCIES['NEVER'], _('Never')),
-    (FORMALITY_FREQUENCIES['RARELY'], _('Occasionally')),
-    (FORMALITY_FREQUENCIES['SOMETIMES'], _('1-2 times per week')),
-    (FORMALITY_FREQUENCIES['OFTEN'], _('3-4 times per week')),
-    (FORMALITY_FREQUENCIES['ALWAYS'], _('5+ times per week'))
+EXPECTATION_FREQUENCY_CHOICES = (
+    (EXPECTATION_FREQUENCIES['NEVER'], _('Never')),
+    (EXPECTATION_FREQUENCIES['RARELY'], _('Occasionally')),
+    (EXPECTATION_FREQUENCIES['SOMETIMES'], _('1-2 times per week')),
+    (EXPECTATION_FREQUENCIES['OFTEN'], _('3-4 times per week')),
+    (EXPECTATION_FREQUENCIES['ALWAYS'], _('5+ times per week'))
 )
