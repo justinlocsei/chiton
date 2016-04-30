@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+    <style>
+        {{ highlight_styles }}
+
+        .highlight {
+            border: 1px solid #eee;
+            overflow: auto;
+            padding: 0.5em;
+        }
+        .highlight pre {
+            margin: 0;
+        }
+    </style>
+
+    <h2>Wardrobe Profile</h2>
+    {{ wardrobe_profile_json | safe }}
+
+    <h2>Recommendations</h2>
+    {{ recommendations_json | safe }}
+{% endblock %}
