@@ -50,6 +50,9 @@ def _build_formality_weights_lookup(importance_weights):
 class BasicFilter(BaseFilter):
     """A filter that excludes garments that do not match a basic type."""
 
+    name = 'Basic'
+    slug = 'basic'
+
     def configure(self, cutoff=None):
         """Create a new basic filter.
 
