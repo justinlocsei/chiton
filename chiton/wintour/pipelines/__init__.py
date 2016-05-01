@@ -41,6 +41,20 @@ class PipelineStep:
         """
         return {}
 
+    def prepare_garments(self, garments):
+        """Allow a child to modify a queryset of garments before operations.
+
+        This can be used to add prefetched or selected fields to the garments,
+        for example, in cases where the step requires nested data.
+
+        Args:
+            garments (django.db.models.query.QuerySet): A queryset of garments
+
+        Returns:
+            django.db.models.query.QuerySet: The modified set of garments
+        """
+        return garments
+
     @contextmanager
     def apply_to_profile(self, profile):
         """Provide a context in which the pipeline step acts on a profile.
@@ -73,6 +87,20 @@ class BasePipeline:
             django.db.models.query.QuerySet: All garment models
         """
         return Garment.objects.all()
+
+    def load_garments(self):
+        """Return the set of garments to use for the pipeline.
+
+        Returns:
+            django.db.models.query.QuerySet: All garment models
+        """
+        garments = self.provide_garments()
+
+        steps = self.provide_facets() + self.provide_filters() + self.provide_weights()
+        for step in steps:
+            garments = step.prepare_garments(garments)
+
+        return garments
 
     def provide_facets(self):
         """Provide all facets for the pipeline.
@@ -111,7 +139,7 @@ class BasePipeline:
         Returns:
             dict: The recommendations
         """
-        garments = self.provide_garments().select_related('basic')
+        garments = self.load_garments().select_related('basic')
 
         filters = self.provide_filters()
         facets = self.provide_facets()
