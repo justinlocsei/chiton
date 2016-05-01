@@ -8,8 +8,17 @@ from chiton.closet.models import Garment
 class PipelineStep:
     """An abstract base class for a step in a pipeline."""
 
+    name = None
+    slug = None
+
     def __init__(self, **kwargs):
         """Create the step, and expose hooks for further configuration."""
+        if self.name is None:
+            raise NotImplementedError('Pipeline steps must define a name attribute')
+
+        if self.slug is None:
+            raise NotImplementedError('Pipeline steps must define a slug attribute')
+
         self.configure(**kwargs)
 
     def configure(self, **kwargs):
@@ -52,23 +61,6 @@ class PipelineStep:
         as additional keyword args.
         """
         raise NotImplementedError
-
-    def provide_slug(self):
-        """Provide the slug for the step.
-
-        Returns:
-            str: The step's slug
-        """
-        raise NotImplementedError
-
-    @property
-    def slug(self):
-        """The step's slug.
-
-        Returns:
-            str: The slug
-        """
-        return self.provide_slug()
 
 
 class BasePipeline:
