@@ -1,6 +1,5 @@
 from chiton.wintour.facets.price import PriceFacet
 from chiton.wintour.filters.availability import AvailabilityFilter
-from chiton.wintour.filters.basic import BasicFilter
 from chiton.wintour.filters.body_shape import BodyShapeFilter
 from chiton.wintour.filters.formality import FormalityFilter
 from chiton.wintour.pipelines import BasePipeline
@@ -17,7 +16,6 @@ class CorePipeline(BasePipeline):
     def provide_filters(self):
         return [
             AvailabilityFilter(),
-            BasicFilter(),
             BodyShapeFilter(),
             FormalityFilter()
         ]
