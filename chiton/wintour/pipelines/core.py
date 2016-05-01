@@ -5,7 +5,6 @@ from chiton.wintour.pipelines import BasePipeline
 from chiton.wintour.weights.age import AgeWeight
 from chiton.wintour.weights.body_shape import BodyShapeWeight
 from chiton.wintour.weights.bust import BustWeight
-from chiton.wintour.weights.pant_rise import PantRiseWeight
 from chiton.wintour.weights.style import StyleWeight
 
 
@@ -23,7 +22,6 @@ class CorePipeline(BasePipeline):
             AgeWeight(),
             BodyShapeWeight(),
             BustWeight(),
-            PantRiseWeight(),
             StyleWeight(importance=2)
         ]
 
