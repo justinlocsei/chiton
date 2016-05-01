@@ -6,3 +6,14 @@ class StyleWeight(BaseWeight):
 
     name = 'Style'
     slug = 'style'
+
+    def provide_profile_data(self, profile):
+        return {
+            'styles': set([style.slug for style in profile.styles.all()])
+        }
+
+    def apply(self, garment, styles=None):
+        garment_styles = set([style.slug for style in garment.styles.all()])
+        matching_styles = styles - garment_styles
+
+        return len(matching_styles)
