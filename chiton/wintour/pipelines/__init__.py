@@ -2,6 +2,8 @@ from contextlib import contextmanager
 from functools import partial
 from operator import itemgetter
 
+from django.db import connection
+
 from chiton.closet.models import Garment
 
 
@@ -208,5 +210,11 @@ class BasePipeline:
                 'facets': faceted,
                 'garments': sorted_garments
             }
+
+        # TODO: Delete once all steps are implemented
+        for query in connection.queries:
+            print(query['sql'])
+            print(query['time'])
+        print('Total queries: %d' % len(connection.queries))
 
         return recs
