@@ -1,5 +1,6 @@
 from django import db, forms
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
@@ -45,10 +46,13 @@ class GarmentAdmin(admin.ModelAdmin):
     }
 
     def affiliate_view_links(self, garment):
+        links = []
+
         affiliate_items = garment.affiliate_items.all().order_by('network__name')
-        links = [
-            '<a href="%s" target="_blank">%s</a>' % (i.url, i.network)
-            for i in affiliate_items
-        ]
+        for item in affiliate_items:
+            api_url = reverse('admin:affiliate-item-api-details', args=[item.pk])
+            links.append(item.network.name)
+            links.append('<a href="%s" target="_blank">Item</a> | <a href="%s" target="_blank">API</a>' % (item.url, api_url))
+
         return format_html('<br>'.join(links))
     affiliate_view_links.short_description = _('Links')
