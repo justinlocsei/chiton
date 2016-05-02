@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+{% load admin_urls i18n %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    {% for affiliate_item in original.affiliate_items.all %}
+        <li>
+            <a href="{{ affiliate_item.url }}" target="_blank">
+                {% blocktrans with network=affiliate_item.network.name %}{{ network }} Page{% endblocktrans %}
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'admin:affiliate-item-api-details' affiliate_item.pk|admin_urlquote %}" target="_blank">
+                {% blocktrans with network=affiliate_item.network.name %}{{ network }} API{% endblocktrans %}
+            </a>
+        </li>
+    {% endfor %}
+{% endblock %}
