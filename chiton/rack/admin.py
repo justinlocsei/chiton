@@ -1,6 +1,9 @@
 from django.conf.urls import url
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
+from django.utils.html import format_html
+from django.utils.translation import ugettext_lazy as _
 import json
 import pygments
 from pygments.lexers import JsonLexer
@@ -16,7 +19,7 @@ from chiton.rack.forms import AffiliateItemURLForm
 class AffiliateItemAdmin(admin.ModelAdmin):
 
     form = AffiliateItemURLForm
-    list_display = ('name', 'network', 'garment', 'last_modified')
+    list_display = ('name', 'network', 'item_link', 'api_link', 'garment', 'last_modified')
     list_filter = ('network',)
     ordering = ('-last_modified',)
 
@@ -44,6 +47,15 @@ class AffiliateItemAdmin(admin.ModelAdmin):
             item=item,
             title=item.name
         ))
+
+    def item_link(self, item):
+        return format_html('<a href="%s" target="_blank">View Item</a>' % item.url)
+    item_link.short_description = _('item page')
+
+    def api_link(self, item):
+        url = reverse('admin:affiliate-item-api-details', args=[item.pk])
+        return format_html('<a href="%s" target="_blank">Query API</a>' % url)
+    api_link.short_description = _('API details')
 
 
 class AffiliateItemInline(admin.TabularInline):
