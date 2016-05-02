@@ -4,7 +4,7 @@ from chiton.wintour.pipelines import PipelineStep
 class BaseWeight(PipelineStep):
     """The base class for all weights."""
 
-    def configure(self, importance=1):
+    def configure(self, importance=1, **kwargs):
         """Track the importance factor for the weight.
 
         The importance factor should be a positive integer used as a multiplier
@@ -14,6 +14,11 @@ class BaseWeight(PipelineStep):
             importance (int): A multiplier indicating the weight's importance
         """
         self.importance = importance
+        self.configure_weight(**kwargs)
+
+    def configure_weight(self, **kwargs):
+        """Allow a child weight to perform custom configuration."""
+        pass
 
     def apply(self, garment):
         """Return the weight value to apply to a garment.
