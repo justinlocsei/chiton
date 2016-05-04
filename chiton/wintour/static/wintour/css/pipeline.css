@@ -1,0 +1,230 @@
+.c--pipeline {
+
+}
+
+.c--pipeline::after {
+    clear: both;
+    content: "";
+    display: block;
+}
+
+/* Form --------------------------------------------------------------------- */
+
+.c--pipeline__form {
+    float: left;
+    font-size: 0.9em;
+    margin-right: 5%;
+    width: 30%;
+}
+
+.c--pipeline__form select,
+.c--pipeline__form input {
+    height: auto;
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.c--pipeline__form select {
+    font-size: 1em;
+    padding: 0;
+}
+
+.c--pipeline__form__fields {
+    border: 0;
+    margin-bottom: 1em;
+}
+
+.c--pipeline__form__fields legend {
+    border-bottom: 1px solid #999;
+    box-sizing: border-box;
+    color: #666;
+    display: block;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 0.75em;
+    padding: 0.5em 0;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+.c--pipeline__form__field {
+    padding: 0.25em 0;
+}
+
+.c--pipeline__form__field label + input,
+.c--pipeline__form__field label + select {
+    margin-left: 0.25em;
+}
+
+.c--pipeline__form__field-group {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+}
+
+.c--pipeline__form__field-group {
+    margin-right: 1em;
+}
+
+.c--pipeline__form__choices {
+    display: table;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.c--pipeline__form__choice {
+    display: table-row;
+    font-size: 1em;
+    padding: 0 !important;
+}
+
+.c--pipeline__form__choice label {
+    display: table-cell;
+    cursor: pointer;
+    padding-bottom: 0.5em;
+}
+
+.c--pipeline__form__choice input {
+    display: table-cell;
+}
+
+.c--pipeline__form__choice input[type="checkbox"] {
+    margin-top: -0.125em;
+}
+
+.c--pipeline__form__choice input + label {
+    padding-left: 0.25em;
+}
+
+.c--pipeline__form__choice label + select {
+    margin-bottom: 0.25em;
+    margin-left: 0.5em;
+}
+
+.c--pipeline__form__choices.for-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.c--pipeline__form__choices.for-grid .c--pipeline__form__choice {
+    display: block;
+    flex: 0 1 50%;
+}
+
+.c--pipeline__form__choices.for-grid .c--pipeline__form__choice * {
+    display: inline-block;
+    vertical-align: baseline;
+}
+
+.c--pipeline__form__buttons {
+
+}
+
+.c--pipeline__form__buttons.for-options {
+    font-size: 0.8em;
+    margin-bottom: 0.5em;
+}
+
+.c--pipeline__form__button {
+    background-color: #aaa;
+    border: 0;
+    border-radius: 0.25em;
+    color: #fff;
+    cursor: pointer;
+    font-size: inherit;
+    line-height: 1.25;
+    padding: 0.5em 2em;
+}
+
+.c--pipeline__form__button:hover {
+    background-color: #777;
+}
+
+.c--pipeline__form__button + .c--pipeline__form__button {
+    margin-left: 0.5em;
+}
+
+.c--pipeline__form__button.for-submit {
+    background-color: #333;
+    display: block;
+    font-size: 1.25em;
+    margin: 0 auto;
+}
+
+.c--pipeline__form__button.for-submit:hover {
+    background-color: #000;
+}
+
+/* Results ------------------------------------------------------------------ */
+
+.c--pipeline__results {
+    margin-left: 35%;
+    width: 60%;
+}
+
+.c--pipeline__basics {
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basic {
+    list-style: none;
+    padding: 0 !important;
+}
+
+.c--pipeline__basic + .c--pipeline__basic {
+    margin-top: 3em;
+}
+
+.c--pipeline__basic__name {
+    border-bottom: 2px solid currentColor;
+    font-size: 2.25em;
+    font-weight: bold;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.c--pipeline__basic__garments {
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basic__garment {
+    list-style: none;
+    margin-top: 1em;
+    padding: 0 !important;
+}
+
+
+.c--pipeline__garment {
+    overflow: hidden;
+}
+
+.c--pipeline__garment__name {
+    color: #666;
+    font-size: 1.125em;
+    font-weight: bold;
+    letter-spacing: 0;
+    margin: 0;
+    text-transform: none;
+}
+
+.c--pipeline__garment__brand {
+    color: #999;
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.c--pipeline__garment__weight {
+    background-color: #333;
+    color: #fff;
+    float: left;
+    font-size: 1.25em;
+    font-weight: 300;
+    margin: 0;
+    margin-right: 0.5em;
+    padding: 0.5em 0;
+    text-align: center;
+    width: 2.5em;
+}

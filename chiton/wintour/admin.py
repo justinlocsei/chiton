@@ -2,12 +2,11 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.template.response import TemplateResponse
 import json
-import pygments
-from pygments.lexers import JsonLexer
-from pygments.formatters import HtmlFormatter
 
 from chiton.core.admin import site
+from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
+from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.matching import make_recommendations, serialize_recommendations
 
 
@@ -41,34 +40,44 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         recs = make_recommendations(profile)
         recs_dict = serialize_recommendations(recs)
 
-        profile_dict = {
-            'age': profile.age,
-            'expectations': [
-                {'formality': e.formality.name, 'frequency': e.get_frequency_display()}
-                for e in profile.expectations.all()
-            ],
-            'shape': profile.shape,
-            'styles': sorted([s.name for s in profile.styles.all()]),
-        }
+        profile_styles = [style.pk for style in profile.styles.all()]
+
+        styles = []
+        for style in Style.objects.all():
+            styles.append({
+                'name': style.name,
+                'pk': style.pk,
+                'selected': style.pk in profile_styles
+            })
+
+        expectation_map = {}
+        for expectation in profile.expectations.all():
+            expectation_map[expectation.formality.pk] = expectation.frequency
+
+        formalities = []
+        for formality in Formality.objects.all():
+            formalities.append({
+                'frequency': expectation_map.get(formality.pk, None),
+                'name': formality.name,
+                'pk': formality.pk
+            })
+
+        basics = []
+        for basic in Basic.objects.all():
+            basics.append({
+                'name': basic.name,
+                'pk': basic.pk,
+                'selected': True
+            })
 
         return TemplateResponse(request, 'admin/chiton_wintour/wardrobeprofile/recommendations.html', dict(
             self.admin_site.each_context(request),
-            wardrobe_profile_json=_dict_as_highlighted_json(profile_dict),
-            recommendations_json=_dict_as_highlighted_json(recs_dict),
-            highlight_styles=HtmlFormatter().get_style_defs('.highlight'),
-            item=profile,
-            title='Recommendations for Wardrobe Profile %s' % pk
+            basics=basics,
+            body_shape_choices=BODY_SHAPE_CHOICES,
+            frequency_choices=EXPECTATION_FREQUENCY_CHOICES,
+            formalities=formalities,
+            recommendations_json=json.dumps(recs_dict),
+            styles=styles,
+            title='Recommendations Visualizer',
+            wardrobe_profile=profile
         ))
-
-
-def _dict_as_highlighted_json(value):
-    """Convert a dict to a highlighted JSON string.
-
-    Args:
-        value (dict): A dictionary instance
-
-    Returns:
-        str: The dict as highlighted JSON
-    """
-    as_json = json.dumps(value, sort_keys=True, indent=4)
-    return pygments.highlight(as_json, JsonLexer(), HtmlFormatter())
