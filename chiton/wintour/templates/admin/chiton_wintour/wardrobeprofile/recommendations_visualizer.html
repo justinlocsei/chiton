@@ -24,14 +24,14 @@
                         <label for="pipeline-body-shape">Body shape</label>
                         <select id="pipeline-body-shape" name="body_shape">
                             {% for body_shape_choice in body_shape_choices %}
-                                <option value="{{ body_shape_choice.0 }}" {% if body_shape_choice.0 == wardrobe_profile.shape %}selected="selected"{% endif %}>{{ body_shape_choice.0 | title }}</option>
+                                <option value="{{ body_shape_choice.0 }}" {% if body_shape_choice.0 == profile.body_shape %}selected="selected"{% endif %}>{{ body_shape_choice.0 | title }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="c--pipeline__form__field for-age">
                         <label for="pipeline-age">Age</label>
-                        <input id="pipeline-age" name="age" value="{{ wardrobe_profile.age }}" size="3" />
+                        <input id="pipeline-age" name="age" value="{{ profile.age }}" size="3" />
                     </div>
                 </div>
 
@@ -44,8 +44,8 @@
                     <ul class="c--pipeline__form__choices for-grid">
                         {% for style in styles %}
                             <li class="c--pipeline__form__choice">
-                                <input type="checkbox" id="pipeline-style-{{ style.pk }}" name="style" value="{{ style.pk }}" {% if style.selected %}checked="checked"{% endif %} />
-                                <label for="pipeline-style-{{ style.pk }}">{{ style.name }}</label>
+                                <input type="checkbox" id="pipeline-style-{{ style.slug }}" name="style" value="{{ style.slug }}" {% if style.selected %}checked="checked"{% endif %} />
+                                <label for="pipeline-style-{{ style.slug }}">{{ style.name }}</label>
                             </li>
                         {% endfor %}
                     </ul>
@@ -59,8 +59,8 @@
                     <ul class="c--pipeline__form__choices">
                         {% for formality in formalities %}
                             <li class="c--pipeline__form__choice">
-                                <label for="pipeline-expectation-{{ formality.pk }}">{{ formality.name }}</label>
-                                <select id="pipeline-expectation-{{ formality.pk }}" name="formality[{{ formality.pk }}]">
+                                <label for="pipeline-expectation-{{ formality.slug }}">{{ formality.name }}</label>
+                                <select id="pipeline-expectation-{{ formality.slug }}" name="formality[{{ formality.slug }}]">
                                     {% for frequency_choice in frequency_choices %}
                                         <option value="{{ frequency_choice.0 }}" {% if formality.frequency == frequency_choice.0 %}selected="selected"{% endif %}>{{ frequency_choice.1 }}</option>
                                     {% endfor %}
@@ -70,26 +70,6 @@
                     </ul>
                 </div>
 
-            </fieldset>
-
-            <fieldset class="c--pipeline__form__fields">
-                <legend>Basics</legend>
-
-                <div class="c--pipeline__form__buttons for-options">
-                    <button type="button" class="c--pipeline__form__button">Select All</button>
-                    <button type="button" class="c--pipeline__form__button">Clear Selection</button>
-                </div>
-
-                <div class="c--pipeline__form__field">
-                    <ul class="c--pipeline__form__choices for-grid">
-                        {% for basic in basics %}
-                            <li class="c--pipeline__form__choice">
-                                <input type="checkbox" id="pipeline-basic-{{ basic.pk }}" name="basic" value="{{ basic.pk }}" {% if basic.selected %}checked="checked"{% endif %} />
-                                <label for="pipeline-basic-{{ basic.pk }}">{{ basic.name }}</label>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
             </fieldset>
 
             <div class="c--pipeline__form__buttons">

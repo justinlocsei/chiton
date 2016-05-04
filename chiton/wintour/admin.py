@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 import json
 
@@ -8,6 +9,7 @@ from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.matching import make_recommendations, package_wardrobe_profile, serialize_recommendations
+from chiton.wintour.pipeline import PipelineProfile
 
 
 class FormalityExpectationInline(admin.TabularInline):
@@ -30,55 +32,66 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         core = super().get_urls()
-        custom = [
-            url(r'^(?P<pk>\d+)/recommendations/$', self.admin_site.admin_view(self.recommendations), name='wardrobe-profile-recommendations')
+        pre = [
+            url(r'^recommendations-visualizer/$', self.admin_site.admin_view(self.recommendations_visualizer), name='recommendations-visualizer')
         ]
-        return custom + core
+        post = [
+            url(r'^(?P<pk>\d+)/recommendations/$', self.admin_site.admin_view(self.wardrobe_profile_recommendations), name='wardrobe-profile-recommendations')
+        ]
+        return pre + core + post
 
-    def recommendations(self, request, pk):
-        profile = models.WardrobeProfile.objects.get(pk=pk)
-        pipeline_profile = package_wardrobe_profile(profile)
-        recs = make_recommendations(pipeline_profile)
+    def wardrobe_profile_recommendations(self, request, pk):
+        wardrobe_profile = models.WardrobeProfile.objects.get(pk=pk)
+        profile = package_wardrobe_profile(wardrobe_profile)
+
+        pass
+
+    def recommendations_visualizer(self, request):
+        profile = self._convert_get_params_to_pipeline_profile(request.GET)
+        recs = make_recommendations(profile)
         recs_dict = serialize_recommendations(recs)
-
-        profile_styles = [style.pk for style in profile.styles.all()]
 
         styles = []
         for style in Style.objects.all():
             styles.append({
                 'name': style.name,
-                'pk': style.pk,
-                'selected': style.pk in profile_styles
+                'selected': style.slug in profile.styles,
+                'slug': style.slug
             })
-
-        expectation_map = {}
-        for expectation in profile.expectations.all():
-            expectation_map[expectation.formality.pk] = expectation.frequency
 
         formalities = []
         for formality in Formality.objects.all():
             formalities.append({
-                'frequency': expectation_map.get(formality.pk, None),
+                'frequency': profile.expectations.get(formality.slug, None),
                 'name': formality.name,
-                'pk': formality.pk
+                'slug': formality.slug
             })
 
         basics = []
         for basic in Basic.objects.all():
             basics.append({
                 'name': basic.name,
-                'pk': basic.pk,
-                'selected': True
+                'selected': True,
+                'slug': basic.slug
             })
 
-        return TemplateResponse(request, 'admin/chiton_wintour/wardrobeprofile/recommendations.html', dict(
+        return TemplateResponse(request, 'admin/chiton_wintour/wardrobeprofile/recommendations_visualizer.html', dict(
             self.admin_site.each_context(request),
             basics=basics,
             body_shape_choices=BODY_SHAPE_CHOICES,
             frequency_choices=EXPECTATION_FREQUENCY_CHOICES,
             formalities=formalities,
             recommendations_json=json.dumps(recs_dict),
+            profile=profile,
             styles=styles,
-            title='Recommendations Visualizer',
-            wardrobe_profile=profile
+            title='Recommendations Visualizer'
         ))
+
+    def _convert_get_params_to_pipeline_profile(self, get_data):
+        data = {
+            'age': int(get_data['age']),
+            'body_shape': get_data['body_shape'],
+            'styles': get_data.getlist('style')
+        }
+
+        return PipelineProfile(**data)
