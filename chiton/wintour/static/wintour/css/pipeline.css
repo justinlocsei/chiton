@@ -154,6 +154,7 @@
     border-bottom: 1px solid #999;
     box-sizing: border-box;
     color: #666;
+    font-size: 0.9em;
     font-weight: bold;
     margin: 0;
     margin-bottom: 1em;
@@ -213,6 +214,7 @@
 
 .c--pipeline__results__data {
     flex: 1 1 auto;
+    margin-top: -0.625em;
 }
 
 .c--pipeline__basics {
