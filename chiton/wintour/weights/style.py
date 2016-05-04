@@ -20,7 +20,7 @@ class StyleWeight(BaseWeight):
 
         return {
             'garment_styles': garment_styles,
-            'styles': set([style.slug for style in profile.styles.all()])
+            'styles': set(profile.styles)
         }
 
     def apply(self, garment, garment_styles=None, styles=None):

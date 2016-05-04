@@ -2,6 +2,24 @@ from contextlib import contextmanager
 from functools import partial
 
 
+class PipelineProfile:
+    """A value object that represents a profile for user in a pipeline."""
+
+    def __init__(self, age=None, body_shape=None, styles=[], expectations={}):
+        """Create a new pipeline profile.
+
+        Keyword Args:
+            age (int): The age of the user
+            body_shape (str): The identifier for the user's body shape
+            styles (list): A list of the slugs of all target styles
+            expectations (dict): A dict mapping formality slugs to frequency identifiers
+        """
+        self.age = age
+        self.body_shape = body_shape
+        self.styles = styles
+        self.expectations = expectations
+
+
 class PipelineStep:
     """An abstract base class for a step in a pipeline."""
 
@@ -31,7 +49,7 @@ class PipelineStep:
         keyword args to any `apply` calls in the profile's context.
 
         Args:
-            profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
+            profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
 
         Returns:
             dict: Additional keyword args to pass to apply calls
@@ -57,7 +75,7 @@ class PipelineStep:
         """Provide a context in which the pipeline step acts on a profile.
 
         Args:
-            profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
+            profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
 
         Yields:
             function: A partial apply function that includes the

@@ -108,7 +108,7 @@ class BodyShapeWeight(BaseWeight):
 
     def provide_profile_data(self, profile):
         return {
-            'weights': BODY_SHAPE_WEIGHTS[profile.shape]
+            'weights': BODY_SHAPE_WEIGHTS[profile.body_shape]
         }
 
     def apply(self, garment, weights=None):

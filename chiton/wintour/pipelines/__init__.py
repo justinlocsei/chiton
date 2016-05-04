@@ -62,7 +62,7 @@ class BasePipeline:
         metadata indicating the strength of the match for the profile.
 
         Args:
-            profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
+            profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
 
         Returns:
             dict: The recommendations

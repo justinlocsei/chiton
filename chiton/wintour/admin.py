@@ -7,7 +7,7 @@ from chiton.core.admin import site
 from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
-from chiton.wintour.matching import make_recommendations, serialize_recommendations
+from chiton.wintour.matching import make_recommendations, package_wardrobe_profile, serialize_recommendations
 
 
 class FormalityExpectationInline(admin.TabularInline):
@@ -37,7 +37,8 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
     def recommendations(self, request, pk):
         profile = models.WardrobeProfile.objects.get(pk=pk)
-        recs = make_recommendations(profile)
+        pipeline_profile = package_wardrobe_profile(profile)
+        recs = make_recommendations(pipeline_profile)
         recs_dict = serialize_recommendations(recs)
 
         profile_styles = [style.pk for style in profile.styles.all()]

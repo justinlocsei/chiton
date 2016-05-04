@@ -1,11 +1,12 @@
+from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.pipelines.core import CorePipeline
 
 
-def make_recommendations(profile, pipeline_class=CorePipeline):
+def make_recommendations(pipeline_profile, pipeline_class=CorePipeline):
     """Return garment recommendations for a wardrobe profile.
 
     Args:
-        profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
+        pipeline_profile (chiton.wintour.pipeline.PipelineProfile): A profile for which to make recommendations
 
     Keyword Args:
         pipeline (chiton.wintour.pipelines.BasePipeline): The pipeline to use
@@ -14,7 +15,31 @@ def make_recommendations(profile, pipeline_class=CorePipeline):
         dict: The recommendations
     """
     pipeline = pipeline_class()
-    return pipeline.make_recommendations(profile)
+    return pipeline.make_recommendations(pipeline_profile)
+
+
+def package_wardrobe_profile(profile):
+    """Convert a wardrobe profile into a pipeline profile.
+
+    Args:
+        profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
+
+    Returns:
+        chiton.wintour.pipeline.PipelineProfile: The packaged profile
+    """
+    data = {
+        'age': profile.age,
+        'body_shape': profile.shape
+    }
+
+    data['styles'] = [style.slug for style in profile.styles.all()]
+
+    expectations = {}
+    for expectation in profile.expectations.all().select_related('formality'):
+        expectations[expectation.formality.slug] = expectation.frequency
+    data['expectations'] = expectations
+
+    return PipelineProfile(**data)
 
 
 def serialize_recommendations(recommendations):

@@ -40,9 +40,9 @@ def _build_formality_weights_lookup(importance_weights):
     lookup = {}
     proprieties = Propriety.objects.all().select_related('basic', 'formality')
     for propriety in proprieties:
-        formality_pk = propriety.formality.pk
-        lookup.setdefault(formality_pk, {})
-        lookup[formality_pk][propriety.basic.pk] = importance_weights[propriety.importance]
+        formality_slug = propriety.formality.slug
+        lookup.setdefault(formality_slug, {})
+        lookup[formality_slug][propriety.basic.pk] = importance_weights[propriety.importance]
 
     return lookup
 
@@ -78,7 +78,7 @@ class FormalityFilter(BaseFilter):
 
         return {
             'cutoff': cutoff,
-            'expectations': profile.expectations.all().select_related('formality'),
+            'expectations': profile.expectations,
             'weights': {
                 'formality': _build_formality_weights_lookup(importance_weights),
                 'frequency': frequency_weights
@@ -94,9 +94,9 @@ class FormalityFilter(BaseFilter):
         # the final weight, derived from the combination of the formality/basic
         # weight and the frequency/formality weight, falls below the cutoff
         basic_exclusions = {}
-        for expectation in expectations:
-            frequency_weight = frequency_weights[expectation.frequency]
-            for basic_pk, basic_weight in formality_weights[expectation.formality.pk].items():
+        for formality_slug, frequency in expectations.items():
+            frequency_weight = frequency_weights[frequency]
+            for basic_pk, basic_weight in formality_weights[formality_slug].items():
                 total_weight = basic_weight * frequency_weight
                 if total_weight < cutoff:
                     basic_exclusions.setdefault(basic_pk, 0)
