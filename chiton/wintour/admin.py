@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 import json
+import re
 
 from chiton.core.admin import site
 from chiton.runway.models import Basic, Formality, Style
@@ -10,6 +11,9 @@ from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.matching import make_recommendations, package_wardrobe_profile, serialize_recommendations
 from chiton.wintour.pipeline import PipelineProfile
+
+
+FORMALITY_PARAM_MATCH = re.compile(r'formality\[([^\]]+)\]')
 
 
 class FormalityExpectationInline(admin.TabularInline):
@@ -88,10 +92,16 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         ))
 
     def _convert_get_params_to_pipeline_profile(self, get_data):
-        data = {
-            'age': int(get_data['age']),
-            'body_shape': get_data['body_shape'],
-            'styles': get_data.getlist('style')
-        }
+        expectations = {}
+        for param in get_data:
+            formality_match = FORMALITY_PARAM_MATCH.match(param)
+            if formality_match:
+                formality_slug = formality_match.group(1)
+                expectations[formality_slug] = get_data[param]
 
-        return PipelineProfile(**data)
+        return PipelineProfile(
+            age=int(get_data['age']),
+            body_shape=get_data['body_shape'],
+            expectations=expectations,
+            styles=get_data.getlist('style')
+        )
