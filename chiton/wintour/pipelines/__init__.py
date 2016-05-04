@@ -207,6 +207,7 @@ class BasePipeline:
                 faceted[facet] = facet.apply(sorted_garments)
 
             recs[basic] = {
+                'basic': basic,
                 'facets': faceted,
                 'garments': sorted_garments
             }

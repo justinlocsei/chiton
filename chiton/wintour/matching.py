@@ -29,6 +29,11 @@ def serialize_recommendations(recommendations):
     serialized = {}
     for basic, values in recommendations.items():
         value = {
+            'basic': {
+                'name': basic.name,
+                'pk': basic.pk,
+                'slug': basic.slug
+            },
             'facets': {},
             'garments': _serialize_weighted_garments(values['garments'])
         }
