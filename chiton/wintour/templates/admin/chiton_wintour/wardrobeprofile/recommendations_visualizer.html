@@ -14,7 +14,7 @@
 {% block content %}
     <div class="c--pipeline js-pipeline">
 
-        <form class="c--pipeline__form js-pipeline-form">
+        <form class="c--pipeline__form js-pipeline-form" action="{% url 'admin:recalculate-recommendations' %}">
 
             <fieldset class="c--pipeline__form__fields for-primary">
                 <legend>Personal Information</legend>

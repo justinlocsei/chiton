@@ -22,14 +22,15 @@
     width: calc(100% - 28em);
 }
 
-
 .c--pipeline__results__data {
     display: table-cell;
     padding-right: 4em;
+    transition: opacity 500ms;
 }
 
 .c--pipeline__results__basics {
     display: table-cell;
+    vertical-align: top;
     width: 10em;
 }
 
@@ -292,6 +293,10 @@
 }
 
 /* State -------------------------------------------------------------------- */
+
+.c--pipeline.is-loading .c--pipeline__results__data {
+    opacity: 0.25;
+}
 
 .c--pipeline.is-scrolling .c--pipeline__form,
 .c--pipeline.is-scrolling .c--pipeline__basics-filter {

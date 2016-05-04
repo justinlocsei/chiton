@@ -33,6 +33,7 @@ function PipelineVisualizer($root) {
     this.$form = $root.find('.js-pipeline-form');
     this.$basicsFilter = $root.find('.js-pipeline-basics-filter');
 
+    this._enableForm();
     this._observeScrolling();
 }
 
@@ -79,6 +80,33 @@ PipelineVisualizer.prototype = {
 
         var output = renderTemplate('pipeline-template-basics', context);
         this.$results.html(output);
+    },
+
+    /**
+     * Recalculate and re-render recommendations when the form is submitted
+     */
+    _enableForm: function() {
+        var that = this;
+        var $el = this.$el;
+        var $form = this.$form;
+
+        var endpoint = $form.attr('action');
+
+        $form.on('submit', function(e) {
+            e.preventDefault();
+
+            $el.addClass('is-loading');
+            $.ajax({
+                url: endpoint,
+                method: 'GET',
+                data: $form.serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    $el.removeClass('is-loading');
+                    that.visualize(response);
+                }
+            });
+        });
     },
 
     /**

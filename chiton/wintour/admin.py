@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib import admin
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 import json
@@ -37,7 +38,8 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
     def get_urls(self):
         core = super().get_urls()
         pre = [
-            url(r'^recommendations-visualizer/$', self.admin_site.admin_view(self.recommendations_visualizer), name='recommendations-visualizer')
+            url(r'^recommendations-visualizer/$', self.admin_site.admin_view(self.recommendations_visualizer), name='recommendations-visualizer'),
+            url(r'^recommendations-visualizer/recalculate$', self.admin_site.admin_view(self.recalculate_recommendations), name='recalculate-recommendations')
         ]
         post = [
             url(r'^(?P<pk>\d+)/recommendations/$', self.admin_site.admin_view(self.wardrobe_profile_recommendations), name='wardrobe-profile-recommendations')
@@ -47,8 +49,6 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
     def wardrobe_profile_recommendations(self, request, pk):
         wardrobe_profile = models.WardrobeProfile.objects.get(pk=pk)
         profile = package_wardrobe_profile(wardrobe_profile)
-
-        pass
 
     def recommendations_visualizer(self, request):
         profile = self._convert_get_params_to_pipeline_profile(request.GET)
@@ -90,6 +90,12 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             styles=styles,
             title='Recommendations Visualizer'
         ))
+
+    def recalculate_recommendations(self, request):
+        profile = self._convert_get_params_to_pipeline_profile(request.GET)
+        recs = make_recommendations(profile)
+
+        return JsonResponse(serialize_recommendations(recs))
 
     def _convert_get_params_to_pipeline_profile(self, get_data):
         expectations = {}
