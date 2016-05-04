@@ -1,4 +1,4 @@
-from chiton.wintour.pipelines import PipelineStep
+from chiton.wintour.pipeline import PipelineStep
 
 
 class BaseFilter(PipelineStep):
