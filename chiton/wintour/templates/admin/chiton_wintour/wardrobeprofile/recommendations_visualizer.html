@@ -72,13 +72,31 @@
 
             </fieldset>
 
-            <div class="c--pipeline__form__buttons">
-                <button type="submit" class="c--pipeline__form__button for-submit">View Recommendations</button>
-            </div>
+            <button type="submit" class="c--pipeline__form__button">View Recommendations</button>
 
         </form>
 
         <div class="c--pipeline__results">
+            <div class="c--pipeline__basics-filter">
+                <h4 class="c--pipeline__basics-filter__title">Basics</h4>
+
+                <div class="c--pipeline__basics-filter__form">
+                    <ul class="c--pipeline__basics-filter__basics">
+                        {% for basic in basics %}
+                            <li class="c--pipeline__basics-filter__basic">
+                                <input type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
+                                <label for="pipeline-basic-{{ basic.slug }}">{{ basic.name }}</label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="c--pipeline__basics-filter__buttons">
+                    <button type="button" class="c--pipeline__basics-filter__button">Select All</button>
+                    <button type="button" class="c--pipeline__basics-filter__button">Clear Selection</button>
+                </div>
+            </div>
+
             <div class="c--pipeline__results__data js-pipeline-data"></div>
         </div>
 

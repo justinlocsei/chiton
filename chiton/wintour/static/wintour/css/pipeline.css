@@ -8,20 +8,28 @@
     display: block;
 }
 
-/* Form --------------------------------------------------------------------- */
-
 .c--pipeline__form {
     float: left;
     font-size: 0.9em;
-    margin-right: 5%;
-    width: 30%;
+    width: 26em;
 }
+
+.c--pipeline__results {
+    display: flex;
+    margin-left: 28em;
+}
+
+/* Form --------------------------------------------------------------------- */
 
 .c--pipeline__form select,
 .c--pipeline__form input {
     height: auto;
     margin: 0;
     vertical-align: baseline;
+}
+
+.c--pipeline__form label {
+    cursor: pointer;
 }
 
 .c--pipeline__form select {
@@ -70,6 +78,7 @@
     display: table;
     margin: 0;
     padding: 0;
+    table-layout: fixed;
     width: 100%;
 }
 
@@ -81,7 +90,6 @@
 
 .c--pipeline__form__choice label {
     display: table-cell;
-    cursor: pointer;
     padding-bottom: 0.5em;
 }
 
@@ -117,50 +125,94 @@
     vertical-align: baseline;
 }
 
-.c--pipeline__form__buttons {
-
-}
-
-.c--pipeline__form__buttons.for-options {
-    font-size: 0.8em;
-    margin-bottom: 0.5em;
-}
-
 .c--pipeline__form__button {
-    background-color: #aaa;
-    border: 0;
+    background-color: #333;
     border-radius: 0.25em;
+    border: 0;
     color: #fff;
     cursor: pointer;
-    font-size: inherit;
+    display: block;
+    font-size: 1.25em;
     line-height: 1.25;
-    padding: 0.5em 2em;
+    margin: 1.5em auto 0;
+    padding: 0.75em 2em;
+    text-align: center;
 }
 
 .c--pipeline__form__button:hover {
-    background-color: #777;
-}
-
-.c--pipeline__form__button + .c--pipeline__form__button {
-    margin-left: 0.5em;
-}
-
-.c--pipeline__form__button.for-submit {
-    background-color: #333;
-    display: block;
-    font-size: 1.25em;
-    margin: 0 auto;
-}
-
-.c--pipeline__form__button.for-submit:hover {
     background-color: #000;
 }
 
-/* Results ------------------------------------------------------------------ */
+/* Basics Filter ------------------------------------------------------------ */
 
-.c--pipeline__results {
-    margin-left: 35%;
-    width: 60%;
+.c--pipeline__basics-filter {
+    order: 1;
+    margin-left: 4em;
+}
+
+.c--pipeline__basics-filter__title {
+    border-bottom: 1px solid #999;
+    box-sizing: border-box;
+    color: #666;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0.5em 0;
+    text-transform: uppercase;
+}
+
+.c--pipeline__basics-filter__buttons {
+    margin-top: 1em;
+}
+
+.c--pipeline__basics-filter__button {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.25em;
+    cursor: pointer;
+    display: block;
+    font-size: 0.75em;
+    padding: 0.5em 1em;
+    width: 100%;
+}
+
+.c--pipeline__basics-filter__button:hover {
+    background-color: #eee;
+}
+
+.c--pipeline__basics-filter__button + .c--pipeline__basics-filter__button {
+    margin-top: 0.5em;
+}
+
+.c--pipeline__basics-filter__form {
+
+}
+
+.c--pipeline__basics-filter__basics {
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basics-filter__basic {
+    font-size: 0.9em;
+    list-style: none;
+    margin-bottom: 0.125em;
+    padding: 0 !important;
+}
+
+.c--pipeline__basics-filter__basic input {
+    margin: 0;
+    margin-top: -0.125em;
+}
+
+.c--pipeline__basics-filter__basic label {
+    cursor: pointer;
+}
+
+/* Basics ------------------------------------------------------------------- */
+
+.c--pipeline__results__data {
+    flex: 1 1 auto;
 }
 
 .c--pipeline__basics {
