@@ -11,12 +11,26 @@
 .c--pipeline__form {
     float: left;
     font-size: 0.9em;
+    margin-top: 0.85em;
     width: 26em;
 }
 
 .c--pipeline__results {
-    display: flex;
+    display: table;
     margin-left: 28em;
+    table-layout: fixed;
+    width: calc(100% - 28em);
+}
+
+
+.c--pipeline__results__data {
+    display: table-cell;
+    padding-right: 4em;
+}
+
+.c--pipeline__results__basics {
+    display: table-cell;
+    width: 10em;
 }
 
 /* Form --------------------------------------------------------------------- */
@@ -146,8 +160,7 @@
 /* Basics Filter ------------------------------------------------------------ */
 
 .c--pipeline__basics-filter {
-    order: 1;
-    margin-left: 4em;
+    margin-top: 0.75em;
 }
 
 .c--pipeline__basics-filter__title {
@@ -211,11 +224,6 @@
 }
 
 /* Basics ------------------------------------------------------------------- */
-
-.c--pipeline__results__data {
-    flex: 1 1 auto;
-    margin-top: -0.625em;
-}
 
 .c--pipeline__basics {
     margin: 0;
@@ -281,4 +289,12 @@
     padding: 0.5em 0;
     text-align: center;
     width: 2.5em;
+}
+
+/* State -------------------------------------------------------------------- */
+
+.c--pipeline.is-scrolling .c--pipeline__form,
+.c--pipeline.is-scrolling .c--pipeline__basics-filter {
+    position: fixed;
+    top: 0;
 }

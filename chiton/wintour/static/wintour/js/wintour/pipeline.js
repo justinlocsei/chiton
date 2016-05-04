@@ -29,6 +29,10 @@ function renderTemplate(id, context) {
 function PipelineVisualizer($root) {
     this.$el = $root;
     this.$results = $root.find('.js-pipeline-data');
+    this.$form = $root.find('.js-pipeline-form');
+    this.$basicsFilter = $root.find('.js-pipeline-basics-filter');
+
+    this._observeScrolling();
 }
 
 PipelineVisualizer.prototype = {
@@ -71,6 +75,33 @@ PipelineVisualizer.prototype = {
 
         var output = renderTemplate('pipeline-template-basics', context);
         this.$results.html(output);
+    },
+
+    /**
+     * Register a scroll handler that changes the class on secondary elements
+     */
+    _observeScrolling: function() {
+        var $el = this.$el;
+        var $window = $(window);
+
+        var inflection = Math.min(
+            this.$form.offset().top,
+            this.$basicsFilter.offset().top
+        );
+        var isPast = false;
+
+        var handleScroll = _.throttle(function(e) {
+            var scrollTop = $window.scrollTop();
+            if (scrollTop < inflection && isPast) {
+                $el.removeClass('is-scrolling');
+                isPast = false;
+            } else if (scrollTop >= inflection && !isPast) {
+                $el.addClass('is-scrolling');
+                isPast = true;
+            }
+        }, 125);
+
+        $window.on('scroll', handleScroll);
     }
 
 };

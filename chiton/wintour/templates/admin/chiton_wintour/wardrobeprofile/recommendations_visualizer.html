@@ -14,7 +14,7 @@
 {% block content %}
     <div class="c--pipeline js-pipeline">
 
-        <form class="c--pipeline__form">
+        <form class="c--pipeline__form js-pipeline-form">
 
             <fieldset class="c--pipeline__form__fields for-primary">
                 <legend>Personal Information</legend>
@@ -77,27 +77,29 @@
         </form>
 
         <div class="c--pipeline__results">
-            <div class="c--pipeline__basics-filter">
-                <h4 class="c--pipeline__basics-filter__title">Basics</h4>
+            <div class="c--pipeline__results__data js-pipeline-data"></div>
 
-                <div class="c--pipeline__basics-filter__form">
-                    <ul class="c--pipeline__basics-filter__basics">
-                        {% for basic in basics %}
-                            <li class="c--pipeline__basics-filter__basic">
-                                <input type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
-                                <label for="pipeline-basic-{{ basic.slug }}">{{ basic.name }}</label>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            <div class="c--pipeline__results__basics">
+                <div class="c--pipeline__basics-filter js-pipeline-basics-filter">
+                    <h4 class="c--pipeline__basics-filter__title">Basics</h4>
 
-                <div class="c--pipeline__basics-filter__buttons">
-                    <button type="button" class="c--pipeline__basics-filter__button">Select All</button>
-                    <button type="button" class="c--pipeline__basics-filter__button">Clear Selection</button>
+                    <div class="c--pipeline__basics-filter__form">
+                        <ul class="c--pipeline__basics-filter__basics">
+                            {% for basic in basics %}
+                                <li class="c--pipeline__basics-filter__basic">
+                                    <input type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
+                                    <label for="pipeline-basic-{{ basic.slug }}">{{ basic.name }}</label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="c--pipeline__basics-filter__buttons">
+                        <button type="button" class="c--pipeline__basics-filter__button">Select All</button>
+                        <button type="button" class="c--pipeline__basics-filter__button">Clear Selection</button>
+                    </div>
                 </div>
             </div>
-
-            <div class="c--pipeline__results__data js-pipeline-data"></div>
         </div>
 
         <script type="text/template" id="pipeline-template-basics">
@@ -130,11 +132,13 @@
     <script id="pipeline-recommendations-data" type="application/json">{{ recommendations_json | safe }}</script>
     <script>
         (function($, Wintour) {
-            var recommendationsData = JSON.parse($('#pipeline-recommendations-data').text());
+            $(document).ready(function() {
+                var recommendationsData = JSON.parse($('#pipeline-recommendations-data').text());
 
-            Wintour.pipeline({
-                recommendations: recommendationsData,
-                root: '.js-pipeline'
+                Wintour.pipeline({
+                    recommendations: recommendationsData,
+                    root: '.js-pipeline'
+                });
             });
         })(window.jQuery, window.Wintour);
     </script>
