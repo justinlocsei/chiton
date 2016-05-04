@@ -96,11 +96,15 @@ class BasePipeline:
                     max_weight = max(max_weight, applied_weight)
                     min_weight = min(min_weight, applied_weight)
 
+            weight_range = max_weight - min_weight
+            if weight_range:
+                for weighted_garment in weighted_garments:
+                    applied_weight = weighted_garment['weight'] - min_weight
+                    weighted_garment['weight'] = applied_weight / weight_range
+
             weightings[weight] = {
                 'garments': weighted_garments,
-                'importance': weight.importance,
-                'max': max_weight,
-                'min': min_weight
+                'importance': weight.importance
             }
 
         # Build a master list of weighted garments by combining the weight
@@ -114,13 +118,21 @@ class BasePipeline:
                 weighted_garments[garment] += weighted_garment['weight']
 
         # Group garments by their basic type
+        max_weight = 0
         by_basic = {}
         for garment, weight in weighted_garments.items():
+            max_weight = max(max_weight, weight)
             by_basic.setdefault(garment.basic, [])
             by_basic[garment.basic].append({
                 'garment': garment,
                 'weight': weight
             })
+
+        # Normalize the final weights based on the maximum weight value
+        if max_weight:
+            for basic, garments in by_basic.items():
+                for garment in garments:
+                    garment['weight'] = garment['weight'] / max_weight
 
         # Generate faceted recommendations grouped by basic type
         recs = {}
