@@ -3,6 +3,7 @@
 window.Wintour = window.Wintour || {};
 
 var TEMPLATES = {};
+var WEIGHT_BASE = 10;
 
 /**
  * Render a template
@@ -54,10 +55,13 @@ PipelineVisualizer.prototype = {
 
         var basics = _.map(recommendations, function(data, basicSlug) {
             var garments = _.map(data.garments, function(garment) {
+                var weight = (garment.weight * WEIGHT_BASE).toFixed(1);
+                weight = weight.replace(/\.0$/, '');
+
                 return renderTemplate('pipeline-template-garment', {
                     brand: garment.garment.brand,
                     name: garment.garment.name,
-                    weight: garment.weight
+                    weight: weight
                 });
             });
 
