@@ -1,23 +1,11 @@
 from chiton.wintour.pipeline import PipelineStep
 
 
-def _make_garment_namespace(garment):
-    """Create a logging namespace for a garment.
-
-    Args:
-        garment (chiton.closet.models.Garment): A garment instance
-
-    Returns:
-        str: The garment's namespace
-    """
-    return 'garments.%s' % garment.pk
-
-
 class BaseWeight(PipelineStep):
     """The base class for all weights."""
 
     def configure(self, importance=1, **kwargs):
-        """Track the importance factor for the weight.
+        """Create a new weight.
 
         The importance factor should be a positive integer used as a multiplier
         when applying the weight in the context of other pipeline weights.
@@ -33,14 +21,14 @@ class BaseWeight(PipelineStep):
         pass
 
     def explain_weight(self, garment, weight, reason):
-        """Log a message describing a weight applied to a garment.
+        """Log a message explaining why a weight was applied to a garment.
 
         Args:
             garment (chiton.closet.models.Garment): A garment instance
             weight (float): The weight applied
             reason (str): The reason the weight was applied
         """
-        self.log(_make_garment_namespace(garment), {
+        self.log(self._make_garment_log_key(garment), {
             'reason': reason,
             'weight': weight
         })
@@ -52,9 +40,9 @@ class BaseWeight(PipelineStep):
             garment (chiton.closet.models.Garment): A garment instance
 
         Returns:
-            list: A list of dicts describing the garment's weights
+            list: A list of dicts describing the garment's applied weights
         """
-        return self.get_debug_messages(_make_garment_namespace(garment))
+        return self.get_debug_messages(self._make_garment_log_key(garment))
 
     def apply(self, garment):
         """Return the weight value to apply to a garment.
@@ -70,3 +58,14 @@ class BaseWeight(PipelineStep):
             int: The weight to apply to the garment
         """
         return 0
+
+    def _make_garment_log_key(self, garment):
+        """Determine the log key for a garment.
+
+        Args:
+            garment (chiton.closet.models.Garment): A garment instance
+
+        Returns:
+            str: The garment's log key
+        """
+        return 'garments.%s' % garment.pk
