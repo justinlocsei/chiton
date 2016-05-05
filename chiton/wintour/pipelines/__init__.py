@@ -121,18 +121,25 @@ class BasePipeline:
         for weight, values in weightings.items():
             for weighted_garment in values['garments']:
                 garment = weighted_garment['garment']
-                weighted_garments.setdefault(garment, 0)
-                weighted_garments[garment] += weighted_garment['weight'] * values['importance']
+                weighted_garments.setdefault(garment, {
+                    'explanations': {},
+                    'weight': 0
+                })
+                weighted_garments[garment]['weight'] += weighted_garment['weight'] * values['importance']
+
+                if debug:
+                    weighted_garments[garment]['explanations'][weight.slug] = weight.get_explanations(garment)
 
         # Group garments by their basic type
         max_weight = 0
         by_basic = {}
-        for garment, weight in weighted_garments.items():
-            max_weight = max(max_weight, weight)
+        for garment, data in weighted_garments.items():
+            max_weight = max(max_weight, data['weight'])
             by_basic.setdefault(garment.basic, [])
             by_basic[garment.basic].append({
+                'explanations': data['explanations'],
                 'garment': garment,
-                'weight': weight
+                'weight': data['weight']
             })
 
         # Normalize the final weights based on the maximum weight value
