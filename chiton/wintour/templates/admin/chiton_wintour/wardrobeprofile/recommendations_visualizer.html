@@ -113,7 +113,7 @@
         <script type="text/template" id="pipeline-template-basics">
             <ul class="c--pipeline__basics">
                 <% _.forEach(basics, function(basic) { %>
-                    <li class="c--pipeline__basic">
+                    <li class="c--pipeline__basic js-pipeline-basic" data-slug="<%- basic.slug %>">
                         <h4 class="c--pipeline__basic__name"><%- basic.name %></h4>
                         <ol class="c--pipeline__basic__garments">
                             <% _.forEach(basic.garments, function(garment) { %>
@@ -128,11 +128,53 @@
         </script>
 
         <script type="text/template" id="pipeline-template-garment">
-            <div class="c--pipeline__garment">
+            <div class="c--pipeline__garment js-pipeline-garment" data-id="<%- id %>">
                 <p class="c--pipeline__garment__weight"><%- weight %></p>
-                <h5 class="c--pipeline__garment__name"><%- name %></h5>
-                <p class="c--pipeline__garment__brand"><%- brand %></p>
+                <div class="c--pipeline__garment__body">
+                    <h5 class="c--pipeline__garment__name"><%- name %></h5>
+                    <p class="c--pipeline__garment__brand"><%- brand %></p>
+                </div>
+                <div class="c--pipeline__garment__details js-pipeline-garment-details"></div>
             </div>
+        </script>
+
+        <script type="text/template" id="pipeline-template-garment-details">
+            <div class="c--pipeline__garment-links">
+
+                <% _.forEach(urls, function(links, name) { %>
+                    <div class="c--pipeline__garment-links__group">
+                        <h5 class="c--pipeline__garment-links__group__title"><%- name %> links</h5>
+                        <ul class="c--pipeline__garment-links__group__links">
+                            <% _.forEach(links, function(link) { %>
+                                <li class="c--pipeline__garment-links__group__link">
+                                    <a class="c--pipeline__garment-links__group__link__text" href="<%- link.url %>" target="_blank"><%- link.name %></a>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% }); %>
+            </div>
+
+            <table class="c--pipeline__garment-log">
+                <thead>
+                    <tr>
+                        <th>Weight Name</th>
+                        <th>Applied Weight</th>
+                        <th>Explanation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% _.forEach(weights, function(weight) { %>
+                        <% _.forEach(weight.reasons, function(reason) { %>
+                            <tr>
+                                <td><%- weight.name %></th>
+                                <td><%- reason.weight %></td>
+                                <td><%- reason.reason %></td>
+                            </tr>
+                        <% }); %>
+                    <% }); %>
+                </tbody>
+            </table>
         </script>
 
     </div>

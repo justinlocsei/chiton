@@ -295,7 +295,25 @@
 
 
 .c--pipeline__garment {
+    cursor: pointer;
     overflow: hidden;
+}
+
+.c--pipeline__garment__weight {
+    background-color: #333;
+    color: #fff;
+    float: left;
+    font-size: 1.25em;
+    font-weight: 300;
+    margin: 0;
+    padding: 0.5em 0;
+    text-align: center;
+    transition: background-color 250ms;
+    width: 2.5em;
+}
+
+.c--pipeline__garment__body {
+    margin-left: 4em;
 }
 
 .c--pipeline__garment__name {
@@ -313,17 +331,86 @@
     margin: 0;
 }
 
-.c--pipeline__garment__weight {
+.c--pipeline__garment__details {
+    background: #eee;
+    border: 1px solid #333;
+    clear: both;
+    display: none;
+}
+
+.c--pipeline__garment:hover .c--pipeline__garment__weight {
+    background-color: #000;
+}
+
+/* Garment Links ------------------------------------------------------------ */
+
+.c--pipeline__garment-links {
+    display: flex;
+    padding: 1.5em 1em;
+}
+
+.c--pipeline__garment-links__group {
+    line-height: 1.25;
+}
+
+.c--pipeline__garment-links__group__title {
+    display: inline-block;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0;
+}
+
+.c--pipeline__garment-links__group__title::after {
+    content: ":";
+}
+
+.c--pipeline__garment-links__group + .c--pipeline__garment-links__group {
+    border-left: 1px solid #ccc;
+    margin-left: 1em;
+    padding-left: 1em;
+}
+
+.c--pipeline__garment-links__group__links {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__garment-links__group__link {
+    display: inline-block;
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1.25;
+    list-style: none;
+    padding: 0 0 0 0.25em !important;
+}
+
+.c--pipeline__garment-links__group__link__text {
+
+}
+
+/* Garment Log -------------------------------------------------------------- */
+
+.c--pipeline__garment-log {
+    width: 100%;
+}
+
+.c--pipeline__garment-log thead th {
     background-color: #333;
     color: #fff;
-    float: left;
-    font-size: 1.25em;
-    font-weight: 300;
-    margin: 0;
-    margin-right: 0.5em;
-    padding: 0.5em 0;
-    text-align: center;
-    width: 2.5em;
+    padding: 0.5em 1.25em;
+    font-weight: normal;
+    text-transform: none;
+}
+
+.c--pipeline__garment-log tbody td {
+    border-bottom: 1px solid #ccc;
+    font-size: 0.9em;
+    padding: 0.75em 1.25em;
+}
+
+.c--pipeline__garment-log tbody tr:last-child td {
+    border: 0;
 }
 
 /* State -------------------------------------------------------------------- */
@@ -340,4 +427,12 @@
 .c--pipeline.is-scrolling .c--pipeline__basics-filter {
     position: fixed;
     top: 0;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__weight {
+    background-color: #000;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__details {
+    display: block;
 }

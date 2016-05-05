@@ -51,6 +51,7 @@ function PipelineVisualizer($root) {
     this._enableFilters();
     this._enableSnapshots();
     this._enableHistory();
+    this._enableDetails();
 
     this._observeScrolling();
 }
@@ -96,6 +97,7 @@ PipelineVisualizer.prototype = {
 
                 garments.push(renderTemplate('pipeline-template-garment', {
                     brand: garment.garment.brand,
+                    id: garment.garment.pk,
                     name: garment.garment.name,
                     weight: weight
                 }));
@@ -104,7 +106,8 @@ PipelineVisualizer.prototype = {
             var basic = data.basic;
             basics.push({
                 garments: garments,
-                name: basic.name
+                name: basic.name,
+                slug: basic.slug
             });
         }
 
@@ -308,6 +311,42 @@ PipelineVisualizer.prototype = {
             state: state,
             url: '?' + query
         };
+    },
+
+    /**
+     * Allow clicking on a garment to show its details
+     */
+    _enableDetails: function() {
+        var that = this;
+
+        this.$results.on('click', '.js-pipeline-garment', function(e) {
+            var $garment = $(this);
+            var $details = $garment.find('.js-pipeline-garment-details');
+            var id = $garment.data('id');
+
+            if ($(e.target).closest('.js-pipeline-garment-details').length) {
+                return;
+            }
+
+            var $basic = $garment.parents('.js-pipeline-basic');
+            var basicSlug = $basic.data('slug');
+
+            var data = _.find(that._state.recommendations[basicSlug].garments, function(garment) {
+                return garment.garment.pk === id;
+            });
+
+            if ($details.is(':empty')) {
+                var details = renderTemplate('pipeline-template-garment-details', {
+                    weights: data.explanations.weights,
+                    urls: data.urls
+                });
+                $details.html(details);
+                $garment.addClass('is-expanded');
+            } else {
+                $details.empty();
+                $garment.removeClass('is-expanded');
+            }
+        });
     },
 
     /**
