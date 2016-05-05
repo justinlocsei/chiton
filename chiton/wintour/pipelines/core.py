@@ -20,7 +20,7 @@ class CorePipeline(BasePipeline):
         return [
             AgeWeight(),
             BodyShapeWeight(),
-            StyleWeight(importance=2)
+            StyleWeight()
         ]
 
     def provide_facets(self):
