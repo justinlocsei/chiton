@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('first_name', models.CharField(max_length=255, verbose_name='first name')),
                 ('last_name', models.CharField(max_length=255, verbose_name='last name')),
-                ('slug', autoslug.fields.AutoSlugField(editable=False, max_length=255, populate_from=chiton.wintour.models.slug_for_person, unique=True, verbose_name='slug')),
+                ('slug', autoslug.fields.AutoSlugField(editable=False, max_length=255, populate_from=chiton.wintour.models._slug_for_person, unique=True, verbose_name='slug')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='user')),
             ],
             options={
