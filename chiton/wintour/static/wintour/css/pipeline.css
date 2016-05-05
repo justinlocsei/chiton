@@ -177,6 +177,9 @@
 }
 
 .c--pipeline__basics-filter__buttons {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
     margin-top: 1em;
 }
 
@@ -185,10 +188,9 @@
     border: 1px solid #ddd;
     border-radius: 0.25em;
     cursor: pointer;
-    display: block;
+    flex: 1;
     font-size: 0.75em;
     padding: 0.5em 1em;
-    width: 100%;
 }
 
 .c--pipeline__basics-filter__button:hover {
@@ -196,7 +198,7 @@
 }
 
 .c--pipeline__basics-filter__button + .c--pipeline__basics-filter__button {
-    margin-top: 0.5em;
+    margin-left: 0.5em;
 }
 
 .c--pipeline__basics-filter__form {
@@ -222,6 +224,20 @@
 
 .c--pipeline__basics-filter__basic label {
     cursor: pointer;
+}
+
+.c--pipeline__basics-filter__cutoff {
+    margin-bottom: 1em;
+}
+
+.c--pipeline__basics-filter__cutoff label {
+    display: inline-block;
+    font-size: 0.9em;
+}
+
+.c--pipeline__basics-filter__cutoff input {
+    display: inline-block;
+    width: 2em;
 }
 
 /* Basics ------------------------------------------------------------------- */

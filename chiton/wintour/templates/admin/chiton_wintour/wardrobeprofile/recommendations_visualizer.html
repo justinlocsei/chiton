@@ -80,14 +80,19 @@
             <div class="c--pipeline__results__data js-pipeline-data"></div>
 
             <div class="c--pipeline__results__basics">
-                <div class="c--pipeline__basics-filter js-pipeline-basics-filter">
+                <form class="c--pipeline__basics-filter js-pipeline-basics-filter">
                     <h4 class="c--pipeline__basics-filter__title">Basics</h4>
+
+                    <div class="c--pipeline__basics-filter__cutoff">
+                        <label for="pipeline-cutoff">Garment Count</label>
+                        <input type="number" id="pipeline-cuttoff" class="js-pipeline-basics-filter-cutoff" value="5" />
+                    </div>
 
                     <div class="c--pipeline__basics-filter__form">
                         <ul class="c--pipeline__basics-filter__basics">
                             {% for basic in basics %}
                                 <li class="c--pipeline__basics-filter__basic">
-                                    <input type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
+                                    <input class="js-pipeline-basics-filter-input" type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
                                     <label for="pipeline-basic-{{ basic.slug }}">{{ basic.name }}</label>
                                 </li>
                             {% endfor %}
@@ -95,10 +100,10 @@
                     </div>
 
                     <div class="c--pipeline__basics-filter__buttons">
-                        <button type="button" class="c--pipeline__basics-filter__button">Select All</button>
-                        <button type="button" class="c--pipeline__basics-filter__button">Clear Selection</button>
+                        <button type="button" class="c--pipeline__basics-filter__button js-pipeline-basics-filter-select-all">All</button>
+                        <button type="button" class="c--pipeline__basics-filter__button js-pipeline-basics-filter-clear-selection">None</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
 
