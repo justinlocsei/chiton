@@ -104,5 +104,6 @@ def _serialize_weighted_garment(weighted):
     return {
         'explanations': weighted['explanations'],
         'garment': garment_dict,
+        'urls': weighted['urls'],
         'weight': weighted['weight']
     }

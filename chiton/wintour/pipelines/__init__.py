@@ -3,6 +3,7 @@ from operator import itemgetter
 from django.db import connection
 
 from chiton.closet.models import Garment
+from chiton.rack.models import AffiliateItem, AffiliateNetwork
 
 
 class BasePipeline:
@@ -130,29 +131,53 @@ class BasePipeline:
                 if debug:
                     weighted_garments[garment]['explanations'][weight.slug] = weight.get_explanations(garment)
 
-        # Group garments by their basic type
+        # Build a lookup table of the names of affiliate networks
+        affiliate_networks = {}
+        for network in AffiliateNetwork.objects.all():
+            affiliate_networks[network.id] = network.name
+
+        # Group garments by their basic type, exposing information on each
+        # garment's associated affiliate items
         max_weight = 0
         by_basic = {}
-        for garment, data in weighted_garments.items():
+        for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic'):
+            garment = affiliate_item.garment
+
+            try:
+                data = weighted_garments[garment]
+            except KeyError:
+                continue
+
             max_weight = max(max_weight, data['weight'])
-            by_basic.setdefault(garment.basic, [])
-            by_basic[garment.basic].append({
-                'explanations': data['explanations'],
-                'garment': garment,
-                'weight': data['weight']
-            })
+            url = {
+                'affiliate': affiliate_networks[affiliate_item.network_id],
+                'url': affiliate_item.url
+            }
+
+            by_basic.setdefault(garment.basic, {})
+            if garment in by_basic[garment.basic]:
+                by_basic[garment.basic][garment]['urls']['vendor'].append(url);
+            else:
+                by_basic[garment.basic][garment] = {
+                    'explanations': data['explanations'],
+                    'garment': garment,
+                    'urls': {
+                        'vendor': [url]
+                    },
+                    'weight': data['weight']
+                }
 
         # Normalize the final weights based on the maximum weight value
         if max_weight:
             for basic, garments in by_basic.items():
-                for garment in garments:
-                    garment['weight'] = garment['weight'] / max_weight
+                for garment, data in garments.items():
+                    data['weight'] = data['weight'] / max_weight
 
         # Generate faceted recommendations grouped by basic type
         recs = {}
         weight_fetcher = itemgetter('weight')
         for basic, weighted_garments in by_basic.items():
-            sorted_garments = sorted(weighted_garments, key=weight_fetcher, reverse=True)
+            sorted_garments = sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
 
             faceted = {}
             for facet in facets:
