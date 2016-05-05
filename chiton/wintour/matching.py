@@ -1,3 +1,7 @@
+from timeit import default_timer
+
+from django.db import connection
+
 from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.pipelines.core import CorePipeline
 
@@ -15,8 +19,21 @@ def make_recommendations(pipeline_profile, pipeline_class=CorePipeline, debug=Fa
     Returns:
         dict: The recommendations data
     """
+    if debug:
+        previous_queries = set([q['sql'] for q in connection.queries])
+        start_time = default_timer()
+
     pipeline = pipeline_class()
-    return pipeline.make_recommendations(pipeline_profile, debug=debug)
+    recs = {'basics': pipeline.make_recommendations(pipeline_profile, debug=debug)}
+
+    if debug:
+        elapsed_time = default_timer() - start_time
+        recs['debug'] = {
+            'queries': [q for q in connection.queries if q['sql'] not in previous_queries],
+            'time': elapsed_time
+        }
+
+    return recs
 
 
 def package_wardrobe_profile(profile):
@@ -69,9 +86,11 @@ def serialize_recommendations(recommendations):
 
         basics[basic.slug] = value
 
-    return {
-        'basics': basics
-    }
+    serialized = {'basics': basics}
+    if 'debug' in recommendations:
+        serialized['debug'] = recommendations['debug']
+
+    return serialized
 
 
 def _serialize_weighted_garments(garments):

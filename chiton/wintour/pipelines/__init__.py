@@ -1,7 +1,5 @@
 from operator import itemgetter
 
-from django.db import connection
-
 from chiton.closet.models import Garment
 from chiton.rack.models import AffiliateItem, AffiliateNetwork
 
@@ -113,15 +111,7 @@ class BasePipeline:
                 'garments': sorted_garments
             }
 
-        # TODO: Delete once all steps are implemented
-        for query in connection.queries:
-            print(query['sql'])
-            print(query['time'])
-        print('Total queries: %d' % len(connection.queries))
-
-        return {
-            'basics': recs
-        }
+        return recs
 
     def _weight_garments(self, weights, garments, profile):
         """Apply a series of weights to a list of garments for a profile.
