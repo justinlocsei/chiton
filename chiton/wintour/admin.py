@@ -76,7 +76,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
     def recommendations_visualizer(self, request):
         if request.GET:
             profile = self._convert_get_params_to_pipeline_profile(request.GET)
-            recs = make_recommendations(profile)
+            recs = make_recommendations(profile, debug=True)
             recs_dict = serialize_recommendations(recs)
             recs_json = json.dumps(recs_dict)
         else:
@@ -145,7 +145,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
     def recalculate_recommendations(self, request):
         profile = self._convert_get_params_to_pipeline_profile(request.GET)
-        recs = make_recommendations(profile)
+        recs = make_recommendations(profile, debug=True)
 
         return JsonResponse(serialize_recommendations(recs))
 
