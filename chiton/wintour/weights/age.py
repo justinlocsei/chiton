@@ -42,4 +42,20 @@ class AgeWeight(BaseWeight):
         upper_tail = upper_age + self.tail
         is_near_range = lower_tail <= age < lower_age or upper_age < age <= upper_tail
 
-        return AGE_WEIGHT * is_near_range + AGE_WEIGHT * 2 * is_in_range
+        in_range_weight = AGE_WEIGHT * 2 * is_in_range
+        near_range_weight = AGE_WEIGHT * is_near_range
+        weight = in_range_weight + near_range_weight
+
+        if self.debug:
+            brand_range = "%s's age range of %d-%d" % (brand.name, brand.age_lower, brand.age_upper)
+
+            if is_in_range:
+                reason = '%s includes %d' % (brand_range, age)
+            elif is_near_range:
+                reason = '%s is within %d years of %d' % (brand_range, self.tail, age)
+            else:
+                reason = '%s is more than %d years away from %d' % (brand_range, self.tail, age)
+
+            self.explain_weight(garment, weight, reason)
+
+        return weight
