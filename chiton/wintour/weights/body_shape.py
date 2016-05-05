@@ -12,9 +12,9 @@ EMPHASIS_FIELDS = {
 
 # A mapping of steps away from the ideal emphasis to a readable adjective
 EMPHASIS_DELTA_STATES = {
-    0: 'flattering',
-    1: 'neutral',
-    2: 'unflattering'
+    0: 'great',
+    1: 'good',
+    2: 'bad'
 }
 
 # A mappnig of emphases to their numeric weight
