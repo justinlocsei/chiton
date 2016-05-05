@@ -314,6 +314,10 @@
     opacity: 0.25;
 }
 
+.c--pipeline.is-scrolling {
+    min-height: 100vh;
+}
+
 .c--pipeline.is-scrolling .c--pipeline__form,
 .c--pipeline.is-scrolling .c--pipeline__basics-filter {
     position: fixed;

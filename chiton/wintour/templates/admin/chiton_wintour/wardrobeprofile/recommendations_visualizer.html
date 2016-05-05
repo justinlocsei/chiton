@@ -138,10 +138,11 @@
     <script>
         (function($, Wintour) {
             $(document).ready(function() {
-                var recommendationsData = JSON.parse($('#pipeline-recommendations-data').text());
+                var json = $('#pipeline-recommendations-data').text();
+                var recommendations = json ? JSON.parse(json) : null;
 
                 Wintour.pipeline({
-                    recommendations: recommendationsData,
+                    recommendations: recommendations,
                     root: '.js-pipeline'
                 });
             });

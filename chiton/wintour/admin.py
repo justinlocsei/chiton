@@ -65,22 +65,35 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         return redirect('%s?%s' % (visualizer_url, query_string))
 
     def recommendations_visualizer(self, request):
-        profile = self._convert_get_params_to_pipeline_profile(request.GET)
-        recs = make_recommendations(profile)
-        recs_dict = serialize_recommendations(recs)
+        if request.GET:
+            profile = self._convert_get_params_to_pipeline_profile(request.GET)
+            recs = make_recommendations(profile)
+            recs_dict = serialize_recommendations(recs)
+            recs_json = json.dumps(recs_dict)
+        else:
+            profile = None
+            recs_json = ""
 
         styles = []
         for style in Style.objects.all():
+            selected = False
+            if profile:
+                selected = style.slug in profile.styles
+
             styles.append({
                 'name': style.name,
-                'selected': style.slug in profile.styles,
+                'selected': selected,
                 'slug': style.slug
             })
 
         formalities = []
         for formality in Formality.objects.all():
+            frequency = None
+            if profile:
+                frequency = profile.expectations.get(formality.slug, None)
+
             formalities.append({
-                'frequency': profile.expectations.get(formality.slug, None),
+                'frequency': frequency,
                 'name': formality.name,
                 'slug': formality.slug
             })
@@ -99,7 +112,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             body_shape_choices=BODY_SHAPE_CHOICES,
             frequency_choices=EXPECTATION_FREQUENCY_CHOICES,
             formalities=formalities,
-            recommendations_json=json.dumps(recs_dict),
+            recommendations_json=recs_json,
             profile=profile,
             styles=styles,
             title='Recommendations Visualizer'
