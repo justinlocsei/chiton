@@ -128,16 +128,34 @@ class BasePipeline:
             for weighted_garment in data['garments']:
                 garment = weighted_garment['garment']
                 weighted_garments.setdefault(garment, {
-                    'explanations': [],
+                    'explanations': {
+                        'weights': [],
+                        'normalization': []
+                    },
                     'weight': 0
                 })
-                weighted_garments[garment]['weight'] += weighted_garment['weight'] * data['importance']
+                normalized_weight = weighted_garment['weight'] * data['importance']
+                weighted_garments[garment]['weight'] += normalized_weight
 
+                # Add debug information on each logged weight application and
+                # on the results of combining the weights
                 if debug:
-                    weighted_garments[garment]['explanations'].append({
+                    weighted_garments[garment]['explanations']['weights'].append({
                         'name': weight.name,
-                        'reasons': weight.get_explanations(garment),
-                        'slug': weight.slug
+                        'slug': weight.slug,
+                        'reasons': weight.get_explanations(garment)
+                    })
+
+                    if data['importance'] > 1:
+                        weight_action = 'Normalized weight with a %dx boost factor' % data['importance']
+                    else:
+                        weight_action = 'Normalized weight'
+
+                    weighted_garments[garment]['explanations']['normalization'].append({
+                        'name': weight.name,
+                        'slug': weight.slug,
+                        'weight': normalized_weight,
+                        'action': weight_action
                     })
 
         # Build a lookup table mapping affiliate-network PKs to network names
@@ -167,13 +185,9 @@ class BasePipeline:
                 by_basic[garment.basic][garment]['urls']['vendor'].append(affiliate_link)
             else:
                 by_basic[garment.basic][garment] = {
-                    'explanations': {
-                        'weights': data['explanations']
-                    },
+                    'explanations': data['explanations'],
                     'garment': garment,
-                    'urls': {
-                        'vendor': [affiliate_link]
-                    },
+                    'urls': {'vendor': [affiliate_link]},
                     'weight': data['weight']
                 }
 
