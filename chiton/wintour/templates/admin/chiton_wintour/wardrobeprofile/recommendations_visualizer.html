@@ -141,11 +141,11 @@
         <script type="text/template" id="pipeline-template-garment-details">
             <div class="c--pipeline__garment-links">
 
-                <% _.forEach(urls, function(links, name) { %>
+                <% _.forEach(links, function(group) { %>
                     <div class="c--pipeline__garment-links__group">
-                        <h5 class="c--pipeline__garment-links__group__title"><%- name %> links</h5>
+                        <h5 class="c--pipeline__garment-links__group__title"><%- group.name %> links</h5>
                         <ul class="c--pipeline__garment-links__group__links">
-                            <% _.forEach(links, function(link) { %>
+                            <% _.forEach(group.links, function(link) { %>
                                 <li class="c--pipeline__garment-links__group__link">
                                     <a class="c--pipeline__garment-links__group__link__text" href="<%- link.url %>" target="_blank"><%- link.name %></a>
                                 </li>
@@ -165,13 +165,11 @@
                 </thead>
                 <tbody>
                     <% _.forEach(weights, function(weight) { %>
-                        <% _.forEach(weight.reasons, function(reason) { %>
-                            <tr>
-                                <td><%- weight.name %></th>
-                                <td><%- reason.weight %></td>
-                                <td><%- reason.reason %></td>
-                            </tr>
-                        <% }); %>
+                        <tr>
+                            <td class="for-weight-name"><%- weight.weightName %></th>
+                            <td><%- weight.weight %></td>
+                            <td><%- weight.reason %></td>
+                        </tr>
                     <% }); %>
                 </tbody>
             </table>

@@ -332,9 +332,10 @@
 }
 
 .c--pipeline__garment__details {
-    background: #eee;
+    background: #f5f5f5;
     border: 1px solid #333;
     clear: both;
+    cursor: default;
     display: none;
 }
 
@@ -401,6 +402,7 @@
     padding: 0.5em 1.25em;
     font-weight: normal;
     text-transform: none;
+    white-space: nowrap;
 }
 
 .c--pipeline__garment-log tbody td {
@@ -411,6 +413,10 @@
 
 .c--pipeline__garment-log tbody tr:last-child td {
     border: 0;
+}
+
+.c--pipeline__garment-log .for-weight-name {
+    white-space: nowrap;
 }
 
 /* State -------------------------------------------------------------------- */

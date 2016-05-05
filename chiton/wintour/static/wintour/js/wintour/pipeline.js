@@ -336,9 +336,26 @@ PipelineVisualizer.prototype = {
             });
 
             if ($details.is(':empty')) {
+                var weights = data.explanations.weights.reduce(function(previous, weight) {
+                    return previous.concat(weight.reasons.map(function(reason) {
+                        return {
+                            reason: reason.reason,
+                            weight: reason.weight,
+                            weightName: weight.name
+                        };
+                    }));
+                }, []);
+
+                var links = Object.keys(data.urls).map(function(group) {
+                    return {
+                        name: group,
+                        links: data.urls[group]
+                    };
+                });
+
                 var details = renderTemplate('pipeline-template-garment-details', {
-                    weights: data.explanations.weights,
-                    urls: data.urls
+                    weights: _.orderBy(weights, ['weightName', 'weight'], ['asc', 'desc']),
+                    links: _.sortBy(links, 'name')
                 });
                 $details.html(details);
                 $garment.addClass('is-expanded');
