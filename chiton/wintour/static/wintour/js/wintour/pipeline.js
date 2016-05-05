@@ -2,7 +2,10 @@
 
 window.Wintour = window.Wintour || {};
 
-var TEMPLATES = {};
+// A map of template IDs to compiled template functions
+var COMPILED_TEMPLATES = {};
+
+// The maximum weight value to show
 var WEIGHT_BASE = 10;
 
 /**
@@ -13,10 +16,10 @@ var WEIGHT_BASE = 10;
  * @returns {string} The rendered output
  */
 function renderTemplate(id, context) {
-    var template = TEMPLATES[id];
+    var template = COMPILED_TEMPLATES[id];
     if (!template) {
         template = _.template($('#' + id).html());
-        TEMPLATES[id] = template;
+        COMPILED_TEMPLATES[id] = template;
     }
 
     return template(context);
@@ -48,12 +51,11 @@ function PipelineVisualizer($root) {
     this._readState();
 
     this._enableForm();
+    this._enableFormPinning();
     this._enableFilters();
     this._enableSnapshots();
     this._enableHistory();
     this._enableDetails();
-
-    this._observeScrolling();
 }
 
 PipelineVisualizer.prototype = {
@@ -74,12 +76,13 @@ PipelineVisualizer.prototype = {
             return;
         }
 
+        var basics = [];
         var context = {};
         var basicSlugs = Object.keys(recommendations);
         var numBasics = basicSlugs.length;
 
-        var basics = [];
-
+        // Build a context for rendering each basic and its garments, respecting
+        // the current basic filters and the garment cutoff
         for (var i = 0; i < numBasics; i++) {
             var basicSlug = basicSlugs[i];
             var data = recommendations[basicSlug];
@@ -111,10 +114,7 @@ PipelineVisualizer.prototype = {
             });
         }
 
-        context.basics = _.sortBy(_.compact(basics), function(basic) {
-            return basic.name;
-        });
-
+        context.basics = _.sortBy(_.compact(basics), 'name');
         var output = renderTemplate('pipeline-template-basics', context);
         this.$results.html(output);
     },
@@ -159,7 +159,7 @@ PipelineVisualizer.prototype = {
     },
 
     /**
-     * Update the form based on the browser history
+     * Update the form to match the current history state
      */
     _enableHistory: function() {
         var that = this;
@@ -194,9 +194,7 @@ PipelineVisualizer.prototype = {
 
         var inputs = Object.keys(values).map(function(field) {
             var value = values[field];
-            if (value.length === 1) {
-                value = value[0];
-            }
+            if (value.length === 1) { value = value[0]; }
 
             return {
                 name: field,
@@ -215,26 +213,20 @@ PipelineVisualizer.prototype = {
     },
 
     /**
-     * Allow the basic filters to restrict the output
+     * Allow the basic filter to restrict the output
      */
     _enableFilters: function() {
         var that = this;
-        var $inputs = this.$basicsFilterInput;
+
+        this.$basicsFilterClearSelection.on('click', function() { that._toggleBasicFilters(false); });
+        this.$basicsFilterSelectAll.on('click', function() { that._toggleBasicFilters(true); });
 
         this.$basicsFilter.on('submit', function(e) {
             e.preventDefault();
             that.visualize();
         });
 
-        this.$basicsFilterClearSelection.on('click', function() {
-            that._modifyAllFilterInputs(false);
-        });
-
-        this.$basicsFilterSelectAll.on('click', function() {
-            that._modifyAllFilterInputs(true);
-        });
-
-        this.$basicsFilter.on('change', $inputs, function(e) {
+        this.$basicsFilter.on('change', this.$basicsFilterInput, function(e) {
             var $input = $(e.target);
             var basic = $input.val();
             var enabled = $input.prop('checked');
@@ -256,7 +248,7 @@ PipelineVisualizer.prototype = {
      *
      * @param {boolean} enabled Whether to enable or disabled the filters
      */
-    _modifyAllFilterInputs: function(enabled) {
+    _toggleBasicFilters: function(enabled) {
         var $inputs = this.$basicsFilterInput;
         $inputs.prop('checked', enabled);
 
@@ -269,7 +261,7 @@ PipelineVisualizer.prototype = {
     },
 
     /**
-     * Read state information from the form
+     * Populate the state based on the current state of the form
      */
     _readState: function() {
         var that = this;
@@ -277,10 +269,8 @@ PipelineVisualizer.prototype = {
         this.$basicsFilterInput.each(function() {
             var $input = $(this);
             var basic = $input.val();
-            var enabled = $input.prop('checked');
 
-            that._state.filters[basic] = enabled;
-            that.visualize();
+            that._state.filters[basic] = $input.prop('checked');
         });
 
         this._state.cutoff = this.$basicsFilterCutoff.val();
@@ -305,11 +295,10 @@ PipelineVisualizer.prototype = {
         var pairs = state.map(function(pair) {
             return pair.name + '=' + encodeURIComponent(pair.value);
         });
-        var query = pairs.join('&');
 
         return {
             state: state,
-            url: '?' + query
+            url: '?' + pairs.join('&')
         };
     },
 
@@ -322,61 +311,83 @@ PipelineVisualizer.prototype = {
         this.$results.on('click', '.js-pipeline-garment', function(e) {
             var $garment = $(this);
             var $details = $garment.find('.js-pipeline-garment-details');
-            var id = $garment.data('id');
 
-            if ($(e.target).closest('.js-pipeline-garment-details').length) {
+            var inDetails = $(e.target).closest('.js-pipeline-garment-details').length;
+            if (inDetails) { return; }
+
+            if (!$details.is(':empty')) {
+                $details.empty();
+                $garment.removeClass('is-expanded');
                 return;
             }
 
             var $basic = $garment.parents('.js-pipeline-basic');
             var basicSlug = $basic.data('slug');
 
-            var data = _.find(that._state.recommendations[basicSlug].garments, function(garment) {
-                return garment.garment.pk === id;
+            // Get the recommendations data for the current garment from the
+            // state, and create formatted objects to pass to the template
+            var id = $garment.data('id');
+            var data = _.find(
+                that._state.recommendations[basicSlug].garments,
+                function(garment) { return garment.garment.pk === id; }
+            );
+
+            var weights = data.explanations.weights.reduce(function(previous, weight) {
+                return previous.concat(weight.reasons.map(function(reason) {
+                    return {
+                        message: reason.reason,
+                        weight: reason.weight,
+                        weightName: weight.name
+                    };
+                }));
+            }, []);
+
+            var normalization = data.explanations.normalization.map(function(action) {
+                return {
+                    isNormalized: true,
+                    message: action.action,
+                    weight: action.weight,
+                    weightName: action.name
+                };
             });
 
-            if ($details.is(':empty')) {
-                var weights = data.explanations.weights.reduce(function(previous, weight) {
-                    return previous.concat(weight.reasons.map(function(reason) {
-                        return {
-                            reason: reason.reason,
-                            weight: reason.weight,
-                            weightName: weight.name
-                        };
-                    }));
-                }, []);
+            var allWeights = that._orderWeights(weights).concat(that._orderWeights(normalization));
 
-                var links = Object.keys(data.urls).map(function(group) {
-                    return {
-                        name: group,
-                        links: data.urls[group]
-                    };
-                });
+            var links = Object.keys(data.urls).map(function(group) {
+                return {
+                    name: group,
+                    links: data.urls[group]
+                };
+            });
 
-                var details = renderTemplate('pipeline-template-garment-details', {
-                    weights: _.orderBy(weights, ['weightName', 'weight'], ['asc', 'desc']),
-                    links: _.sortBy(links, 'name')
-                });
-                $details.html(details);
-                $garment.addClass('is-expanded');
-            } else {
-                $details.empty();
-                $garment.removeClass('is-expanded');
-            }
+            // Render the details and add them to the garment
+            var details = renderTemplate('pipeline-template-garment-details', {
+                weights: allWeights,
+                links: _.sortBy(links, 'name')
+            });
+            $details.html(details);
+            $garment.addClass('is-expanded');
         });
     },
 
     /**
-     * Register a scroll handler that changes the class on secondary elements
+     * Order a list of weight explanations by weight name and weight value
+     *
+     * @param {object[]} weights A list of weight explanations
+     * @returns {object[]} The ordered weights
      */
-    _observeScrolling: function() {
+    _orderWeights: function(weights) {
+        return _.orderBy(weights, ['weightName', 'weight'], ['asc', 'desc']);
+    },
+
+    /**
+     * Register a scroll handler that pins the form elements
+     */
+    _enableFormPinning: function() {
         var $el = this.$el;
         var $window = $(window);
 
-        var inflection = Math.min(
-            this.$form.offset().top,
-            this.$basicsFilter.offset().top
-        );
+        var inflection = Math.min(this.$form.offset().top, this.$basicsFilter.offset().top);
         var isPast = false;
 
         var handleScroll = _.throttle(function(e) {
@@ -403,7 +414,7 @@ PipelineVisualizer.prototype = {
  * @param {object,string} options.root The root DOM element for the visualizer
  * @returns {Pipeline}
  */
-window.Wintour.pipeline = function pipeline(options) {
+window.Wintour.pipeline = function(options) {
     var settings = $.extend({
         recommendations: null,
         root: null

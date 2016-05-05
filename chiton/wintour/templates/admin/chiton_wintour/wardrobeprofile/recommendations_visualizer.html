@@ -165,10 +165,10 @@
                 </thead>
                 <tbody>
                     <% _.forEach(weights, function(weight) { %>
-                        <tr class="<%- !weight.weight ? 'is-miss' : '' %>">
+                        <tr class="<%- !weight.weight ? 'for-miss' : '' %> <%- weight.isNormalized ? 'for-normalized' : '' %>">
                             <td class="for-weight-name"><%- weight.weightName %></th>
                             <td><%- weight.weight.toFixed(1) %></td>
-                            <td><%- weight.reason %></td>
+                            <td><%- weight.message %></td>
                         </tr>
                     <% }); %>
                 </tbody>

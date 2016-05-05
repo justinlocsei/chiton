@@ -422,15 +422,24 @@
 }
 
 .c--pipeline__garment-log tbody tr:last-child td {
-    border: 0;
+    border-bottom: 0;
 }
 
 .c--pipeline__garment-log .for-weight-name {
     white-space: nowrap;
 }
 
-.c--pipeline__garment-log tr.is-miss {
+.c--pipeline__garment-log tr.for-miss {
     color: #999;
+}
+
+.c--pipeline__garment-log .for-normalized td {
+    background-color: #fafafa;
+    border-top: 3px double #ccc;
+}
+
+.c--pipeline__garment-log .for-normalized + .for-normalized td {
+    border-top: 0;
 }
 
 /*==============================================================================
