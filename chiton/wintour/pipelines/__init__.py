@@ -123,13 +123,17 @@ class BasePipeline:
             for weighted_garment in values['garments']:
                 garment = weighted_garment['garment']
                 weighted_garments.setdefault(garment, {
-                    'explanations': {},
+                    'explanations': [],
                     'weight': 0
                 })
                 weighted_garments[garment]['weight'] += weighted_garment['weight'] * values['importance']
 
                 if debug:
-                    weighted_garments[garment]['explanations'][weight.slug] = weight.get_explanations(garment)
+                    weighted_garments[garment]['explanations'].append({
+                        'name': weight.name,
+                        'reasons': weight.get_explanations(garment),
+                        'slug': weight.slug
+                    })
 
         # Build a lookup table of the names of affiliate networks
         affiliate_networks = {}
@@ -159,7 +163,9 @@ class BasePipeline:
                 by_basic[garment.basic][garment]['urls']['vendor'].append(url);
             else:
                 by_basic[garment.basic][garment] = {
-                    'explanations': data['explanations'],
+                    'explanations': {
+                        'weights': data['explanations']
+                    },
                     'garment': garment,
                     'urls': {
                         'vendor': [url]
