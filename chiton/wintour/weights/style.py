@@ -3,6 +3,7 @@ from chiton.runway.models import Style
 from chiton.wintour.weights import BaseWeight
 
 
+# The weight to add for each matching style
 MATCH_WEIGHT = 1
 
 
