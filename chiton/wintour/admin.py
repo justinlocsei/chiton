@@ -39,7 +39,7 @@ class PersonAdmin(admin.ModelAdmin):
 class WardrobeProfileAdmin(admin.ModelAdmin):
 
     inlines = [FormalityExpectationInline]
-    list_display = ('pk', 'created_at', 'age', 'shape', 'recommendations')
+    list_display = ('pk', 'created_at', 'age', 'body_shape', 'recommendations')
     list_display_links = ('pk', 'created_at')
     ordering = ('-created_at',)
 
@@ -64,7 +64,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
         data = {
             'age': profile.age,
-            'body_shape': profile.shape,
+            'body_shape': profile.body_shape,
             'style': [s.slug for s in profile.styles.all()]
         }
         for expectation in profile.expectations.all().select_related('formality'):
