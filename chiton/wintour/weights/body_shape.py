@@ -1,4 +1,4 @@
-from chiton.closet.data import EMPHASES, EMPHASIS_CHOICES,  PANT_RISES
+from chiton.closet.data import EMPHASES, EMPHASIS_CHOICES, PANT_RISES
 from chiton.wintour.data import BODY_SHAPES, BODY_SHAPE_CHOICES
 from chiton.wintour.weights import BaseWeight
 

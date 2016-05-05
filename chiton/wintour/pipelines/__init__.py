@@ -160,7 +160,7 @@ class BasePipeline:
 
             by_basic.setdefault(garment.basic, {})
             if garment in by_basic[garment.basic]:
-                by_basic[garment.basic][garment]['urls']['vendor'].append(url);
+                by_basic[garment.basic][garment]['urls']['vendor'].append(url)
             else:
                 by_basic[garment.basic][garment] = {
                     'explanations': {
