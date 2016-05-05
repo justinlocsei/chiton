@@ -98,7 +98,8 @@ def _serialize_weighted_garment(weighted):
     garment_dict = {
         'name': garment.name,
         'slug': garment.slug,
-        'brand': garment.brand.name
+        'brand': garment.brand.name,
+        'pk': garment.pk
     }
 
     return {
