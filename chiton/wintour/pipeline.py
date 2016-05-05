@@ -5,14 +5,14 @@ from functools import partial
 class PipelineProfile:
     """A value object that represents a profile for user in a pipeline."""
 
-    def __init__(self, age=None, body_shape=None, styles=[], expectations={}):
+    def __init__(self, age=None, body_shape=None, expectations={}, styles=[]):
         """Create a new pipeline profile.
 
         Keyword Args:
             age (int): The age of the user
             body_shape (str): The identifier for the user's body shape
-            styles (list): A list of the slugs of all target styles
             expectations (dict): A dict mapping formality slugs to frequency identifiers
+            styles (list): A list of the slugs of all target styles
         """
         self.age = age
         self.body_shape = body_shape
@@ -40,7 +40,7 @@ class PipelineStep:
         self.configure(**kwargs)
 
     def configure(self, **kwargs):
-        """Allow a child class to perform custom configuration."""
+        """Allow a child step to perform custom configuration."""
         pass
 
     def log(self, key, message):
@@ -78,13 +78,14 @@ class PipelineStep:
 
         Returns:
             list: All log messages for the key
+
+        Raises:
+            KeyError: If any level of the namespace is missing
         """
         debug_log = self._debug_log
 
         levels = key.split('.')
         for level in levels[:-1]:
-            if level not in debug_log:
-                return []
             debug_log = debug_log[level]
 
         return debug_log.get(levels.pop(), [])
@@ -123,6 +124,10 @@ class PipelineStep:
     def apply_to_profile(self, profile):
         """Provide a context in which the pipeline step acts on a profile.
 
+        This yields a partial version of the `apply` function that will be
+        called with the keyword args prepared by the current pipeline step from
+        the profile.
+
         Args:
             profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
 
@@ -133,7 +138,7 @@ class PipelineStep:
         yield partial(self.apply, **profile_data)
 
     def apply(self, *args, **kwargs):
-        """Allow a child class to apply its logic to an input.
+        """Allow a child step to apply its logic to an input.
 
         This method will receive any data returned from `provide_profile_data`
         as additional keyword args.

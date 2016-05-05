@@ -2,7 +2,7 @@ from chiton.wintour.pipeline import PipelineStep
 
 
 class BaseFilter(PipelineStep):
-    """The class for all filters."""
+    """The base class for all filters."""
 
     def apply(self, garments):
         """Apply the filter to a set of garments.

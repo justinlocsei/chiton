@@ -13,7 +13,7 @@ def make_recommendations(pipeline_profile, pipeline_class=CorePipeline, debug=Fa
         debug (bool): Whether to generate debug statistics
 
     Returns:
-        dict: The recommendations
+        dict: The recommendations data
     """
     pipeline = pipeline_class()
     return pipeline.make_recommendations(pipeline_profile, debug=debug)
@@ -30,10 +30,9 @@ def package_wardrobe_profile(profile):
     """
     data = {
         'age': profile.age,
-        'body_shape': profile.shape
+        'body_shape': profile.shape,
+        'styles': [style.slug for style in profile.styles.all()]
     }
-
-    data['styles'] = [style.slug for style in profile.styles.all()]
 
     expectations = {}
     for expectation in profile.expectations.all().select_related('formality'):
@@ -76,7 +75,7 @@ def _serialize_weighted_garments(garments):
     """Serialize a list of weighted garments.
 
     Args:
-        garments (list): One or more dicts describing a garment and a weight
+        garments (list): One or more dicts describing a weighted garment
 
     Returns:
         list: The serialized weighted garments
@@ -88,18 +87,18 @@ def _serialize_weighted_garment(weighted):
     """Serialize a single weighted garment.
 
     Args:
-        weighted (dict): A dictionary describing the garment and its weight
+        weighted (dict): A dictionary describing the weighted garment
 
     Returns:
-        dict: A primitive representation of the garment and its weight
+        dict: A primitive-only representation of the garment and its weight
     """
     garment = weighted['garment']
 
     garment_dict = {
-        'name': garment.name,
-        'slug': garment.slug,
         'brand': garment.brand.name,
-        'pk': garment.pk
+        'name': garment.name,
+        'pk': garment.pk,
+        'slug': garment.slug
     }
 
     return {

@@ -7,15 +7,8 @@ from chiton.runway.models import Formality, Style
 from chiton.wintour import data
 
 
-def slug_for_person(person):
-    """Generate the slug for a Person instance.
-
-    Args:
-        person (chiton.wintour.models.Person): A Person instance
-
-    Returns:
-        str: The slug for the person
-    """
+def _slug_for_person(person):
+    """Create a slug for a Person model using the full name."""
     return person.full_name
 
 
@@ -24,7 +17,7 @@ class Person(models.Model):
 
     first_name = models.CharField(max_length=255, verbose_name=_('first name'))
     last_name = models.CharField(max_length=255, verbose_name=_('last name'))
-    slug = AutoSlugField(max_length=255, populate_from=slug_for_person, verbose_name=_('slug'), unique=True)
+    slug = AutoSlugField(max_length=255, populate_from=_slug_for_person, verbose_name=_('slug'), unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('user'))
 
     class Meta:
