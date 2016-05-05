@@ -42,7 +42,7 @@ class BaseWeight(PipelineStep):
         """
         self.log(_make_garment_namespace(garment), {
             'reason': reason,
-            'weight': '%0.2f' % weight
+            'weight': weight
         })
 
     def get_explanations(self, garment):
