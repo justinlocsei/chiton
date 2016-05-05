@@ -40,7 +40,7 @@ class StyleWeight(BaseWeight):
 
         if self.debug and match_count:
             for match in sorted(matching_styles):
-                reason = 'Matches user style of %s' % style_names[match].lower()
+                reason = 'The garment matches the user style of %s' % style_names[match].lower()
                 self.explain_weight(garment, MATCH_WEIGHT, reason)
 
         return match_count * MATCH_WEIGHT
