@@ -20,6 +20,7 @@ from chiton.wintour.matching import make_recommendations, serialize_recommendati
 from chiton.wintour.pipeline import PipelineProfile
 
 
+# A regex for formality expectations as exposed via GET params
 FORMALITY_PARAM_MATCH = re.compile(r'formality\[([^\]]+)\]')
 
 
@@ -58,6 +59,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         return custom + core
 
     def wardrobe_profile_recommendations(self, request, pk):
+        """Redirect to the visualizer, seeded with the profile's data."""
         profile = models.WardrobeProfile.objects.get(pk=pk)
 
         data = {
@@ -65,7 +67,6 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             'body_shape': profile.shape,
             'style': [s.slug for s in profile.styles.all()]
         }
-
         for expectation in profile.expectations.all().select_related('formality'):
             data['formality[%s]' % expectation.formality.slug] = expectation.frequency
 
@@ -75,6 +76,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         return redirect('%s?%s' % (visualizer_url, query_string))
 
     def recommendations_visualizer(self, request):
+        """Show an interactive visualizer for recommendations."""
         if request.GET:
             profile = self._convert_get_params_to_pipeline_profile(request.GET)
             recs = make_recommendations(profile, debug=True)
@@ -83,6 +85,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             profile = None
             recs_dict = {}
 
+        # Add information on the available and selected styles
         styles = []
         for style in Style.objects.all():
             selected = False
@@ -95,6 +98,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 'slug': style.slug
             })
 
+        # Add information on the available and selected formality expectations
         formalities = []
         for formality in Formality.objects.all():
             frequency = None
@@ -107,6 +111,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 'slug': formality.slug
             })
 
+        # Respect filter information specified via GET params
         selected_basics = None
         cutoff = None
         if request.GET:
@@ -118,6 +123,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 for basic_slug in basic_params:
                     selected_basics[basic_slug] = True
 
+        # Add information on the available and selected basics
         basics = []
         for basic in Basic.objects.all():
             selected = True
@@ -144,6 +150,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         ))
 
     def recalculate_recommendations(self, request):
+        """Return recalculate recommendations based on request data as JSON."""
         profile = self._convert_get_params_to_pipeline_profile(request.GET)
         recs_dict = make_recommendations(profile, debug=True)
         serialized = serialize_recommendations(recs_dict)
@@ -151,6 +158,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         return JsonResponse(self._add_admin_urls_to_recs(serialized))
 
     def _convert_get_params_to_pipeline_profile(self, get_data):
+        """Use the values from GET data to create a new pipeline profile."""
         expectations = {}
         for param in get_data:
             formality_match = FORMALITY_PARAM_MATCH.match(param)
@@ -166,16 +174,13 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         )
 
     def _add_admin_urls_to_recs(self, recs):
+        """Add admin-site URLs to each garment in a recommendations dict."""
         for basic, data in recs.items():
             for garment in data['garments']:
-                garment['urls']['admin'] = [
-                    {
-                        'name': 'Garment',
-                        'url': reverse(
-                            'admin:%s_garment_change' % ClosetConfig.label,
-                            args=[garment['garment']['pk']]
-                        )
-                    }
-                ]
+                url = reverse(
+                    'admin:%s_garment_change' % ClosetConfig.label,
+                    args=[garment['garment']['pk']]
+                )
+                garment['urls']['admin'] = [{'name': 'Garment', 'url': url}]
 
         return recs
