@@ -115,7 +115,7 @@ class BasePipeline:
             for weighted_garment in values['garments']:
                 garment = weighted_garment['garment']
                 weighted_garments.setdefault(garment, 0)
-                weighted_garments[garment] += weighted_garment['weight']
+                weighted_garments[garment] += weighted_garment['weight'] * values['importance']
 
         # Group garments by their basic type
         max_weight = 0
