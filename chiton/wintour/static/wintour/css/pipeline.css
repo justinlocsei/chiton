@@ -419,6 +419,10 @@
     white-space: nowrap;
 }
 
+.c--pipeline__garment-log tr.is-miss {
+    color: #999;
+}
+
 /* State -------------------------------------------------------------------- */
 
 .c--pipeline.is-loading .c--pipeline__results__data {

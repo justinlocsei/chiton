@@ -165,9 +165,9 @@
                 </thead>
                 <tbody>
                     <% _.forEach(weights, function(weight) { %>
-                        <tr>
+                        <tr class="<%- !weight.weight ? 'is-miss' : '' %>">
                             <td class="for-weight-name"><%- weight.weightName %></th>
-                            <td><%- weight.weight %></td>
+                            <td><%- weight.weight.toFixed(1) %></td>
                             <td><%- weight.reason %></td>
                         </tr>
                     <% }); %>
