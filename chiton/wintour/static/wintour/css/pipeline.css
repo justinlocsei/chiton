@@ -140,21 +140,39 @@
     vertical-align: baseline;
 }
 
+.c--pipeline__form__buttons {
+    margin-top: 1.5em;
+}
+
 .c--pipeline__form__button {
-    background-color: #333;
+    background-color: #fff;
     border-radius: 0.25em;
-    border: 0;
-    color: #fff;
+    border: 1px solid #ddd;
     cursor: pointer;
     display: block;
     font-size: 1.25em;
     line-height: 1.25;
-    margin: 1.5em auto 0;
-    padding: 0.75em 2em;
+    margin: 0 auto;
+    padding: 0.75em 0;
     text-align: center;
+    width: 90%;
 }
 
 .c--pipeline__form__button:hover {
+    background-color: #eee;
+}
+
+.c--pipeline__form__button + .c--pipeline__form__button {
+    margin-top: 0.5em;
+}
+
+.c--pipeline__form__button.for-submit {
+    background-color: #333;
+    border: 0;
+    color: #fff;
+}
+
+.c--pipeline__form__button.for-submit:hover {
     background-color: #000;
 }
 

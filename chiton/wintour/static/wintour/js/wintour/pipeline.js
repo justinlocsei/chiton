@@ -31,6 +31,7 @@ function PipelineVisualizer($root) {
     this.$el = $root;
     this.$results = $root.find('.js-pipeline-data');
     this.$form = $root.find('.js-pipeline-form');
+    this.$takeSnapshot = $root.find('.js-pipeline-form-take-snapshot');
 
     this.$basicsFilter = $root.find('.js-pipeline-basics-filter');
     this.$basicsFilterInput = $root.find('.js-pipeline-basics-filter-input');
@@ -44,9 +45,12 @@ function PipelineVisualizer($root) {
         recommendations: null
     };
 
+    this._readState();
+
     this._enableForm();
     this._enableFilters();
-    this._readState();
+    this._enableSnapshots();
+    this._enableHistory();
 
     this._observeScrolling();
 }
@@ -140,6 +144,74 @@ PipelineVisualizer.prototype = {
     },
 
     /**
+     * Allow snapshots of the current form to be added to the history
+     */
+    _enableSnapshots: function() {
+        var that = this;
+
+        this.$takeSnapshot.on('click', function() {
+            var state = that._serializeState();
+            window.history.pushState(state.state, null, state.url);
+        });
+    },
+
+    /**
+     * Update the form based on the browser history
+     */
+    _enableHistory: function() {
+        var that = this;
+
+        var state = window.history.state;
+        if (state) {
+            this._restoreHistory(state);
+        } else {
+            var currentState = this._serializeState();
+            window.history.replaceState(currentState.state, null, currentState.url);
+        }
+
+        window.onpopstate = function(e) {
+            that._restoreHistory(e.state);
+        };
+    },
+
+    /**
+     * Restore the form to match a given history state
+     *
+     * @param {object} state A description of the form's state
+     */
+    _restoreHistory: function(state) {
+        var values = state.reduce(function(previous, pair) {
+            if (!previous[pair.name]) {
+                previous[pair.name] = [pair.value];
+            } else {
+                previous[pair.name].push(pair.value);
+            }
+            return previous;
+        }, {});
+
+        var inputs = Object.keys(values).map(function(field) {
+            var value = values[field];
+            if (value.length === 1) {
+                value = value[0];
+            }
+
+            return {
+                name: field,
+                value: value
+            };
+        });
+
+        var $el = this.$el;
+        inputs.forEach(function(input) {
+            var $inputs = $el.find(':input[name="' + input.name + '"]');
+            $inputs.val(input.value);
+            $inputs.change();
+        });
+
+        this.$form.submit();
+    },
+
+    /**
      * Allow the basic filters to restrict the output
      */
     _enableFilters: function() {
@@ -212,6 +284,33 @@ PipelineVisualizer.prototype = {
     },
 
     /**
+     * Serialize the state of the visualizer as a plain object
+     *
+     * @returns {object}
+     */
+    _serializeState: function() {
+        var state = this.$form.serializeArray();
+        state.push({name: 'cutoff', value: this._state.cutoff});
+
+        var basics = this._state.filters;
+        Object.keys(basics).forEach(function(slug) {
+            if (basics[slug]) {
+                state.push({name: 'basic', value: slug});
+            }
+        });
+
+        var pairs = state.map(function(pair) {
+            return pair.name + '=' + encodeURIComponent(pair.value);
+        });
+        var query = pairs.join('&');
+
+        return {
+            state: state,
+            url: '?' + query
+        };
+    },
+
+    /**
      * Register a scroll handler that changes the class on secondary elements
      */
     _observeScrolling: function() {
@@ -260,6 +359,6 @@ window.Wintour.pipeline = function pipeline(options) {
     }
 
     return pipeline;
-}
+};
 
 })(window.jQuery, window._);
