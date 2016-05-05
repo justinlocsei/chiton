@@ -118,6 +118,19 @@ PipelineVisualizer.prototype = {
         context.basics = _.sortBy(_.compact(basics), 'name');
         var output = renderTemplate('pipeline-template-basics', context);
         this.$results.html(output);
+
+        var debug = recommendations.debug;
+        var debugPanel = renderTemplate('pipeline-template-debug', {
+            queries: debug.queries.map(function(query) {
+                return {
+                    time: Math.round(parseFloat(query.time) * 1000),
+                    sql: query.sql
+                };
+            }),
+            queryCount: debug.queries.length,
+            time: Math.round(debug.time * 1000)
+        });
+        this.$results.append(debugPanel);
     },
 
     /**
