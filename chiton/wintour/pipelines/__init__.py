@@ -119,7 +119,9 @@ class BasePipeline:
             print(query['time'])
         print('Total queries: %d' % len(connection.queries))
 
-        return recs
+        return {
+            'basics': recs
+        }
 
     def _weight_garments(self, weights, garments, profile):
         """Apply a series of weights to a list of garments for a profile.

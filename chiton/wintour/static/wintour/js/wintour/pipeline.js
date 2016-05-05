@@ -78,14 +78,15 @@ PipelineVisualizer.prototype = {
 
         var basics = [];
         var context = {};
-        var basicSlugs = Object.keys(recommendations);
+        var basicRecs = recommendations.basics;
+        var basicSlugs = Object.keys(basicRecs);
         var numBasics = basicSlugs.length;
 
         // Build a context for rendering each basic and its garments, respecting
         // the current basic filters and the garment cutoff
         for (var i = 0; i < numBasics; i++) {
             var basicSlug = basicSlugs[i];
-            var data = recommendations[basicSlug];
+            var data = basicRecs[basicSlug];
 
             if (!state.filters[basicSlug]) { continue; }
 

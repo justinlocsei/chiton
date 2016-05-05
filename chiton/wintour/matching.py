@@ -51,8 +51,9 @@ def serialize_recommendations(recommendations):
     Returns:
         dict: The recommenations as a dict of primitives
     """
-    serialized = {}
-    for basic, values in recommendations.items():
+    basics = {}
+
+    for basic, values in recommendations['basics'].items():
         value = {
             'basic': {
                 'name': basic.name,
@@ -66,9 +67,11 @@ def serialize_recommendations(recommendations):
         for facet, garments in values['facets'].items():
             value['facets'][facet.slug] = _serialize_weighted_garments(garments)
 
-        serialized[basic.slug] = value
+        basics[basic.slug] = value
 
-    return serialized
+    return {
+        'basics': basics
+    }
 
 
 def _serialize_weighted_garments(garments):
