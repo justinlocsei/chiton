@@ -2,7 +2,7 @@ from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.pipelines.core import CorePipeline
 
 
-def make_recommendations(pipeline_profile, pipeline_class=CorePipeline):
+def make_recommendations(pipeline_profile, pipeline_class=CorePipeline, debug=False):
     """Return garment recommendations for a wardrobe profile.
 
     Args:
@@ -10,12 +10,13 @@ def make_recommendations(pipeline_profile, pipeline_class=CorePipeline):
 
     Keyword Args:
         pipeline (chiton.wintour.pipelines.BasePipeline): The pipeline to use
+        debug (bool): Whether to generate debug statistics
 
     Returns:
         dict: The recommendations
     """
     pipeline = pipeline_class()
-    return pipeline.make_recommendations(pipeline_profile)
+    return pipeline.make_recommendations(pipeline_profile, debug=debug)
 
 
 def package_wardrobe_profile(profile):

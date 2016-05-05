@@ -54,7 +54,7 @@ class BasePipeline:
         """
         return []
 
-    def make_recommendations(self, profile):
+    def make_recommendations(self, profile, debug=False):
         """Make recommendations for a wardrobe profile.
 
         The recommendations are exposed as a dict keyed by Basic model
@@ -64,6 +64,9 @@ class BasePipeline:
         Args:
             profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
 
+        Keyword Args:
+            debug (bool): Whether to generate debugging statistics
+
         Returns:
             dict: The recommendations
         """
@@ -72,6 +75,10 @@ class BasePipeline:
         filters = self.provide_filters()
         facets = self.provide_facets()
         weights = self.provide_weights()
+
+        # Apply the given debug mode to all pipeline steps
+        for step in filters + facets + weights:
+            step.debug = debug
 
         # Apply all filters to the set of garments
         for filter_instance in filters:
