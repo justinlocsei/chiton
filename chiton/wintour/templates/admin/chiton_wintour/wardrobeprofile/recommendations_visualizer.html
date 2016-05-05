@@ -85,14 +85,14 @@
 
                     <div class="c--pipeline__basics-filter__cutoff">
                         <label for="pipeline-cutoff">Garment Count</label>
-                        <input type="number" id="pipeline-cuttoff" class="js-pipeline-basics-filter-cutoff" value="{{ cutoff | default:5 }}" />
+                        <input type="number" name="cutoff" id="pipeline-cuttoff" class="js-pipeline-basics-filter-cutoff" value="{{ cutoff | default:5 }}" />
                     </div>
 
                     <div class="c--pipeline__basics-filter__form">
                         <ul class="c--pipeline__basics-filter__basics">
                             {% for basic in basics %}
                                 <li class="c--pipeline__basics-filter__basic">
-                                    <input class="js-pipeline-basics-filter-input" type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
+                                    <input class="js-pipeline-basics-filter-input" name="basic" type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
                                     <label for="pipeline-basic-{{ basic.slug }}">{{ basic.name }}</label>
                                 </li>
                             {% endfor %}
