@@ -8,6 +8,8 @@ from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils.html import format_html
+from django.utils.translation import ugettext_lazy as _
 
 from chiton.core.admin import site
 from chiton.runway.models import Basic, Formality, Style
@@ -35,8 +37,15 @@ class PersonAdmin(admin.ModelAdmin):
 class WardrobeProfileAdmin(admin.ModelAdmin):
 
     inlines = [FormalityExpectationInline]
-    list_display = ('created_at', 'age', 'shape', 'pk')
+    list_display = ('pk', 'created_at', 'age', 'shape', 'recommendations')
+    list_display_links = ('pk', 'created_at')
     ordering = ('-created_at',)
+
+    def recommendations(self, profile):
+        url = reverse('admin:wardrobe-profile-recommendations', args=[profile.pk])
+        link = '<a href="%s">View Recommendations</a>' % url
+        return format_html(link)
+    recommendations.short_description = _('Recommendations')
 
     def get_urls(self):
         core = super().get_urls()
