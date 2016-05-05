@@ -20,6 +20,8 @@ class BasePipeline:
     def load_garments(self):
         """Return the set of garments to use for the pipeline.
 
+        This allows all pipeline steps to pre-process the garments.
+
         Returns:
             django.db.models.query.QuerySet: All garment models
         """
@@ -59,8 +61,8 @@ class BasePipeline:
         """Make recommendations for a wardrobe profile.
 
         The recommendations are exposed as a dict keyed by Basic model
-        instances, whose subkeys provide facets grouping Garment instances with
-        metadata indicating the strength of the match for the profile.
+        instances, whose subkeys provide information on the raw set of garments
+        returned, as well as any applied facets.
 
         Args:
             profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
@@ -69,22 +71,23 @@ class BasePipeline:
             debug (bool): Whether to generate debugging statistics
 
         Returns:
-            dict: The recommendations
+            dict: The garment recommendations
         """
-        garments = self.load_garments().select_related('basic')
+        garments_qs = self.load_garments().select_related('basic')
 
         filters = self.provide_filters()
         facets = self.provide_facets()
         weights = self.provide_weights()
 
-        # Apply the given debug mode to all pipeline steps
-        for step in filters + facets + weights:
-            step.debug = debug
+        # Enable debug mode on all pipeline steps when debugging
+        if debug:
+            for step in filters + facets + weights:
+                step.debug = debug
 
         # Apply all filters to the set of garments
         for filter_instance in filters:
             with filter_instance.apply_to_profile(profile) as filter_function:
-                garments = filter_function(garments)
+                garments_qs = filter_function(garments_qs)
 
         # Apply each weight to each garment, and group the results by weight,
         # while keeping data on the weight's value ranges and importance
@@ -95,7 +98,7 @@ class BasePipeline:
             min_weight = 0
 
             with weight.apply_to_profile(profile) as weight_function:
-                for garment in garments:
+                for garment in garments_qs:
                     applied_weight = weight_function(garment)
                     weighted_garments.append({
                         'garment': garment,
@@ -104,11 +107,13 @@ class BasePipeline:
                     max_weight = max(max_weight, applied_weight)
                     min_weight = min(min_weight, applied_weight)
 
+            # Recalculate the garment weights as a floating-point percentage
+            # based on the range of values for the weight
             weight_range = max_weight - min_weight
             if weight_range:
                 for weighted_garment in weighted_garments:
-                    applied_weight = weighted_garment['weight'] - min_weight
-                    weighted_garment['weight'] = applied_weight / weight_range
+                    zeroed_weight = weighted_garment['weight'] - min_weight
+                    weighted_garment['weight'] = zeroed_weight / weight_range
 
             weightings[weight] = {
                 'garments': weighted_garments,
@@ -119,14 +124,14 @@ class BasePipeline:
         # values applied to each garment and using each weight's importance to
         # determine the final applied weight
         weighted_garments = {}
-        for weight, values in weightings.items():
-            for weighted_garment in values['garments']:
+        for weight, data in weightings.items():
+            for weighted_garment in data['garments']:
                 garment = weighted_garment['garment']
                 weighted_garments.setdefault(garment, {
                     'explanations': [],
                     'weight': 0
                 })
-                weighted_garments[garment]['weight'] += weighted_garment['weight'] * values['importance']
+                weighted_garments[garment]['weight'] += weighted_garment['weight'] * data['importance']
 
                 if debug:
                     weighted_garments[garment]['explanations'].append({
@@ -135,7 +140,7 @@ class BasePipeline:
                         'slug': weight.slug
                     })
 
-        # Build a lookup table of the names of affiliate networks
+        # Build a lookup table mapping affiliate-network PKs to network names
         affiliate_networks = {}
         for network in AffiliateNetwork.objects.all():
             affiliate_networks[network.id] = network.name
@@ -146,21 +151,20 @@ class BasePipeline:
         by_basic = {}
         for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic'):
             garment = affiliate_item.garment
-
             try:
                 data = weighted_garments[garment]
             except KeyError:
                 continue
 
             max_weight = max(max_weight, data['weight'])
-            url = {
+            affiliate_link = {
                 'name': affiliate_networks[affiliate_item.network_id],
                 'url': affiliate_item.url
             }
 
             by_basic.setdefault(garment.basic, {})
             if garment in by_basic[garment.basic]:
-                by_basic[garment.basic][garment]['urls']['vendor'].append(url)
+                by_basic[garment.basic][garment]['urls']['vendor'].append(affiliate_link)
             else:
                 by_basic[garment.basic][garment] = {
                     'explanations': {
@@ -168,18 +172,21 @@ class BasePipeline:
                     },
                     'garment': garment,
                     'urls': {
-                        'vendor': [url]
+                        'vendor': [affiliate_link]
                     },
                     'weight': data['weight']
                 }
 
-        # Normalize the final weights based on the maximum weight value
+        # Update all weights to be a floating-point percentage, based on the
+        # maximum detected final weight
         if max_weight:
             for basic, garments in by_basic.items():
                 for garment, data in garments.items():
                     data['weight'] = data['weight'] / max_weight
 
-        # Generate faceted recommendations grouped by basic type
+        # Generate the final recommendations as a dict keyed by basic type, each
+        # of which will have a key for facets as well as a key for all garments,
+        # sorted in descending order by weight
         recs = {}
         weight_fetcher = itemgetter('weight')
         for basic, weighted_garments in by_basic.items():
