@@ -1,16 +1,19 @@
+import json
+import re
+from urllib.parse import urlencode
+
 from django.conf.urls import url
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-import json
-import re
 
 from chiton.core.admin import site
 from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
-from chiton.wintour.matching import make_recommendations, package_wardrobe_profile, serialize_recommendations
+from chiton.wintour.matching import make_recommendations, serialize_recommendations
 from chiton.wintour.pipeline import PipelineProfile
 
 
@@ -32,23 +35,34 @@ class PersonAdmin(admin.ModelAdmin):
 class WardrobeProfileAdmin(admin.ModelAdmin):
 
     inlines = [FormalityExpectationInline]
-    list_display = ('created_at',)
+    list_display = ('created_at', 'age', 'shape', 'pk')
     ordering = ('-created_at',)
 
     def get_urls(self):
         core = super().get_urls()
-        pre = [
+        custom = [
             url(r'^recommendations-visualizer/$', self.admin_site.admin_view(self.recommendations_visualizer), name='recommendations-visualizer'),
-            url(r'^recommendations-visualizer/recalculate$', self.admin_site.admin_view(self.recalculate_recommendations), name='recalculate-recommendations')
-        ]
-        post = [
+            url(r'^recommendations-visualizer/recalculate$', self.admin_site.admin_view(self.recalculate_recommendations), name='recalculate-recommendations'),
             url(r'^(?P<pk>\d+)/recommendations/$', self.admin_site.admin_view(self.wardrobe_profile_recommendations), name='wardrobe-profile-recommendations')
         ]
-        return pre + core + post
+        return custom + core
 
     def wardrobe_profile_recommendations(self, request, pk):
-        wardrobe_profile = models.WardrobeProfile.objects.get(pk=pk)
-        profile = package_wardrobe_profile(wardrobe_profile)
+        profile = models.WardrobeProfile.objects.get(pk=pk)
+
+        data = {
+            'age': profile.age,
+            'body_shape': profile.shape,
+            'style': [s.slug for s in profile.styles.all()]
+        }
+
+        for expectation in profile.expectations.all().select_related('formality'):
+            data['formality[%s]' % expectation.formality.slug] = expectation.frequency
+
+        visualizer_url = reverse('admin:recommendations-visualizer')
+        query_string = urlencode(data, doseq=True)
+
+        return redirect('%s?%s' % (visualizer_url, query_string))
 
     def recommendations_visualizer(self, request):
         profile = self._convert_get_params_to_pipeline_profile(request.GET)
