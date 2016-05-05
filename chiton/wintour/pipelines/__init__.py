@@ -150,7 +150,7 @@ class BasePipeline:
 
             max_weight = max(max_weight, data['weight'])
             url = {
-                'affiliate': affiliate_networks[affiliate_item.network_id],
+                'name': affiliate_networks[affiliate_item.network_id],
                 'url': affiliate_item.url
             }
 
