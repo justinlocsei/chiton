@@ -107,11 +107,26 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 'slug': formality.slug
             })
 
+        selected_basics = None
+        cutoff = None
+        if request.GET:
+            cutoff = request.GET.get('cutoff', None)
+
+            basic_params = request.GET.getlist('basic', [])
+            if basic_params:
+                selected_basics = {}
+                for basic_slug in basic_params:
+                    selected_basics[basic_slug] = True
+
         basics = []
         for basic in Basic.objects.all():
+            selected = True
+            if selected_basics:
+                selected = selected_basics.get(basic.slug, False)
+
             basics.append({
                 'name': basic.name,
-                'selected': True,
+                'selected': selected,
                 'slug': basic.slug
             })
 
@@ -119,6 +134,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             self.admin_site.each_context(request),
             basics=basics,
             body_shape_choices=BODY_SHAPE_CHOICES,
+            cutoff=cutoff,
             frequency_choices=EXPECTATION_FREQUENCY_CHOICES,
             formalities=formalities,
             recommendations_json=recs_json,
