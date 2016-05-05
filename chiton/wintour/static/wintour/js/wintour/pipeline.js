@@ -164,12 +164,9 @@ PipelineVisualizer.prototype = {
     _enableHistory: function() {
         var that = this;
 
-        var state = window.history.state;
-        if (state) {
-            this._restoreHistory(state);
-        } else {
-            var currentState = this._serializeState();
-            window.history.replaceState(currentState.state, null, currentState.url);
+        if (!window.history.state) {
+            var state = this._serializeState();
+            window.history.replaceState(state.state, null, state.url);
         }
 
         window.onpopstate = function(e) {
