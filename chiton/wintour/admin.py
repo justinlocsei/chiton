@@ -11,6 +11,7 @@ from django.template.response import TemplateResponse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from chiton.closet.apps import Config as ClosetConfig
 from chiton.core.admin import site
 from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
@@ -78,10 +79,9 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             profile = self._convert_get_params_to_pipeline_profile(request.GET)
             recs = make_recommendations(profile, debug=True)
             recs_dict = serialize_recommendations(recs)
-            recs_json = json.dumps(recs_dict)
         else:
             profile = None
-            recs_json = ""
+            recs_dict = {}
 
         styles = []
         for style in Style.objects.all():
@@ -137,7 +137,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             cutoff=cutoff,
             frequency_choices=EXPECTATION_FREQUENCY_CHOICES,
             formalities=formalities,
-            recommendations_json=recs_json,
+            recommendations_json=json.dumps(self._add_admin_urls_to_recs(recs_dict)),
             profile=profile,
             styles=styles,
             title='Recommendations Visualizer'
@@ -145,9 +145,10 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
     def recalculate_recommendations(self, request):
         profile = self._convert_get_params_to_pipeline_profile(request.GET)
-        recs = make_recommendations(profile, debug=True)
+        recs_dict = make_recommendations(profile, debug=True)
+        serialized = serialize_recommendations(recs_dict)
 
-        return JsonResponse(serialize_recommendations(recs))
+        return JsonResponse(self._add_admin_urls_to_recs(serialized))
 
     def _convert_get_params_to_pipeline_profile(self, get_data):
         expectations = {}
@@ -163,3 +164,18 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             expectations=expectations,
             styles=get_data.getlist('style')
         )
+
+    def _add_admin_urls_to_recs(self, recs):
+        for basic, data in recs.items():
+            for garment in data['garments']:
+                garment['urls']['admin'] = [
+                    {
+                        'name': 'Garment',
+                        'url': reverse(
+                            'admin:%s_garment_change' % ClosetConfig.label,
+                            args=[garment['garment']['pk']]
+                        )
+                    }
+                ]
+
+        return recs
