@@ -37,11 +37,13 @@ INSTALLED_APPS = [
 
     'adminsortable2',
     'raven.contrib.django.raven_compat',
+    'rest_framework',
 
     'chiton.core.apps.Config',
     'chiton.closet.apps.Config',
     'chiton.rack.apps.Config',
-    'chiton.runway.apps.Config'
+    'chiton.runway.apps.Config',
+    'chiton.wintour.apps.Config'
 ]
 
 MIDDLEWARE_CLASSES = [

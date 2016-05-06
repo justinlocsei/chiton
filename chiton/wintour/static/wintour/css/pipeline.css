@@ -1,0 +1,529 @@
+.c--pipeline {
+
+}
+
+.c--pipeline::after {
+    clear: both;
+    content: "";
+    display: block;
+}
+
+.c--pipeline__form {
+    float: left;
+    font-size: 0.9em;
+    margin-top: 0.85em;
+    width: 26em;
+}
+
+.c--pipeline__results {
+    display: table;
+    margin-left: 28em;
+    table-layout: fixed;
+    width: calc(100% - 28em);
+}
+
+.c--pipeline__results__data {
+    display: table-cell;
+    padding-right: 4em;
+    transition: opacity 500ms;
+}
+
+.c--pipeline__results__basics {
+    display: table-cell;
+    vertical-align: top;
+    width: 10em;
+}
+
+/*==============================================================================
+| Form
+==============================================================================*/
+
+.c--pipeline__form select,
+.c--pipeline__form input {
+    height: auto;
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.c--pipeline__form label {
+    cursor: pointer;
+}
+
+.c--pipeline__form select {
+    font-size: 1em;
+    padding: 0;
+}
+
+.c--pipeline__form__fields {
+    border: 0;
+    margin-bottom: 1em;
+}
+
+.c--pipeline__form__fields legend {
+    border-bottom: 1px solid #999;
+    box-sizing: border-box;
+    color: #666;
+    display: block;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 0.75em;
+    padding: 0.5em 0;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+.c--pipeline__form__field {
+    padding: 0.25em 0;
+}
+
+.c--pipeline__form__field label + input,
+.c--pipeline__form__field label + select {
+    margin-left: 0.25em;
+}
+
+.c--pipeline__form__field-group {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+}
+
+.c--pipeline__form__field-group {
+    margin-right: 1em;
+}
+
+.c--pipeline__form__choices {
+    display: table;
+    margin: 0;
+    padding: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.c--pipeline__form__choice {
+    display: table-row;
+    font-size: 1em;
+    padding: 0 !important;
+}
+
+.c--pipeline__form__choice label {
+    display: table-cell;
+    padding-bottom: 0.5em;
+}
+
+.c--pipeline__form__choice input {
+    display: table-cell;
+}
+
+.c--pipeline__form__choice input[type="checkbox"] {
+    margin-top: -0.125em;
+}
+
+.c--pipeline__form__choice input + label {
+    padding-left: 0.25em;
+}
+
+.c--pipeline__form__choice label + select {
+    margin-bottom: 0.25em;
+    margin-left: 0.5em;
+}
+
+.c--pipeline__form__choices.for-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.c--pipeline__form__choices.for-grid .c--pipeline__form__choice {
+    display: block;
+    flex: 0 1 50%;
+}
+
+.c--pipeline__form__choices.for-grid .c--pipeline__form__choice * {
+    display: inline-block;
+    vertical-align: baseline;
+}
+
+.c--pipeline__form__buttons {
+    margin-top: 1.5em;
+}
+
+.c--pipeline__form__button {
+    background-color: #fff;
+    border-radius: 0.25em;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    display: block;
+    font-size: 1.25em;
+    line-height: 1.25;
+    margin: 0 auto;
+    padding: 0.75em 0;
+    text-align: center;
+    width: 90%;
+}
+
+.c--pipeline__form__button:hover {
+    background-color: #eee;
+}
+
+.c--pipeline__form__button + .c--pipeline__form__button {
+    margin-top: 0.5em;
+}
+
+.c--pipeline__form__button.for-submit {
+    background-color: #333;
+    border: 0;
+    color: #fff;
+}
+
+.c--pipeline__form__button.for-submit:hover {
+    background-color: #000;
+}
+
+/*==============================================================================
+| Basics Filter
+==============================================================================*/
+
+.c--pipeline__basics-filter {
+    margin-top: 0.75em;
+}
+
+.c--pipeline__basics-filter__title {
+    border-bottom: 1px solid #999;
+    box-sizing: border-box;
+    color: #666;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0.5em 0;
+    text-transform: uppercase;
+}
+
+.c--pipeline__basics-filter__buttons {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+}
+
+.c--pipeline__basics-filter__button {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.25em;
+    cursor: pointer;
+    flex: 1;
+    font-size: 0.75em;
+    padding: 0.5em 1em;
+}
+
+.c--pipeline__basics-filter__button:hover {
+    background-color: #eee;
+}
+
+.c--pipeline__basics-filter__button + .c--pipeline__basics-filter__button {
+    margin-left: 0.5em;
+}
+
+.c--pipeline__basics-filter__form {
+
+}
+
+.c--pipeline__basics-filter__basics {
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basics-filter__basic {
+    font-size: 0.9em;
+    list-style: none;
+    margin-bottom: 0.125em;
+    padding: 0 !important;
+}
+
+.c--pipeline__basics-filter__basic input {
+    margin: 0;
+    margin-top: -0.125em;
+}
+
+.c--pipeline__basics-filter__basic label {
+    cursor: pointer;
+}
+
+.c--pipeline__basics-filter__cutoff {
+    margin-bottom: 1em;
+}
+
+.c--pipeline__basics-filter__cutoff label {
+    display: inline-block;
+    font-size: 0.9em;
+}
+
+.c--pipeline__basics-filter__cutoff input {
+    display: inline-block;
+    width: 2em;
+}
+
+/*==============================================================================
+| Garments
+==============================================================================*/
+
+.c--pipeline__basics {
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basic {
+    list-style: none;
+    padding: 0 !important;
+}
+
+.c--pipeline__basic + .c--pipeline__basic {
+    margin-top: 3em;
+}
+
+.c--pipeline__basic__name {
+    border-bottom: 2px solid currentColor;
+    font-size: 2.25em;
+    font-weight: bold;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.c--pipeline__basic__garments {
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basic__garment {
+    list-style: none;
+    margin-top: 1em;
+    padding: 0 !important;
+}
+
+
+.c--pipeline__garment {
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.c--pipeline__garment__weight {
+    background-color: #333;
+    color: #fff;
+    float: left;
+    font-size: 1.25em;
+    font-weight: 300;
+    margin: 0;
+    padding: 0.5em 0;
+    text-align: center;
+    transition: background-color 250ms;
+    width: 2.5em;
+}
+
+.c--pipeline__garment__body {
+    margin-left: 4em;
+}
+
+.c--pipeline__garment__name {
+    color: #666;
+    font-size: 1.125em;
+    font-weight: bold;
+    letter-spacing: 0;
+    margin: 0;
+    text-transform: none;
+}
+
+.c--pipeline__garment__brand {
+    color: #999;
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.c--pipeline__garment__details {
+    background: #f5f5f5;
+    border: 1px solid #333;
+    clear: both;
+    cursor: default;
+    display: none;
+}
+
+.c--pipeline__garment:hover .c--pipeline__garment__weight {
+    background-color: #000;
+}
+
+/*==============================================================================
+| Garment Links
+==============================================================================*/
+
+.c--pipeline__garment-links {
+    display: flex;
+    padding: 1.5em 1em;
+}
+
+.c--pipeline__garment-links__group {
+    line-height: 1.25;
+}
+
+.c--pipeline__garment-links__group__title {
+    display: inline-block;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0;
+}
+
+.c--pipeline__garment-links__group__title::after {
+    content: ":";
+}
+
+.c--pipeline__garment-links__group + .c--pipeline__garment-links__group {
+    border-left: 1px solid #ccc;
+    margin-left: 1em;
+    padding-left: 1em;
+}
+
+.c--pipeline__garment-links__group__links {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__garment-links__group__link {
+    display: inline-block;
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1.25;
+    list-style: none;
+    padding: 0 0 0 0.25em !important;
+}
+
+.c--pipeline__garment-links__group__link__text {
+
+}
+
+/*==============================================================================
+| Garment Log
+==============================================================================*/
+
+.c--pipeline__garment-log {
+    width: 100%;
+}
+
+.c--pipeline__garment-log thead th {
+    background-color: #333;
+    color: #fff;
+    padding: 0.5em 1.25em;
+    font-weight: normal;
+    text-transform: none;
+    white-space: nowrap;
+}
+
+.c--pipeline__garment-log tbody td {
+    border-bottom: 1px solid #ccc;
+    font-size: 0.9em;
+    padding: 0.75em 1.25em;
+}
+
+.c--pipeline__garment-log tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.c--pipeline__garment-log .for-weight-name {
+    white-space: nowrap;
+}
+
+.c--pipeline__garment-log tr.for-miss {
+    color: #999;
+}
+
+.c--pipeline__garment-log .for-normalized td {
+    background-color: #fafafa;
+    border-top: 3px double #ccc;
+}
+
+.c--pipeline__garment-log .for-normalized + .for-normalized td {
+    border-top: 0;
+}
+
+/*==============================================================================
+| Debug Information
+==============================================================================*/
+
+.c--pipeline__debug {
+    margin-top: 2em;
+}
+
+.c--pipeline__debug__title {
+    border-bottom: 1px solid #bbb;
+    color: #999;
+    font-size: 2em;
+    font-weight: normal;
+    line-height: 1.25;
+    margin: 0;
+    margin-bottom: 0.5em;
+}
+
+.c--pipeline__debug-info {
+    margin: 0;
+}
+
+.c--pipeline__debug-info__key {
+    display: inline-block;
+}
+
+.c--pipeline__debug-info__key::after {
+    content: ":";
+}
+
+.c--pipeline__debug-info__value {
+    display: inline-block;
+}
+
+.c--pipeline__debug-info__value + .c--pipeline__debug-info__key {
+    margin-left: 2em;
+}
+
+.c--pipeline__queries {
+    margin-top: 1em;
+}
+
+.c--pipeline__queries .for-query {
+    font-family: monospace;
+    font-size: 0.8em;
+}
+
+.c--pipeline__queries .for-time {
+    font-size: 0.8em;
+}
+
+/*==============================================================================
+| State Classes
+==============================================================================*/
+
+.c--pipeline.is-loading .c--pipeline__results__data {
+    opacity: 0.25;
+}
+
+.c--pipeline.is-scrolling {
+    min-height: 100vh;
+}
+
+.c--pipeline.is-scrolling .c--pipeline__form,
+.c--pipeline.is-scrolling .c--pipeline__basics-filter {
+    position: fixed;
+    top: 0;
+}
+
+.c--pipeline__garment.is-expanded {
+    padding-bottom: 1em;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__weight {
+    background-color: #000;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__name {
+    color: #000;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__details {
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.15);
+    display: block;
+}

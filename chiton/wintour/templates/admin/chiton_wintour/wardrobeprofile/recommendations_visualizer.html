@@ -1,0 +1,224 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wintour/css/pipeline.css' %}" />
+    <script src="{% static 'wintour/js/vendor/jquery-2.2.3.min.js' %}"></script>
+    <script src="{% static 'wintour/js/vendor/lodash-4.11.2.min.js' %}"></script>
+    <script src="{% static 'wintour/js/wintour/pipeline.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+    <div class="c--pipeline js-pipeline">
+
+        <form class="c--pipeline__form js-pipeline-form" action="{% url 'admin:recalculate-recommendations' %}">
+
+            <fieldset class="c--pipeline__form__fields for-primary">
+                <legend>Personal Information</legend>
+
+                <div class="c--pipeline__form__field-group">
+                    <div class="c--pipeline__form__field for-body-shape">
+                        <label for="pipeline-body-shape">Body shape</label>
+                        <select id="pipeline-body-shape" name="body_shape">
+                            {% for body_shape_choice in body_shape_choices %}
+                                <option value="{{ body_shape_choice.0 }}" {% if body_shape_choice.0 == profile.body_shape %}selected="selected"{% endif %}>{{ body_shape_choice.0 | title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="c--pipeline__form__field for-age">
+                        <label for="pipeline-age">Age</label>
+                        <input id="pipeline-age" name="age" value="{{ profile.age }}" size="3" />
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <fieldset class="c--pipeline__form__fields for-styles">
+                <legend>Styles</legend>
+
+                <div class="c--pipeline__form__field">
+                    <ul class="c--pipeline__form__choices for-grid">
+                        {% for style in styles %}
+                            <li class="c--pipeline__form__choice">
+                                <input type="checkbox" id="pipeline-style-{{ style.slug }}" name="style" value="{{ style.slug }}" {% if style.selected %}checked="checked"{% endif %} />
+                                <label for="pipeline-style-{{ style.slug }}">{{ style.name }}</label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </fieldset>
+
+            <fieldset class="c--pipeline__form__fields for-expectations">
+                <legend>Formality Expectations</legend>
+
+                <div class="c--pipeline__form__field">
+                    <ul class="c--pipeline__form__choices">
+                        {% for formality in formalities %}
+                            <li class="c--pipeline__form__choice">
+                                <label for="pipeline-expectation-{{ formality.slug }}">{{ formality.name }}</label>
+                                <select id="pipeline-expectation-{{ formality.slug }}" name="formality[{{ formality.slug }}]">
+                                    {% for frequency_choice in frequency_choices %}
+                                        <option value="{{ frequency_choice.0 }}" {% if formality.frequency == frequency_choice.0 %}selected="selected"{% endif %}>{{ frequency_choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </fieldset>
+
+            <div class="c--pipeline__form__buttons">
+                <button type="submit" class="c--pipeline__form__button for-submit">View Recommendations</button>
+                <button type="button" class="c--pipeline__form__button js-pipeline-form-take-snapshot">Take Snapshot</button>
+            </div>
+
+        </form>
+
+        <div class="c--pipeline__results">
+            <div class="c--pipeline__results__data js-pipeline-data"></div>
+
+            <div class="c--pipeline__results__basics">
+                <form class="c--pipeline__basics-filter js-pipeline-basics-filter">
+                    <h4 class="c--pipeline__basics-filter__title">Basics</h4>
+
+                    <div class="c--pipeline__basics-filter__cutoff">
+                        <label for="pipeline-cutoff">Garment Count</label>
+                        <input type="number" name="cutoff" id="pipeline-cuttoff" class="js-pipeline-basics-filter-cutoff" value="{{ cutoff | default:5 }}" />
+                    </div>
+
+                    <div class="c--pipeline__basics-filter__form">
+                        <ul class="c--pipeline__basics-filter__basics">
+                            {% for basic in basics %}
+                                <li class="c--pipeline__basics-filter__basic">
+                                    <input class="js-pipeline-basics-filter-input" name="basic" type="checkbox" id="pipeline-basic-{{ basic.slug }}" value="{{ basic.slug }}" {% if basic.selected %}checked="checked"{% endif %} />
+                                    <label for="pipeline-basic-{{ basic.slug }}">{{ basic.name }}</label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="c--pipeline__basics-filter__buttons">
+                        <button type="button" class="c--pipeline__basics-filter__button js-pipeline-basics-filter-select-all">All</button>
+                        <button type="button" class="c--pipeline__basics-filter__button js-pipeline-basics-filter-clear-selection">None</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/template" id="pipeline-template-basics">
+            <ul class="c--pipeline__basics">
+                <% _.forEach(basics, function(basic) { %>
+                    <li class="c--pipeline__basic js-pipeline-basic" data-slug="<%- basic.slug %>">
+                        <h4 class="c--pipeline__basic__name"><%- basic.name %></h4>
+                        <ol class="c--pipeline__basic__garments">
+                            <% _.forEach(basic.garments, function(garment) { %>
+                                <li class="c--pipeline__basic__garment">
+                                    <%= garment %>
+                                </li>
+                            <% }); %>
+                        </ol>
+                    </li>
+                <% }); %>
+            </ul>
+        </script>
+
+        <script type="text/template" id="pipeline-template-garment">
+            <div class="c--pipeline__garment js-pipeline-garment" data-id="<%- id %>">
+                <p class="c--pipeline__garment__weight"><%- weight %></p>
+                <div class="c--pipeline__garment__body">
+                    <h5 class="c--pipeline__garment__name"><%- name %></h5>
+                    <p class="c--pipeline__garment__brand"><%- brand %></p>
+                </div>
+                <div class="c--pipeline__garment__details js-pipeline-garment-details"></div>
+            </div>
+        </script>
+
+        <script type="text/template" id="pipeline-template-garment-details">
+            <div class="c--pipeline__garment-links">
+
+                <% _.forEach(links, function(group) { %>
+                    <div class="c--pipeline__garment-links__group">
+                        <h5 class="c--pipeline__garment-links__group__title"><%- group.name %> links</h5>
+                        <ul class="c--pipeline__garment-links__group__links">
+                            <% _.forEach(group.links, function(link) { %>
+                                <li class="c--pipeline__garment-links__group__link">
+                                    <a class="c--pipeline__garment-links__group__link__text" href="<%- link.url %>" target="_blank"><%- link.name %></a>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% }); %>
+            </div>
+
+            <table class="c--pipeline__garment-log">
+                <thead>
+                    <tr>
+                        <th>Weight Name</th>
+                        <th>Applied Weight</th>
+                        <th>Explanation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% _.forEach(weights, function(weight) { %>
+                        <tr class="<%- !weight.weight ? 'for-miss' : '' %> <%- weight.isNormalized ? 'for-normalized' : '' %>">
+                            <td class="for-weight-name"><%- weight.weightName %></th>
+                            <td><%- weight.weight.toFixed(1) %></td>
+                            <td><%- weight.message %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </script>
+
+        <script type="text/template" id="pipeline-template-debug">
+            <div class="c--pipeline__debug">
+                <h4 class="c--pipeline__debug__title">Debug Information</h4>
+
+                <dl class="c--pipeline__debug-info">
+                    <dt class="c--pipeline__debug-info__key">Execution Time</dt>
+                    <dd class="c--pipeline__debug-info__value"><%- time %> ms</dd>
+                    <dt class="c--pipeline__debug-info__key">SQL queries</dt>
+                    <dd class="c--pipeline__debug-info__value"><%- queryCount %></dd>
+                </dl>
+
+                <table class="c--pipeline__queries">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>SQL Query</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% _.forEach(queries, function(query) { %>
+                            <tr>
+                                <td class="for-time"><%- query.time %> ms</td>
+                                <td class="for-query"><%- query.sql %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </script>
+
+    </div>
+
+    <script id="pipeline-recommendations-data" type="application/json">{{ recommendations_json | safe }}</script>
+    <script>
+        (function($, Wintour) {
+            $(document).ready(function() {
+                var json = $('#pipeline-recommendations-data').text();
+                var recommendations = json ? JSON.parse(json) : null;
+
+                Wintour.pipeline({
+                    recommendations: recommendations,
+                    root: '.js-pipeline'
+                });
+            });
+        })(window.jQuery, window.Wintour);
+    </script>
+{% endblock %}

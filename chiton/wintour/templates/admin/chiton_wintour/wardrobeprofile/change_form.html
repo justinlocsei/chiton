@@ -1,0 +1,11 @@
+{% extends "admin/change_form.html" %}
+{% load admin_urls i18n %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    <li>
+        <a href="{% url 'admin:wardrobe-profile-recommendations' original.pk|admin_urlquote %}" target="_blank">
+            {% trans "View Recommendations" %}
+        </a>
+    </li>
+{% endblock %}

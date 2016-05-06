@@ -17,9 +17,15 @@
             border-left: 1px solid #eee;
             border-right: 1px solid #eee;
         }
+
         .c--proprieties__formality {
             text-align: center;
         }
+        .c--proprieties__formality.for-not { color: #ddd; }
+        .c--proprieties__formality.for-always { background-color: #2ca25f; }
+        .c--proprieties__formality.for-very { background-color: #66c2a4; }
+        .c--proprieties__formality.for-somewhat { background-color: #b2e2e2; }
+        .c--proprieties__formality.for-mildly { background-color: #edf8fb; }
     </style>
 
     <table class="c--proprieties">
@@ -39,7 +45,7 @@
                     <th>{{ basic.name }}</th>
                     <td>{{ basic.category }}</td>
                     {% for importance in basic.importances %}
-                        <td class="c--proprieties__formality">{{ importance }}</td>
+                        <td class="c--proprieties__formality for-{{ importance.weight }}">{{ importance.name }}</td>
                     {% endfor %}
                 </tr>
             {% endfor %}
