@@ -339,7 +339,7 @@ PipelineVisualizer.prototype = {
             // state, and create formatted objects to pass to the template
             var id = $garment.data('id');
             var data = _.find(
-                that._state.recommendations[basicSlug].garments,
+                that._state.recommendations.basics[basicSlug].garments,
                 function(garment) { return garment.garment.pk === id; }
             );
 
