@@ -2,6 +2,7 @@ from operator import itemgetter
 
 from chiton.closet.models import Garment
 from chiton.rack.models import AffiliateItem, AffiliateNetwork
+from chiton.utils.numbers import format_float
 
 
 class BasePipeline:
@@ -187,7 +188,7 @@ class BasePipeline:
                     })
 
                     if data['importance'] > 1:
-                        weight_action = 'Normalized weight with a %dx boost factor' % data['importance']
+                        weight_action = 'Normalized weight with a %sx boost factor' % format_float(data['importance'])
                     else:
                         weight_action = 'Normalized weight'
 
