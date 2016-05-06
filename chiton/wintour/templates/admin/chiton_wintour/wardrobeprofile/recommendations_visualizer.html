@@ -182,26 +182,30 @@
                 <dl class="c--pipeline__debug-info">
                     <dt class="c--pipeline__debug-info__key">Execution Time</dt>
                     <dd class="c--pipeline__debug-info__value"><%- time %> ms</dd>
-                    <dt class="c--pipeline__debug-info__key">SQL queries</dt>
-                    <dd class="c--pipeline__debug-info__value"><%- queryCount %></dd>
+                    <% if (queryCount) { %>
+                        <dt class="c--pipeline__debug-info__key">SQL queries</dt>
+                        <dd class="c--pipeline__debug-info__value"><%- queryCount %></dd>
+                    <% } %>
                 </dl>
 
-                <table class="c--pipeline__queries">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>SQL Query</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% _.forEach(queries, function(query) { %>
+                <% if (queryCount) { %>
+                    <table class="c--pipeline__queries">
+                        <thead>
                             <tr>
-                                <td class="for-time"><%- query.time %> ms</td>
-                                <td class="for-query"><%- query.sql %></td>
+                                <th>Time</th>
+                                <th>SQL Query</th>
                             </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <% _.forEach(queries, function(query) { %>
+                                <tr>
+                                    <td class="for-time"><%- query.time %> ms</td>
+                                    <td class="for-query"><%- query.sql %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                <% } %>
             </div>
         </script>
 
