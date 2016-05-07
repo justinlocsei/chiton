@@ -29,8 +29,9 @@ function renderTemplate(id, context) {
  * A visualizer for a recommendation pipeline
  *
  * @param {object} $root The jQuery-wrapped root element
+ * @param {boolean} hasData Whether the visualizer has data to show
  */
-function PipelineVisualizer($root) {
+function PipelineVisualizer($root, hasData) {
     this.$el = $root;
     this.$results = $root.find('.js-pipeline-data');
     this.$form = $root.find('.js-pipeline-form');
@@ -54,7 +55,7 @@ function PipelineVisualizer($root) {
     this._enableFormPinning();
     this._enableFilters();
     this._enableSnapshots();
-    this._enableHistory();
+    this._enableHistory(hasData);
     this._enableDetails();
 }
 
@@ -78,7 +79,7 @@ PipelineVisualizer.prototype = {
 
         var basics = [];
         var context = {};
-        var basicRecs = recommendations.basics;
+        var basicRecs = recommendations.basics || {};
         var basicSlugs = Object.keys(basicRecs);
         var numBasics = basicSlugs.length;
 
@@ -119,15 +120,16 @@ PipelineVisualizer.prototype = {
         var output = renderTemplate('pipeline-template-basics', context);
         this.$results.html(output);
 
-        var debug = recommendations.debug;
+        var debug = recommendations.debug || {};
+        var queries = debug.queries || [];
         var debugPanel = renderTemplate('pipeline-template-debug', {
-            queries: debug.queries.map(function(query) {
+            queries: queries.map(function(query) {
                 return {
                     time: Math.round(parseFloat(query.time) * 1000),
                     sql: query.sql
                 };
             }),
-            queryCount: debug.queries.length,
+            queryCount: queries.length,
             time: Math.round(debug.time * 1000)
         });
         this.$results.append(debugPanel);
@@ -174,11 +176,13 @@ PipelineVisualizer.prototype = {
 
     /**
      * Update the form to match the current history state
+     *
+     * @params {boolean} updateState Whether to replace the current browser state
      */
-    _enableHistory: function() {
+    _enableHistory: function(updateState) {
         var that = this;
 
-        if (!window.history.state) {
+        if (!window.history.state && updateState) {
             var state = this._serializeState();
             window.history.replaceState(state.state, null, state.url);
         }
@@ -427,12 +431,15 @@ PipelineVisualizer.prototype = {
  */
 window.Wintour.pipeline = function(options) {
     var settings = $.extend({
-        recommendations: null,
+        recommendations: {},
         root: null
     }, options || {});
 
-    var pipeline = new PipelineVisualizer($(settings.root));
-    if (settings.recommendations) {
+    var basics = settings.recommendations.basics;
+    var hasData = basics && !_.isEmpty(basics);
+
+    var pipeline = new PipelineVisualizer($(settings.root), hasData);
+    if (hasData) {
         pipeline.visualize(settings.recommendations);
     }
 

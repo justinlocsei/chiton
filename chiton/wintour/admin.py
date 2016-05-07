@@ -175,7 +175,9 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
     def _add_admin_urls_to_recs(self, recs):
         """Add admin-site URLs to each garment in a recommendations dict."""
-        for basic, data in recs['basics'].items():
+        basics = recs.get('basics', {})
+
+        for basic, data in basics.items():
             for garment in data['garments']:
                 url = reverse(
                     'admin:%s_garment_change' % ClosetConfig.label,
