@@ -78,15 +78,14 @@ class PipelineStep:
 
         Returns:
             list: All log messages for the key
-
-        Raises:
-            KeyError: If any level of the namespace is missing
         """
         debug_log = self._debug_log
 
         levels = key.split('.')
         for level in levels[:-1]:
-            debug_log = debug_log[level]
+            debug_log = debug_log.get(level, None)
+            if debug_log is None:
+                return []
 
         return debug_log.get(levels.pop(), [])
 
