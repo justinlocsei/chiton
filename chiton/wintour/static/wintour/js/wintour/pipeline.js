@@ -188,7 +188,9 @@ PipelineVisualizer.prototype = {
         }
 
         window.onpopstate = function(e) {
-            that._restoreHistory(e.state);
+            if (e.state) {
+                that._restoreHistory(e.state);
+            }
         };
     },
 
