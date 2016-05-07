@@ -251,4 +251,3 @@ class BasePipeline:
                     data['weight'] = data['weight'] / max_weight
 
         return by_basic
-

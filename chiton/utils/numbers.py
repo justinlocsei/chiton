@@ -29,4 +29,3 @@ def format_float(value, precision=2):
         formatted = re.sub(transform, '', formatted)
 
     return formatted
-
