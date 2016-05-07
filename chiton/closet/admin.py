@@ -31,7 +31,7 @@ class GarmentAdmin(admin.ModelAdmin):
             'fields': ('name', 'brand', 'basic')
         }),
         (_('Weighting'), {
-            'fields': ('formalities', 'styles', 'shoulder_emphasis', 'waist_emphasis', 'hip_emphasis')
+            'fields': ('formalities', 'styles', 'shoulder_emphasis', 'waist_emphasis', 'hip_emphasis', 'is_featured')
         }),
         (_('Dimensions'), {
             'fields': ('sleeve_length', 'bottom_length', 'pant_rise', 'is_busty')

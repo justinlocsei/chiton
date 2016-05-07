@@ -34,6 +34,7 @@ class Garment(models.Model):
     notes = models.TextField(verbose_name=_('notes'), help_text=_('Internal information'), null=True, blank=True)
     is_busty = models.NullBooleanField(verbose_name=_('is for busty women'))
     is_plus_sized = models.BooleanField(verbose_name=_('is for plus-sized women'), default=False)
+    is_featured = models.BooleanField(verbose_name=_('is featured'), default=False)
     care = models.CharField(max_length=25, choices=data.CARE_CHOICES, verbose_name=_('care instructions'), null=True, blank=True)
     styles = models.ManyToManyField(Style, verbose_name=_('styles'))
     formalities = models.ManyToManyField(Formality, verbose_name=_('levels of formality'))
