@@ -12,14 +12,14 @@
     float: left;
     font-size: 0.9em;
     margin-top: 0.85em;
-    width: 26em;
+    width: 26.5em;
 }
 
 .c--pipeline__results {
     display: table;
-    margin-left: 28em;
+    margin-left: 28.5em;
     table-layout: fixed;
-    width: calc(100% - 28em);
+    width: calc(100% - 28.5em);
 }
 
 .c--pipeline__results__data {
