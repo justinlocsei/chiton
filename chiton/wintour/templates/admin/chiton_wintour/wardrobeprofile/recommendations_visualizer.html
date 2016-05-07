@@ -1,9 +1,9 @@
 {% extends "admin/base_site.html" %}
 
-{% block extrahead %}
-    {{ block.super }}
+{% load admin_static %}
 
-    {% load static %}
+{% block extrahead %}
+
     <link rel="stylesheet" href="{% static 'wintour/css/pipeline.css' %}" />
     <script src="{% static 'wintour/js/vendor/jquery-2.2.3.min.js' %}"></script>
     <script src="{% static 'wintour/js/vendor/lodash-4.11.2.min.js' %}"></script>
