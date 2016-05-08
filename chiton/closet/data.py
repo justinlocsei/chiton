@@ -74,3 +74,48 @@ CARE_CHOICES = (
     (CARE_TYPES['HAND_WASH'], _('Hand wash')),
     (CARE_TYPES['DRY_CLEAN'], _('Dry clean'))
 )
+
+SIZES = {
+    'XXS': 'xxs',
+    'XS': 'xs',
+    'S': 's',
+    'M': 'm',
+    'L': 'l',
+    'XL': 'xl',
+    'XXL': 'xxl',
+    'PLUS_1X': 'plus1',
+    'PLUS_2X': 'plus2',
+    'PLUS_3X': 'plus3',
+    'PLUS_4X': 'plus4',
+    'PLUS_5X': 'plus5'
+}
+
+SIZE_DISPLAY = {
+    SIZES['XXS']: 'XXS',
+    SIZES['XS']: 'XS',
+    SIZES['S']: 'S',
+    SIZES['M']: 'M',
+    SIZES['L']: 'L',
+    SIZES['XL']: 'XL',
+    SIZES['XXL']: 'XXL',
+    SIZES['PLUS_1X']: 'Plus 1X',
+    SIZES['PLUS_2X']: 'Plus 2X',
+    SIZES['PLUS_3X']: 'Plus 3X',
+    SIZES['PLUS_4X']: 'Plus 4X',
+    SIZES['PLUS_5X']: 'Plus 5X'
+}
+
+SIZE_CHOICES = (
+    (SIZES['XXS'], SIZE_DISPLAY[SIZES['XXS']]),
+    (SIZES['XS'], SIZE_DISPLAY[SIZES['XS']]),
+    (SIZES['S'], SIZE_DISPLAY[SIZES['S']]),
+    (SIZES['M'], SIZE_DISPLAY[SIZES['M']]),
+    (SIZES['L'], SIZE_DISPLAY[SIZES['L']]),
+    (SIZES['XL'], SIZE_DISPLAY[SIZES['XL']]),
+    (SIZES['XXL'], SIZE_DISPLAY[SIZES['XXL']]),
+    (SIZES['PLUS_1X'], SIZE_DISPLAY[SIZES['PLUS_1X']]),
+    (SIZES['PLUS_2X'], SIZE_DISPLAY[SIZES['PLUS_2X']]),
+    (SIZES['PLUS_3X'], SIZE_DISPLAY[SIZES['PLUS_3X']]),
+    (SIZES['PLUS_4X'], SIZE_DISPLAY[SIZES['PLUS_4X']]),
+    (SIZES['PLUS_5X'], SIZE_DISPLAY[SIZES['PLUS_5X']])
+)

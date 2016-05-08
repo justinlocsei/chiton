@@ -1,3 +1,4 @@
+from adminsortable2.admin import SortableAdminMixin
 from django import db, forms
 from django.contrib import admin
 from django.core.urlresolvers import reverse
@@ -63,3 +64,10 @@ class GarmentAdmin(admin.ModelAdmin):
 
         return format_html('<br>'.join(links))
     affiliate_view_links.short_description = _('Links')
+
+
+@admin.register(models.Size, site=site)
+class SizeAdmin(SortableAdminMixin, admin.ModelAdmin):
+
+    list_display = ('full_name',)
+    ordering = ('position',)

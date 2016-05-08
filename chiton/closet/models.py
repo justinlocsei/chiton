@@ -1,4 +1,5 @@
 from autoslug import AutoSlugField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -110,3 +111,73 @@ class Color(models.Model):
 
     def natural_key(self):
         return (self.slug,)
+
+
+def _slug_for_size(size):
+    """Create the slug for a Size model instance."""
+    parts = [size.base]
+
+    if size.is_tall:
+        parts.append('tall')
+    elif size.is_petite:
+        parts.append('petite')
+
+    return '-'.join(parts)
+
+
+class SizeManager(models.Manager):
+    """A custom manager for sizes."""
+
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
+class Size(models.Model):
+    """A canonical size for an item."""
+
+    objects = SizeManager()
+
+    base = models.CharField(max_length=15, choices=data.SIZE_CHOICES, verbose_name=_('base size'))
+    slug = AutoSlugField(max_length=255, populate_from=_slug_for_size, verbose_name=_('slug'), unique=True)
+    size_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'))
+    size_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'))
+    is_petite = models.BooleanField(verbose_name=_('is petite'), default=False)
+    is_tall = models.BooleanField(verbose_name=_('is tall'), default=False)
+    position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
+
+    class Meta:
+        ordering = ('position',)
+        unique_together = ('size_lower', 'size_upper', 'is_tall', 'is_petite')
+        verbose_name = _('size')
+        verbose_name_plural = _('sizes')
+
+    def __str__(self):
+        return self.full_name
+
+    def natural_key(self):
+        return (self.slug,)
+
+    def clean(self):
+        """Ensure correct ordering of the size range and unique variants."""
+        validate_loose_range(self.size_lower, self.size_upper)
+
+        if self.is_tall and self.is_petite:
+            raise ValidationError(_('A size cannot be both tall and petite'))
+
+    @property
+    def full_name(self):
+        """Show the full name of the size, with its possible variant and range.
+
+        Returns:
+            str: The full name for the size
+        """
+        ranges = sorted(list(set([self.size_lower, self.size_upper])))
+        range_display = '-'.join([str(r) for r in ranges])
+        base = '%s (%s)' % (self.get_base_display(), range_display)
+
+        if self.is_tall:
+            return _('Tall %(size)s') % {'size': base}
+        elif self.is_petite:
+            return _('Petite %(size)s') % {'size': base}
+        else:
+            return base
