@@ -1,0 +1,278 @@
+[
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xxs",
+        "slug": "xxs-petite",
+        "size_lower": 0,
+        "size_upper": 0,
+        "is_petite": true,
+        "is_tall": false,
+        "position": 1
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xs",
+        "slug": "xs-petite",
+        "size_lower": 2,
+        "size_upper": 2,
+        "is_petite": true,
+        "is_tall": false,
+        "position": 2
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "s",
+        "slug": "s-petite",
+        "size_lower": 4,
+        "size_upper": 6,
+        "is_petite": true,
+        "is_tall": false,
+        "position": 3
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "m",
+        "slug": "m-petite",
+        "size_lower": 8,
+        "size_upper": 10,
+        "is_petite": true,
+        "is_tall": false,
+        "position": 4
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "l",
+        "slug": "l-petite",
+        "size_lower": 12,
+        "size_upper": 14,
+        "is_petite": true,
+        "is_tall": false,
+        "position": 5
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xl",
+        "slug": "xl-petite",
+        "size_lower": 16,
+        "size_upper": 18,
+        "is_petite": true,
+        "is_tall": false,
+        "position": 6
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xxs",
+        "slug": "xxs",
+        "size_lower": 0,
+        "size_upper": 0,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 7
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xs",
+        "slug": "xs",
+        "size_lower": 2,
+        "size_upper": 2,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 8
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "s",
+        "slug": "s",
+        "size_lower": 4,
+        "size_upper": 6,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 9
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "m",
+        "slug": "m",
+        "size_lower": 8,
+        "size_upper": 10,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 10
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "l",
+        "slug": "l",
+        "size_lower": 12,
+        "size_upper": 14,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 11
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xl",
+        "slug": "xl",
+        "size_lower": 16,
+        "size_upper": 18,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 12
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xxl",
+        "slug": "xxl",
+        "size_lower": 20,
+        "size_upper": 22,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 13
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xs",
+        "slug": "xs-tall",
+        "size_lower": 2,
+        "size_upper": 2,
+        "is_petite": false,
+        "is_tall": true,
+        "position": 14
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "s",
+        "slug": "s-tall",
+        "size_lower": 4,
+        "size_upper": 6,
+        "is_petite": false,
+        "is_tall": true,
+        "position": 15
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "m",
+        "slug": "m-tall",
+        "size_lower": 8,
+        "size_upper": 10,
+        "is_petite": false,
+        "is_tall": true,
+        "position": 16
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "l",
+        "slug": "l-tall",
+        "size_lower": 12,
+        "size_upper": 14,
+        "is_petite": false,
+        "is_tall": true,
+        "position": 17
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "xl",
+        "slug": "xl-tall",
+        "size_lower": 16,
+        "size_upper": 18,
+        "is_petite": false,
+        "is_tall": true,
+        "position": 18
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "plus1",
+        "slug": "plus1",
+        "size_lower": 14,
+        "size_upper": 16,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 19
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "plus2",
+        "slug": "plus2",
+        "size_lower": 18,
+        "size_upper": 20,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 20
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "plus3",
+        "slug": "plus3",
+        "size_lower": 22,
+        "size_upper": 24,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 21
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "plus4",
+        "slug": "plus4",
+        "size_lower": 26,
+        "size_upper": 28,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 22
+    }
+},
+{
+    "model": "chiton_closet.size",
+    "fields": {
+        "base": "plus5",
+        "slug": "plus5",
+        "size_lower": 30,
+        "size_upper": 32,
+        "is_petite": false,
+        "is_tall": false,
+        "position": 23
+    }
+}
+]
