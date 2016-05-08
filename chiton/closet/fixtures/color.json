@@ -1,0 +1,16 @@
+[
+{
+    "model": "chiton_closet.color",
+    "fields": {
+        "name": "Black",
+        "slug": "black"
+    }
+},
+{
+    "model": "chiton_closet.color",
+    "fields": {
+        "name": "White",
+        "slug": "white"
+    }
+}
+]

@@ -17,6 +17,13 @@ class BrandAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+@admin.register(models.Color, site=site)
+class ColorAdmin(admin.ModelAdmin):
+
+    list_display = ('name',)
+    ordering = ('name',)
+
+
 @admin.register(models.Garment, site=site)
 class GarmentAdmin(admin.ModelAdmin):
 

@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 import pytest
 
-from chiton.closet.models import Brand, Garment
+from chiton.closet.models import Brand, Color, Garment
 
 
 @pytest.mark.django_db
@@ -26,6 +26,18 @@ class TestBrand:
 
         brand.age_upper = 75
         assert brand.full_clean() is None
+
+
+@pytest.mark.django_db
+class TestColor:
+
+    def test_natural_key(self):
+        """It uses its slug."""
+        color = Color.objects.create(name="Black", slug="black")
+        assert color.natural_key() == ('black',)
+
+        found = Color.objects.get_by_natural_key('black')
+        assert color.pk == found.pk
 
 
 @pytest.mark.django_db

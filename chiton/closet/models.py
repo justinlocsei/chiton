@@ -83,3 +83,30 @@ class Brand(models.Model):
     def clean(self):
         """Ensure correct ordering of the age range."""
         validate_loose_range(self.age_lower, self.age_upper)
+
+
+class ColorManager(models.Manager):
+    """A custom manager for colors."""
+
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
+class Color(models.Model):
+    """A canonical color for an item."""
+
+    objects = ColorManager()
+
+    name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
+    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('color')
+        verbose_name_plural = _('colors')
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        return (self.slug,)
