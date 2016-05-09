@@ -20,11 +20,12 @@ class AffiliateItemURLForm(forms.ModelForm):
 
     guid = forms.CharField(required=False, label=_('GUID'), **_API_FIELD_OPTIONS)
     name = forms.CharField(required=False, label=_('Name'), **_API_FIELD_OPTIONS)
+    price = forms.CharField(required=False, label=_('Price'), **_API_FIELD_OPTIONS)
     url = forms.CharField(required=True, label=_('URL'), widget=forms.URLInput)
 
     class Meta:
         model = AffiliateItem
-        fields = ['garment', 'network', 'url', 'guid', 'name']
+        fields = ['garment', 'network', 'url', 'guid', 'name', 'price']
 
     def clean(self):
         """Get overview data from the affiliate if a URL and network are set."""

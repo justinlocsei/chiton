@@ -40,6 +40,7 @@ class AffiliateItem(models.Model):
     guid = models.CharField(max_length=255, verbose_name=_('GUID'))
     garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'), related_name='affiliate_items')
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_('price'), null=True, blank=True)
 
     class Meta:
         verbose_name = _('affiliate item')
