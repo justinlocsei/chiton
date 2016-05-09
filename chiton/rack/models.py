@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from chiton.closet.models import Garment
+from chiton.closet.models import Garment, Size
 
 
 class AffiliateNetworkManager(models.Manager):
@@ -47,3 +47,15 @@ class AffiliateItem(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class StockRecord(models.Model):
+    """A record of an item's availability."""
+
+    item = models.ForeignKey(AffiliateItem, on_delete=models.CASCADE, verbose_name=_('affiliate item'), related_name='stock_records')
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name=_('size'))
+    is_available = models.BooleanField(verbose_name=_('is available'), default=False)
+
+    class Meta:
+        verbose_name = _('stock record')
+        verbose_name_plural = _('stock records')
