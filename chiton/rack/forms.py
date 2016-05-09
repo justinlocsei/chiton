@@ -29,6 +29,9 @@ class AffiliateItemURLForm(forms.ModelForm):
 
     def clean(self):
         """Get overview data from the affiliate if a URL and network are set."""
+        if not self.cleaned_data.get('price'):
+            self.cleaned_data.pop('price')
+
         super().clean()
 
         network = self.cleaned_data.get('network')
