@@ -1,0 +1,41 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept-Encoding: [gzip]
+      Connection: [close]
+      Host: [webservices.amazon.com]
+      User-Agent: [Python-urllib/3.5]
+    method: GET
+    uri: http://webservices.amazon.com/onca/xml?ItemId=B00ZGRB7UO&Operation=ItemLookup&ResponseGroup=Small&Service=AWSECommerceService&Version=2011-08-01
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAORXbU/bSBD+K1YkpDvpnF3bsQnIuHKA0kAKKTFw5dvGuyR72F53d5009+tvHCex
+        DVXUXk+qruWTd3Zen3l2MvhvPqeJsWBScZGddKwu7hhvAn+oWToS4rnIb5nKRaaYAXqZOunMtc6P
+        EVqyqWJywWOmuiQlf4usG4sUhQ+T81ORpkzGbFLdIxtblon7JrY6gX+TM0k0xLplnwqmdOC/i6Lx
+        O0YopACH9YdxTVJ20rmDCOGMZbpj3JOkAMl4peciMwuZJHyKnK4LHlFlU340PW38D2lgM+wx28Hm
+        Ie07Zu8IT80+dmOTHDpHlPX7TzFxfVTr+6GcFSmEVfXnJiMoL4yhZHXFVkO6Syu8GobDD5fDj/af
+        4cPH3v351fsPZWZb69d+lBIxJ5pFZLbzEgtow0oUckoUj5VJ2YIlIi/NTBvv9Ve2q5HPAOPHi9vB
+        4d3NXqtdL3aGddv3Gm45cSEFaG6NJylJkr12G0bUuL1my177iKfQIpLWMYFbnold08IRto4t99ix
+        Hve6uK+Y3nRQk3NP5nyWEV3IOvdrdjkQiZWPi+Vfn0anNyK9eH/+aOvDXu/xnITP7mVvkA9iL07D
+        k7Zr1ODXhnVjKUpW8WxWlhjgLsaeY3uu3cPV346fLzR99PpBlU2sXcNZQcqcBpEsmI+2p9YT32rS
+        aJWzIJwMr0GxOvgVt4KaU3BVifwWD4J1/8tEm0L/nki+zm9MZuC61GiLKncvMkGtaqAdkFIrhbXA
+        HxMJOLYuJ56PGmL/jGnCkzLS3e0o2E6v5bI5tSIyh5TMAZEwXCZzIbU5SRg8PzM0RzxjiOaoDn7g
+        vM1VfOCcWQe2NymmKpY8L8sZUhB+aRaAniYzuNz/xEEt4dnzqaAMdD+nNghiYDscbGy75UkyAG5R
+        Xluee+Q6DVlZLsibILVrrzoOAVT9WeKzyz+IWDzPeEwSo7JUpYv62v8+BDV4NynRpI3lD0PQ6XsY
+        W/sRXOOGarS+jFtIqREJY0CmK+OWzbjScvXV0M1yJDc2aAoeEKHU5BCnO9dpAgBBoVkXtxL7kcT7
+        z2F7YJTCPPs+5JaVk18PPK7mCUDw70DbGP86qEUsSYzQeCs5y+i3YJaXA4w8/XyjC/A4LZQWsITB
+        C1xwtvz6qS/X+iiXghax/imxuXl6go3xW5giSguzfFblPPr/YoJerAuh1pJPC83gPK46Xq14YZ7D
+        vgV7XUvqR1wnLKgWAwN+GMPJyFjvB8Z6PzCq/cCo9gPjTMJW+wcwkBq/Wd7vPqrMqyyaoVG1EKLN
+        lote/6ca/BMAAP//kwm5ItQOAAA=
+    headers:
+      Connection: [Keep-Alive]
+      Content-Encoding: [gzip]
+      Content-Type: [text/xml;charset=UTF-8]
+      Date: ['Tue, 10 May 2016 01:15:30 GMT']
+      Keep-Alive: ['timeout=2, max=15']
+      Server: [Apache-Coyote/1.1]
+      Vary: ['Accept-Encoding,User-Agent']
+    status: {code: 200, message: OK}
+version: 1

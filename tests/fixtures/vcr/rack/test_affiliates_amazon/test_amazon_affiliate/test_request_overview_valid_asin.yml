@@ -7,33 +7,32 @@ interactions:
       Host: [webservices.amazon.com]
       User-Agent: [Python-urllib/3.5]
     method: GET
-    uri: http://webservices.amazon.com/onca/xml?ItemId=B00ZGRB7UO&Operation=ItemLookup&ResponseGroup=Small&Service=AWSECommerceService&Version=2011-08-01
+    uri: http://webservices.amazon.com/onca/xml?ItemId=B00ZGRB7S6&Operation=ItemLookup&ResponseGroup=Small&Service=AWSECommerceService&Version=2011-08-01
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAAORXbW/bNhD+K4KBAB06mZJsyUmgqJCTpvGaNp4lp0O/USItE9FbScqO9+t7tGxL
-        SgqjXYcCy/xJPN4dHz58eDy7bx6zVFtRLliRX/TMvtHT3njuRNLstigeqnJGRVnkgmrgl4uL3lLK
-        8hyhNY0E5SsWU9HHGf67yPtxkSH/U/D2ssgyymMa1PPIMkxTN051w+x57l1JOZaw1ox+qaiQnnsT
-        htMbiglAgMH2Q/uIM3rRm8MKfkJz2dPucVqBZbqRyyLXK56mLEKDvg0ZUR2jPtqZdvknxBvYpo0H
-        Z6ZOogXRh7ER6zgipj407NjG5qkxGlkuavxdnydVBsuK5nOHCLbnx7Bl8Z5uJuQAy38/8SeXf9lT
-        52pq/Tm6vxu/9RWyffTzPEIUMcOShjg5ZImL1aaoIix0Qle6ZRzNoA6ohWBsGJ/fzcaj+d3RqAP7
-        h8DmoI8G7lXwjhfguQ8OMpymR+N2GmiYeq6Po/Ehy+BQcNasCWpydGOgm1Zojs6twbl1+vloivta
-        2+0EjRyPIGdJjmXFG+yOMw2jG/NmvVxO1tf2Q/aYOK+JwV8Po2zu2HnyQfxBrs8Wi/X8opsatRS1
-        09mUF0pHLE/UFj2jbxhnw6FjHH4HRT7xdNHzK6QOsUkNYwGQGfFCXlEX7UedS733JOGmpJ4fTD6C
-        Yz1wa215jaZgqja5HR142/NXQNtG9x5ztsU3xQmkVh5dU53uCRLU2Q0cB0DqQNga3CnmwGNnMnBc
-        1DK7V1RilqqV5rNbb1+v1ut2nQrxEiDpY8yhnATLgks9SCldUd3Xb1lOESlRs/jJ4LoU8cngyjyx
-        nKCKRMxZqbYzIWD81u0HP4kTmHx6qWEiZfnDZUEozD5mFhhi0DcMLMOy1YhToGqlpk3HPrMHLZva
-        INjbtHR3W58xLCCaT8XIAbEX0niZsxinWh0pVIpm2v05ziRk1wmWuMveL+RscAqXyDzO2ZYp1PDz
-        baZ8QrSw0MY42mgzmjAh+ea7yUpKxHcxKIIMCBOiM1inv5RZCpRguNF9owPs14rrXyfqEyUEqtTP
-        cbWuk/wf6GJimcKm/xlNu+CXzFNI01TztWvOaE5+hKVSFSK8eAklCBi4rIQsoGGCe7VidP399Zpv
-        /VHJC1LF8oWwcbdYQD/3I2ooVISuLouqK/8lFtCTx9yXkrOokhTGH3BeLXCsGlTu1S+zizpGd1of
-        fN2V+WUJLRK0Yh2rGzKZ0l28Bu+cH9xq2wde2z7wWv3Aa/UDr11xaER/ByES7ZXp/OaiOrwG2kaH
-        6h4O7RpT9PzvpPc1AAD//1N8tBl5DgAA
+        H4sIAAAAAAAAAORXW3PaOhD+Kx5m8lYjGYMPzTjuOEmTcEIbCm5y0jfZEkYT23IlGUJ//VlhwBA6
+        TC8v56R5slZ7+fbb1bLx3z3nmTVnUnFRnLWcNm5Z7wJ/oFk+FOKpKsdMlaJQzAK9Qp21ZlqXpwgt
+        WKyYnPOEqTbJyTdRtBORo/Bh8v5C5DmTCZvU96iDHcfGfRs7rcC/K5kkGmKN2deKKR34N1E0umGE
+        AgQ4rD6sjyRnZ63PECFMWaFb1j3JKpCMlnomCruSWcZj5LZ74BHVNuZj19Pa/4AGHqPEoV1i427s
+        2l3qUjum066NWdd1+3hKqTf1UaPvhzKtcgirms81IkgvTCBldcuWA7qFFd4OwsGnvwePnX/Ch8fu
+        /fvbD58Mso31oR+lRMKJZhFJt14SAWVYikrGRPFE2ZTNWSZKY2Z38FF/plw7eM4x/nI9Pv9r4h21
+        2tZia9iU/ajhpieupQDNjfEkJ1l21G7dEQ1vh91y1D7iOZSI5E1M6C3Pxj3bwRF2Tp3eqet8Oeri
+        vu70XQdNcx5BztOC6Eo22IdXi7lLPjyW4TX2xDfx4M1Vunied6r8rsJMljfL29gbka9P8Gj2XKOd
+        /lp33UgK01W8SE2KAW5j3H/b7znQnvXftj9faPro8EGZIjau4awAMqdBJCvmo81p74lvNGm0LFkQ
+        TgYfQbE++HVvBU1PwVUt8vf6IFjV3wDdFfr3RPIVvhFJwbXR2BfV7l4gQXvZQDkA0h6ElcAfEQk8
+        HlzuiP1LpgnPTKTP42GwmV6Lxe7UisgMINnnRMJwmcyE1PYkY/D87NAe8oIhWqLG/4l7NalilUhe
+        miQG9MS9/N4EOOl4mqRwefxhg1rGi6cLQRnoPucdECTQ43Do4E7PnCQDuubm2vF6b3vujswkCfLd
+        7PczrusMAVTzaVjZ4g8ilswKnpDMqi2VcdFc+7/HmwbvNiWa/EcYdPsexs5xBle8oYat7/MWUmpF
+        wjon8dIas5QrLZc/TF1aIrm2QTF4QIRSm0Oc9kznGRAEiRZtvAcMQL8e2h4YpTDFfo+5Re3kzyOP
+        q1kGFPwaaWvjP4e1iGWZFVpXkrOC/gxnpRlgZPr6RhfwcVEpLWD1ghc452zx41NfrvRRKQWtEv0q
+        ubmbTmFP/JlOEcbCNs/KzKP/LyfoxboQai15XGkG51Fd8XqxC8sStizY5vakfsR1xoJ6MbDghzGc
+        DK3VfmCt9gOr3g+sej+wLiXssm+gA+FV1pY1gN2oqN4A0XqtRYf/mgb/BgAA///2gyRwxQ4AAA==
     headers:
       Connection: [Keep-Alive]
       Content-Encoding: [gzip]
       Content-Type: [text/xml;charset=UTF-8]
-      Date: ['Sat, 12 Mar 2016 17:23:29 GMT']
+      Date: ['Tue, 10 May 2016 01:15:30 GMT']
       Keep-Alive: ['timeout=2, max=20']
       Server: [Apache-Coyote/1.1]
       Vary: ['Accept-Encoding,User-Agent']
