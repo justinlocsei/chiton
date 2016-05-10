@@ -1,10 +1,13 @@
-from django.conf import settings
 import json
+
+from django.conf import settings
+from moneyed import Money, USD
 import requests
 
 from chiton.rack.affiliates.shopstyle.urls import extract_product_id_from_api_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
+from chiton.rack.affiliates.responses import ItemDetails, ItemOverview
 
 
 class Affiliate(BaseAffiliate):
@@ -20,25 +23,19 @@ class Affiliate(BaseAffiliate):
         response = self._request_product(product_id)
         parsed = self._validate_response(response, product_id)
 
-        return {
-            'guid': str(parsed['id']),
-            'name': parsed['brandedName']
-        }
+        return ItemOverview(guid=str(parsed['id']), name=parsed['brandedName'])
 
     def provide_details(self, product_id):
         response = self._request_product(product_id)
+        parsed = self._validate_response(response, product_id)
+
+        price = Money(str(parsed['price']), USD)
+
+        return ItemDetails(price=price.amount)
+
+    def provide_raw(self, product_id):
+        response = self._request_product(product_id)
         return self._validate_response(response, product_id)
-
-    def provide_details_for_display(self, product_id):
-        details = self.provide_details(product_id)
-
-        details.pop('alternateImages', None)
-        details.pop('image', None)
-
-        for color in details.get('colors', []):
-            color.pop('image', None)
-
-        return details
 
     def _request_product(self, product_id):
         """Make a request for information on a single product.

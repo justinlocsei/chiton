@@ -45,5 +45,5 @@ class AffiliateItemURLForm(forms.ModelForm):
             except LookupError as e:
                 raise forms.ValidationError(str(e))
 
-            self.cleaned_data['guid'] = response['guid']
-            self.cleaned_data['name'] = response['name']
+            self.cleaned_data['guid'] = response.guid
+            self.cleaned_data['name'] = response.name

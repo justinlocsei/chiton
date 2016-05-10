@@ -1,6 +1,5 @@
-from voluptuous import All, Length, MultipleInvalid, Schema
-
-from chiton.rack.affiliates.exceptions import LookupError
+from chiton.rack.affiliates.exceptions import ConfigurationError, LookupError
+from chiton.rack.affiliates.responses import ItemDetails, ItemOverview
 
 
 class Affiliate:
@@ -21,35 +20,61 @@ class Affiliate:
             url (str): The item's URL
 
         Returns:
-            dict: A dictionary with the overview data
+            chiton.rack.affiliates.responses.ItemOverview: An overview of the item
 
         Raises:
             chiton.rack.affiliates.exceptions.LookupError: If an overview could not be returned
         """
-        overview = self.provide_overview(url)
-        return self._validate_overview(overview)
+        try:
+            overview = self.provide_overview(url)
+        except ConfigurationError as e:
+            raise LookupError('Incorrect overview format: %s' % e)
 
-    def request_details(self, guid, for_display=False):
+        if not isinstance(overview, ItemOverview):
+            raise LookupError('Item overviews must be returned as an ItemOverview instance')
+
+        return overview
+
+    def request_details(self, guid):
         """Request detailed information on an item.
 
         Args:
             guid (str): The item's unique ID
 
-        Keyword Args:
-            for_display (bool): Whether the details are being used for display purposes
-
         Returns:
-            dict: A dictionary with the details
+            chiton.rack.affiliates.responses.ItemDetails: Details on the item
 
         Raises:
             chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
         """
-        if for_display:
-            details = self.provide_details_for_display(guid)
-        else:
+        try:
             details = self.provide_details(guid)
+        except ConfigurationError as e:
+            raise LookupError('Incorrect details format: %s' % e)
 
-        return self._validate_details(details)
+        if not isinstance(details, ItemDetails):
+            raise LookupError('Item details must be returned as an ItemDetails instance')
+
+        return details
+
+    def request_raw(self, guid):
+        """Request the raw API response for an item.
+
+        Args:
+            guid (str): The item's unique ID
+
+        Returns:
+            dict: The raw API response for the item
+
+        Raises:
+            chiton.rack.afiliates.exceptions.LookupError: If the response was unsuccessful
+        """
+        raw = self.provide_raw(guid)
+
+        if not isinstance(raw, dict):
+            raise LookupError('API responses must be returned as dict')
+
+        return raw
 
     def provide_overview(self, url):
         """Allow a child affiliate to return an item's overview."""
@@ -59,47 +84,6 @@ class Affiliate:
         """Allow a child affiliate to return an item's details."""
         raise NotImplementedError()
 
-    def provide_details_for_display(self, guid):
-        """Allow a child affiliate to return an item's details for display purposes."""
-        return self.provide_details(guid)
-
-    def _validate_overview(self, overview):
-        """Validate an overview, raising an error if it is invalid.
-
-        Args:
-            overview (dict): An overview of an affiliate item
-
-        Returns:
-            dict: A valid overview
-
-        Raises:
-            chiton.rack.affiliates.exceptions.LookupError: If the response is invalid
-        """
-        schema = Schema({
-            'guid': All(str, Length(min=1)),
-            'name': All(str, Length(min=1))
-        })
-
-        try:
-            schema(overview)
-        except MultipleInvalid as e:
-            raise LookupError('Invalid overview format: %s' % e)
-
-        return overview
-
-    def _validate_details(self, details):
-        """Validate an item's details, raising an error if they are invalid.
-
-        Args:
-            details (dict): Details about an affiliate item
-
-        Returns:
-            dict: Valid details
-
-        Raises:
-            chiton.rack.affiliates.exceptions.LookupError: If the response is invalid
-        """
-        if not isinstance(details, dict):
-            raise LookupError('Details must be provided as a dict')
-
-        return details
+    def provide_raw(self, guid):
+        """Allow a child affiliate to return a raw API response."""
+        raise NotImplementedError()
