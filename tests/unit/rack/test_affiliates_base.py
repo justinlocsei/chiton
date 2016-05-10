@@ -1,7 +1,10 @@
+from decimal import Decimal
+
 import pytest
 
 from chiton.rack.affiliates.base import Affiliate
-from chiton.rack.affiliates.exceptions import LookupError
+from chiton.rack.affiliates.exceptions import ConfigurationError, LookupError
+from chiton.rack.affiliates.responses import ItemDetails, ItemOverview
 
 
 class TestBaseAffiliate:
@@ -22,86 +25,58 @@ class TestBaseAffiliate:
         """It allows a child affiliate to provide overview information."""
         class Child(Affiliate):
             def provide_overview(self, url):
-                return {
-                    'guid': url,
-                    'name': 'Test'
-                }
+                return ItemOverview(guid=url, name='Test')
 
-        child = Child()
-        overview = child.request_overview('test-url')
+        overview = Child().request_overview('test-url')
 
-        assert overview['guid'] == 'test-url'
-        assert overview['name'] == 'Test'
+        assert overview.guid == 'test-url'
+        assert overview.name == 'Test'
 
-    def test_request_overview_validate_guid(self):
-        """It ensures that a child affiliate's overview has a valid GUID."""
+    def test_request_overview_format(self):
+        """It ensures that a child affiliate's overview is an overview instance."""
         class Child(Affiliate):
-            def provide_overview(self, url):
-                return {
-                    'guid': '',
-                    'name': 'Name'
-                }
+            def provide_overview(self, guid):
+                return {'name': 'Name'}
 
         with pytest.raises(LookupError):
-            Child().request_overview('url')
+            Child().request_overview('guid')
 
-    def test_request_overview_validate_name(self):
-        """It ensures that a child affiliate's overview has a valid name."""
+    def test_request_overview_errors(self):
+        """It re-raises overview configuration errors."""
         class Child(Affiliate):
-            def provide_overview(self, url):
-                return {
-                    'guid': '1234',
-                    'name': ''
-                }
+            def provide_overview(self, guid):
+                raise ConfigurationError('Invalid GUID')
 
-        with pytest.raises(LookupError):
-            Child().request_overview('url')
+        with pytest.raises(LookupError) as error:
+            Child().request_overview('guid')
 
-    def test_request_overview_validate_extra(self):
-        """It ensures that a child affiliate's overview does not contain additional data."""
-        class Child(Affiliate):
-            def provide_overview(self, url):
-                return {
-                    'oxblood': 'oxblood',
-                    'guid': 'guid',
-                    'name': 'name'
-                }
-
-        with pytest.raises(LookupError) as e:
-            Child().request_overview('url')
-
-        assert 'oxblood' in str(e)
+        assert 'Invalid GUID' in str(error.value)
 
     def test_request_details(self):
-        """It returns a child affiliate's raw overview."""
+        """It returns a child affiliate's details."""
         class Child(Affiliate):
             def provide_details(self, guid):
-                return {'id': guid}
+                return ItemDetails(price=Decimal('12.99'))
 
         details = Child().request_details('guid')
-        assert details['id'] == 'guid'
+        assert details.price == Decimal('12.99')
 
-    def test_request_details_dict(self):
-        """It ensures that a child affiliate's overview is a dict."""
+    def test_request_details_format(self):
+        """It ensures that a child affiliate's details are a details instance."""
         class Child(Affiliate):
             def provide_details(self, guid):
-                return None
+                return {'price': Decimal('12.99')}
 
         with pytest.raises(LookupError):
             Child().request_details('guid')
 
-    def test_request_details_for_display(self):
-        """It allows a child affiliate to package details for display."""
+    def test_request_details_errors(self):
+        """It re-raises details configuration errors."""
         class Child(Affiliate):
             def provide_details(self, guid):
-                return {'name': 'Full'}
+                raise ConfigurationError('Invalid GUID')
 
-            def provide_details_for_display(self, guid):
-                return {'name': 'Display'}
+        with pytest.raises(LookupError) as error:
+            Child().request_details('guid')
 
-        child = Child()
-        details = child.request_details('1234')
-        for_display = child.request_details('1234', for_display=True)
-
-        assert details['name'] == 'Full'
-        assert for_display['name'] == 'Display'
+        assert 'Invalid GUID' in str(error.value)

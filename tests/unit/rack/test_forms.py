@@ -2,6 +2,7 @@ import mock
 import pytest
 
 from chiton.rack.affiliates.exceptions import LookupError
+from chiton.rack.affiliates.responses import ItemOverview
 from chiton.rack.forms import AffiliateItemURLForm
 
 
@@ -38,10 +39,7 @@ class TestAffiliateItemURLForm:
         with mock.patch('chiton.rack.forms.create_affiliate') as create_affiliate:
             affiliate = mock.MagicMock()
             affiliate.request_overview = mock.MagicMock()
-            affiliate.request_overview.return_value = {
-                'guid': 'guid',
-                'name': 'name'
-            }
+            affiliate.request_overview.return_value = ItemOverview(guid='guid', name='name')
             create_affiliate.return_value = affiliate
 
             assert form.is_valid()
