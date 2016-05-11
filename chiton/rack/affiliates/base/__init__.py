@@ -28,14 +28,9 @@ class Affiliate:
         data = self.provide_overview(url)
 
         try:
-            overview = ItemOverview(**data)
+            return ItemOverview(**data)
         except ConfigurationError as e:
             raise LookupError('Incorrect overview format: %s' % e)
-
-        if not isinstance(overview, ItemOverview):
-            raise LookupError('Item overviews must be returned as an ItemOverview instance')
-
-        return overview
 
     def request_details(self, guid):
         """Request detailed information on an item.
