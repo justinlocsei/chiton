@@ -33,8 +33,26 @@ class Affiliate(BaseAffiliate):
 
         price = Money(str(parsed['price']), USD)
 
+        images = parsed['image']['sizes']
+        large_image = images['XLarge']
+        medium_image = images['Medium']
+
+        image = {
+            'height': large_image['actualHeight'],
+            'url': large_image['url'],
+            'width': large_image['actualWidth']
+        }
+
+        thumbnail = {
+            'height': medium_image['actualHeight'],
+            'url': medium_image['url'],
+            'width': medium_image['actualWidth']
+        }
+
         return {
-            'price': price.amount
+            'image': image,
+            'price': price.amount,
+            'thumbnail': thumbnail
         }
 
     def provide_raw(self, product_id):
