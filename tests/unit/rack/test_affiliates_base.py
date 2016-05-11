@@ -3,8 +3,7 @@ from decimal import Decimal
 import pytest
 
 from chiton.rack.affiliates.base import Affiliate
-from chiton.rack.affiliates.exceptions import ConfigurationError, LookupError
-from chiton.rack.affiliates.responses import ItemDetails
+from chiton.rack.affiliates.exceptions import LookupError
 
 
 class TestBaseAffiliate:
@@ -45,27 +44,16 @@ class TestBaseAffiliate:
         """It returns a child affiliate's details."""
         class Child(Affiliate):
             def provide_details(self, guid):
-                return ItemDetails(price=Decimal('12.99'))
+                return {'price': Decimal('12.99')}
 
         details = Child().request_details('guid')
         assert details.price == Decimal('12.99')
 
     def test_request_details_format(self):
-        """It ensures that a child affiliate's details are a details instance."""
+        """It ensures that a child affiliate's details have all required fields."""
         class Child(Affiliate):
             def provide_details(self, guid):
-                return {'price': Decimal('12.99')}
+                return {}
 
         with pytest.raises(LookupError):
             Child().request_details('guid')
-
-    def test_request_details_errors(self):
-        """It re-raises details configuration errors."""
-        class Child(Affiliate):
-            def provide_details(self, guid):
-                raise ConfigurationError('Invalid GUID')
-
-        with pytest.raises(LookupError) as error:
-            Child().request_details('guid')
-
-        assert 'Invalid GUID' in str(error.value)

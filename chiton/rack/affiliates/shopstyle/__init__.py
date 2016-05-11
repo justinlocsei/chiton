@@ -7,7 +7,6 @@ import requests
 from chiton.rack.affiliates.shopstyle.urls import extract_product_id_from_api_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
-from chiton.rack.affiliates.responses import ItemDetails
 
 
 class Affiliate(BaseAffiliate):
@@ -34,7 +33,9 @@ class Affiliate(BaseAffiliate):
 
         price = Money(str(parsed['price']), USD)
 
-        return ItemDetails(price=price.amount)
+        return {
+            'price': price.amount
+        }
 
     def provide_raw(self, product_id):
         response = self._request_product(product_id)

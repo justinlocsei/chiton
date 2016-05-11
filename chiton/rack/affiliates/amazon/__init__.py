@@ -6,7 +6,6 @@ import xmltodict
 from chiton.rack.affiliates.amazon.urls import extract_asin_from_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
-from chiton.rack.affiliates.responses import ItemDetails
 
 
 class Affiliate(BaseAffiliate):
@@ -52,7 +51,9 @@ class Affiliate(BaseAffiliate):
         avg_price = total_price / len(variations)
         price = Money(str(avg_price / 100), USD)
 
-        return ItemDetails(price=price.amount)
+        return {
+            'price': price.amount
+        }
 
     def provide_raw(self, asin):
         data = self._request_combined_data(asin)

@@ -44,15 +44,12 @@ class Affiliate:
         Raises:
             chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
         """
+        data = self.provide_details(guid)
+
         try:
-            details = self.provide_details(guid)
+            return ItemDetails(**data)
         except ConfigurationError as e:
             raise LookupError('Incorrect details format: %s' % e)
-
-        if not isinstance(details, ItemDetails):
-            raise LookupError('Item details must be returned as an ItemDetails instance')
-
-        return details
 
     def request_raw(self, guid):
         """Request the raw API response for an item.
@@ -90,7 +87,18 @@ class Affiliate:
         raise NotImplementedError()
 
     def provide_details(self, guid):
-        """Allow a child affiliate to return an item's details."""
+        """Allow a child affiliate to return an item's details.
+
+        The returned dict should provide the following information:
+
+            price - A decimal of the item's price
+
+        Args:
+            guid (str): The item's GUID
+
+        Returns:
+            dict: Information on the item's overview
+        """
         raise NotImplementedError()
 
     def provide_raw(self, guid):
