@@ -27,7 +27,7 @@ class Affiliate(BaseAffiliate):
             'name': parsed['brandedName']
         }
 
-    def provide_details(self, product_id):
+    def provide_details(self, product_id, color):
         response = self._request_product(product_id)
         parsed = self._validate_response(response, product_id)
 

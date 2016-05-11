@@ -36,7 +36,7 @@ class Affiliate(BaseAffiliate):
             'name': name
         }
 
-    def provide_details(self, asin):
+    def provide_details(self, asin, color):
         item = self._request_combined_data(asin)['Items']['Item']
 
         if 'Variations' not in item:

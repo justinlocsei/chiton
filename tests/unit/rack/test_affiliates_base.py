@@ -41,39 +41,43 @@ class TestBaseAffiliate:
             Child().request_overview('guid')
 
     def test_request_details(self):
-        """It returns a child affiliate's details."""
+        """It returns a child affiliate's details with or without a color."""
         class Child(Affiliate):
-            def provide_details(self, guid):
+            def provide_details(self, guid, color):
                 return {
                     'image': {
                         'height': 100,
-                        'url': 'http://%s.com' % guid,
+                        'url': 'http://%s%s.com' % (guid, color),
                         'width': 100
                     },
                     'price': Decimal('12.99'),
                     'thumbnail': {
                         'height': 50,
-                        'url': 'http://%s.net' % guid,
+                        'url': 'http://%s%s.net' % (guid, color),
                         'width': 50
                     }
                 }
 
-        details = Child().request_details('guid')
+        affiliate = Child()
+        without_color = affiliate.request_details('guid')
+        with_color = affiliate.request_details('guid', 'Black')
 
-        assert details.price == Decimal('12.99')
+        assert without_color.price == Decimal('12.99')
+        assert without_color.image.height == 100
+        assert without_color.image.width == 100
+        assert without_color.thumbnail.height == 50
+        assert without_color.thumbnail.width == 50
 
-        assert details.image.height == 100
-        assert details.image.width == 100
-        assert details.image.url == 'http://guid.com'
+        assert without_color.image.url == 'http://guidNone.com'
+        assert without_color.thumbnail.url == 'http://guidNone.net'
 
-        assert details.thumbnail.height == 50
-        assert details.thumbnail.width == 50
-        assert details.thumbnail.url == 'http://guid.net'
+        assert with_color.image.url == 'http://guidBlack.com'
+        assert with_color.thumbnail.url == 'http://guidBlack.net'
 
     def test_request_details_format(self):
         """It ensures that a child affiliate's details have all required fields."""
         class Child(Affiliate):
-            def provide_details(self, guid):
+            def provide_details(self, guid, color):
                 return {}
 
         with pytest.raises(LookupError):
