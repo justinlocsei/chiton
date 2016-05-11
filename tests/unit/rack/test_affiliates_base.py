@@ -44,10 +44,31 @@ class TestBaseAffiliate:
         """It returns a child affiliate's details."""
         class Child(Affiliate):
             def provide_details(self, guid):
-                return {'price': Decimal('12.99')}
+                return {
+                    'image': {
+                        'height': 100,
+                        'url': 'http://%s.com' % guid,
+                        'width': 100
+                    },
+                    'price': Decimal('12.99'),
+                    'thumbnail': {
+                        'height': 50,
+                        'url': 'http://%s.net' % guid,
+                        'width': 50
+                    }
+                }
 
         details = Child().request_details('guid')
+
         assert details.price == Decimal('12.99')
+
+        assert details.image.height == 100
+        assert details.image.width == 100
+        assert details.image.url == 'http://guid.com'
+
+        assert details.thumbnail.height == 50
+        assert details.thumbnail.width == 50
+        assert details.thumbnail.url == 'http://guid.net'
 
     def test_request_details_format(self):
         """It ensures that a child affiliate's details have all required fields."""
