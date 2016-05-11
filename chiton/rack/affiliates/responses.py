@@ -35,14 +35,47 @@ class ItemOverview:
         self.name = name
 
 
+class ItemImage:
+    """A description of an item's image."""
+
+    SCHEMA = V.Schema({
+        V.Required('height'): int,
+        V.Required('url'): V.All(str, V.Length(min=1)),
+        V.Required('width'): int
+    })
+
+    def __init__(self, height=None, url=None, width=None):
+        """Create an item image.
+
+        Keyword Args:
+            height (int): The height of the image in pixels
+            url (str): The absolute URL for the image
+            width (int): The width of the image in pixels
+        """
+        try:
+            self.SCHEMA({
+                'height': height,
+                'url': url,
+                'width': width
+            })
+        except V.MultipleInvalid as e:
+            raise ConfigurationError(e)
+
+        self.height = height
+        self.url = url
+        self.width = width
+
+
 class ItemDetails:
     """Details of an affiliate item returned by its API."""
 
     SCHEMA = V.Schema({
-        V.Required('price'): Decimal
+        V.Required('image'): ItemImage.SCHEMA,
+        V.Required('price'): Decimal,
+        V.Required('thumbnail'): ItemImage.SCHEMA
     })
 
-    def __init__(self, price=None):
+    def __init__(self, image=None, price=None, thumbnail=None):
         """Create item details.
 
         Keyword Args:
@@ -50,9 +83,13 @@ class ItemDetails:
         """
         try:
             self.SCHEMA({
-                'price': price
+                'image': image,
+                'price': price,
+                'thumbnail': thumbnail
             })
         except V.MultipleInvalid as e:
             raise ConfigurationError(e)
 
+        self.image = ItemImage(**image)
         self.price = price
+        self.thumbnail = ItemImage(**thumbnail)
