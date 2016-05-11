@@ -99,5 +99,12 @@ class Affiliate:
         raise NotImplementedError()
 
     def provide_raw(self, guid):
-        """Allow a child affiliate to return a raw API response."""
+        """Allow a child affiliate to return a raw API response.
+
+        Args:
+            guid (str): The item's GUID
+
+        Returns:
+            dict: The raw API response data
+        """
         raise NotImplementedError()
