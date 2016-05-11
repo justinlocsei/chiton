@@ -6,7 +6,7 @@ import xmltodict
 from chiton.rack.affiliates.amazon.urls import extract_asin_from_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
-from chiton.rack.affiliates.responses import ItemDetails, ItemOverview
+from chiton.rack.affiliates.responses import ItemDetails
 
 
 class Affiliate(BaseAffiliate):
@@ -32,7 +32,10 @@ class Affiliate(BaseAffiliate):
         if parent_asin != asin:
             asin = parent_asin
 
-        return ItemOverview(guid=asin, name=name)
+        return {
+            'guid': asin,
+            'name': name
+        }
 
     def provide_details(self, asin):
         item = self._request_combined_data(asin)['Items']['Item']

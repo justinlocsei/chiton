@@ -25,8 +25,10 @@ class Affiliate:
         Raises:
             chiton.rack.affiliates.exceptions.LookupError: If an overview could not be returned
         """
+        data = self.provide_overview(url)
+
         try:
-            overview = self.provide_overview(url)
+            overview = ItemOverview(**data)
         except ConfigurationError as e:
             raise LookupError('Incorrect overview format: %s' % e)
 
@@ -77,7 +79,19 @@ class Affiliate:
         return raw
 
     def provide_overview(self, url):
-        """Allow a child affiliate to return an item's overview."""
+        """Allow a child affiliate to return an item's overview.
+
+        The returned dict should provide the following information:
+
+            name - The name of the item
+            guid - The GUID of the item
+
+        Args:
+            url (str): The item's URL
+
+        Returns:
+            dict: Information on the item's overview
+        """
         raise NotImplementedError()
 
     def provide_details(self, guid):

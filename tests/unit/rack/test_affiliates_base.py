@@ -4,7 +4,7 @@ import pytest
 
 from chiton.rack.affiliates.base import Affiliate
 from chiton.rack.affiliates.exceptions import ConfigurationError, LookupError
-from chiton.rack.affiliates.responses import ItemDetails, ItemOverview
+from chiton.rack.affiliates.responses import ItemDetails
 
 
 class TestBaseAffiliate:
@@ -25,7 +25,7 @@ class TestBaseAffiliate:
         """It allows a child affiliate to provide overview information."""
         class Child(Affiliate):
             def provide_overview(self, url):
-                return ItemOverview(guid=url, name='Test')
+                return {'guid': url, 'name': 'Test'}
 
         overview = Child().request_overview('test-url')
 
@@ -33,24 +33,13 @@ class TestBaseAffiliate:
         assert overview.name == 'Test'
 
     def test_request_overview_format(self):
-        """It ensures that a child affiliate's overview is an overview instance."""
+        """It ensures that a child affiliate's overview has all required fields."""
         class Child(Affiliate):
             def provide_overview(self, guid):
                 return {'name': 'Name'}
 
         with pytest.raises(LookupError):
             Child().request_overview('guid')
-
-    def test_request_overview_errors(self):
-        """It re-raises overview configuration errors."""
-        class Child(Affiliate):
-            def provide_overview(self, guid):
-                raise ConfigurationError('Invalid GUID')
-
-        with pytest.raises(LookupError) as error:
-            Child().request_overview('guid')
-
-        assert 'Invalid GUID' in str(error.value)
 
     def test_request_details(self):
         """It returns a child affiliate's details."""
