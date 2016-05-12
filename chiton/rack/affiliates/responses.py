@@ -79,7 +79,9 @@ class ItemDetails:
         """Create item details.
 
         Keyword Args:
+            image (dict): Information on the item's primary image
             price (decimal.Decimal): The price for the item
+            thumbnail (dict): Information on the item's thumbnail image
         """
         try:
             self.SCHEMA({
