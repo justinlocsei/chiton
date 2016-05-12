@@ -17,8 +17,12 @@ class ProprietyInline(admin.TabularInline):
 class BasicAdmin(admin.ModelAdmin):
 
     inlines = (ProprietyInline,)
-    list_display = ('name', 'category')
+    list_display = ('name', 'category', 'color_names')
     list_filter = ('category',)
+
+    def color_names(self, basic):
+        return ', '.join([c.name for c in basic.colors.all()])
+    color_names.short_description = _('colors')
 
     def get_urls(self):
         core = super().get_urls()

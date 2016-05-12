@@ -21,6 +21,7 @@ class Basic(models.Model):
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
     category = models.ForeignKey('Category', verbose_name=_('category'), on_delete=models.SET_NULL, null=True, blank=True)
     formalities = models.ManyToManyField('Formality', verbose_name=_('levels of formality'), through='Propriety')
+    colors = models.ManyToManyField('chiton_closet.Color', verbose_name=_('colors'))
 
     class Meta:
         ordering = ('name',)
