@@ -49,7 +49,7 @@ class BasicAdmin(admin.ModelAdmin):
 
             basic_data.append({
                 'name': basic.name,
-                'category': basic.category.name,
+                'category': getattr(basic.category, 'name', None),
                 'importances': importances
             })
 

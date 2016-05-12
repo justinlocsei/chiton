@@ -19,7 +19,7 @@ class Basic(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_('name'), unique=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    category = models.ForeignKey('Category', verbose_name=_('category'))
+    category = models.ForeignKey('Category', verbose_name=_('category'), on_delete=models.SET_NULL, null=True, blank=True)
     formalities = models.ManyToManyField('Formality', verbose_name=_('levels of formality'), through='Propriety')
 
     class Meta:
