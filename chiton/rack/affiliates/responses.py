@@ -66,25 +66,51 @@ class ItemImage:
         self.width = width
 
 
+class ItemAvailability:
+    """Details of an item's availability in a particular size."""
+
+    SCHEMA = V.Schema({
+        V.Required('size'): V.All(str, V.Length(min=1))
+    })
+
+    def __init__(self, size=None):
+        """Create a record of an item's availability.
+
+        Keyword Args:
+            size (str): The name of the item's size
+        """
+        try:
+            self.SCHEMA({
+                'size': size
+            })
+        except V.MultipleInvalid as e:
+            raise ConfigurationError(e)
+
+        self.size = size
+
+
 class ItemDetails:
     """Details of an affiliate item returned by its API."""
 
     SCHEMA = V.Schema({
+        'availability': [ItemAvailability.SCHEMA],
         V.Required('image'): ItemImage.SCHEMA,
         V.Required('price'): Decimal,
         V.Required('thumbnail'): ItemImage.SCHEMA
     })
 
-    def __init__(self, image=None, price=None, thumbnail=None):
+    def __init__(self, availability=None, image=None, price=None, thumbnail=None):
         """Create item details.
 
         Keyword Args:
+            availability (list): Availability information for the item
             image (dict): Information on the item's primary image
             price (decimal.Decimal): The price for the item
             thumbnail (dict): Information on the item's thumbnail image
         """
         try:
             self.SCHEMA({
+                'availability': availability or [],
                 'image': image,
                 'price': price,
                 'thumbnail': thumbnail
@@ -95,3 +121,8 @@ class ItemDetails:
         self.image = ItemImage(**image)
         self.price = price
         self.thumbnail = ItemImage(**thumbnail)
+
+        if availability:
+            self.availability = [ItemAvailability(size=a['size']) for a in availability]
+        else:
+            self.availability = availability

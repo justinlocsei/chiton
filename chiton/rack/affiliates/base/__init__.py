@@ -94,9 +94,10 @@ class Affiliate:
 
         The returned dict should provide the following information:
 
-            image     - Information on the item's primary image
-            price     - A decimal of the item's price
-            thumbnail - Information on the item's thumbnail image
+            availability - An optional list of availability details
+            image        - Information on the item's primary image
+            price        - A decimal of the item's price
+            thumbnail    - Information on the item's thumbnail image
 
         Args:
             guid (str): The item's GUID

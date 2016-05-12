@@ -74,6 +74,37 @@ class TestBaseAffiliate:
         assert with_color.image.url == 'http://guidBlack.com'
         assert with_color.thumbnail.url == 'http://guidBlack.net'
 
+    def test_request_details_availability(self):
+        """It validates availability details only when provided."""
+        class Child(Affiliate):
+            def provide_details(self, availability, color):
+                return {
+                    'availability': availability,
+                    'image': {
+                        'height': 100,
+                        'url': 'image',
+                        'width': 100
+                    },
+                    'price': Decimal('12.99'),
+                    'thumbnail': {
+                        'height': 50,
+                        'url': 'thumbnail',
+                        'width': 50
+                    }
+                }
+
+        affiliate = Child()
+
+        default = affiliate.request_details(None)
+        assert default.availability is None
+
+        with_availability = affiliate.request_details([{'size': 'XS'}, {'size': 'S'}])
+        assert len(with_availability.availability) == 2
+        assert set([a.size for a in with_availability.availability]) == set(['XS', 'S'])
+
+        with pytest.raises(LookupError):
+            affiliate.request_details([{'invalid': 'field'}])
+
     def test_request_details_format(self):
         """It ensures that a child affiliate's details have all required fields."""
         class Child(Affiliate):
