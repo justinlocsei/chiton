@@ -93,6 +93,15 @@ class TestAmazonAffiliate:
         assert default.image.url == missing.image.url
         assert default.thumbnail.url == missing.thumbnail.url
 
+    def test_request_details_availability(self, amazon_api_request):
+        """It does not return item availability records."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            details = affiliate.request_details('B00ZGRB7S6')
+
+        assert details.availability is None
+
     def test_request_details_valid_asin_child(self, amazon_api_request):
         """It raises an error when requesting details for a child item."""
         affiliate = Affiliate()
