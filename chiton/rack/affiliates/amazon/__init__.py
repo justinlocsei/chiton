@@ -1,6 +1,6 @@
 import bottlenose
+from decimal import Decimal
 from django.conf import settings
-from moneyed import Money, USD
 import xmltodict
 
 from chiton.rack.affiliates.amazon.urls import extract_asin_from_url
@@ -42,17 +42,20 @@ class Affiliate(BaseAffiliate):
         if 'Variations' not in item:
             raise LookupError('Details may not be provided for a child ASIN')
 
+        # Calculate the average price of all available offers, which expose
+        # their amounts as stringified cent values
         variations = item['Variations']['Item']
         total_price = 0
         for variation in variations:
-            price = variation['Offers']['Offer']['OfferListing']['Price']['Amount']
-            total_price += int(price)
+            if 'Offers' in variation:
+                price = variation['Offers']['Offer']['OfferListing']['Price']['Amount']
+                total_price += int(price)
 
         avg_price = total_price / len(variations)
-        price = Money(str(avg_price / 100), USD)
+        price = Decimal('%.02f' % (avg_price / 100))
 
         return {
-            'price': price.amount
+            'price': price
         }
 
     def provide_raw(self, asin):
