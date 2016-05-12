@@ -43,14 +43,55 @@ class TestAmazonAffiliate:
         with pytest.raises(LookupError):
             affiliate.request_overview('http://www.amazon.com')
 
-    def test_request_details_valid_asin(self, amazon_api_request):
-        """It returns item details when given a valid parent ASIN."""
+    def test_request_details_price(self, amazon_api_request):
+        """It returns the average price of all item offers."""
         affiliate = Affiliate()
 
         with amazon_api_request():
+            raw = affiliate.request_raw('B00ZGRB7S6')
             details = affiliate.request_details('B00ZGRB7S6')
 
         assert details.price == Decimal('69.99')
+
+        prices = raw['Item']['VariationSummary']
+        low_price = int(prices['LowestPrice']['Amount'])
+        high_price = int(prices['HighestPrice']['Amount'])
+        avg_price = int(details.price * 100)
+
+        assert low_price <= avg_price <= high_price
+
+    def test_request_details_image(self, amazon_api_request):
+        """It returns information on the item's images."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            details = affiliate.request_details('B00YJJ4SNS')
+
+        assert '.jpg' in details.image.url
+        assert '.jpg' in details.thumbnail.url
+
+        assert details.image.width > details.thumbnail.width
+        assert details.image.height > details.thumbnail.height
+
+    def test_request_details_image_color(self, amazon_api_request):
+        """It returns color-specific images when possible."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            default = affiliate.request_details('B00YJJ4SNS')
+            green = affiliate.request_details('B00YJJ4SNS', 'Green')
+            missing = affiliate.request_details('B00YJJ4SNS', 'Orange Green')
+
+        assert '.jpg' in default.image.url
+        assert '.jpg' in default.thumbnail.url
+        assert '.jpg' in green.image.url
+        assert '.jpg' in green.image.url
+
+        assert default.image.url != green.image.url
+        assert default.thumbnail.url != green.thumbnail.url
+
+        assert default.image.url == missing.image.url
+        assert default.thumbnail.url == missing.thumbnail.url
 
     def test_request_details_valid_asin_child(self, amazon_api_request):
         """It raises an error when requesting details for a child item."""

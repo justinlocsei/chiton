@@ -54,8 +54,13 @@ class Affiliate(BaseAffiliate):
         avg_price = total_price / len(variations)
         price = Decimal('%.02f' % (avg_price / 100))
 
+        image = self._find_image(item, 'LargeImage', color)
+        thumbnail = self._find_image(item, 'MediumImage', color)
+
         return {
-            'price': price
+            'image': image,
+            'price': price,
+            'thumbnail': thumbnail
         }
 
     def provide_raw(self, asin):
@@ -92,6 +97,37 @@ class Affiliate(BaseAffiliate):
         connection = self._connect()
         response = connection.ItemLookup(ItemId=asin, ResponseGroup='ItemAttributes,Variations')
         return self._validate_response(response, asin)
+
+    def _find_image(self, parsed, size_name, color_name):
+        """Find an image of a given size for an item of a given color.
+
+        If no explicit image of the item in the given color can be found, this
+        will fall back to using the generic product image.
+
+        Args:
+            parsed (dict): A parsed API response
+            size_name (str): The name of the image size to use
+            color_name (str): The name of the color to search for
+
+        Returns:
+            dict: Information on the image in the details image format
+        """
+        image = None
+        color_match = (color_name or '').lower()
+        variations = parsed['Variations']['Item']
+
+        for variation in variations:
+            if variation['ItemAttributes']['Color'].lower() == color_match:
+                image = variation[size_name]
+
+        if image is None:
+            image = variations[0][size_name]
+
+        return {
+            'height': int(image['Height']['#text']),
+            'url': image['URL'],
+            'width': int(image['Width']['#text'])
+        }
 
     def _validate_response(self, response, asin):
         """Raise a lookup error if a response is invalid.
