@@ -27,15 +27,22 @@ class Affiliate(BaseAffiliate):
             'name': parsed['brandedName']
         }
 
-    def provide_details(self, product_id, color):
+    def provide_details(self, product_id, color_name):
         response = self._request_product(product_id)
         parsed = self._validate_response(response, product_id)
 
         price = Money(str(parsed['price']), USD)
-        image = self._find_image(parsed, 'XLarge', color)
-        thumbnail = self._find_image(parsed, 'Medium', color)
+        image = self._find_image(parsed, 'XLarge', color_name)
+        thumbnail = self._find_image(parsed, 'Medium', color_name)
+
+        found_sizes = self._check_stock(parsed, color_name)
+        if found_sizes:
+            availability = [{'size': s} for s in found_sizes]
+        else:
+            availability = None
 
         return {
+            'availability': availability,
             'image': image,
             'price': price.amount,
             'thumbnail': thumbnail
@@ -75,6 +82,45 @@ class Affiliate(BaseAffiliate):
             'url': image['url'],
             'width': image['actualWidth']
         }
+
+    def _check_stock(self, parsed, color_name):
+        """Return the unique names of all available sizes.
+
+        This checks Shopstyle's stock records, and adds any size whose name maps
+        to a canonical size and whose color name maps to a canonical color whose
+        name equals the given color name.  If no color name is provided, only
+        size information will be used to determine availability.
+
+        Args:
+            parsed (dict): A parsed API response
+            color_name (str): The name of the color to check for
+
+        Returns:
+            set: The names of all available sizes
+        """
+        stock_colors = []
+        if color_name:
+            color_search = color_name.lower()
+            for color in parsed.get('colors', []):
+                canonical = color.get('canonicalColors', [])
+                has_match = any([c for c in canonical if c['name'].lower() == color_search])
+                if has_match:
+                    stock_colors.append(color['name'])
+
+        stock_sizes = {}
+        for size in parsed.get('sizes', []):
+            if 'canonicalSize' in size:
+                canonical = size['canonicalSize']
+                stock_sizes[size['name']] = canonical['name']
+
+        sizes = set()
+        for stock in parsed.get('stock'):
+            color_match = not stock_colors or stock['color']['name'] in stock_colors
+            size_name = stock_sizes[stock['size']['name']]
+            if color_match and size_name:
+                sizes.add(size_name)
+
+        return sizes
 
     def _request_product(self, product_id):
         """Make a request for information on a single product.

@@ -78,6 +78,32 @@ class TestShopstyleAffiliate:
         assert default.image.url == missing.image.url
         assert default.thumbnail.url == missing.thumbnail.url
 
+    def test_request_details_availability(self, shopstyle_api_request):
+        """It returns unique availability information based off of the canonical sizes."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            details = affiliate.request_details('470750142')
+
+        assert details.availability is not None
+
+        size_names = [a.size for a in details.availability]
+        assert 'XXS (0)' in size_names
+        assert size_names.count('XXS (0)') == 1
+
+    def test_request_details_availability_color(self, shopstyle_api_request):
+        """It can return color-specific availability information."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            default = affiliate.request_details('470750142')
+            purple = affiliate.request_details('470750142', 'Purple')
+
+        assert default.availability is not None
+        assert purple.availability is not None
+
+        assert len(default.availability) > len(purple.availability)
+
     def test_request_details_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when looking up details for an inavlid product ID."""
         affiliate = Affiliate()
