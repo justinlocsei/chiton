@@ -27,6 +27,7 @@ class AffiliateItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'network', 'item_link', 'api_link', 'garment', 'last_modified')
     list_filter = ('network',)
     ordering = ('-last_modified',)
+    search_fields = ['name']
 
     def get_urls(self):
         core = super().get_urls()
