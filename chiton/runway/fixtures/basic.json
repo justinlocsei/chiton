@@ -6,6 +6,11 @@
         "slug": "black-camisole",
         "category": [
             "shirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -16,6 +21,11 @@
         "slug": "black-cardigan",
         "category": [
             "overshirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -26,6 +36,11 @@
         "slug": "black-leggings",
         "category": [
             "pants"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -36,6 +51,11 @@
         "slug": "black-pants",
         "category": [
             "pants"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -46,6 +66,11 @@
         "slug": "black-shell",
         "category": [
             "shirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -56,6 +81,11 @@
         "slug": "black-skirt",
         "category": [
             "skirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -66,6 +96,11 @@
         "slug": "black-sweater",
         "category": [
             "shirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -76,6 +111,11 @@
         "slug": "black-tights",
         "category": [
             "hosiery"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -86,6 +126,11 @@
         "slug": "black-t-shirt",
         "category": [
             "shirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -96,6 +141,11 @@
         "slug": "casual-black-blazer",
         "category": [
             "overshirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -106,6 +156,11 @@
         "slug": "casual-black-dress",
         "category": [
             "dresses"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -116,7 +171,8 @@
         "slug": "dark-jeans",
         "category": [
             "pants"
-        ]
+        ],
+        "colors": []
     }
 },
 {
@@ -126,6 +182,11 @@
         "slug": "formal-black-blazer",
         "category": [
             "overshirts"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -136,6 +197,11 @@
         "slug": "formal-black-dress",
         "category": [
             "dresses"
+        ],
+        "colors": [
+            [
+                "black"
+            ]
         ]
     }
 },
@@ -146,7 +212,8 @@
         "slug": "khakis",
         "category": [
             "pants"
-        ]
+        ],
+        "colors": []
     }
 },
 {
@@ -156,7 +223,8 @@
         "slug": "nude-pantyhose",
         "category": [
             "hosiery"
-        ]
+        ],
+        "colors": []
     }
 },
 {
@@ -166,7 +234,8 @@
         "slug": "skirt",
         "category": [
             "skirts"
-        ]
+        ],
+        "colors": []
     }
 },
 {
@@ -176,7 +245,8 @@
         "slug": "tunic",
         "category": [
             "shirts"
-        ]
+        ],
+        "colors": []
     }
 },
 {
@@ -186,6 +256,11 @@
         "slug": "white-button-down",
         "category": [
             "shirts"
+        ],
+        "colors": [
+            [
+                "white"
+            ]
         ]
     }
 },
@@ -196,6 +271,11 @@
         "slug": "white-camisole",
         "category": [
             "shirts"
+        ],
+        "colors": [
+            [
+                "white"
+            ]
         ]
     }
 },
@@ -206,6 +286,11 @@
         "slug": "white-shell",
         "category": [
             "shirts"
+        ],
+        "colors": [
+            [
+                "white"
+            ]
         ]
     }
 }
