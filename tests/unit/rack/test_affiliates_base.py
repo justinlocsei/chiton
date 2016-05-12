@@ -82,3 +82,21 @@ class TestBaseAffiliate:
 
         with pytest.raises(LookupError):
             Child().request_details('guid')
+
+    def test_request_raw(self):
+        """It returns a child affiliate's raw API response."""
+        class Child(Affiliate):
+            def provide_raw(self, guid):
+                return {'raw': guid}
+
+        raw = Child().request_raw('guid')
+        assert raw['raw'] == 'guid'
+
+    def test_request_raw_format(self):
+        """It ensures that a raw API response is a dict."""
+        class Child(Affiliate):
+            def provide_raw(self, guid):
+                return guid
+
+        with pytest.raises(LookupError):
+            Child().request_raw('guid')

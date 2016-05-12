@@ -1,0 +1,35 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept-Encoding: [gzip]
+      Connection: [close]
+      Host: [webservices.amazon.com]
+      User-Agent: [Python-urllib/3.5]
+    method: GET
+    uri: http://webservices.amazon.com/onca/xml?ItemId=0000000000&Operation=ItemLookup&ResponseGroup=ItemAttributes%2CVariations&Service=AWSECommerceService&Version=2011-08-01
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAHxUXXOiMBT9KxlfuxBA/OpEOmzHaVnXLq3W1r4FuFW6QNwk2HV//QZB0DoDD5Dk
+        3nNyLvck5OZvmqAdcBGzbNwxdaODbhziSUh/MvY73z6B2LJMAFJ5mRh3NlJurzH+hEAA38UhCJ2m
+        9B/L9JCl2H2ZT25ZmgIPYV7GsWWYpmYMNcPsOOTXFjiVaq8n+JODkA65Xyz8e6CRkqAmhwF6oCmM
+        O89qB3cNmeygJU1yteLv5YZlWs6TJA5wV+8pRlxiisEpU8XvRY4VQWAOuqDZNhQvamrDwehd6w3C
+        /nDUp++DnkVwk09cvs5Tta1ohpUiVZ4bqpLFFPZeVMtyp57rPf7wVtar+7Kyl5Pp7LFQdkRf8gjB
+        wphKWNB1zRIy1YY9y3lARRwKLYIdJGxbwDTLaOUr2nWix6ifVlTdixrYtL0VePTEHWcq8xTsSsnj
+        IJcgvi0pjw/sopWrcknzLy8d1IpfxKlqG00bHcpvfc3oaaa1MMxr0762+m+tFMvS/acEjWFblMfr
+        jMqcN9qt12X3LjBnXbma3X1Mss+rYBPsrhJj5X9/9N8iG08lDj5Gz8lsfE6NTzxXOdHnrHBanK2L
+        Eh1DN/q23ev3h1bV29qzXzIJvjxkRW8aajUXSnIcOQueA8HH2dmxP2ZGi/0WHHfuPajEckJKvzmN
+        z1SoXCJn3nDOPVEoPo1+SW4cc5FYh3y6VmKShODzpVLAF+0TzllxFxy+DrllkcK+zHUv2xX1+pSr
+        Rkrgh/YRfIiTmfqVBWNTHIoFyphEFB1gxTsH9M44KovWkZ8AVVdkuKHZGpDcKECZRLMIcZB8j4qD
+        rYYHZTrBx10IrsTho1hcy8dV1/Dlbez8DwAA//+Zd8cLuAUAAA==
+    headers:
+      Connection: [Keep-Alive]
+      Content-Encoding: [gzip]
+      Content-Type: [text/xml;charset=UTF-8]
+      Date: ['Thu, 12 May 2016 01:14:25 GMT']
+      Keep-Alive: ['timeout=2, max=12']
+      Server: [Apache-Coyote/1.1]
+      Vary: ['Accept-Encoding,User-Agent']
+    status: {code: 200, message: OK}
+version: 1

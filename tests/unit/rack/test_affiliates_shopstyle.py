@@ -85,3 +85,20 @@ class TestShopstyleAffiliate:
         with shopstyle_api_request():
             with pytest.raises(LookupError):
                 affiliate.request_details('0000000000')
+
+    def test_request_raw(self, shopstyle_api_request):
+        """It returns the full API response."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            raw = affiliate.request_raw('471281504')
+
+        assert raw['id'] == 471281504
+
+    def test_request_raw_invalid_asin(self, shopstyle_api_request):
+        """It raises an error when getting a raw response for an inavlid ASIN."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            with pytest.raises(LookupError):
+                affiliate.request_raw('0000000000')
