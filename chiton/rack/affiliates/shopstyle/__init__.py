@@ -32,22 +32,8 @@ class Affiliate(BaseAffiliate):
         parsed = self._validate_response(response, product_id)
 
         price = Money(str(parsed['price']), USD)
-
-        images = parsed['image']['sizes']
-        large_image = images['XLarge']
-        medium_image = images['Medium']
-
-        image = {
-            'height': large_image['actualHeight'],
-            'url': large_image['url'],
-            'width': large_image['actualWidth']
-        }
-
-        thumbnail = {
-            'height': medium_image['actualHeight'],
-            'url': medium_image['url'],
-            'width': medium_image['actualWidth']
-        }
+        image = self._find_image(parsed, 'XLarge', color)
+        thumbnail = self._find_image(parsed, 'Medium', color)
 
         return {
             'image': image,
@@ -58,6 +44,36 @@ class Affiliate(BaseAffiliate):
     def provide_raw(self, product_id):
         response = self._request_product(product_id)
         return self._validate_response(response, product_id)
+
+    def _find_image(self, parsed, size_name, color_name):
+        """Find an image of a given size for an item of a given color.
+
+        If no explicit image of the item in the given color can be found, this
+        will fall back to using the generic product image.
+
+        Args:
+            parsed (dict): A parsed API response
+            size_name (str): The name of the image size to use
+            color_name (str): The name of the color to search for
+
+        Returns:
+            dict: Information on the image in the details image format
+        """
+        image = None
+
+        for color in parsed['colors']:
+            for canonical_color in color['canonicalColors']:
+                if canonical_color['name'] == color_name and 'image' in color:
+                    image = color['image']['sizes'][size_name]
+
+        if image is None:
+            image = parsed['image']['sizes'][size_name]
+
+        return {
+            'height': image['actualHeight'],
+            'url': image['url'],
+            'width': image['actualWidth']
+        }
 
     def _request_product(self, product_id):
         """Make a request for information on a single product.

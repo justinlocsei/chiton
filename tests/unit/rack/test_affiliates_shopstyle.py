@@ -55,6 +55,29 @@ class TestShopstyleAffiliate:
         assert details.image.width > details.thumbnail.width
         assert details.image.height > details.thumbnail.height
 
+    def test_request_details_image_color(self, shopstyle_api_request):
+        """It returns color-specific images when possible."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            default = affiliate.request_details('470750142')
+            red = affiliate.request_details('470750142', 'Red')
+            purple = affiliate.request_details('470750142', 'Purple')
+            missing = affiliate.request_details('470750142', 'Orange Green')
+
+        assert '.jpg' in default.image.url
+        assert '.jpg' in default.thumbnail.url
+        assert '.jpg' in red.image.url
+        assert '.jpg' in red.image.url
+        assert '.jpg' in purple.image.url
+        assert '.jpg' in purple.image.url
+
+        assert default.image.url != red.image.url and default.image.url != purple.image.url
+        assert default.thumbnail.url != red.thumbnail.url and default.thumbnail.url != purple.thumbnail.url
+
+        assert default.image.url == missing.image.url
+        assert default.thumbnail.url == missing.thumbnail.url
+
     def test_request_details_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when looking up details for an inavlid product ID."""
         affiliate = Affiliate()
