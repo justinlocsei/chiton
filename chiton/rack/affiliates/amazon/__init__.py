@@ -42,18 +42,7 @@ class Affiliate(BaseAffiliate):
         if 'Variations' not in item:
             raise LookupError('Details may not be provided for a child ASIN')
 
-        # Calculate the average price of all available offers, which expose
-        # their amounts as stringified cent values
-        variations = item['Variations']['Item']
-        total_price = 0
-        for variation in variations:
-            if 'Offers' in variation:
-                price = variation['Offers']['Offer']['OfferListing']['Price']['Amount']
-                total_price += int(price)
-
-        avg_price = total_price / len(variations)
-        price = Decimal('%.02f' % (avg_price / 100))
-
+        price = self._calculate_price(item['Variations']['Item'])
         image = self._find_image(item, 'LargeImage', color)
         thumbnail = self._find_image(item, 'MediumImage', color)
 
@@ -97,6 +86,25 @@ class Affiliate(BaseAffiliate):
         connection = self._connect()
         response = connection.ItemLookup(ItemId=asin, ResponseGroup='ItemAttributes,Variations')
         return self._validate_response(response, asin)
+
+    def _calculate_price(self, variations):
+        """Calculate the average price for the item based on all offers.
+
+        Args:
+            variations (dict): A list of all item variations
+
+        Returns:
+            decimal.Decimal: The average price
+        """
+        total_price = 0
+
+        for variation in variations:
+            if 'Offers' in variation:
+                price = variation['Offers']['Offer']['OfferListing']['Price']['Amount']
+                total_price += int(price)
+
+        avg_price = total_price / len(variations)
+        return Decimal('%.02f' % (avg_price / 100))
 
     def _find_image(self, parsed, size_name, color_name):
         """Find an image of a given size for an item of a given color.
