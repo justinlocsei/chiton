@@ -41,6 +41,8 @@ class AffiliateItem(models.Model):
     garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'), related_name='affiliate_items')
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_('price'), null=True, blank=True)
+    image = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('image'), null=True, blank=True, related_name='image_for')
+    thumbnail = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('thumbnail'), null=True, blank=True, related_name='thumbnail_for')
 
     class Meta:
         verbose_name = _('affiliate item')
@@ -60,3 +62,18 @@ class StockRecord(models.Model):
     class Meta:
         verbose_name = _('stock record')
         verbose_name_plural = _('stock records')
+
+
+class ProductImage(models.Model):
+    """A product image for an item."""
+
+    height = models.PositiveIntegerField(verbose_name=_('height'))
+    width = models.PositiveIntegerField(verbose_name=_('width'))
+    url = models.URLField(verbose_name=_('URL'))
+
+    class Meta:
+        verbose_name = _('product image')
+        verbose_name_plural = _('product images')
+
+    def __str__(self):
+        return self.url
