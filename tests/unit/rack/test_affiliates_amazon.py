@@ -93,6 +93,24 @@ class TestAmazonAffiliate:
         assert default.image.url == missing.image.url
         assert default.thumbnail.url == missing.thumbnail.url
 
+    def test_request_details_image_color_preference(self, amazon_api_request):
+        """It gets the image for the first color in the list."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            black = affiliate.request_details('B00YJJ4SNS', colors=['Black'])
+            green = affiliate.request_details('B00YJJ4SNS', colors=['Green'])
+            black_first = affiliate.request_details('B00YJJ4SNS', colors=['Black', 'Green'])
+            green_first = affiliate.request_details('B00YJJ4SNS', colors=['Green', 'Black'])
+
+        assert black.image.url != green.image.url
+        assert black.thumbnail.url != green.thumbnail.url
+
+        assert green_first.image.url == green.image.url
+        assert green_first.thumbnail.url == green.thumbnail.url
+        assert black_first.image.url == black.image.url
+        assert black_first.thumbnail.url == black.thumbnail.url
+
     def test_request_details_availability(self, amazon_api_request):
         """It does not return item availability records."""
         affiliate = Affiliate()

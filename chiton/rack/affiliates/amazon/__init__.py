@@ -122,12 +122,20 @@ class Affiliate(BaseAffiliate):
         """
         image = None
         variations = parsed['Variations']['Item']
+
+        color_images = {}
         color_matches = [cn.lower() for cn in color_names]
 
         if color_matches:
             for variation in variations:
-                if variation['ItemAttributes']['Color'].lower() in color_matches:
-                    image = variation[size_name]
+                color_name = variation['ItemAttributes']['Color'].lower()
+                if color_name in color_matches:
+                    color_images[color_name] = variation[size_name]
+
+        for color_match in color_matches:
+            image = color_images.get(color_match, None)
+            if image:
+                break
 
         if image is None:
             image = variations[0][size_name]
