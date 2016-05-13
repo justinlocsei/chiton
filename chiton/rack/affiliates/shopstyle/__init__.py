@@ -67,6 +67,7 @@ class Affiliate(BaseAffiliate):
             dict: Information on the image in the details image format
         """
         image = None
+        color_images = {}
         color_matches = [cn.lower() for cn in color_names]
 
         if color_matches:
@@ -74,8 +75,14 @@ class Affiliate(BaseAffiliate):
                 if 'image' not in color:
                     continue
                 for canonical_color in color['canonicalColors']:
-                    if canonical_color['name'].lower() in color_matches:
-                        image = color['image']['sizes'][size_name]
+                    canonical_name = canonical_color['name'].lower()
+                    if canonical_name in color_matches:
+                        color_images[canonical_name] = color['image']['sizes'][size_name]
+
+        for color_match in color_matches:
+            image = color_images.get(color_match, None)
+            if image:
+                break
 
         if image is None:
             image = parsed['image']['sizes'][size_name]

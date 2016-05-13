@@ -104,6 +104,24 @@ class TestShopstyleAffiliate:
 
         assert len(default.availability) > len(purple.availability)
 
+    def test_request_details_availability_color_preference(self, shopstyle_api_request):
+        """It returns the image of the first color when multiple colors are provided."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            red = affiliate.request_details('470750142', colors=['Red'])
+            purple = affiliate.request_details('470750142', colors=['Purple'])
+            purple_first = affiliate.request_details('470750142', colors=['Purple', 'Red'])
+            red_first = affiliate.request_details('470750142', colors=['Red', 'Purple'])
+
+        assert red.image.url != purple.image.url
+        assert red.thumbnail.url != purple.thumbnail.url
+
+        assert purple_first.image.url == purple.image.url
+        assert purple_first.thumbnail.url == purple.thumbnail.url
+        assert red_first.image.url == red.image.url
+        assert red_first.thumbnail.url == red.thumbnail.url
+
     def test_request_details_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when looking up details for an inavlid product ID."""
         affiliate = Affiliate()
