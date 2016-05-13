@@ -65,6 +65,7 @@ class AffiliateItemAdmin(admin.ModelAdmin):
 
 
 class AffiliateItemInline(admin.TabularInline):
+    fields = ('network', 'url', 'guid', 'name')
     form = AffiliateItemURLForm
     model = models.AffiliateItem
 
