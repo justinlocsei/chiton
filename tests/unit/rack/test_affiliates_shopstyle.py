@@ -78,6 +78,19 @@ class TestShopstyleAffiliate:
         assert default.image.url == missing.image.url
         assert default.thumbnail.url == missing.thumbnail.url
 
+    def test_request_details_image_color_missing(self, shopstyle_api_request):
+        """It returns the default image if no color-specific image is present."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            details = affiliate.request_details('521400855')
+            with_color = affiliate.request_details('521400855', colors=['Black'])
+
+        assert '.jpg' in details.image.url
+        assert '.jpg' in details.thumbnail.url
+        assert '.jpg' in with_color.image.url
+        assert '.jpg' in with_color.thumbnail.url
+
     def test_request_details_availability(self, shopstyle_api_request):
         """It returns unique availability information based off of the canonical sizes."""
         affiliate = Affiliate()
