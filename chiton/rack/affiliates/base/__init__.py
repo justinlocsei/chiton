@@ -32,14 +32,14 @@ class Affiliate:
         except ConfigurationError as e:
             raise LookupError('Incorrect overview format: %s' % e)
 
-    def request_details(self, guid, color=None):
+    def request_details(self, guid, colors=[]):
         """Request detailed information on an item.
 
         Args:
             guid (str): The item's unique ID
 
         Keyword Args:
-            color (str): The item's color
+            colors (list): The names of all colors for the item
 
         Returns:
             chiton.rack.affiliates.responses.ItemDetails: Details on the item
@@ -47,7 +47,7 @@ class Affiliate:
         Raises:
             chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
         """
-        data = self.provide_details(guid, color)
+        data = self.provide_details(guid, colors)
 
         try:
             return ItemDetails(**data)
@@ -89,7 +89,7 @@ class Affiliate:
         """
         raise NotImplementedError()
 
-    def provide_details(self, guid, color):
+    def provide_details(self, guid, colors):
         """Allow a child affiliate to return an item's details.
 
         The returned dict should provide the following information:
@@ -101,7 +101,7 @@ class Affiliate:
 
         Args:
             guid (str): The item's GUID
-            color (str): The name of the item's color
+            colors (list): The names of the item's colors
 
         Returns:
             dict: Information on the item's overview

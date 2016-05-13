@@ -43,7 +43,8 @@ class TestBaseAffiliate:
     def test_request_details(self):
         """It returns a child affiliate's details with or without a color."""
         class Child(Affiliate):
-            def provide_details(self, guid, color):
+            def provide_details(self, guid, colors):
+                color = colors[0] if colors else None
                 return {
                     'image': {
                         'height': 100,
@@ -60,7 +61,7 @@ class TestBaseAffiliate:
 
         affiliate = Child()
         without_color = affiliate.request_details('guid')
-        with_color = affiliate.request_details('guid', 'Black')
+        with_color = affiliate.request_details('guid', colors=['Black'])
 
         assert without_color.price == Decimal('12.99')
         assert without_color.image.height == 100
@@ -77,7 +78,7 @@ class TestBaseAffiliate:
     def test_request_details_availability(self):
         """It validates availability details only when provided."""
         class Child(Affiliate):
-            def provide_details(self, availability, color):
+            def provide_details(self, availability, colors):
                 return {
                     'availability': availability,
                     'image': {
@@ -108,7 +109,7 @@ class TestBaseAffiliate:
     def test_request_details_format(self):
         """It ensures that a child affiliate's details have all required fields."""
         class Child(Affiliate):
-            def provide_details(self, guid, color):
+            def provide_details(self, guid, colors):
                 return {}
 
         with pytest.raises(LookupError):

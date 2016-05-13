@@ -61,9 +61,9 @@ class TestShopstyleAffiliate:
 
         with shopstyle_api_request():
             default = affiliate.request_details('470750142')
-            red = affiliate.request_details('470750142', 'Red')
-            purple = affiliate.request_details('470750142', 'Purple')
-            missing = affiliate.request_details('470750142', 'Orange Green')
+            red = affiliate.request_details('470750142', colors=['Red'])
+            purple = affiliate.request_details('470750142', colors=['Purple'])
+            missing = affiliate.request_details('470750142', colors=['Orange Green'])
 
         assert '.jpg' in default.image.url
         assert '.jpg' in default.thumbnail.url
@@ -97,7 +97,7 @@ class TestShopstyleAffiliate:
 
         with shopstyle_api_request():
             default = affiliate.request_details('470750142')
-            purple = affiliate.request_details('470750142', 'Purple')
+            purple = affiliate.request_details('470750142', colors=['Purple'])
 
         assert default.availability is not None
         assert purple.availability is not None

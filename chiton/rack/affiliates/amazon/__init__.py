@@ -36,15 +36,15 @@ class Affiliate(BaseAffiliate):
             'name': name
         }
 
-    def provide_details(self, asin, color):
+    def provide_details(self, asin, colors):
         item = self._request_combined_data(asin)['Items']['Item']
 
         if 'Variations' not in item:
             raise LookupError('Details may not be provided for a child ASIN')
 
         price = self._calculate_price(item['Variations']['Item'])
-        image = self._find_image(item, 'LargeImage', color)
-        thumbnail = self._find_image(item, 'MediumImage', color)
+        image = self._find_image(item, 'LargeImage', colors)
+        thumbnail = self._find_image(item, 'MediumImage', colors)
 
         return {
             'image': image,
@@ -106,7 +106,7 @@ class Affiliate(BaseAffiliate):
         avg_price = total_price / len(variations)
         return Decimal('%.02f' % (avg_price / 100))
 
-    def _find_image(self, parsed, size_name, color_name):
+    def _find_image(self, parsed, size_name, color_names):
         """Find an image of a given size for an item of a given color.
 
         If no explicit image of the item in the given color can be found, this
@@ -115,18 +115,19 @@ class Affiliate(BaseAffiliate):
         Args:
             parsed (dict): A parsed API response
             size_name (str): The name of the image size to use
-            color_name (str): The name of the color to search for
+            color_names (list): The names of the colors to search for
 
         Returns:
             dict: Information on the image in the details image format
         """
         image = None
-        color_match = (color_name or '').lower()
         variations = parsed['Variations']['Item']
+        color_matches = [cn.lower() for cn in color_names]
 
-        for variation in variations:
-            if variation['ItemAttributes']['Color'].lower() == color_match:
-                image = variation[size_name]
+        if color_matches:
+            for variation in variations:
+                if variation['ItemAttributes']['Color'].lower() in color_matches:
+                    image = variation[size_name]
 
         if image is None:
             image = variations[0][size_name]

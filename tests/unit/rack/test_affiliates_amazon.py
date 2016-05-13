@@ -79,8 +79,8 @@ class TestAmazonAffiliate:
 
         with amazon_api_request():
             default = affiliate.request_details('B00YJJ4SNS')
-            green = affiliate.request_details('B00YJJ4SNS', 'Green')
-            missing = affiliate.request_details('B00YJJ4SNS', 'Orange Green')
+            green = affiliate.request_details('B00YJJ4SNS', colors=['Green'])
+            missing = affiliate.request_details('B00YJJ4SNS', colors=['Orange Green'])
 
         assert '.jpg' in default.image.url
         assert '.jpg' in default.thumbnail.url

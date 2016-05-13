@@ -27,15 +27,15 @@ class Affiliate(BaseAffiliate):
             'name': parsed['brandedName']
         }
 
-    def provide_details(self, product_id, color_name):
+    def provide_details(self, product_id, color_names):
         response = self._request_product(product_id)
         parsed = self._validate_response(response, product_id)
 
         price = Money(str(parsed['price']), USD)
-        image = self._find_image(parsed, 'XLarge', color_name)
-        thumbnail = self._find_image(parsed, 'Medium', color_name)
+        image = self._find_image(parsed, 'XLarge', color_names)
+        thumbnail = self._find_image(parsed, 'Medium', color_names)
 
-        found_sizes = self._check_stock(parsed, color_name)
+        found_sizes = self._check_stock(parsed, color_names)
         if found_sizes:
             availability = [{'size': s} for s in found_sizes]
         else:
@@ -52,7 +52,7 @@ class Affiliate(BaseAffiliate):
         response = self._request_product(product_id)
         return self._validate_response(response, product_id)
 
-    def _find_image(self, parsed, size_name, color_name):
+    def _find_image(self, parsed, size_name, color_names):
         """Find an image of a given size for an item of a given color.
 
         If no explicit image of the item in the given color can be found, this
@@ -61,18 +61,21 @@ class Affiliate(BaseAffiliate):
         Args:
             parsed (dict): A parsed API response
             size_name (str): The name of the image size to use
-            color_name (str): The name of the color to search for
+            color_names (list): The names of the colors to search for
 
         Returns:
             dict: Information on the image in the details image format
         """
         image = None
-        color_match = (color_name or '').lower()
+        color_matches = [cn.lower() for cn in color_names]
 
-        for color in parsed['colors']:
-            for canonical_color in color['canonicalColors']:
-                if canonical_color['name'].lower() == color_match and 'image' in color:
-                    image = color['image']['sizes'][size_name]
+        if color_matches:
+            for color in parsed['colors']:
+                if 'image' not in color:
+                    continue
+                for canonical_color in color['canonicalColors']:
+                    if canonical_color['name'].lower() in color_matches:
+                        image = color['image']['sizes'][size_name]
 
         if image is None:
             image = parsed['image']['sizes'][size_name]
@@ -83,7 +86,7 @@ class Affiliate(BaseAffiliate):
             'width': image['actualWidth']
         }
 
-    def _check_stock(self, parsed, color_name):
+    def _check_stock(self, parsed, color_names):
         """Return the unique names of all available sizes.
 
         This checks Shopstyle's stock records, and adds any size whose name maps
@@ -93,17 +96,17 @@ class Affiliate(BaseAffiliate):
 
         Args:
             parsed (dict): A parsed API response
-            color_name (str): The name of the color to check for
+            color_names (list): The names of the colors to check for
 
         Returns:
             set: The names of all available sizes
         """
         stock_colors = []
-        if color_name:
-            color_search = color_name.lower()
+        if color_names:
+            color_searches = [cn.lower() for cn in color_names]
             for color in parsed.get('colors', []):
                 canonical = color.get('canonicalColors', [])
-                has_match = any([c for c in canonical if c['name'].lower() == color_search])
+                has_match = any([c for c in canonical if c['name'].lower() in color_searches])
                 if has_match:
                     stock_colors.append(color['name'])
 
