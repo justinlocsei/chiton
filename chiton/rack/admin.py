@@ -24,9 +24,9 @@ class AffiliateItemAdmin(admin.ModelAdmin):
 
     form = AffiliateItemURLForm
     inlines = [StockRecordInline]
-    list_display = ('name', 'network', 'item_link', 'api_link', 'garment', 'last_modified')
+    list_display = ('name', 'network', 'item_link', 'api_link', 'price', 'garment')
     list_filter = ('network',)
-    ordering = ('-last_modified',)
+    ordering = ('name',)
     search_fields = ['name']
 
     def get_urls(self):
