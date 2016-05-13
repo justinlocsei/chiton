@@ -7,11 +7,10 @@
         "category": [
             "shirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -22,11 +21,10 @@
         "category": [
             "overshirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -37,11 +35,10 @@
         "category": [
             "pants"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -52,11 +49,10 @@
         "category": [
             "pants"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -67,11 +63,10 @@
         "category": [
             "shirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -82,11 +77,10 @@
         "category": [
             "skirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -97,11 +91,10 @@
         "category": [
             "shirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -112,11 +105,10 @@
         "category": [
             "hosiery"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -127,11 +119,10 @@
         "category": [
             "shirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -142,11 +133,10 @@
         "category": [
             "overshirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -157,11 +147,10 @@
         "category": [
             "dresses"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -172,7 +161,8 @@
         "category": [
             "pants"
         ],
-        "colors": []
+        "primary_color": null,
+        "secondary_colors": []
     }
 },
 {
@@ -183,11 +173,10 @@
         "category": [
             "overshirts"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -198,11 +187,10 @@
         "category": [
             "dresses"
         ],
-        "colors": [
-            [
-                "black"
-            ]
-        ]
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -213,7 +201,8 @@
         "category": [
             "pants"
         ],
-        "colors": []
+        "primary_color": null,
+        "secondary_colors": []
     }
 },
 {
@@ -224,7 +213,8 @@
         "category": [
             "hosiery"
         ],
-        "colors": []
+        "primary_color": null,
+        "secondary_colors": []
     }
 },
 {
@@ -235,7 +225,8 @@
         "category": [
             "skirts"
         ],
-        "colors": []
+        "primary_color": null,
+        "secondary_colors": []
     }
 },
 {
@@ -246,7 +237,8 @@
         "category": [
             "shirts"
         ],
-        "colors": []
+        "primary_color": null,
+        "secondary_colors": []
     }
 },
 {
@@ -257,11 +249,10 @@
         "category": [
             "shirts"
         ],
-        "colors": [
-            [
-                "white"
-            ]
-        ]
+        "primary_color": [
+            "white"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -272,11 +263,10 @@
         "category": [
             "shirts"
         ],
-        "colors": [
-            [
-                "white"
-            ]
-        ]
+        "primary_color": [
+            "white"
+        ],
+        "secondary_colors": []
     }
 },
 {
@@ -287,11 +277,10 @@
         "category": [
             "shirts"
         ],
-        "colors": [
-            [
-                "white"
-            ]
-        ]
+        "primary_color": [
+            "white"
+        ],
+        "secondary_colors": []
     }
 }
 ]
