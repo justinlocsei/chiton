@@ -126,7 +126,7 @@ class Affiliate(BaseAffiliate):
         sizes = set()
         for stock in parsed.get('stock'):
             color_match = not stock_colors or stock['color']['name'] in stock_colors
-            size_name = stock_sizes[stock['size']['name']]
+            size_name = stock_sizes.get(stock['size']['name'], None)
             if color_match and size_name:
                 sizes.add(size_name)
 
