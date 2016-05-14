@@ -1,6 +1,36 @@
+from multiprocessing.dummy import Pool as ThreadPool
+from queue import Queue
+
 from chiton.closet.models import Size
 from chiton.rack.affiliates import create_affiliate
 from chiton.rack.models import ProductImage, StockRecord
+
+
+def refresh_affiliate_items(items, full=False, workers=2):
+    """Refresh a batch of affiliate items.
+
+    Args:
+        items (django.db.models.query.QuerySet): A queryset of affiliate items
+
+    Keyword Args:
+        full (bool): Whether to perform a full refresh
+        workers (int): The number of workers to use to process the items
+
+    Returns:
+        queue.Queue: A queue that will contain all processed affiliate items
+    """
+    items = items.select_related('garment__basic', 'image', 'thumbnail')
+
+    pool = ThreadPool(workers)
+    queue = Queue()
+
+    def refresh_item(item):
+        queue.put({'item_name': item.name})
+
+    pool.map_async(refresh_item, items)
+    pool.close()
+
+    return queue
 
 
 def refresh_affiliate_item(item, full=False):
