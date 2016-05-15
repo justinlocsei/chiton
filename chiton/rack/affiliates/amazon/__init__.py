@@ -47,6 +47,7 @@ class Affiliate(BaseAffiliate):
         thumbnail = self._find_image(item, 'MediumImage', colors)
 
         return {
+            'availability': True,
             'image': image,
             'price': price,
             'thumbnail': thumbnail

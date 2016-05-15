@@ -112,13 +112,13 @@ class TestAmazonAffiliate:
         assert black_first.thumbnail.url == black.thumbnail.url
 
     def test_request_details_availability(self, amazon_api_request):
-        """It does not return item availability records."""
+        """It marks every item as globally available."""
         affiliate = Affiliate()
 
         with amazon_api_request():
             details = affiliate.request_details('B00ZGRB7S6')
 
-        assert details.availability is None
+        assert details.availability is True
 
     def test_request_details_valid_asin_child(self, amazon_api_request):
         """It raises an error when requesting details for a child item."""
