@@ -131,7 +131,7 @@ class PipelineStep:
             profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
 
         Yields:
-            function: A partial apply function that includes the
+            function: A partially apply function that includes the profile data
         """
         profile_data = self.provide_profile_data(profile)
         yield partial(self.apply, **profile_data)
