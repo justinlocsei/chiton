@@ -46,6 +46,7 @@ class TestBaseAffiliate:
             def provide_details(self, guid, colors):
                 color = colors[0] if colors else None
                 return {
+                    'availability': True,
                     'image': {
                         'height': 100,
                         'url': 'http://%s%s.com' % (guid, color),
@@ -64,6 +65,10 @@ class TestBaseAffiliate:
         with_color = affiliate.request_details('guid', colors=['Black'])
 
         assert without_color.price == Decimal('12.99')
+        assert with_color.price == Decimal('12.99')
+        assert without_color.availability
+        assert with_color.availability
+
         assert without_color.image.height == 100
         assert without_color.image.width == 100
         assert without_color.thumbnail.height == 50
@@ -76,7 +81,7 @@ class TestBaseAffiliate:
         assert with_color.thumbnail.url == 'http://guidBlack.net'
 
     def test_request_details_availability(self):
-        """It validates availability details only when provided."""
+        """It accepts either a boolean or a list for availability."""
         class Child(Affiliate):
             def provide_details(self, availability, colors):
                 return {
@@ -96,8 +101,11 @@ class TestBaseAffiliate:
 
         affiliate = Child()
 
-        default = affiliate.request_details(None)
-        assert default.availability is None
+        is_available = affiliate.request_details(True)
+        assert is_available.availability is True
+
+        is_unavailable = affiliate.request_details(False)
+        assert is_unavailable.availability is False
 
         with_availability = affiliate.request_details([{'size': 'XS'}, {'size': 'S'}])
         assert len(with_availability.availability) == 2
@@ -105,6 +113,9 @@ class TestBaseAffiliate:
 
         with pytest.raises(LookupError):
             affiliate.request_details([{'invalid': 'field'}])
+
+        with pytest.raises(LookupError):
+            affiliate.request_details(None)
 
     def test_request_details_format(self):
         """It ensures that a child affiliate's details have all required fields."""

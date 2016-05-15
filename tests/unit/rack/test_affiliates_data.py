@@ -40,11 +40,12 @@ class FullAffiliate(Affiliate):
         }
 
 
-class PartialAffiliate(Affiliate):
-    """An affiliate that does not return availability information."""
+class OutOfStockAffiliate(Affiliate):
+    """An affiliate that indicates that an item is out-of-stock."""
 
     def provide_details(self, guid, colors=[]):
         return {
+            'availability': False,
             'image': {
                 'height': 100,
                 'url': 'http://example.com/image',
@@ -57,6 +58,15 @@ class PartialAffiliate(Affiliate):
                 'width': 50
             }
         }
+
+
+class InStockAffiliate(OutOfStockAffiliate):
+    """An affiliate that indicates that all sizes are available."""
+
+    def provide_details(self, guid, colors=[]):
+        details = super().provide_details(guid, colors)
+        details['availability'] = True
+        return details
 
 
 @pytest.fixture
@@ -174,25 +184,38 @@ class TestRefreshAffiliateItem:
         assert not availability_by_name['Medium (6)']
         assert 'Jumbo (10)' not in availability_by_name
 
-    def test_network_data_stock_records_default(self, affiliate_item):
-        """It creates in-stock records for all known sizes if an affiliate provides no availability information."""
+    def test_network_data_stock_records_in_stock(self, affiliate_item):
+        """It creates in-stock records for all known sizes if an affiliate signals that an item is globally available."""
         Size.objects.create(base='Small', size_lower=2, size_upper=2)
         Size.objects.create(base='Medium', size_lower=4, size_upper=4)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = PartialAffiliate()
+            create_affiliate.return_value = InStockAffiliate()
             refresh_affiliate_item(affiliate_item)
 
         records = affiliate_item.stock_records.all()
         assert len(records) == 2
         assert all([r.is_available for r in records])
 
+    def test_network_data_stock_records_out_of_stock(self, affiliate_item):
+        """It creates unavailable in-stock records for all known sizes if an affiliate signals that an item is globally unavailable."""
+        Size.objects.create(base='Small', size_lower=2, size_upper=2)
+        Size.objects.create(base='Medium', size_lower=4, size_upper=4)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = OutOfStockAffiliate()
+            refresh_affiliate_item(affiliate_item)
+
+        records = affiliate_item.stock_records.all()
+        assert len(records) == 2
+        assert not any([r.is_available for r in records])
+
     def test_network_data_stock_records_existing(self, affiliate_item):
         """It updates stock records for items with existing records."""
         Size.objects.create(base='Medium', size_lower=4, size_upper=4)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = PartialAffiliate()
+            create_affiliate.return_value = InStockAffiliate()
 
             refresh_affiliate_item(affiliate_item)
             records = affiliate_item.stock_records.all()

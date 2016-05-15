@@ -93,7 +93,7 @@ class ItemDetails:
     """Details of an affiliate item returned by its API."""
 
     SCHEMA = V.Schema({
-        'availability': [ItemAvailability.SCHEMA],
+        V.Required('availability'): [ItemAvailability.SCHEMA, bool],
         V.Required('image'): ItemImage.SCHEMA,
         V.Required('price'): Decimal,
         V.Required('thumbnail'): ItemImage.SCHEMA
@@ -103,14 +103,19 @@ class ItemDetails:
         """Create item details.
 
         Keyword Args:
-            availability (list): Availability information for the item
+            availability (bool,list): Availability information for the item
             image (dict): Information on the item's primary image
             price (decimal.Decimal): The price for the item
             thumbnail (dict): Information on the item's thumbnail image
         """
+        if isinstance(availability, bool):
+            check_availability = [availability]
+        else:
+            check_availability = availability
+
         try:
             self.SCHEMA({
-                'availability': availability or [],
+                'availability': check_availability,
                 'image': image,
                 'price': price,
                 'thumbnail': thumbnail
@@ -122,7 +127,7 @@ class ItemDetails:
         self.price = price
         self.thumbnail = ItemImage(**thumbnail)
 
-        if availability:
-            self.availability = [ItemAvailability(size=a['size']) for a in availability]
-        else:
+        if isinstance(availability, bool):
             self.availability = availability
+        else:
+            self.availability = [ItemAvailability(size=a['size']) for a in availability]

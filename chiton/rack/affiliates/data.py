@@ -105,36 +105,41 @@ def _update_item_image(item, image_field, data):
         setattr(item, image_field, image)
 
 
-def _update_stock_records(item, records):
+def _update_stock_records(item, availability):
     """Update an item's stock records.
 
     This looks at the sizes of the given stock records and maps them to known
-    canonical sizes.  If an availability record is present, a stock record is
-    created that marks the item as in-stock.  If no record is present, an
-    out-of-stock record is created instead.
+    canonical sizes.  If availability records are present, a stock record is
+    created that marks the item as in-stock for the source record's size.  If no
+    record is present for a size, an out-of-stock record is created instead.
 
-    If no availability information at all is provided, a stock record showing
-    the item as in-stock is created for every known size.
+    Availability can also be indicated as a boolean value indicating that an
+    item is globally available or unavailable.  A true value will mark the item
+    as in-stock, while a false one will cause it to be marked as out-of-stock.
 
     Args:
         item (chiton.rack.models.AffiliateItem): An affiliate item
-        records (list): Possible ItemAvailability instances for the item
+        availability (bool,list): Information on the item's availability
     """
     all_sizes = Size.objects.all()
     existing_records = item.stock_records.all().select_related('size')
 
-    has_info = records is not None
-    record_sizes = [r.size for r in records or []]
+    if isinstance(availability, bool):
+        has_records = False
+        record_sizes = []
+    else:
+        has_records = True
+        record_sizes = [record.size for record in availability]
 
     # Build a map between Size instances and availability, as indicated by
     # occurrences of known sizes in the given availability records
-    availability = {}
+    available_sizes = {}
     for size in all_sizes:
-        if has_info:
+        if has_records:
             is_available = size.full_name in record_sizes
         else:
-            is_available = True
-        availability[size] = is_available
+            is_available = availability
+        available_sizes[size] = is_available
 
     for size in all_sizes:
         current_record = None
@@ -144,11 +149,11 @@ def _update_stock_records(item, records):
                 break
 
         if current_record:
-            current_record.is_available = availability[size]
+            current_record.is_available = available_sizes[size]
             current_record.save()
         else:
             StockRecord.objects.create(
                 item=item,
                 size=size,
-                is_available=availability[size]
+                is_available=available_sizes[size]
             )
