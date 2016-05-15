@@ -135,6 +135,24 @@ class TestShopstyleAffiliate:
         assert red_first.image.url == red.image.url
         assert red_first.thumbnail.url == red.thumbnail.url
 
+    def test_request_details_availability_no_stock_records(self, shopstyle_api_request):
+        """It signals global availability when no stock information is present but the item is marked as in stock."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            details = affiliate.request_details('493153459')
+
+        assert details.availability is True
+
+    def test_request_details_availability_partial_stock_records(self, shopstyle_api_request):
+        """It signals global availability when an item's stock records lack a size and color and the item is marked as in stock."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            details = affiliate.request_details('494093141')
+
+        assert details.availability is True
+
     def test_request_details_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when looking up details for an inavlid product ID."""
         affiliate = Affiliate()

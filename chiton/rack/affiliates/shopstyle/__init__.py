@@ -39,7 +39,7 @@ class Affiliate(BaseAffiliate):
         if found_sizes:
             availability = [{'size': s} for s in found_sizes]
         else:
-            availability = None
+            availability = parsed.get('inStock', True)
 
         return {
             'availability': availability,
@@ -124,11 +124,12 @@ class Affiliate(BaseAffiliate):
                 stock_sizes[size['name']] = canonical['name']
 
         sizes = set()
-        for stock in parsed.get('stock'):
-            color_match = not stock_colors or stock['color']['name'] in stock_colors
-            size_name = stock_sizes.get(stock['size']['name'], None)
-            if color_match and size_name:
-                sizes.add(size_name)
+        for stock in parsed.get('stock', []):
+            if 'color' in stock and 'size' in stock:
+                color_match = not stock_colors or stock['color']['name'] in stock_colors
+                size_name = stock_sizes.get(stock['size']['name'], None)
+                if color_match and size_name:
+                    sizes.add(size_name)
 
         return sizes
 
