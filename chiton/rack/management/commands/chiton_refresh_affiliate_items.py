@@ -42,11 +42,16 @@ class Command(BaseCommand):
         )
 
         while True:
-            message = item_queue.get()
+            task = item_queue.get()
             item_queue.task_done()
-
             processed_count += 1
-            self.stdout.write('Updating: %d/%d (%s)' % (processed_count, total_count, message['item_name']))
+
+            if task['is_error']:
+                self.stdout.write(self.style.ERROR('\n[!] %d/%d (%s)' % (processed_count, total_count, task['label'])))
+                self.stdout.write(self.style.ERROR(task['details']), ending='\n\n')
+            else:
+                self.stdout.write('%d/%d (%s)' % (processed_count, total_count, task['label']))
+
             if processed_count == total_count:
                 break
 

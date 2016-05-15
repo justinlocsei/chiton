@@ -1,5 +1,7 @@
+from io import StringIO
 from multiprocessing.dummy import Pool as ThreadPool
 from queue import Queue
+import traceback
 
 from chiton.closet.models import Size
 from chiton.rack.affiliates import create_affiliate
@@ -19,13 +21,27 @@ def refresh_affiliate_items(items, full=False, workers=2):
     Returns:
         queue.Queue: A queue that will contain all processed affiliate items
     """
-    items = items.select_related('garment__basic', 'image', 'thumbnail')
+    items = items.select_related('garment__basic', 'image', 'thumbnail', 'network')
 
     pool = ThreadPool(workers)
     queue = Queue()
 
     def refresh_item(item):
-        queue.put({'item_name': item.name})
+        label = '%s: %s' % (item.network.name, item.name)
+        try:
+            item = refresh_affiliate_item(item, full=full)
+            queue.put({
+                'label': label,
+                'is_error': False
+            })
+        except Exception:
+            error_buffer = StringIO()
+            traceback.print_exc(file=error_buffer)
+            queue.put({
+                'details': error_buffer.getvalue().strip(),
+                'label': label,
+                'is_error': True
+            })
 
     pool.map_async(refresh_item, items)
     pool.close()
