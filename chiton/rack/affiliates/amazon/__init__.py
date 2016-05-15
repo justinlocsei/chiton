@@ -1,3 +1,6 @@
+from contextlib import contextmanager
+from urllib.error import HTTPError
+
 import bottlenose
 from decimal import Decimal
 from django.conf import settings
@@ -5,7 +8,23 @@ import xmltodict
 
 from chiton.rack.affiliates.amazon.urls import extract_asin_from_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
-from chiton.rack.affiliates.exceptions import LookupError
+from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
+
+
+@contextmanager
+def raise_throttling_exception():
+    """Re-raise throttling HTTP errors as throttling errors.
+
+    Raises:
+        chiton.rack.affiliates.exceptions.ThrottlingError: When an API call is throttled
+    """
+    try:
+        yield
+    except HTTPError as e:
+        if e.code == 503:
+            raise ThrottlingError()
+        else:
+            raise e
 
 
 class Affiliate(BaseAffiliate):
@@ -20,8 +39,9 @@ class Affiliate(BaseAffiliate):
             raise LookupError('No ASIN could be extracted from the URL: %s' % url)
 
         connection = self._connect()
-        response = connection.ItemLookup(ItemId=asin, ResponseGroup='Small')
-        validated = self._validate_response(response, asin)
+        with raise_throttling_exception():
+            response = connection.ItemLookup(ItemId=asin, ResponseGroup='Small')
+            validated = self._validate_response(response, asin)
 
         item = validated['Items']['Item']
         name = item.get('ItemAttributes', {}).get('Title')
@@ -85,8 +105,12 @@ class Affiliate(BaseAffiliate):
             chiton.rack.affiliates.exceptions.LookupError: If the request errored out
         """
         connection = self._connect()
-        response = connection.ItemLookup(ItemId=asin, ResponseGroup='ItemAttributes,Variations')
-        return self._validate_response(response, asin)
+
+        with raise_throttling_exception():
+            response = connection.ItemLookup(ItemId=asin, ResponseGroup='ItemAttributes,Variations')
+            validated = self._validate_response(response, asin)
+
+        return validated
 
     def _calculate_price(self, variations):
         """Calculate the average price for the item based on all offers.

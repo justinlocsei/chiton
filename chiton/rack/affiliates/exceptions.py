@@ -4,3 +4,7 @@ class LookupError(Exception):
 
 class ConfigurationError(Exception):
     """An internal error raised when expected formats are not followed."""
+
+
+class ThrottlingError(Exception):
+    """An internal error raised when an API throttles a request."""
