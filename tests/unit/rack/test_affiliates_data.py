@@ -4,7 +4,7 @@ import mock
 import pytest
 
 from chiton.closet.models import Color, Size
-from chiton.rack.affiliates.data import refresh_affiliate_item
+from chiton.rack.affiliates.data import update_affiliate_item_details
 from chiton.rack.affiliates.base import Affiliate
 
 
@@ -93,7 +93,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
             create_affiliate.assert_called_with(slug='shopping')
 
@@ -105,7 +105,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
         assert affiliate_item.price == Decimal('9.99')
         assert affiliate_item.image.height == 100
@@ -117,7 +117,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
         assert affiliate_item.thumbnail.url == 'http://example.net/4321'
 
@@ -125,7 +125,7 @@ class TestRefreshAffiliateItem:
         """It fetches details using the basic's primary and secondary colors, ordered by name."""
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
         assert affiliate_item.image.url == 'http://example.com/White/Blue/Gray'
 
@@ -135,7 +135,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
         assert affiliate_item.image.url == 'http://example.com/'
 
@@ -144,7 +144,7 @@ class TestRefreshAffiliateItem:
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
 
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
             first_image_pk = affiliate_item.image.pk
             first_thumbnail_pk = affiliate_item.thumbnail.pk
 
@@ -154,7 +154,7 @@ class TestRefreshAffiliateItem:
             affiliate_item.thumbnail.height = 100
             affiliate_item.thumbnail.save()
 
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
             second_image_pk = affiliate_item.image.pk
             second_thumbnail_pk = affiliate_item.thumbnail.pk
 
@@ -174,7 +174,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
         availability_by_name = {}
         for record in affiliate_item.stock_records.all():
@@ -191,7 +191,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = InStockAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
         records = affiliate_item.stock_records.all()
         assert len(records) == 2
@@ -204,7 +204,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = OutOfStockAffiliate()
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
 
         records = affiliate_item.stock_records.all()
         assert len(records) == 2
@@ -217,7 +217,7 @@ class TestRefreshAffiliateItem:
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = InStockAffiliate()
 
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
             records = affiliate_item.stock_records.all()
 
             assert len(records) == 1
@@ -227,7 +227,7 @@ class TestRefreshAffiliateItem:
             medium.is_available = False
             medium.save()
 
-            refresh_affiliate_item(affiliate_item)
+            update_affiliate_item_details(affiliate_item)
             records = affiliate_item.stock_records.all()
 
             assert len(records) == 1
@@ -247,7 +247,7 @@ class TestRefreshAffiliateItem:
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
-            refresh_affiliate_item(affiliate_item, full=True)
+            update_affiliate_item_details(affiliate_item, full=True)
 
         assert affiliate_item.guid == '1234'
         assert affiliate_item.name == 'Test Name'

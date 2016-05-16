@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from chiton.rack.affiliates.data import refresh_affiliate_items
+from chiton.rack.affiliates.bulk import bulk_update_affiliate_item_details
 from chiton.rack.models import AffiliateItem
 
 
@@ -36,7 +36,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write('Processing %d items with %d workers\n--' % (total_count, options['workers']))
 
-        item_queue = refresh_affiliate_items(items,
+        item_queue = bulk_update_affiliate_item_details(items,
             full=options['full_refresh'],
             workers=options['workers']
         )

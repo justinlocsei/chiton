@@ -88,8 +88,8 @@ class TestAffiliateItemURLForm:
             affiliate.request_overview.return_value = ItemOverview(guid='guid', name='name')
             create_affiliate.return_value = affiliate
 
-            with mock.patch('chiton.rack.forms.refresh_affiliate_item') as refresh_affiliate_item:
+            with mock.patch('chiton.rack.forms.update_affiliate_item_details') as update_affiliate_item_details:
                 assert form.is_valid()
 
                 item = form.save()
-                refresh_affiliate_item.assert_called_with(item)
+                update_affiliate_item_details.assert_called_with(item)
