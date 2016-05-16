@@ -2,7 +2,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xxs",
+        "name": "xxs",
         "slug": "xxs-petite",
         "size_lower": 0,
         "size_upper": 0,
@@ -14,7 +14,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xs",
+        "name": "xs",
         "slug": "xs-petite",
         "size_lower": 2,
         "size_upper": 2,
@@ -26,7 +26,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "s",
+        "name": "s",
         "slug": "s-petite",
         "size_lower": 4,
         "size_upper": 6,
@@ -38,7 +38,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "m",
+        "name": "m",
         "slug": "m-petite",
         "size_lower": 8,
         "size_upper": 10,
@@ -50,7 +50,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "l",
+        "name": "l",
         "slug": "l-petite",
         "size_lower": 12,
         "size_upper": 14,
@@ -62,7 +62,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xl",
+        "name": "xl",
         "slug": "xl-petite",
         "size_lower": 16,
         "size_upper": 18,
@@ -74,7 +74,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xxs",
+        "name": "xxs",
         "slug": "xxs",
         "size_lower": 0,
         "size_upper": 0,
@@ -86,7 +86,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xs",
+        "name": "xs",
         "slug": "xs",
         "size_lower": 2,
         "size_upper": 2,
@@ -98,7 +98,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "s",
+        "name": "s",
         "slug": "s",
         "size_lower": 4,
         "size_upper": 6,
@@ -110,7 +110,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "m",
+        "name": "m",
         "slug": "m",
         "size_lower": 8,
         "size_upper": 10,
@@ -122,7 +122,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "l",
+        "name": "l",
         "slug": "l",
         "size_lower": 12,
         "size_upper": 14,
@@ -134,7 +134,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xl",
+        "name": "xl",
         "slug": "xl",
         "size_lower": 16,
         "size_upper": 18,
@@ -146,7 +146,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xxl",
+        "name": "xxl",
         "slug": "xxl",
         "size_lower": 20,
         "size_upper": 22,
@@ -158,7 +158,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xs",
+        "name": "xs",
         "slug": "xs-tall",
         "size_lower": 2,
         "size_upper": 2,
@@ -170,7 +170,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "s",
+        "name": "s",
         "slug": "s-tall",
         "size_lower": 4,
         "size_upper": 6,
@@ -182,7 +182,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "m",
+        "name": "m",
         "slug": "m-tall",
         "size_lower": 8,
         "size_upper": 10,
@@ -194,7 +194,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "l",
+        "name": "l",
         "slug": "l-tall",
         "size_lower": 12,
         "size_upper": 14,
@@ -206,7 +206,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "xl",
+        "name": "xl",
         "slug": "xl-tall",
         "size_lower": 16,
         "size_upper": 18,
@@ -218,7 +218,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "plus1",
+        "name": "plus1",
         "slug": "plus1",
         "size_lower": 14,
         "size_upper": 16,
@@ -230,7 +230,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "plus2",
+        "name": "plus2",
         "slug": "plus2",
         "size_lower": 18,
         "size_upper": 20,
@@ -242,7 +242,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "plus3",
+        "name": "plus3",
         "slug": "plus3",
         "size_lower": 22,
         "size_upper": 24,
@@ -254,7 +254,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "plus4",
+        "name": "plus4",
         "slug": "plus4",
         "size_lower": 26,
         "size_upper": 28,
@@ -266,7 +266,7 @@
 {
     "model": "chiton_closet.size",
     "fields": {
-        "base": "plus5",
+        "name": "plus5",
         "slug": "plus5",
         "size_lower": 30,
         "size_upper": 32,

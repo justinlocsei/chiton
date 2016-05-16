@@ -119,7 +119,7 @@ def _update_stock_records(item, availability):
     available_sizes = {}
     for size in all_sizes:
         if has_records:
-            is_available = size.full_name in record_sizes
+            is_available = size.display_name in record_sizes
         else:
             is_available = availability
         available_sizes[size] = is_available

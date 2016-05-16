@@ -115,7 +115,7 @@ class Color(models.Model):
 
 def _slug_for_size(size):
     """Create the slug for a Size model instance."""
-    parts = [size.base]
+    parts = [size.name]
 
     if size.is_tall:
         parts.append('tall')
@@ -137,7 +137,7 @@ class Size(models.Model):
 
     objects = SizeManager()
 
-    base = models.CharField(max_length=15, choices=data.SIZE_CHOICES, verbose_name=_('base size'))
+    name = models.CharField(max_length=15, choices=data.SIZE_CHOICES, verbose_name=_('name'))
     slug = AutoSlugField(max_length=255, populate_from=_slug_for_size, verbose_name=_('slug'), unique=True)
     size_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'))
     size_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'))
@@ -152,7 +152,7 @@ class Size(models.Model):
         verbose_name_plural = _('sizes')
 
     def __str__(self):
-        return self.full_name
+        return self.display_name
 
     def natural_key(self):
         return (self.slug,)
@@ -165,19 +165,19 @@ class Size(models.Model):
             raise ValidationError(_('A size cannot be both tall and petite'))
 
     @property
-    def full_name(self):
+    def display_name(self):
         """Show the full name of the size, with its possible variant and range.
 
         Returns:
-            str: The full name for the size
+            str: The display name for the size
         """
         ranges = sorted(list(set([self.size_lower, self.size_upper])))
         range_display = '-'.join([str(r) for r in ranges])
-        base = '%s (%s)' % (self.get_base_display(), range_display)
+        name = '%s (%s)' % (self.get_name_display(), range_display)
 
         if self.is_tall:
-            return _('Tall %(size)s') % {'size': base}
+            return _('Tall %(size)s') % {'size': name}
         elif self.is_petite:
-            return _('Petite %(size)s') % {'size': base}
+            return _('Petite %(size)s') % {'size': name}
         else:
-            return base
+            return name

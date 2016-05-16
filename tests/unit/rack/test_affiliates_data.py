@@ -197,8 +197,8 @@ class TestUpdateAffiliateItemDetails:
 
     def test_network_data_stock_records(self, affiliate_item):
         """It creates stock records for all sizes that match a known size's full display name."""
-        Size.objects.create(base='Medium', size_lower=6, size_upper=6)
-        Size.objects.create(base='Large', size_lower=8, size_upper=8)
+        Size.objects.create(name='Medium', size_lower=6, size_upper=6)
+        Size.objects.create(name='Large', size_lower=8, size_upper=8)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
@@ -206,7 +206,7 @@ class TestUpdateAffiliateItemDetails:
 
         availability_by_name = {}
         for record in affiliate_item.stock_records.all():
-            availability_by_name[record.size.full_name] = record.is_available
+            availability_by_name[record.size.display_name] = record.is_available
 
         assert availability_by_name['Large (8)']
         assert not availability_by_name['Medium (6)']
@@ -214,8 +214,8 @@ class TestUpdateAffiliateItemDetails:
 
     def test_network_data_stock_records_in_stock(self, affiliate_item):
         """It creates in-stock records for all known sizes if an affiliate signals that an item is globally available."""
-        Size.objects.create(base='Small', size_lower=2, size_upper=2)
-        Size.objects.create(base='Medium', size_lower=4, size_upper=4)
+        Size.objects.create(name='Small', size_lower=2, size_upper=2)
+        Size.objects.create(name='Medium', size_lower=4, size_upper=4)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = InStockAffiliate()
@@ -227,8 +227,8 @@ class TestUpdateAffiliateItemDetails:
 
     def test_network_data_stock_records_out_of_stock(self, affiliate_item):
         """It creates unavailable in-stock records for all known sizes if an affiliate signals that an item is globally unavailable."""
-        Size.objects.create(base='Small', size_lower=2, size_upper=2)
-        Size.objects.create(base='Medium', size_lower=4, size_upper=4)
+        Size.objects.create(name='Small', size_lower=2, size_upper=2)
+        Size.objects.create(name='Medium', size_lower=4, size_upper=4)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = OutOfStockAffiliate()
@@ -240,7 +240,7 @@ class TestUpdateAffiliateItemDetails:
 
     def test_network_data_stock_records_existing(self, affiliate_item):
         """It updates stock records for items with existing records."""
-        Size.objects.create(base='Medium', size_lower=4, size_upper=4)
+        Size.objects.create(name='Medium', size_lower=4, size_upper=4)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = InStockAffiliate()

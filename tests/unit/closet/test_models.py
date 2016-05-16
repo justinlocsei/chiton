@@ -61,7 +61,7 @@ class TestSize:
 
     def test_natural_key(self):
         """It uses its slug."""
-        size = Size.objects.create(base=SIZES['M'], size_lower=4, size_upper=6, slug="medium")
+        size = Size.objects.create(name=SIZES['M'], size_lower=4, size_upper=6, slug="medium")
         assert size.natural_key() == ('medium',)
 
         found = Size.objects.get_by_natural_key('medium')
@@ -69,7 +69,7 @@ class TestSize:
 
     def test_slug_variant(self):
         """It uses the variant type in the slug."""
-        kwargs = {'base': SIZES['M'], 'size_lower': 4, 'size_upper': 6}
+        kwargs = {'name': SIZES['M'], 'size_lower': 4, 'size_upper': 6}
 
         normal = Size.objects.create(**kwargs)
         petite = Size.objects.create(is_petite=True, **kwargs)
@@ -86,7 +86,7 @@ class TestSize:
 
     def test_clean_size_range(self):
         """It requires a properly ordered size range."""
-        size = Size(base=SIZES['M'])
+        size = Size(name=SIZES['M'])
         size.size_lower = 4
         size.size_upper = 2
 
@@ -98,7 +98,7 @@ class TestSize:
 
     def test_clean_tall_petite(self):
         """It prevents a size from being both tall and petite."""
-        size = Size(base=SIZES['M'], size_lower=4, size_upper=6)
+        size = Size(name=SIZES['M'], size_lower=4, size_upper=6)
         size.is_tall = True
         size.is_petite = True
 
@@ -110,18 +110,18 @@ class TestSize:
 
     def test_full_name(self):
         """It shows the size range in the full name."""
-        size = Size(base=SIZES['M'], size_lower=4, size_upper=6)
-        assert size.full_name == 'M (4-6)'
+        size = Size(name=SIZES['M'], size_lower=4, size_upper=6)
+        assert size.display_name == 'M (4-6)'
 
     def test_full_name_single_size(self):
         """It does not show a range for a size with a single numeric size's full name."""
-        size = Size(base=SIZES['M'], size_lower=4, size_upper=4)
-        assert size.full_name == 'M (4)'
+        size = Size(name=SIZES['M'], size_lower=4, size_upper=4)
+        assert size.display_name == 'M (4)'
 
     def test_full_name_variant(self):
         """It shows the variant as a prefix in the full name."""
-        tall = Size(base=SIZES['M'], size_lower=4, size_upper=6, is_tall=True)
-        petite = Size(base=SIZES['M'], size_lower=4, size_upper=6, is_petite=True)
+        tall = Size(name=SIZES['M'], size_lower=4, size_upper=6, is_tall=True)
+        petite = Size(name=SIZES['M'], size_lower=4, size_upper=6, is_petite=True)
 
-        assert tall.full_name == 'Tall M (4-6)'
-        assert petite.full_name == 'Petite M (4-6)'
+        assert tall.display_name == 'Tall M (4-6)'
+        assert petite.display_name == 'Petite M (4-6)'
