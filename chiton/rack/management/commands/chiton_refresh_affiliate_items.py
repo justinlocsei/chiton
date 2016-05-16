@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from chiton.rack.affiliates.bulk import bulk_update_affiliate_item_details
+from chiton.rack.affiliates.bulk import bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
 from chiton.rack.models import AffiliateItem
 
 
@@ -9,11 +9,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--full',
+            '--meta',
             action='store_true',
-            dest='full_refresh',
+            dest='meta',
             default=False,
-            help='Perform a full refresh that updates the GUID and name'
+            help='Update the GUID and name of each item'
         )
 
         parser.add_argument(
@@ -34,9 +34,15 @@ class Command(BaseCommand):
             self.stdout.write('No affiliate items exist')
             return
         else:
-            self.stdout.write('Processing %d items with %d workers\n--' % (total_count, options['workers']))
+            target_noun = 'metadata' if options['meta'] else 'details'
+            self.stdout.write('Updating %s for %d items with %d workers\n--' % (target_noun, total_count, options['workers']))
 
-        item_queue = bulk_update_affiliate_item_details(items, workers=options['workers'])
+        if options['meta']:
+            item_updater = bulk_update_affiliate_item_metadata
+        else:
+            item_updater = bulk_update_affiliate_item_details
+
+        item_queue = item_updater(items, workers=options['workers'])
 
         while True:
             task = item_queue.get()
@@ -45,7 +51,7 @@ class Command(BaseCommand):
 
             if task['is_error']:
                 self.stdout.write(self.style.ERROR('\n[!] %d/%d (%s)' % (processed_count, total_count, task['label'])))
-                self.stdout.write(self.style.ERROR(task['details']), ending='\n\n')
+                self.stdout.write(self.style.ERROR('--\n%s\n--\n' % task['details']))
             else:
                 self.stdout.write('%d/%d (%s)' % (processed_count, total_count, task['label']))
 
