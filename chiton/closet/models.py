@@ -139,15 +139,14 @@ class Size(models.Model):
 
     name = models.CharField(max_length=15, choices=data.SIZE_CHOICES, verbose_name=_('name'))
     slug = AutoSlugField(max_length=255, populate_from=_slug_for_size, verbose_name=_('slug'), unique=True)
-    size_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'))
-    size_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'))
+    size_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'), null=True, blank=True)
+    size_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'), null=True, blank=True)
     is_petite = models.BooleanField(verbose_name=_('is petite'), default=False)
     is_tall = models.BooleanField(verbose_name=_('is tall'), default=False)
     position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
 
     class Meta:
         ordering = ('position',)
-        unique_together = ('size_lower', 'size_upper', 'is_tall', 'is_petite')
         verbose_name = _('size')
         verbose_name_plural = _('sizes')
 
@@ -159,7 +158,8 @@ class Size(models.Model):
 
     def clean(self):
         """Ensure correct ordering of the size range and unique variants."""
-        validate_loose_range(self.size_lower, self.size_upper)
+        if self.size_lower is not None or self.size_upper is not None:
+            validate_range(self.size_lower, self.size_upper)
 
         if self.is_tall and self.is_petite:
             raise ValidationError(_('A size cannot be both tall and petite'))
@@ -171,9 +171,14 @@ class Size(models.Model):
         Returns:
             str: The display name for the size
         """
-        ranges = sorted(list(set([self.size_lower, self.size_upper])))
-        range_display = '-'.join([str(r) for r in ranges])
-        name = '%s (%s)' % (self.get_name_display(), range_display)
+        name_parts = [self.get_name_display()]
+
+        if self.size_lower is not None and self.size_upper is not None:
+            ranges = sorted(list(set([self.size_lower, self.size_upper])))
+            range_display = '(%s)' % '-'.join([str(r) for r in ranges])
+            name_parts.append(range_display)
+
+        name = ' '.join(name_parts)
 
         if self.is_tall:
             return _('Tall %(size)s') % {'size': name}

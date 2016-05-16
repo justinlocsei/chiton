@@ -96,9 +96,23 @@ class TestSize:
         size.size_upper = 6
         assert size.full_clean() is None
 
+    def test_clean_size_range_partial(self):
+        """It only cleans the size when one part of the range is provided."""
+        size = Size(name=SIZES['M'])
+        assert size.full_clean() is None
+
+        size.size_lower = 4
+        with pytest.raises(ValidationError):
+            size.full_clean()
+
+        size.size_lower = None
+        size.size_upper = 6
+        with pytest.raises(ValidationError):
+            size.full_clean()
+
     def test_clean_tall_petite(self):
         """It prevents a size from being both tall and petite."""
-        size = Size(name=SIZES['M'], size_lower=4, size_upper=6)
+        size = Size(name=SIZES['M'])
         size.is_tall = True
         size.is_petite = True
 
@@ -109,6 +123,11 @@ class TestSize:
         assert size.full_clean() is None
 
     def test_full_name(self):
+        """It shows the size name by default."""
+        size = Size(name=SIZES['M'])
+        assert size.display_name == 'M'
+
+    def test_full_name_range(self):
         """It shows the size range in the full name."""
         size = Size(name=SIZES['M'], size_lower=4, size_upper=6)
         assert size.display_name == 'M (4-6)'
