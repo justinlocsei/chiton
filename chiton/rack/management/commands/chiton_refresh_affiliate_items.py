@@ -36,10 +36,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write('Processing %d items with %d workers\n--' % (total_count, options['workers']))
 
-        item_queue = bulk_update_affiliate_item_details(items,
-            full=options['full_refresh'],
-            workers=options['workers']
-        )
+        item_queue = bulk_update_affiliate_item_details(items, workers=options['workers'])
 
         while True:
             task = item_queue.get()

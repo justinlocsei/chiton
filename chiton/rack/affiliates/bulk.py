@@ -6,14 +6,13 @@ import traceback
 from chiton.rack.affiliates.data import update_affiliate_item_details
 
 
-def bulk_update_affiliate_item_details(items, full=False, workers=2):
+def bulk_update_affiliate_item_details(items, workers=2):
     """Refresh a batch of affiliate items.
 
     Args:
         items (django.db.models.query.QuerySet): A queryset of affiliate items
 
     Keyword Args:
-        full (bool): Whether to perform a full refresh
         workers (int): The number of workers to use to process the items
 
     Returns:
@@ -27,11 +26,7 @@ def bulk_update_affiliate_item_details(items, full=False, workers=2):
     def refresh_item(item):
         label = '%s: %s' % (item.network.name, item.name)
         try:
-            item = update_affiliate_item_details(item, full=full)
-            queue.put({
-                'label': label,
-                'is_error': False
-            })
+            update_affiliate_item_details(item)
         except Exception:
             error_buffer = StringIO()
             traceback.print_exc(file=error_buffer)
@@ -39,6 +34,11 @@ def bulk_update_affiliate_item_details(items, full=False, workers=2):
                 'details': error_buffer.getvalue().strip(),
                 'label': label,
                 'is_error': True
+            })
+        else:
+            queue.put({
+                'label': label,
+                'is_error': False
             })
 
     pool.map_async(refresh_item, items)

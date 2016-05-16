@@ -4,7 +4,7 @@ import mock
 import pytest
 
 from chiton.closet.models import Color, Size
-from chiton.rack.affiliates.data import update_affiliate_item_details
+from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
 from chiton.rack.affiliates.base import Affiliate
 
 
@@ -84,7 +84,35 @@ def affiliate_item(basic_factory, garment_factory, affiliate_item_factory):
 
 
 @pytest.mark.django_db
-class TestRefreshAffiliateItem:
+class TestUpdateAffiliateItemMetadata:
+
+    def test_affiliate_network(self, affiliate_network_factory, affiliate_item_factory):
+        """It creates an affiliate instance using the item's network slug."""
+        network = affiliate_network_factory(slug='shopping')
+        affiliate_item = affiliate_item_factory(network=network)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = FullAffiliate()
+            update_affiliate_item_metadata(affiliate_item)
+
+            create_affiliate.assert_called_with(slug='shopping')
+
+    def test_update_data(self, affiliate_item):
+        """It re-fetches the item's GUID and name."""
+        affiliate_item.guid = '4321'
+        affiliate_item.name = 'Changed'
+        affiliate_item.save()
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = FullAffiliate()
+            update_affiliate_item_metadata(affiliate_item)
+
+        assert affiliate_item.guid == '1234'
+        assert affiliate_item.name == 'Test Name'
+
+
+@pytest.mark.django_db
+class TestUpdateAffiliateItemDetails:
 
     def test_affiliate_network(self, affiliate_network_factory, affiliate_item_factory):
         """It creates an affiliate instance using the item's network slug."""
@@ -238,16 +266,3 @@ class TestRefreshAffiliateItem:
         assert create_medium_pk == update_medium_pk
 
         assert medium.is_available
-
-    def test_full_refresh(self, affiliate_item):
-        """It re-fetches the item's GUID and name when performing a full refresh."""
-        affiliate_item.guid = '4321'
-        affiliate_item.name = 'Changed'
-        affiliate_item.save()
-
-        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = FullAffiliate()
-            update_affiliate_item_details(affiliate_item, full=True)
-
-        assert affiliate_item.guid == '1234'
-        assert affiliate_item.name == 'Test Name'

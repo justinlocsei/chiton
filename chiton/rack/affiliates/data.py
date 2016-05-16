@@ -3,8 +3,30 @@ from chiton.rack.affiliates import create_affiliate
 from chiton.rack.models import ProductImage, StockRecord
 
 
-def update_affiliate_item_details(item, full=False):
-    """Update the details for an affiliate item based on an API query.
+def update_affiliate_item_metadata(item):
+    """Update the metadata for an affiliate item from its network's API.
+
+    Args:
+        item (chiton.rack.models.AffiliateItem): An affiliate item
+
+    Returns:
+        chiton.rack.models.AffiliateItem: The updated affiliate item
+
+    Raises:
+        chiton.rack.exceptions.LookupError: If the item's information cannot be updated
+    """
+    affiliate = create_affiliate(slug=item.network.slug)
+
+    overview = affiliate.request_overview(item.url)
+    item.guid = overview.guid
+    item.name = overview.name
+
+    item.save()
+    return item
+
+
+def update_affiliate_item_details(item):
+    """Update the details for an affiliate item from its network's API.
 
     This sends a details query to the API of the item's affiliate network, and
     updates the item record with the response data.  If the `full` keyword arg
@@ -14,9 +36,6 @@ def update_affiliate_item_details(item, full=False):
     Args:
         item (chiton.rack.models.AffiliateItem): An affiliate item
 
-    Keyword Args:
-        full (bool): Whether to perform a full refresh
-
     Returns:
         chiton.rack.models.AffiliateItem: The updated affiliate item
 
@@ -25,11 +44,6 @@ def update_affiliate_item_details(item, full=False):
     """
     affiliate = create_affiliate(slug=item.network.slug)
     basic = item.garment.basic
-
-    if full:
-        overview = affiliate.request_overview(item.url)
-        item.guid = overview.guid
-        item.name = overview.name
 
     # Place the primary color at the head of the colors list for fetching
     # details, followed by the secondary colors
@@ -47,7 +61,6 @@ def update_affiliate_item_details(item, full=False):
     _update_stock_records(item, details.availability)
 
     item.save()
-
     return item
 
 
