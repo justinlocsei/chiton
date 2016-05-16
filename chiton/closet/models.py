@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet import data
 from chiton.closet.model_fields import EmphasisField
-from chiton.core.validators import validate_loose_range
+from chiton.core.validators import validate_range
 from chiton.runway.models import Basic, Formality, Style
 
 
@@ -83,7 +83,7 @@ class Brand(models.Model):
 
     def clean(self):
         """Ensure correct ordering of the age range."""
-        validate_loose_range(self.age_lower, self.age_upper)
+        validate_range(self.age_lower, self.age_upper, loose=True)
 
 
 class ColorManager(models.Manager):
