@@ -69,6 +69,7 @@ class Affiliate(BaseAffiliate):
         return {
             'availability': True,
             'image': image,
+            'name': item['ItemAttributes']['Title'],
             'price': price,
             'thumbnail': thumbnail
         }

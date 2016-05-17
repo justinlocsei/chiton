@@ -43,6 +43,15 @@ class TestAmazonAffiliate:
         with pytest.raises(LookupError):
             affiliate.request_overview('http://www.amazon.com')
 
+    def test_request_details_name(self, amazon_api_request):
+        """It returns the item's name."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            details = affiliate.request_details('B00ZGRB7S6')
+
+        assert details.name == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red'
+
     def test_request_details_price(self, amazon_api_request):
         """It returns the average price of all item offers."""
         affiliate = Affiliate()
