@@ -80,7 +80,7 @@ class _TestBulkFunction:
         with mock.patch(self.item_function_path) as update_function:
             update_function.side_effect = lambda *args, **kwargs: time.sleep(0.1)
 
-            few_workers = self.items_function(affiliate_items, workers=2)
+            few_workers = self.items_function(affiliate_items, workers=1)
             few_start = time.time()
             for result in few_workers.run():
                 pass
