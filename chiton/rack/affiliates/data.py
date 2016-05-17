@@ -55,6 +55,7 @@ def update_affiliate_item_details(item):
 
     details = affiliate.request_details(item.guid, colors=color_names)
 
+    item.name = details.name
     item.price = details.price
     _update_item_image(item, 'image', details.image)
     _update_item_image(item, 'thumbnail', details.thumbnail)

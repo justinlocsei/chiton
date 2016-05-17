@@ -52,6 +52,7 @@ class TestBaseAffiliate:
                         'url': 'http://%s%s.com' % (guid, color),
                         'width': 100
                     },
+                    'name': 'Item Name',
                     'price': Decimal('12.99'),
                     'thumbnail': {
                         'height': 50,
@@ -66,6 +67,8 @@ class TestBaseAffiliate:
 
         assert without_color.price == Decimal('12.99')
         assert with_color.price == Decimal('12.99')
+        assert without_color.name == 'Item Name'
+        assert with_color.name == 'Item Name'
         assert without_color.availability
         assert with_color.availability
 
@@ -91,6 +94,7 @@ class TestBaseAffiliate:
                         'url': 'image',
                         'width': 100
                     },
+                    'name': 'Item Name',
                     'price': Decimal('12.99'),
                     'thumbnail': {
                         'height': 50,

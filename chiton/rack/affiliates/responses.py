@@ -95,16 +95,18 @@ class ItemDetails:
     SCHEMA = V.Schema({
         V.Required('availability'): [ItemAvailability.SCHEMA, bool],
         V.Required('image'): ItemImage.SCHEMA,
+        V.Required('name'): V.All(str, V.Length(min=1)),
         V.Required('price'): Decimal,
         V.Required('thumbnail'): ItemImage.SCHEMA
     })
 
-    def __init__(self, availability=None, image=None, price=None, thumbnail=None):
+    def __init__(self, availability=None, image=None, name=None, price=None, thumbnail=None):
         """Create item details.
 
         Keyword Args:
             availability (bool,list): Availability information for the item
             image (dict): Information on the item's primary image
+            name (str): The name of the item
             price (decimal.Decimal): The price for the item
             thumbnail (dict): Information on the item's thumbnail image
         """
@@ -117,6 +119,7 @@ class ItemDetails:
             self.SCHEMA({
                 'availability': check_availability,
                 'image': image,
+                'name': name,
                 'price': price,
                 'thumbnail': thumbnail
             })
@@ -124,6 +127,7 @@ class ItemDetails:
             raise ConfigurationError(e)
 
         self.image = ItemImage(**image)
+        self.name = name
         self.price = price
         self.thumbnail = ItemImage(**thumbnail)
 

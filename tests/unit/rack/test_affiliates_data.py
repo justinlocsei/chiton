@@ -16,7 +16,7 @@ class FullAffiliate(Affiliate):
 
     def provide_overview(self, url):
         return {
-            'name': 'Test Name',
+            'name': 'Overview',
             'guid': '1234'
         }
 
@@ -31,6 +31,7 @@ class FullAffiliate(Affiliate):
                 'url': 'http://example.com/%s' % '/'.join(colors),
                 'width': 100
             },
+            'name': 'Details',
             'price': Decimal('9.99'),
             'thumbnail': {
                 'height': 50,
@@ -51,6 +52,7 @@ class OutOfStockAffiliate(Affiliate):
                 'url': 'http://example.com/image',
                 'width': 100
             },
+            'name': 'Item',
             'price': Decimal('9.99'),
             'thumbnail': {
                 'height': 50,
@@ -108,7 +110,7 @@ class TestUpdateAffiliateItemMetadata:
             update_affiliate_item_metadata(affiliate_item)
 
         assert affiliate_item.guid == '1234'
-        assert affiliate_item.name == 'Test Name'
+        assert affiliate_item.name == 'Overview'
 
 
 @pytest.mark.django_db
@@ -139,8 +141,19 @@ class TestUpdateAffiliateItemDetails:
         assert affiliate_item.image.height == 100
         assert affiliate_item.thumbnail.height == 50
 
+    def test_network_data_name(self, affiliate_item):
+        """It updates the item's name if it differs from the stored name."""
+        affiliate_item.name = 'Previous'
+        affiliate_item.save()
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = FullAffiliate()
+            update_affiliate_item_details(affiliate_item)
+
+        assert affiliate_item.name == 'Details'
+
     def test_network_data_guid(self, affiliate_item_factory):
-        """It creates an affiliate instance using the item's network slug."""
+        """It uses the item's GUID to perform the API lookup."""
         affiliate_item = affiliate_item_factory(guid='4321')
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
