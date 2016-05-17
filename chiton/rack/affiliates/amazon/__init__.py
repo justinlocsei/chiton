@@ -44,7 +44,7 @@ class Affiliate(BaseAffiliate):
             validated = self._validate_response(response, asin)
 
         item = validated['Items']['Item']
-        name = item.get('ItemAttributes', {}).get('Title')
+        name = item.get('ItemAttributes', {}).get('Title', None)
 
         asin = item['ASIN']
         parent_asin = item.get('ParentASIN', None)
