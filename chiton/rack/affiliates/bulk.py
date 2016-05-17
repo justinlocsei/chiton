@@ -66,7 +66,7 @@ class BatchJob:
         processor = self.processor
         max_retries = self.max_retries
 
-        retry_range = range(1, max_retries + 5)
+        retry_range = range(0, max_retries + 1)
         queue = Queue()
 
         def refresh_item(item):
