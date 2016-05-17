@@ -44,6 +44,7 @@ class Affiliate(BaseAffiliate):
         return {
             'availability': availability,
             'image': image,
+            'name': parsed['brandedName'],
             'price': price.amount,
             'thumbnail': thumbnail
         }

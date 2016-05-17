@@ -33,6 +33,15 @@ class TestShopstyleAffiliate:
         with pytest.raises(LookupError):
             affiliate.request_overview('http://www.shopstyle.com')
 
+    def test_request_details_name(self, shopstyle_api_request):
+        """It returns the item's name in its details."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            details = affiliate.request_details('471281504')
+
+        assert details.name == 'J.Crew Double-breasted blazer'
+
     def test_request_details_price(self, shopstyle_api_request):
         """It returns the item's listed price in its details."""
         affiliate = Affiliate()
