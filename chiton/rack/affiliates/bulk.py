@@ -9,8 +9,9 @@ from chiton.rack.affiliates.data import update_affiliate_item_details, update_af
 from chiton.rack.affiliates.exceptions import ThrottlingError
 
 
-# The maximum number of retries in response to API throttling
-MAX_API_RETRIES = 10
+# Default values for tuning batch jobs
+DEFAULT_MAX_RETRIES = 10
+DEFAULT_WORKERS = 2
 
 # The initial timeout when handling a throttled API request, in seconds
 API_TIMEOUT = 1.5
@@ -40,7 +41,7 @@ class BatchJobResult:
 class BatchJob:
     """A batch-upate job performed on a site of affiliate items."""
 
-    def __init__(self, items, processor, workers=2):
+    def __init__(self, items, processor, workers=DEFAULT_WORKERS, max_retries=DEFAULT_MAX_RETRIES):
         """Create a new batch job.
 
         Args:
@@ -48,11 +49,13 @@ class BatchJob:
             item_updater (function): A function to update a single item
 
         Keyword Args:
+            max_retries (int): The maximum number of retries when handling throttled API requests
             workers (int): The number of workers to use
         """
         self.items = items
         self.processor = processor
         self.workers = workers
+        self.max_retries = max_retries
 
     def run(self):
         """Run the batch job on the items.
@@ -61,7 +64,9 @@ class BatchJob:
             chiton.rack.affiliates.bulk.BatchJobResult: The result of processing an item
         """
         processor = self.processor
-        retry_range = range(1, MAX_API_RETRIES + 5)
+        max_retries = self.max_retries
+
+        retry_range = range(1, max_retries + 5)
         queue = Queue()
 
         def refresh_item(item):
@@ -76,12 +81,12 @@ class BatchJob:
                 # exponential backoff algorithm.  If the maximum retries have been
                 # exceeded, add an error message to the work queue.
                 except ThrottlingError:
-                    if retry_index < MAX_API_RETRIES:
+                    if retry_index < max_retries:
                         delay = random.uniform(1, min(MAX_API_SLEEP, API_TIMEOUT * 2 ** retry_index))
                         sleep(delay)
                     else:
                         return queue.put(BatchJobResult(
-                            details='Exceeded max throttling retries of %d' % MAX_API_RETRIES,
+                            details='Exceeded max throttling retries of %d' % max_retries,
                             label=label,
                             is_error=True
                         ))
@@ -123,33 +128,35 @@ class BatchJob:
         queue.join()
 
 
-def bulk_update_affiliate_item_metadata(items, workers=2):
+def bulk_update_affiliate_item_metadata(items, workers=DEFAULT_WORKERS, max_retries=DEFAULT_MAX_RETRIES):
     """Refresh the metadata for a batch of affiliate items.
 
     Args:
         items (django.db.models.query.QuerySet): A queryset of affiliate items
 
     Keyword Args:
+        max_retries (int): The maximum number of retries when handling throttled API requests
         workers (int): The number of workers to use to process the items
 
     Returns:
         chiton.rack.affiliates.bulk.BatchJob: A batch job describing the updates
     """
     items = items.select_related('network')
-    return BatchJob(items, update_affiliate_item_metadata, workers=workers)
+    return BatchJob(items, update_affiliate_item_metadata, workers=workers, max_retries=max_retries)
 
 
-def bulk_update_affiliate_item_details(items, workers=2):
+def bulk_update_affiliate_item_details(items, workers=DEFAULT_WORKERS, max_retries=DEFAULT_MAX_RETRIES):
     """Refresh the details for a batch of affiliate items.
 
     Args:
         items (django.db.models.query.QuerySet): A queryset of affiliate items
 
     Keyword Args:
+        max_retries (int): The maximum number of retries when handling throttled API requests
         workers (int): The number of workers to use to process the items
 
     Returns:
         chiton.rack.affiliates.bulk.BatchJob: A batch job describing the updates
     """
     items = items.select_related('garment__basic', 'image', 'thumbnail', 'network')
-    return BatchJob(items, update_affiliate_item_details, workers=workers)
+    return BatchJob(items, update_affiliate_item_details, workers=workers, max_retries=max_retries)
