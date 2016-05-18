@@ -23,25 +23,23 @@ MAX_API_SLEEP = 15
 class BatchJobResult:
     """The result of processing a single task in a batch job."""
 
-    def __init__(self, label, details=None, is_error=False):
+    def __init__(self, item_id=None, details=None, is_error=False):
         """Create a new job result.
-
-        Args:
-            label (str): The label for the result
 
         Keyword Args:
             details (str): A detailed message describing the result
             is_error (bool): Whether the job failed
+            item_id (int): The ID of the processed item
         """
-        self.label = label
         self.details = details
         self.is_error = is_error
+        self.item_id = item_id
 
 
 class BatchJob:
     """A batch-upate job performed on a site of affiliate items."""
 
-    def __init__(self, items, processor, workers=DEFAULT_WORKERS, max_retries=DEFAULT_MAX_RETRIES):
+    def __init__(self, items, item_updater, workers=DEFAULT_WORKERS, max_retries=DEFAULT_MAX_RETRIES):
         """Create a new batch job.
 
         Args:
@@ -63,15 +61,13 @@ class BatchJob:
         Yields:
             chiton.rack.affiliates.bulk.BatchJobResult: The result of processing an item
         """
-        processor = self.processor
+        item_updater = self.item_updater
         max_retries = self.max_retries
 
         retry_range = range(0, max_retries + 1)
         queue = Queue()
 
         def refresh_item(item):
-            label = '%s: %s' % (item.network.name, item.name)
-
             for retry_index in retry_range:
                 try:
                     processor(item)
@@ -87,8 +83,8 @@ class BatchJob:
                     else:
                         return queue.put(BatchJobResult(
                             details='Exceeded max throttling retries of %d' % max_retries,
-                            label=label,
-                            is_error=True
+                            is_error=True,
+                            item_id=item.pk
                         ))
 
                 # If the API call resuled in an error of any kind, capture the
@@ -98,15 +94,15 @@ class BatchJob:
                     print_exc(file=error_buffer)
                     return queue.put(BatchJobResult(
                         details=error_buffer.getvalue().strip(),
-                        label=label,
-                        is_error=True
+                        is_error=True,
+                        item_id=item.pk
                     ))
 
                 # If the API call succeeded, add a success message to the queue
                 else:
                     return queue.put(BatchJobResult(
-                        label=label,
-                        is_error=False
+                        is_error=False,
+                        item_id=item.pk
                     ))
 
         pool = ThreadPool(self.workers)

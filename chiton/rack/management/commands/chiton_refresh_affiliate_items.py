@@ -26,7 +26,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *arg, **options):
-        items = AffiliateItem.objects.all().order_by('pk')
+        items = AffiliateItem.objects.all().order_by('pk').select_related('network')
         total_count = items.count()
 
         if total_count == 0:
@@ -45,14 +45,19 @@ class Command(BaseCommand):
         error_count = 0
         failed_updates = []
 
+        item_labels = {}
+        for item in items:
+            item_labels[item.pk] = '%s: %s' % (item.network.name, item.name)
+
         for index, result in enumerate(batch_job.run()):
+            label = item_labels[result.item_id]
             if result.is_error:
                 error_count += 1
-                self.stdout.write(self.style.ERROR('\n[!] %d/%d (%s)' % (index + 1, total_count, result.label)))
+                self.stdout.write(self.style.ERROR('\n[!] %d/%d (%s)' % (index + 1, total_count, label)))
                 self.stdout.write(self.style.ERROR('--\n%s\n--\n' % result.details))
-                failed_updates.append(result.label)
+                failed_updates.append(label)
             else:
-                self.stdout.write('%d/%d (%s)' % (index + 1, total_count, result.label))
+                self.stdout.write('%d/%d (%s)' % (index + 1, total_count, label))
 
         if error_count:
             self.stdout.write(self.style.ERROR('\nUpdated %d/%d items' % (total_count - error_count, total_count)))
