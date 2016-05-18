@@ -5,6 +5,7 @@
 .c--pipeline__form {
     display: flex;
     flex-wrap: wrap;
+    font-size: 0.9em;
 }
 
 .c--pipeline__results {
@@ -91,7 +92,7 @@
 }
 
 .c--pipeline__form__field.for-sizes {
-    max-height: 13em;
+    max-height: 13.5em;
     overflow: auto;
 }
 
@@ -151,7 +152,7 @@
 }
 
 .c--pipeline__form__buttons {
-    margin-top: 2.5em;
+    margin-top: 4.5em;
 }
 
 .c--pipeline__form__button {
