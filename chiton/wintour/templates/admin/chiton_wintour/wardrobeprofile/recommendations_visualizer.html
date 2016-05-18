@@ -167,7 +167,7 @@
                     <% _.forEach(weights, function(weight) { %>
                         <tr class="<%- !weight.weight ? 'for-miss' : '' %> <%- weight.isNormalized ? 'for-normalized' : '' %>">
                             <td class="for-weight-name"><%- weight.weightName %></th>
-                            <td><%- weight.weight.toFixed(1) %></td>
+                            <td><%- weight.weight.toFixed(2) %></td>
                             <td><%- weight.message %></td>
                         </tr>
                     <% }); %>
