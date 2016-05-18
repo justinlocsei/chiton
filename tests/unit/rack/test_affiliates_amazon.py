@@ -3,7 +3,7 @@ from decimal import Decimal
 import pytest
 
 from chiton.rack.affiliates.amazon import Affiliate
-from chiton.rack.affiliates.exceptions import LookupError
+from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
 
 
 class TestAmazonAffiliate:
@@ -42,6 +42,14 @@ class TestAmazonAffiliate:
 
         with pytest.raises(LookupError):
             affiliate.request_overview('http://www.amazon.com')
+
+    def test_request_overview_throttling(self, amazon_api_request):
+        """It raises a throttling error in response to an HTTP 503 code."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            with pytest.raises(ThrottlingError):
+                affiliate.request_overview('http://www.amazon.com/dp/B00ZGRB7S6')
 
     def test_request_details_name(self, amazon_api_request):
         """It returns the item's name."""
@@ -145,6 +153,14 @@ class TestAmazonAffiliate:
             with pytest.raises(LookupError):
                 affiliate.request_details('0000000000')
 
+    def test_request_details_throttling(self, amazon_api_request):
+        """It raises a throttling error in response to an HTTP 503 code."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            with pytest.raises(ThrottlingError):
+                affiliate.request_details('B00ZGRB7S6')
+
     def test_request_raw(self, amazon_api_request):
         """It returns the full API response."""
         affiliate = Affiliate()
@@ -161,3 +177,11 @@ class TestAmazonAffiliate:
         with amazon_api_request():
             with pytest.raises(LookupError):
                 affiliate.request_raw('0000000000')
+
+    def test_request_raw_throttling(self, amazon_api_request):
+        """It raises a throttling error in response to an HTTP 503 code."""
+        affiliate = Affiliate()
+
+        with amazon_api_request():
+            with pytest.raises(ThrottlingError):
+                affiliate.request_raw('B00ZGRB7S6')
