@@ -113,7 +113,7 @@ class BatchJob:
         processed_count = 0
 
         while True:
-            yield queue.get()
+            yield queue.get(timeout=10)
             queue.task_done()
 
             processed_count += 1
