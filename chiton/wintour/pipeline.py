@@ -5,17 +5,19 @@ from functools import partial
 class PipelineProfile:
     """A value object that represents a profile for user in a pipeline."""
 
-    def __init__(self, age=None, body_shape=None, expectations={}, styles=[]):
+    def __init__(self, age=None, body_shape=None, expectations={}, sizes=[], styles=[]):
         """Create a new pipeline profile.
 
         Keyword Args:
             age (int): The age of the user
             body_shape (str): The identifier for the user's body shape
             expectations (dict): A dict mapping formality slugs to frequency identifiers
+            size (list): A list of the slugs of all target sizes
             styles (list): A list of the slugs of all target styles
         """
         self.age = age
         self.body_shape = body_shape
+        self.sizes = sizes
         self.styles = styles
         self.expectations = expectations
 
