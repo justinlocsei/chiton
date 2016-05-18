@@ -1,101 +1,87 @@
-import time
-
 import mock
 import pytest
 
 from chiton.rack.models import AffiliateItem
-from chiton.rack.affiliates.bulk import bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
+from chiton.rack.affiliates.bulk import BatchJob, bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
+from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
 from chiton.rack.affiliates.exceptions import ThrottlingError
 
 
 @pytest.fixture
-def affiliate_items(affiliate_network_factory, affiliate_item_factory):
-    network = affiliate_network_factory(name='Network')
+def affiliate_items(affiliate_item_factory):
     for i in range(0, 4):
-        affiliate_item_factory(name=str(i), network=network)
+        affiliate_item_factory(name=str(i))
     return AffiliateItem.objects.all()
 
 
-class _TestBulkFunction:
-
-    item_function_path = None
-
-    def items_function(self):
-        raise NotImplementedError()
+@pytest.mark.django_db
+class TestBatchJob:
 
     def test_results(self, affiliate_items):
         """It processes each affiliate item."""
         processed_count = 0
         error_count = 0
 
-        with mock.patch(self.item_function_path) as update_function:
-            batch_job = self.items_function(affiliate_items)
-            for result in batch_job.run():
-                processed_count += 1
-                error_count += int(result.is_error)
+        updater = mock.Mock()
+        batch_job = BatchJob(affiliate_items, updater)
 
-            assert update_function.call_count == 4
-            assert processed_count == 4
-            assert error_count == 0
+        for result in batch_job.run():
+            processed_count += 1
+            error_count += int(result.is_error)
 
-    def test_results_label(self, affiliate_items):
-        """It labels each job result with the item's name and network."""
-        labels = set()
+        assert updater.call_count == 4
+        assert processed_count == 4
+        assert error_count == 0
 
-        with mock.patch(self.item_function_path):
-            batch_job = self.items_function(affiliate_items)
-            for result in batch_job.run():
-                labels.add(result.label)
+    def test_results_success(self, affiliate_items):
+        """It marks all completed jobs as successful."""
+        success_count = 0
 
-            assert len(labels) == 4
-            for label in labels:
-                assert 'Network' in label
+        updater = mock.Mock()
+        batch_job = BatchJob(affiliate_items, updater)
+
+        for result in batch_job.run():
+            success_count += int(not result.is_error)
+
+        assert success_count == 4
 
     def test_results_errors(self, affiliate_items):
         """It flags whether a result was an error or not."""
-        with mock.patch(self.item_function_path) as update_function:
-            update_function.side_effect = ValueError()
-            batch_job = self.items_function(affiliate_items)
+        updater = mock.Mock(side_effect=ValueError())
+        batch_job = BatchJob(affiliate_items, updater)
 
-            error_count = 0
-            for result in batch_job.run():
-                error_count += int(result.is_error)
+        error_count = 0
+        for result in batch_job.run():
+            error_count += int(result.is_error)
 
-            assert error_count == 4
+        assert error_count == 4
 
     def test_results_error_stacktrace(self, affiliate_items):
         """It includes a stacktrace in the error message."""
-        with mock.patch(self.item_function_path) as update_function:
-            update_function.side_effect = ValueError('Shopping')
-            batch_job = self.items_function(affiliate_items)
+        updater = mock.Mock(side_effect=ValueError('Shopping'))
+        batch_job = BatchJob(affiliate_items, updater)
 
-            with_message = 0
-            for result in batch_job.run():
-                with_message += (result.is_error and 'Shopping' in result.details)
+        with_message = 0
+        for result in batch_job.run():
+            with_message += (result.is_error and 'Shopping' in result.details)
 
-            assert with_message == 4
+        assert with_message == 4
 
     def test_results_workers(self, affiliate_items):
-        """It divides processing across many async workers."""
-        with mock.patch(self.item_function_path) as update_function:
-            update_function.side_effect = lambda *args, **kwargs: time.sleep(0.1)
+        """It allows for a custom worker count to be specified."""
+        success_count = 0
+        updater = mock.Mock()
 
-            few_workers = self.items_function(affiliate_items, workers=1)
-            few_start = time.time()
-            for result in few_workers.run():
-                pass
-            few_end = time.time()
+        few_workers = BatchJob(affiliate_items, updater, workers=1)
+        for result in few_workers.run():
+            success_count += int(not result.is_error)
 
-            many_workers = self.items_function(affiliate_items, workers=4)
-            many_start = time.time()
-            for result in many_workers.run():
-                pass
-            many_end = time.time()
+        many_workers = BatchJob(affiliate_items, updater, workers=4)
+        for result in many_workers.run():
+            success_count += int(not result.is_error)
 
-            few_duration = few_end - few_start
-            many_duration = many_end - many_start
-
-            assert many_duration < few_duration
+        assert success_count == 8
+        assert updater.call_count == 8
 
     def test_results_throttling(self, affiliate_items):
         """It retries requests after a delay in response to throttling errors."""
@@ -107,16 +93,15 @@ class _TestBulkFunction:
             if call_count < 4:
                 raise ThrottlingError()
 
-        with mock.patch(self.item_function_path) as update_function:
-            with mock.patch('chiton.rack.affiliates.bulk.sleep') as delay_function:
-                update_function.side_effect = throttle_initial
+        update_function = mock.Mock(side_effect=throttle_initial)
+        batch_job = BatchJob(affiliate_items, update_function)
 
-                batch_job = self.items_function(affiliate_items)
-                for result in batch_job.run():
-                    pass
+        with mock.patch('chiton.rack.affiliates.bulk.sleep') as delay_function:
+            for result in batch_job.run():
+                pass
 
-                assert delay_function.call_count == 3
-                assert update_function.call_count == 7
+            assert delay_function.call_count == 3
+            assert update_function.call_count == 7
 
     def test_results_throttling_retries(self, affiliate_items):
         """It retries throttled requests until the retries exceed a maximum value."""
@@ -126,50 +111,74 @@ class _TestBulkFunction:
         ]
 
         for datum in data:
-            with mock.patch(self.item_function_path) as update_function:
-                with mock.patch('chiton.rack.affiliates.bulk.sleep') as delay_function:
-                    update_function.side_effect = ThrottlingError()
+            update_function = mock.Mock(side_effect=ThrottlingError())
 
-                    error_count = 0
-                    batch_job = self.items_function(affiliate_items, max_retries=datum['retries'])
-                    for result in batch_job.run():
-                        error_count += int(result.is_error)
+            with mock.patch('chiton.rack.affiliates.bulk.sleep') as delay_function:
+                error_count = 0
+                batch_job = BatchJob(affiliate_items, update_function, max_retries=datum['retries'])
+                for result in batch_job.run():
+                    error_count += int(result.is_error)
 
-                    assert error_count == 4
-                    assert delay_function.call_count == datum['delay_calls']
-                    assert update_function.call_count == datum['update_calls']
+                assert error_count == 4
+                assert delay_function.call_count == datum['delay_calls']
+                assert update_function.call_count == datum['update_calls']
 
     def test_results_throttling_jitter(self, affiliate_items):
         """It randomizes the delay between request retries."""
-        with mock.patch(self.item_function_path) as update_function:
-            with mock.patch('chiton.rack.affiliates.bulk.sleep') as delay_function:
-                update_function.side_effect = ThrottlingError()
+        update_function = mock.Mock(side_effect=ThrottlingError())
 
-                batch_job = self.items_function(affiliate_items, max_retries=10)
-                for result in batch_job.run():
-                    pass
+        with mock.patch('chiton.rack.affiliates.bulk.sleep') as delay_function:
+            batch_job = BatchJob(affiliate_items, update_function, max_retries=10)
+            for result in batch_job.run():
+                pass
 
-                delay_timings = set()
-                for call in delay_function.call_args_list:
-                    delay_timings.add(call[0][0])
+            delay_timings = set()
+            for call in delay_function.call_args_list:
+                delay_timings.add(call[0][0])
 
-                assert len(delay_timings) > 1
-                assert len(delay_timings) <= delay_function.call_count
-
-
-@pytest.mark.django_db
-class TestBulkUpdateAffiliateItemMetadata(_TestBulkFunction):
-
-    item_function_path = 'chiton.rack.affiliates.bulk.update_affiliate_item_metadata'
-
-    def items_function(self, *args, **kwargs):
-        return bulk_update_affiliate_item_metadata(*args, **kwargs)
+            assert len(delay_timings) > 1
+            assert len(delay_timings) <= delay_function.call_count
 
 
 @pytest.mark.django_db
-class TestBulkUpdateAffiliateItemDetails(_TestBulkFunction):
+class TestBulkUpdateAffiliateItemMetadata:
 
-    item_function_path = 'chiton.rack.affiliates.bulk.update_affiliate_item_details'
+    def test_create_batch_job(self, affiliate_items):
+        """It creates a batch job that updates metadata."""
+        with mock.patch('chiton.rack.affiliates.bulk.BatchJob') as batch_job:
+            bulk_update_affiliate_item_metadata(affiliate_items)
 
-    def items_function(self, *args, **kwargs):
-        return bulk_update_affiliate_item_details(*args, **kwargs)
+            call_args = batch_job.call_args[0]
+            assert call_args[0].count() == 4
+            assert call_args[1] == update_affiliate_item_metadata
+
+    def test_async_config(self, affiliate_items):
+        """It passes the async configuration to the batch job."""
+        with mock.patch('chiton.rack.affiliates.bulk.BatchJob') as batch_job:
+            bulk_update_affiliate_item_metadata(affiliate_items, workers=10, max_retries=20)
+
+            call_kwargs = batch_job.call_args[1]
+            assert call_kwargs['workers'] == 10
+            assert call_kwargs['max_retries'] == 20
+
+
+@pytest.mark.django_db
+class TestBulkUpdateAffiliateItemDetails:
+
+    def test_create_batch_job(self, affiliate_items):
+        """It creates a batch job that updates details."""
+        with mock.patch('chiton.rack.affiliates.bulk.BatchJob') as batch_job:
+            bulk_update_affiliate_item_details(affiliate_items)
+
+            call_args = batch_job.call_args[0]
+            assert call_args[0].count() == 4
+            assert call_args[1] == update_affiliate_item_details
+
+    def test_async_config(self, affiliate_items):
+        """It passes the async configuration to the batch job."""
+        with mock.patch('chiton.rack.affiliates.bulk.BatchJob') as batch_job:
+            bulk_update_affiliate_item_details(affiliate_items, workers=10, max_retries=20)
+
+            call_kwargs = batch_job.call_args[1]
+            assert call_kwargs['workers'] == 10
+            assert call_kwargs['max_retries'] == 20
