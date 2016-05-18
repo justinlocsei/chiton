@@ -35,6 +35,11 @@
                     </div>
                 </div>
 
+                <div class="c--pipeline__form__buttons">
+                    <button type="submit" class="c--pipeline__form__button for-submit">View Recommendations</button>
+                    <button type="button" class="c--pipeline__form__button js-pipeline-form-take-snapshot">Take Snapshot</button>
+                </div>
+
             </fieldset>
 
             <fieldset class="c--pipeline__form__fields for-styles">
@@ -72,10 +77,20 @@
 
             </fieldset>
 
-            <div class="c--pipeline__form__buttons">
-                <button type="submit" class="c--pipeline__form__button for-submit">View Recommendations</button>
-                <button type="button" class="c--pipeline__form__button js-pipeline-form-take-snapshot">Take Snapshot</button>
-            </div>
+            <fieldset class="c--pipeline__form__fields for-sizes">
+                <legend>Sizes</legend>
+
+                <div class="c--pipeline__form__field for-sizes">
+                    <ul class="c--pipeline__form__choices for-grid">
+                        {% for size in sizes %}
+                            <li class="c--pipeline__form__choice">
+                                <input type="checkbox" id="pipeline-size-{{ size.slug }}" name="size" value="{{ size.slug }}" {% if size.selected %}checked="checked"{% endif %} />
+                                <label for="pipeline-size-{{ size.slug }}">{{ size.name }}</label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </fieldset>
 
         </form>
 

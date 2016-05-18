@@ -404,7 +404,7 @@ PipelineVisualizer.prototype = {
         var $el = this.$el;
         var $window = $(window);
 
-        var inflection = Math.min(this.$form.offset().top, this.$basicsFilter.offset().top);
+        var inflection = this.$basicsFilter.offset().top;
         var isPast = false;
 
         var handleScroll = _.throttle(function(e) {

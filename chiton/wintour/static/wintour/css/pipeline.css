@@ -2,24 +2,16 @@
 
 }
 
-.c--pipeline::after {
-    clear: both;
-    content: "";
-    display: block;
-}
-
 .c--pipeline__form {
-    float: left;
-    font-size: 0.9em;
-    margin-top: 0.85em;
-    width: 26.5em;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .c--pipeline__results {
     display: table;
-    margin-left: 28.5em;
+    margin-top: 1.5em;
     table-layout: fixed;
-    width: calc(100% - 28.5em);
+    width: 100%;
 }
 
 .c--pipeline__results__data {
@@ -30,8 +22,9 @@
 
 .c--pipeline__results__basics {
     display: table-cell;
+    font-size: 1.125em;
     vertical-align: top;
-    width: 10em;
+    width: 15em;
 }
 
 /*==============================================================================
@@ -45,6 +38,12 @@
     vertical-align: baseline;
 }
 
+.c--pipeline__form input {
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+    font-size: 1em;
+}
+
 .c--pipeline__form label {
     cursor: pointer;
 }
@@ -56,7 +55,17 @@
 
 .c--pipeline__form__fields {
     border: 0;
-    margin-bottom: 1em;
+    flex: 1;
+    margin-bottom: 0.5em;
+    margin-right: 3%;
+}
+
+.c--pipeline__form__fields.for-primary {
+    flex: 1.25;
+}
+
+.c--pipeline__form__fields.for-expectations {
+    flex: 1.5;
 }
 
 .c--pipeline__form__fields legend {
@@ -81,14 +90,15 @@
     margin-left: 0.25em;
 }
 
+.c--pipeline__form__field.for-sizes {
+    max-height: 13em;
+    overflow: auto;
+}
+
 .c--pipeline__form__field-group {
     align-items: baseline;
     display: flex;
     justify-content: space-between;
-}
-
-.c--pipeline__form__field-group {
-    margin-right: 1em;
 }
 
 .c--pipeline__form__choices {
@@ -128,13 +138,11 @@
 }
 
 .c--pipeline__form__choices.for-grid {
-    display: flex;
-    flex-wrap: wrap;
+
 }
 
 .c--pipeline__form__choices.for-grid .c--pipeline__form__choice {
     display: block;
-    flex: 0 1 50%;
 }
 
 .c--pipeline__form__choices.for-grid .c--pipeline__form__choice * {
@@ -143,7 +151,7 @@
 }
 
 .c--pipeline__form__buttons {
-    margin-top: 1.5em;
+    margin-top: 2.5em;
 }
 
 .c--pipeline__form__button {
@@ -152,12 +160,12 @@
     border: 1px solid #ddd;
     cursor: pointer;
     display: block;
-    font-size: 1.25em;
+    font-size: 1em;
     line-height: 1.25;
     margin: 0 auto;
-    padding: 0.75em 0;
+    padding: 1em 0;
     text-align: center;
-    width: 90%;
+    width: 100%;
 }
 
 .c--pipeline__form__button:hover {
@@ -183,7 +191,7 @@
 ==============================================================================*/
 
 .c--pipeline__basics-filter {
-    margin-top: 0.75em;
+    margin-top: 0.4em;
 }
 
 .c--pipeline__basics-filter__title {
@@ -255,10 +263,15 @@
 .c--pipeline__basics-filter__cutoff label {
     display: inline-block;
     font-size: 0.9em;
+    margin-right: 0.25em;
 }
 
 .c--pipeline__basics-filter__cutoff input {
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
     display: inline-block;
+    font-size: 1em;
+    padding: 0.25em;
     width: 2em;
 }
 
@@ -324,8 +337,8 @@
 
 .c--pipeline__garment__name {
     color: #666;
-    font-size: 1.125em;
-    font-weight: bold;
+    font-size: 1.25em;
+    font-weight: normal;
     letter-spacing: 0;
     margin: 0;
     text-transform: none;
@@ -505,10 +518,10 @@
     min-height: 100vh;
 }
 
-.c--pipeline.is-scrolling .c--pipeline__form,
 .c--pipeline.is-scrolling .c--pipeline__basics-filter {
     position: fixed;
     top: 0;
+    width: 15em;
 }
 
 .c--pipeline__garment.is-expanded {

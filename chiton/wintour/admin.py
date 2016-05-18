@@ -12,6 +12,7 @@ from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet.apps import Config as ClosetConfig
+from chiton.closet.models import Size
 from chiton.core.admin import site
 from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
@@ -112,16 +113,21 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             })
 
         # Respect filter information specified via GET params
-        selected_basics = None
+        selected_sizes = {}
+        selected_basics = {}
         cutoff = None
         if request.GET:
             cutoff = request.GET.get('cutoff', None)
 
             basic_params = request.GET.getlist('basic', [])
             if basic_params:
-                selected_basics = {}
                 for basic_slug in basic_params:
                     selected_basics[basic_slug] = True
+
+            size_params = request.GET.getlist('size', [])
+            if size_params:
+                for size_slug in size_params:
+                    selected_sizes[size_slug] = True
 
         # Add information on the available and selected basics
         basics = []
@@ -136,6 +142,19 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 'slug': basic.slug
             })
 
+        # Add information on the available and selected sizes
+        sizes = []
+        for size in Size.objects.all():
+            selected = True
+            if selected_basics:
+                selected = selected_basics.get(size.slug, False)
+
+            sizes.append({
+                'name': size.display_name,
+                'selected': selected,
+                'slug': size.slug
+            })
+
         return TemplateResponse(request, 'admin/chiton_wintour/wardrobeprofile/recommendations_visualizer.html', dict(
             self.admin_site.each_context(request),
             basics=basics,
@@ -145,6 +164,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             formalities=formalities,
             recommendations_json=json.dumps(self._add_admin_urls_to_recs(recs_dict)),
             profile=profile,
+            sizes=sizes,
             styles=styles,
             title='Recommendations Visualizer'
         ))
@@ -170,6 +190,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             age=int(get_data['age']),
             body_shape=get_data['body_shape'],
             expectations=expectations,
+            sizes=get_data.getlist('size'),
             styles=get_data.getlist('style')
         )
 
