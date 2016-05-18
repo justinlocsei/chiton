@@ -1,5 +1,6 @@
 from chiton.runway.models import Formality, Propriety
 from chiton.runway.data import PROPRIETY_IMPORTANCES
+from chiton.wintour import build_choice_weights_lookup
 from chiton.wintour.data import EXPECTATION_FREQUENCIES
 from chiton.wintour.filters import BaseFilter
 
@@ -35,8 +36,8 @@ class FormalityFilter(BaseFilter):
         self.cutoff = cutoff
 
     def provide_profile_data(self, profile):
-        frequency_weights = self._build_choice_weights_lookup(EXPECTATION_FREQUENCY_ORDER, EXPECTATION_FREQUENCIES)
-        importance_weights = self._build_choice_weights_lookup(PROPRIETY_IMPORTANCE_ORDER, PROPRIETY_IMPORTANCES)
+        frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_ORDER, EXPECTATION_FREQUENCIES)
+        importance_weights = build_choice_weights_lookup(PROPRIETY_IMPORTANCE_ORDER, PROPRIETY_IMPORTANCES)
 
         # Use the lowest non-zero value of the combined weights as the cutoff,
         # if no explicit cutoff for the filter has been provided
@@ -85,25 +86,6 @@ class FormalityFilter(BaseFilter):
             return garments.exclude(basic__pk__in=excluded_basics)
         else:
             return garments
-
-    def _build_choice_weights_lookup(self, choice_names, choices):
-        """Create a lookup table mapping choice names to their weight.
-
-        Args:
-            choice_names (list): An ordered list of choice-name keys
-            choices (dict): The dict defining the values for each choice key
-
-        Returns:
-            dict: A lookup exposing the weight of each choice name
-        """
-        lookup = {}
-
-        total_choices = len(choice_names) - 1
-        for i, choice_name in enumerate(choice_names):
-            choice_weight = i / total_choices if total_choices else 0
-            lookup[choices[choice_name]] = choice_weight
-
-        return lookup
 
     def _build_formality_weights_lookup(self, importance_weights):
         """Create a lookup table mapping formalities to per-basic weights.
