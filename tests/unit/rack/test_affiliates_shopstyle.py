@@ -10,53 +10,41 @@ class TestShopstyleAffiliate:
 
     def test_request_overview_valid_product_id(self, shopstyle_api_request):
         """It returns a name and GUID when using a URL with a valid product ID."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            overview = affiliate.request_overview('http://api.shopstyle.com/action/apiVisitRetailer?id=471281504')
+            overview = Affiliate().request_overview('http://api.shopstyle.com/action/apiVisitRetailer?id=471281504')
 
         assert overview.guid == '471281504'
         assert overview.name == 'J.Crew Double-breasted blazer'
 
     def test_request_overview_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when an invalid product ID is used."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
             with pytest.raises(LookupError):
-                affiliate.request_overview('http://api.shopstyle.com/action/apiVisitRetailer?id=000000000')
+                Affiliate().request_overview('http://api.shopstyle.com/action/apiVisitRetailer?id=000000000')
 
     def test_request_overview_invalid_url(self):
         """It raises an error when an invalid URL is used."""
-        affiliate = Affiliate()
-
         with pytest.raises(LookupError):
-            affiliate.request_overview('http://www.shopstyle.com')
+            Affiliate().request_overview('http://www.shopstyle.com')
 
     def test_request_details_name(self, shopstyle_api_request):
         """It returns the item's name in its details."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            details = affiliate.request_details('471281504')
+            details = Affiliate().request_details('471281504')
 
         assert details.name == 'J.Crew Double-breasted blazer'
 
     def test_request_details_price(self, shopstyle_api_request):
         """It returns the item's listed price in its details."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            details = affiliate.request_details('471281504')
+            details = Affiliate().request_details('471281504')
 
         assert details.price == Decimal('198.00')
 
     def test_request_details_image(self, shopstyle_api_request):
         """It returns a primary and thumbnail image for the item."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            details = affiliate.request_details('471281504')
+            details = Affiliate().request_details('471281504')
 
         assert '.jpg' in details.image.url
         assert '.jpg' in details.thumbnail.url
@@ -102,10 +90,8 @@ class TestShopstyleAffiliate:
 
     def test_request_details_availability(self, shopstyle_api_request):
         """It returns unique availability information based off of the canonical sizes."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            details = affiliate.request_details('470750142')
+            details = Affiliate().request_details('470750142')
 
         assert details.availability is not None
 
@@ -146,43 +132,33 @@ class TestShopstyleAffiliate:
 
     def test_request_details_availability_no_stock_records(self, shopstyle_api_request):
         """It signals global availability when no stock information is present but the item is marked as in stock."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            details = affiliate.request_details('493153459')
+            details = Affiliate().request_details('493153459')
 
         assert details.availability is True
 
     def test_request_details_availability_partial_stock_records(self, shopstyle_api_request):
         """It signals global availability when an item's stock records lack a size and color and the item is marked as in stock."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            details = affiliate.request_details('494093141')
+            details = Affiliate().request_details('494093141')
 
         assert details.availability is True
 
     def test_request_details_invalid_product_id(self, shopstyle_api_request):
         """It raises an error when looking up details for an inavlid product ID."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
             with pytest.raises(LookupError):
-                affiliate.request_details('0000000000')
+                Affiliate().request_details('0000000000')
 
     def test_request_raw(self, shopstyle_api_request):
         """It returns the full API response."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
-            raw = affiliate.request_raw('471281504')
+            raw = Affiliate().request_raw('471281504')
 
         assert raw['id'] == 471281504
 
     def test_request_raw_invalid_asin(self, shopstyle_api_request):
         """It raises an error when getting a raw response for an inavlid ASIN."""
-        affiliate = Affiliate()
-
         with shopstyle_api_request():
             with pytest.raises(LookupError):
-                affiliate.request_raw('0000000000')
+                Affiliate().request_raw('0000000000')
