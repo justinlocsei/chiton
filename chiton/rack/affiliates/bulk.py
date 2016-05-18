@@ -51,7 +51,7 @@ class BatchJob:
             workers (int): The number of workers to use
         """
         self.items = items
-        self.processor = processor
+        self.item_updater = item_updater
         self.workers = workers
         self.max_retries = max_retries
 
@@ -70,7 +70,7 @@ class BatchJob:
         def refresh_item(item):
             for retry_index in retry_range:
                 try:
-                    processor(item)
+                    item_updater(item)
 
                 # If we receive a throttling error from the API, and we have yet to
                 # exceed the maximum retries, randomly calculate a delay using an
