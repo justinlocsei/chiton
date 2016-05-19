@@ -217,7 +217,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                     )
                     affiliate_links = [
                         {'name': '%s API' % affiliate_item['network_name'], 'url': item_api_url},
-                        {'name': 'Edit', 'url': item_edit_url},
+                        {'name': 'Edit Item', 'url': item_edit_url}
                     ]
 
                     affiliate_item['admin_links'] = affiliate_links
