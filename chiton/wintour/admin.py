@@ -145,9 +145,9 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         # Add information on the available and selected sizes
         sizes = []
         for size in Size.objects.all():
-            selected = True
+            selected = False
             if selected_basics:
-                selected = selected_basics.get(size.slug, False)
+                selected = selected_sizes.get(size.slug, False)
 
             sizes.append({
                 'name': size.display_name,
