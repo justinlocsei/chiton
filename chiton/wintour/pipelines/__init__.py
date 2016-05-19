@@ -219,7 +219,7 @@ class BasePipeline:
 
         # Group garments by their basic type, exposing information on each
         # garment's associated affiliate items
-        for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic'):
+        for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic', 'image', 'thumbnail'):
             garment = affiliate_item.garment
             try:
                 data = weighted_garments[garment]
@@ -239,6 +239,10 @@ class BasePipeline:
                 by_basic[garment.basic][garment] = {
                     'explanations': data['explanations'],
                     'garment': garment,
+                    'images': {
+                        'image': affiliate_item.image,
+                        'thumbnail': affiliate_item.thumbnail,
+                    },
                     'urls': {'vendor': [affiliate_link]},
                     'weight': data['weight']
                 }

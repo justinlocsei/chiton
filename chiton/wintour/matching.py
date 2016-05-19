@@ -123,9 +123,15 @@ def _serialize_weighted_garment(weighted):
         'slug': garment.slug
     }
 
+    images_dict = {
+        'image': weighted['images']['image'].url,
+        'thumbnail': weighted['images']['thumbnail'].url
+    }
+
     return {
         'explanations': weighted['explanations'],
         'garment': garment_dict,
+        'images': images_dict,
         'urls': weighted['urls'],
         'weight': weighted['weight']
     }
