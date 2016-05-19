@@ -345,25 +345,43 @@
 
 
 .c--pipeline__garment {
-    cursor: pointer;
-    overflow: hidden;
+    display: flex;
+}
+
+.c--pipeline__garment__media {
+    margin-right: 1em;
+    transition: width 125ms;
+    width: 3.5em;
+}
+
+.c--pipeline__garment__affiliates {
+    display: none;
+    margin-top: 1em;
 }
 
 .c--pipeline__garment__weight {
     background-color: #333;
     color: #fff;
-    float: left;
     font-size: 1.25em;
     font-weight: 300;
     margin: 0;
     padding: 0.5em 0;
     text-align: center;
     transition: background-color 250ms;
-    width: 2.5em;
+    width: 100%;
 }
 
 .c--pipeline__garment__body {
-    margin-left: 4em;
+    flex: 1;
+}
+
+.c--pipeline__garment__meta {
+    cursor: pointer;
+}
+
+.c--pipeline__garment__meta:hover .c--pipeline__garment__name,
+.c--pipeline__garment__meta:hover .c--pipeline__garment__brand {
+    color: #000;
 }
 
 .c--pipeline__garment__name {
@@ -382,63 +400,55 @@
 }
 
 .c--pipeline__garment__details {
-    background: #f5f5f5;
     border: 1px solid #333;
-    clear: both;
-    cursor: default;
     display: none;
-}
-
-.c--pipeline__garment:hover .c--pipeline__garment__weight {
-    background-color: #000;
+    margin-top: 1.375em;
 }
 
 /*==============================================================================
-| Garment Links
+| Affiliate Items
 ==============================================================================*/
 
-.c--pipeline__garment-links {
-    display: flex;
-    padding: 1.5em 1em;
+.c--pipeline__affiliate {
+
 }
 
-.c--pipeline__garment-links__group {
-    line-height: 1.25;
+.c--pipeline__affiliate + .c--pipeline__affiliate {
+    margin-top: 3em;
 }
 
-.c--pipeline__garment-links__group__title {
-    display: inline-block;
-    font-weight: normal;
-    letter-spacing: 0;
-    margin: 0;
+.c--pipeline__affiliate__thumbnail {
+
 }
 
-.c--pipeline__garment-links__group__title::after {
-    content: ":";
+.c--pipeline__affiliate__thumbnail-image {
+    display: block;
+    height: auto;
+    margin: 0 auto;
+    max-width: 100%;
 }
 
-.c--pipeline__garment-links__group + .c--pipeline__garment-links__group {
-    border-left: 1px solid #ccc;
-    margin-left: 1em;
-    padding-left: 1em;
-}
-
-.c--pipeline__garment-links__group__links {
-    display: inline-block;
+.c--pipeline__affiliate__links {
+    border-top: 1px solid #333;
     margin: 0;
     padding: 0;
+    padding-top: 0.5em;
+    text-align: center;
 }
 
-.c--pipeline__garment-links__group__link {
-    display: inline-block;
-    font-size: 0.9em;
-    font-weight: bold;
-    line-height: 1.25;
+.c--pipeline__affiliate__link {
+    font-size: 0.8em;
     list-style: none;
-    padding: 0 0 0 0.25em !important;
+    padding: 0 !important;
 }
 
-.c--pipeline__garment-links__group__link__text {
+.c--pipeline__affiliate__link:first-child {
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 0.25em;
+}
+
+.c--pipeline__affiliate__link-text {
 
 }
 
@@ -452,6 +462,7 @@
 
 .c--pipeline__garment-log thead th {
     background-color: #333;
+    border-top: 0;
     color: #fff;
     padding: 0.5em 1.25em;
     font-weight: normal;
@@ -559,15 +570,27 @@
     padding-bottom: 1em;
 }
 
+.c--pipeline__garment.is-expanded .c--pipeline__garment__affiliates {
+    display: block;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__media {
+    width: 9em;
+}
+
 .c--pipeline__garment.is-expanded .c--pipeline__garment__weight {
     background-color: #000;
 }
 
 .c--pipeline__garment.is-expanded .c--pipeline__garment__name {
     color: #000;
+    font-weight: bold;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__meta:hover .c--pipeline__garment__brand {
+    color: #999;
 }
 
 .c--pipeline__garment.is-expanded .c--pipeline__garment__details {
-    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.15);
     display: block;
 }

@@ -103,7 +103,7 @@ PipelineVisualizer.prototype = {
 
                 garments.push(renderTemplate('pipeline-template-garment', {
                     brand: garment.garment.brand,
-                    id: garment.garment.pk,
+                    id: garment.garment.id,
                     name: garment.garment.name,
                     weight: weight
                 }));
@@ -342,14 +342,17 @@ PipelineVisualizer.prototype = {
     _enableDetails: function() {
         var that = this;
 
-        this.$results.on('click', '.js-pipeline-garment', function(e) {
-            var $garment = $(this);
+        this.$results.on('click', '.js-pipeline-garment-meta', function(e) {
+            var $meta = $(this);
+            var $garment = $meta.parents('.js-pipeline-garment');
             var $details = $garment.find('.js-pipeline-garment-details');
+            var $affiliates = $garment.find('.js-pipeline-garment-affiliates');
 
             var inDetails = $(e.target).closest('.js-pipeline-garment-details').length;
             if (inDetails) { return; }
 
             if (!$details.is(':empty')) {
+                $affiliates.empty();
                 $details.empty();
                 $garment.removeClass('is-expanded');
                 return;
@@ -363,7 +366,7 @@ PipelineVisualizer.prototype = {
             var id = $garment.data('id');
             var data = _.find(
                 that._state.recommendations.basics[basicSlug].garments,
-                function(garment) { return garment.garment.pk === id; }
+                function(garment) { return garment.garment.id === id; }
             );
 
             var weights = data.explanations.weights.reduce(function(previous, weight) {
@@ -387,20 +390,29 @@ PipelineVisualizer.prototype = {
 
             var allWeights = that._orderWeights(weights).concat(that._orderWeights(normalization));
 
-            var links = Object.keys(data.urls).map(function(group) {
-                return {
-                    name: group,
-                    links: data.urls[group]
-                };
-            });
-
             // Render the details and add them to the garment
             var details = renderTemplate('pipeline-template-garment-details', {
-                weights: allWeights,
-                links: _.sortBy(links, 'name')
+                weights: allWeights
             });
             $details.html(details);
             $garment.addClass('is-expanded');
+
+            // Render the affiliate-item details for each affiliate item
+            _.forEach(data.affiliate_items, function(item) {
+                var price = (item.price / 100).toFixed(2);
+                price = price.replace(/\.0+$/, '');
+
+                var affiliates = renderTemplate('pipeline-template-garment-affiliate', {
+                    adminLinks: item.admin_links,
+                    image: item.thumbnail,
+                    networkName: item.network_name,
+                    price: price,
+                    url: item.url
+                });
+                $affiliates.append(affiliates);
+            });
+
+
         });
     },
 
