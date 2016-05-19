@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from chiton.closet.apps import Config as ClosetConfig
 from chiton.closet.models import Size
 from chiton.core.admin import site
+from chiton.rack.apps import Config as RackConfig
 from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
@@ -200,10 +201,25 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
         for basic, data in basics.items():
             for garment in data['garments']:
-                url = reverse(
+                garment['edit_url'] = reverse(
                     'admin:%s_garment_change' % ClosetConfig.label,
-                    args=[garment['garment']['pk']]
+                    args=[garment['garment']['id']]
                 )
-                garment['urls']['admin'] = [{'name': 'Garment', 'url': url}]
+
+                for affiliate_item in garment['affiliate_items']:
+                    item_edit_url = reverse(
+                        'admin:%s_affiliateitem_change' % RackConfig.label,
+                        args=[affiliate_item['id']]
+                    )
+                    item_api_url = reverse(
+                        'admin:affiliate-item-api-details',
+                        args=[affiliate_item['id']]
+                    )
+                    affiliate_links = [
+                        {'name': '%s API' % affiliate_item['network_name'], 'url': item_api_url},
+                        {'name': 'Edit', 'url': item_edit_url},
+                    ]
+
+                    affiliate_item['admin_links'] = affiliate_links
 
         return recs
