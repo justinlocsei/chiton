@@ -52,6 +52,7 @@ function PipelineVisualizer($root, hasData) {
     this._readState();
 
     this._enableForm();
+    this._enableFormBatchControls();
     this._enableFormPinning();
     this._enableFilters();
     this._enableSnapshots();
@@ -159,6 +160,22 @@ PipelineVisualizer.prototype = {
                     that.visualize(response);
                 }
             });
+        });
+    },
+
+    /**
+     * Allow batch buttons to select all or none of a field group's options
+     */
+    _enableFormBatchControls: function() {
+        var $buttons = this.$form.find('.js-pipeline-form-batch-button');
+
+        $buttons.on('click', function(e) {
+            var $button = $(e.target);
+            var $field = $button.parents('.js-pipeline-form-fields');
+            var $inputs = $field.find('input:checkbox');
+
+            var isChecked = $button.data('query') === 'all';
+            $inputs.prop('checked', isChecked);
         });
     },
 
