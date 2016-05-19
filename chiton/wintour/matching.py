@@ -6,6 +6,11 @@ from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.pipelines.core import CorePipeline
 
 
+# Field names for serializing garments
+GARMENT_IMAGE_FIELDS = ('image', 'thumbnail')
+GARMENT_IMAGE_ATTRIBUTES = ('height', 'url', 'width')
+
+
 def make_recommendations(pipeline_profile, pipeline_class=CorePipeline, debug=False):
     """Return garment recommendations for a wardrobe profile.
 
@@ -123,10 +128,14 @@ def _serialize_weighted_garment(weighted):
         'slug': garment.slug
     }
 
-    images_dict = {
-        'image': weighted['images']['image'].url,
-        'thumbnail': weighted['images']['thumbnail'].url
-    }
+    images_dict = {}
+    for image_field in GARMENT_IMAGE_FIELDS:
+        image_obj = weighted['images'][image_field]
+
+        image_dict = {}
+        for image_attribute in GARMENT_IMAGE_ATTRIBUTES:
+            image_dict[image_attribute] = getattr(image_obj, image_attribute)
+        images_dict[image_field] = image_dict
 
     return {
         'explanations': weighted['explanations'],
