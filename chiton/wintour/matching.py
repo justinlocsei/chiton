@@ -78,8 +78,8 @@ def serialize_recommendations(recommendations):
     for basic, values in recommendations['basics'].items():
         value = {
             'basic': {
+                'id': basic.pk,
                 'name': basic.name,
-                'pk': basic.pk,
                 'slug': basic.slug
             },
             'facets': {},
@@ -123,24 +123,35 @@ def _serialize_weighted_garment(weighted):
 
     garment_dict = {
         'brand': garment.brand.name,
+        'id': garment.pk,
         'name': garment.name,
-        'pk': garment.pk,
         'slug': garment.slug
     }
 
-    images_dict = {}
-    for image_field in GARMENT_IMAGE_FIELDS:
-        image_obj = weighted['images'][image_field]
+    items_list = []
+    for item in weighted['affiliate_items']:
 
-        image_dict = {}
-        for image_attribute in GARMENT_IMAGE_ATTRIBUTES:
-            image_dict[image_attribute] = getattr(image_obj, image_attribute)
-        images_dict[image_field] = image_dict
+        item_dict = {}
+        for image_field in GARMENT_IMAGE_FIELDS:
+            image_obj = getattr(item, image_field)
+
+            image_dict = {}
+            for image_attribute in GARMENT_IMAGE_ATTRIBUTES:
+                image_dict[image_attribute] = getattr(image_obj, image_attribute)
+            item_dict[image_field] = image_dict
+
+        item_dict.update({
+            'id': item.pk,
+            'price': float(item.price),
+            'network_name': item.network.name,
+            'network_id': item.network.pk,
+            'url': item.url
+        })
+        items_list.append(item_dict)
 
     return {
+        'affiliate_items': items_list,
         'explanations': weighted['explanations'],
         'garment': garment_dict,
-        'images': images_dict,
-        'urls': weighted['urls'],
         'weight': weighted['weight']
     }

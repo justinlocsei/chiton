@@ -212,14 +212,9 @@ class BasePipeline:
         by_basic = {}
         max_weight = 0
 
-        # Build a lookup table mapping affiliate-network PKs to network names
-        affiliate_networks = {}
-        for network in AffiliateNetwork.objects.all():
-            affiliate_networks[network.id] = network.name
-
         # Group garments by their basic type, exposing information on each
         # garment's associated affiliate items
-        for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic', 'image', 'thumbnail'):
+        for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic', 'image', 'thumbnail', 'network__name'):
             garment = affiliate_item.garment
             try:
                 data = weighted_garments[garment]
@@ -227,23 +222,15 @@ class BasePipeline:
                 continue
 
             max_weight = max(max_weight, data['weight'])
-            affiliate_link = {
-                'name': affiliate_networks[affiliate_item.network_id],
-                'url': affiliate_item.url
-            }
 
             by_basic.setdefault(garment.basic, {})
             if garment in by_basic[garment.basic]:
-                by_basic[garment.basic][garment]['urls']['vendor'].append(affiliate_link)
+                by_basic[garment.basic][garment]['affiliate_items'].append(affiliate_item)
             else:
                 by_basic[garment.basic][garment] = {
+                    'affiliate_items': [affiliate_item],
                     'explanations': data['explanations'],
                     'garment': garment,
-                    'images': {
-                        'image': affiliate_item.image,
-                        'thumbnail': affiliate_item.thumbnail,
-                    },
-                    'urls': {'vendor': [affiliate_link]},
                     'weight': data['weight']
                 }
 
