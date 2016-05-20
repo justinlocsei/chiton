@@ -35,6 +35,18 @@
                     </div>
                 </div>
 
+                <div class="c--pipeline__form__field-group for-care">
+                    <div class="c--pipeline__form__field">
+                        <input type="checkbox" id="pipeline-avoid-care-hand-wash" name="avoid_care" value="hand_wash" {% if avoid_care.hand_wash %}checked="checked"{% endif %} />
+                        <label for="pipeline-avoid-care-hand-wash">Avoid hand-wash</label>
+                    </div>
+
+                    <div class="c--pipeline__form__field">
+                        <input type="checkbox" id="pipeline-avoid-care-dry-clean" name="avoid_care" value="dry_clean" {% if avoid_care.dry_clean %}checked="checked"{% endif %} />
+                        <label for="pipeline-avoid-care-dry-clean">Avoid dry-clean</label>
+                    </div>
+                </div>
+
                 <div class="c--pipeline__form__buttons">
                     <button type="submit" class="c--pipeline__form__button for-submit">View Recommendations</button>
                     <button type="button" class="c--pipeline__form__button js-pipeline-form-take-snapshot">Take Snapshot</button>

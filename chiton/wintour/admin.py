@@ -116,6 +116,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         # Respect filter information specified via GET params
         selected_sizes = {}
         selected_basics = {}
+        avoid_care = {}
         cutoff = None
         if request.GET:
             cutoff = request.GET.get('cutoff', None)
@@ -129,6 +130,11 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
             if size_params:
                 for size_slug in size_params:
                     selected_sizes[size_slug] = True
+
+            care_params = request.GET.getlist('avoid_care', [])
+            if care_params:
+                for care_id in care_params:
+                    avoid_care[care_id] = True
 
         # Add information on the available and selected basics
         basics = []
@@ -158,6 +164,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
         return TemplateResponse(request, 'admin/chiton_wintour/wardrobeprofile/recommendations_visualizer.html', dict(
             self.admin_site.each_context(request),
+            avoid_care=avoid_care,
             basics=basics,
             body_shape_choices=BODY_SHAPE_CHOICES,
             cutoff=cutoff,
@@ -189,6 +196,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
         return PipelineProfile(
             age=int(get_data['age']),
+            avoid_care=get_data.getlist('avoid_care'),
             body_shape=get_data['body_shape'],
             expectations=expectations,
             sizes=get_data.getlist('size'),
