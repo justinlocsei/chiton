@@ -169,9 +169,9 @@
         </script>
 
         <script type="text/template" id="pipeline-template-garment-affiliate">
-            <div class="c--pipeline__affiliate">
+            <div class="c--pipeline__affiliate js-pipeline-affiliate">
                 <div class="c--pipeline__affiliate__thumbnail">
-                    <img class="c--pipeline__affiliate__thumbnail-image" src="<%- image.url %>" height="<%- image.height %>" width="<%- image.width %>" target="_blank" />
+                    <img class="c--pipeline__affiliate__thumbnail-image js-pipeline-affiliate-image" title="<%- name %>" src="<%- thumbnail.url %>" height="<%- thumbnail.height %>" width="<%- thumbnail.width %>" target="_blank" data-full="<%- image.url %>" data-full-width="<%- image.width %>" />
                 </div>
 
                 <ul class="c--pipeline__affiliate__links">
@@ -184,6 +184,16 @@
                         </li>
                     <% }); %>
                 </ul>
+            </div>
+        </script>
+
+        <script type="text/template" id="pipeline-template-affiliate-image">
+            <div class="c--pipeline__affiliate-image">
+                <div class="c--pipeline__affiliate-image__content" style="max-width: <%- maxWidth %>px">
+                    <button class="c--pipeline__affiliate-image__close js-pipeline-affiliate-image-close">Close</button>
+                    <img class="c--pipeline__affiliate-image__photo" src="<%- url %>" />
+                    <p class="c--pipeline__affiliate-image__caption"><%- name %></p>
+                </div>
             </div>
         </script>
 

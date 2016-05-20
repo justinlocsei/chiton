@@ -422,6 +422,7 @@
 }
 
 .c--pipeline__affiliate__thumbnail-image {
+    cursor: pointer;
     display: block;
     height: auto;
     margin: 0 auto;
@@ -450,6 +451,58 @@
 
 .c--pipeline__affiliate__link-text {
 
+}
+
+/*==============================================================================
+| Affiliate Image
+==============================================================================*/
+
+.c--pipeline__affiliate-image {
+    background: rgba(0, 0, 0, 0.75);
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    text-align: center;
+    top: 0;
+}
+
+.c--pipeline__affiliate-image__content {
+    display: inline-block;
+    position: relative;
+    margin-top: 3em;
+}
+
+.c--pipeline__affiliate-image__close {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.75em;
+    padding: 0.75em 0;
+    width: 100%;
+}
+
+.c--pipeline__affiliate-image__close:hover {
+    background-color: #555;
+}
+
+.c--pipeline__affiliate-image__photo {
+    background-color: #000;
+    border: 1px solid #000;
+    display: block;
+    margin: 0.25em auto 0;
+    max-width: 100%;
+}
+
+.c--pipeline__affiliate-image__caption {
+    background-color: #000;
+    color: #fff;
+    font-size: 0.8em;
+    margin: 0;
+    padding: 1.5em;
+    text-align: center;
 }
 
 /*==============================================================================
@@ -552,6 +605,10 @@
 | State Classes
 ==============================================================================*/
 
+body.is-modal {
+    overflow: hidden;
+}
+
 .c--pipeline.is-loading .c--pipeline__results__data {
     opacity: 0.25;
 }
@@ -575,7 +632,7 @@
 }
 
 .c--pipeline__garment.is-expanded .c--pipeline__garment__media {
-    width: 9em;
+    width: 10em;
 }
 
 .c--pipeline__garment.is-expanded .c--pipeline__garment__weight {

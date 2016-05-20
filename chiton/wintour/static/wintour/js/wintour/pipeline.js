@@ -341,6 +341,7 @@ PipelineVisualizer.prototype = {
      */
     _enableDetails: function() {
         var that = this;
+        var $body = $('body');
 
         this.$results.on('click', '.js-pipeline-garment-meta', function(e) {
             var $meta = $(this);
@@ -404,15 +405,37 @@ PipelineVisualizer.prototype = {
 
                 var affiliates = renderTemplate('pipeline-template-garment-affiliate', {
                     adminLinks: item.admin_links,
-                    image: item.thumbnail,
+                    image: item.image,
+                    name: data.garment.name,
                     networkName: item.network_name,
                     price: price,
+                    thumbnail: item.thumbnail,
                     url: item.url
                 });
                 $affiliates.append(affiliates);
             });
+        });
 
+        this.$results.on('click', '.js-pipeline-affiliate-image', function(e) {
+            $body.addClass('is-modal');
 
+            var $image = $(this);
+            var modal = renderTemplate('pipeline-template-affiliate-image', {
+                maxWidth: $image.data('full-width'),
+                name: $image.attr('title'),
+                url: $image.data('full')
+            });
+            var $modal = $(modal);
+            $('body').append($modal);
+
+            function close() {
+                $modal.remove();
+                $body.removeClass('is-modal');
+                $body.off('keyup.affiliateImage');
+            }
+
+            $body.on('keyup.affiliateImage', function(e) { if (e.which === 27) { close(); } });
+            $modal.find('.js-pipeline-affiliate-image-close').on('click', close);
         });
     },
 
