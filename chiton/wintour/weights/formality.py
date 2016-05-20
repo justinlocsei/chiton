@@ -50,7 +50,7 @@ class FormalityWeight(BaseWeight):
 
         formalities = garment_formalities[garment.pk]
         for formality_slug in formalities:
-            importance = formality_weights[formality_slug]
+            importance = formality_weights.get(formality_slug, 0)
             total_weight += importance
 
             if self.debug and importance:
