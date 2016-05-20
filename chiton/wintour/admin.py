@@ -70,6 +70,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
         data = {
             'age': profile.age,
+            'avoid_care': [c.care for c in profile.unwanted_care_types.all()],
             'body_shape': profile.body_shape,
             'size': [s.slug for s in profile.sizes.all()],
             'style': [s.slug for s in profile.styles.all()]
