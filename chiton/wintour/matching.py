@@ -52,6 +52,7 @@ def package_wardrobe_profile(profile):
     """
     data = {
         'age': profile.age,
+        'avoid_care': [c.care for c in profile.unwanted_care_types.all()],
         'body_shape': profile.body_shape,
         'sizes': [size.slug for size in profile.sizes.all()],
         'styles': [style.slug for style in profile.styles.all()]
