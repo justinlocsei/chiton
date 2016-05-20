@@ -53,6 +53,7 @@ def package_wardrobe_profile(profile):
     data = {
         'age': profile.age,
         'body_shape': profile.body_shape,
+        'sizes': [size.slug for size in profile.sizes.all()],
         'styles': [style.slug for style in profile.styles.all()]
     }
 
