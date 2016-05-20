@@ -5,6 +5,9 @@ from chiton.wintour.weights import BaseWeight
 # The weight to apply to garments whose care is in a blacklist
 BLACKLIST_WEIGHT = -1
 
+# The care types that merit being on a blacklist
+BLACKLIST_TYPES = (CARE_TYPES['HAND_WASH'], CARE_TYPES['DRY_CLEAN'])
+
 # Readable names for blacklisted care types
 CARE_NAMES = {
     CARE_TYPES['HAND_WASH']: 'hand washing',
@@ -19,8 +22,10 @@ class CareWeight(BaseWeight):
     slug = 'care'
 
     def provide_profile_data(self, profile):
+        avoid_care = [c for c in profile.avoid_care if c in BLACKLIST_TYPES]
+
         return {
-            'avoid_care': set(profile.avoid_care)
+            'avoid_care': set(avoid_care)
         }
 
     def apply(self, garment, avoid_care=None):
