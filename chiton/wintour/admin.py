@@ -71,6 +71,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         data = {
             'age': profile.age,
             'body_shape': profile.body_shape,
+            'size': [s.slug for s in profile.sizes.all()],
             'style': [s.slug for s in profile.styles.all()]
         }
         for expectation in profile.expectations.all().select_related('formality'):
@@ -157,7 +158,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         sizes = []
         for size in Size.objects.all():
             selected = False
-            if selected_basics:
+            if selected_sizes:
                 selected = selected_sizes.get(size.slug, False)
 
             sizes.append({
