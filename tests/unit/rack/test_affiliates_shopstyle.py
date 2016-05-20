@@ -88,6 +88,24 @@ class TestShopstyleAffiliate:
         assert '.jpg' in with_color.image.url
         assert '.jpg' in with_color.thumbnail.url
 
+    def test_request_details_image_color_preference(self, shopstyle_api_request):
+        """It returns the image of the first color when multiple colors are provided."""
+        affiliate = Affiliate()
+
+        with shopstyle_api_request():
+            red = affiliate.request_details('470750142', colors=['Red'])
+            purple = affiliate.request_details('470750142', colors=['Purple'])
+            purple_first = affiliate.request_details('470750142', colors=['Purple', 'Red'])
+            red_first = affiliate.request_details('470750142', colors=['Red', 'Purple'])
+
+        assert red.image.url != purple.image.url
+        assert red.thumbnail.url != purple.thumbnail.url
+
+        assert purple_first.image.url == purple.image.url
+        assert purple_first.thumbnail.url == purple.thumbnail.url
+        assert red_first.image.url == red.image.url
+        assert red_first.thumbnail.url == red.thumbnail.url
+
     def test_request_details_availability(self, shopstyle_api_request):
         """It returns unique availability information based off of the canonical sizes."""
         with shopstyle_api_request():
@@ -111,24 +129,6 @@ class TestShopstyleAffiliate:
         assert purple.availability is not None
 
         assert len(default.availability) > len(purple.availability)
-
-    def test_request_details_availability_color_preference(self, shopstyle_api_request):
-        """It returns the image of the first color when multiple colors are provided."""
-        affiliate = Affiliate()
-
-        with shopstyle_api_request():
-            red = affiliate.request_details('470750142', colors=['Red'])
-            purple = affiliate.request_details('470750142', colors=['Purple'])
-            purple_first = affiliate.request_details('470750142', colors=['Purple', 'Red'])
-            red_first = affiliate.request_details('470750142', colors=['Red', 'Purple'])
-
-        assert red.image.url != purple.image.url
-        assert red.thumbnail.url != purple.thumbnail.url
-
-        assert purple_first.image.url == purple.image.url
-        assert purple_first.thumbnail.url == purple.thumbnail.url
-        assert red_first.image.url == red.image.url
-        assert red_first.thumbnail.url == red.thumbnail.url
 
     def test_request_details_availability_no_stock_records(self, shopstyle_api_request):
         """It signals global availability when no stock information is present but the item is marked as in stock."""
