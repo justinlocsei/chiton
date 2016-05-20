@@ -393,6 +393,23 @@
     text-transform: none;
 }
 
+.c--pipeline__garment__name__edit {
+    background-color: #447e9b;
+    border-radius: 0.25em;
+    color: #fff !important;
+    display: none;
+    font-size: 0.6em;
+    font-weight: normal;
+    margin-left: 1em;
+    padding: 0.25em 1em;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+.c--pipeline__garment__name__edit:hover {
+    background-color: #44729B;
+}
+
 .c--pipeline__garment__brand {
     color: #999;
     font-size: 0.8em;
@@ -642,6 +659,10 @@ body.is-modal {
 .c--pipeline__garment.is-expanded .c--pipeline__garment__name {
     color: #000;
     font-weight: bold;
+}
+
+.c--pipeline__garment.is-expanded .c--pipeline__garment__name__edit {
+    display: inline-block;
 }
 
 .c--pipeline__garment.is-expanded .c--pipeline__garment__meta:hover .c--pipeline__garment__brand {

@@ -103,6 +103,7 @@ PipelineVisualizer.prototype = {
 
                 garments.push(renderTemplate('pipeline-template-garment', {
                     brand: garment.garment.brand,
+                    editURL: garment.edit_url,
                     id: garment.garment.id,
                     name: garment.garment.name,
                     weight: weight
