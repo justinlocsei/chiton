@@ -217,6 +217,8 @@ PipelineVisualizer.prototype = {
      * @param {object} state A description of the form's state
      */
     _restoreHistory: function(state) {
+        var $el = this.$el;
+
         var values = state.reduce(function(previous, pair) {
             if (!previous[pair.name]) {
                 previous[pair.name] = [pair.value];
@@ -227,8 +229,9 @@ PipelineVisualizer.prototype = {
         }, {});
 
         var inputs = Object.keys(values).map(function(field) {
+            var $inputs = $el.find(':input[name="' + field + '"]');
             var value = values[field];
-            if (value.length === 1) { value = value[0]; }
+            if (value.length === 1 && !$inputs.length > 1) { value = value[0]; }
 
             return {
                 name: field,
@@ -236,7 +239,6 @@ PipelineVisualizer.prototype = {
             };
         });
 
-        var $el = this.$el;
         inputs.forEach(function(input) {
             var $inputs = $el.find(':input[name="' + input.name + '"]');
             $inputs.val(input.value);
