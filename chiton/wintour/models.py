@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from chiton.closet.data import CARE_CHOICES
 from chiton.closet.models import Size
 from chiton.runway.models import Formality, Style
 from chiton.wintour import data
@@ -50,6 +51,17 @@ class FormalityExpectation(models.Model):
     class Meta:
         verbose_name = _('formality expectation')
         verbose_name_plural = _('formality expectations')
+
+
+class UnwantedCareType(models.Model):
+    """An unwanted care type for a garment."""
+
+    profile = models.ForeignKey('WardrobeProfile', on_delete=models.CASCADE, verbose_name=_('wardrobe profile'), related_name='unwanted_care_types')
+    care = models.CharField(max_length=25, choices=CARE_CHOICES, verbose_name=_('care instructions'))
+
+    class Meta:
+        verbose_name = _('unwanted care type')
+        verbose_name_plural = _('unwanted care types')
 
 
 class WardrobeProfile(models.Model):

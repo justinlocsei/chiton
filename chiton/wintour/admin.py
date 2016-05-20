@@ -30,6 +30,10 @@ class FormalityExpectationInline(admin.TabularInline):
     model = models.FormalityExpectation
 
 
+class UnwantedCareTypeInline(admin.TabularInline):
+    model = models.UnwantedCareType
+
+
 @admin.register(models.Person, site=site)
 class PersonAdmin(admin.ModelAdmin):
 
@@ -40,7 +44,7 @@ class PersonAdmin(admin.ModelAdmin):
 @admin.register(models.WardrobeProfile, site=site)
 class WardrobeProfileAdmin(admin.ModelAdmin):
 
-    inlines = [FormalityExpectationInline]
+    inlines = [FormalityExpectationInline, UnwantedCareTypeInline]
     list_display = ('pk', 'created_at', 'age', 'body_shape', 'recommendations')
     list_display_links = ('pk', 'created_at')
     ordering = ('-created_at',)
