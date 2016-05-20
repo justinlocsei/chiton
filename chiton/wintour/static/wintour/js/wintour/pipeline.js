@@ -352,8 +352,8 @@ PipelineVisualizer.prototype = {
             var $details = $garment.find('.js-pipeline-garment-details');
             var $affiliates = $garment.find('.js-pipeline-garment-affiliates');
 
-            var inDetails = $(e.target).closest('.js-pipeline-garment-details').length;
-            if (inDetails) { return; }
+            var inEditLink = $(e.target).closest('.js-pipeline-garment-edit').length;
+            if (inEditLink) { return; }
 
             if (!$details.is(':empty')) {
                 $affiliates.empty();
