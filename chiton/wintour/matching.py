@@ -136,6 +136,8 @@ def _serialize_weighted_garment(weighted):
         item_dict = {}
         for image_field in GARMENT_IMAGE_FIELDS:
             image_obj = getattr(item, image_field)
+            if not image_obj:
+                continue
 
             image_dict = {}
             for image_attribute in GARMENT_IMAGE_ATTRIBUTES:
