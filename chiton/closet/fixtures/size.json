@@ -8,6 +8,7 @@
         "size_upper": 0,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 1
     }
 },
@@ -20,6 +21,7 @@
         "size_upper": 2,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 2
     }
 },
@@ -32,6 +34,7 @@
         "size_upper": 6,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 3
     }
 },
@@ -44,6 +47,7 @@
         "size_upper": 10,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 4
     }
 },
@@ -56,6 +60,7 @@
         "size_upper": 14,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 5
     }
 },
@@ -68,6 +73,7 @@
         "size_upper": 18,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 6
     }
 },
@@ -80,6 +86,7 @@
         "size_upper": 22,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 7
     }
 },
@@ -92,6 +99,7 @@
         "size_upper": 16,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": true,
         "position": 8
     }
 },
@@ -104,6 +112,7 @@
         "size_upper": 20,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": true,
         "position": 9
     }
 },
@@ -116,6 +125,7 @@
         "size_upper": 24,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": true,
         "position": 10
     }
 },
@@ -128,6 +138,7 @@
         "size_upper": 28,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": true,
         "position": 11
     }
 },
@@ -140,6 +151,7 @@
         "size_upper": 32,
         "is_petite": false,
         "is_tall": false,
+        "is_plus_sized": true,
         "position": 12
     }
 },
@@ -152,6 +164,7 @@
         "size_upper": 0,
         "is_petite": true,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 13
     }
 },
@@ -164,6 +177,7 @@
         "size_upper": 2,
         "is_petite": true,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 14
     }
 },
@@ -176,6 +190,7 @@
         "size_upper": 6,
         "is_petite": true,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 15
     }
 },
@@ -188,6 +203,7 @@
         "size_upper": 10,
         "is_petite": true,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 16
     }
 },
@@ -200,6 +216,7 @@
         "size_upper": 14,
         "is_petite": true,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 17
     }
 },
@@ -212,6 +229,7 @@
         "size_upper": 18,
         "is_petite": true,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 18
     }
 },
@@ -224,6 +242,7 @@
         "size_upper": 22,
         "is_petite": true,
         "is_tall": false,
+        "is_plus_sized": false,
         "position": 19
     }
 },
@@ -236,6 +255,7 @@
         "size_upper": 0,
         "is_petite": false,
         "is_tall": true,
+        "is_plus_sized": false,
         "position": 20
     }
 },
@@ -248,6 +268,7 @@
         "size_upper": 2,
         "is_petite": false,
         "is_tall": true,
+        "is_plus_sized": false,
         "position": 21
     }
 },
@@ -260,6 +281,7 @@
         "size_upper": 6,
         "is_petite": false,
         "is_tall": true,
+        "is_plus_sized": false,
         "position": 22
     }
 },
@@ -272,6 +294,7 @@
         "size_upper": 10,
         "is_petite": false,
         "is_tall": true,
+        "is_plus_sized": false,
         "position": 23
     }
 },
@@ -284,6 +307,7 @@
         "size_upper": 14,
         "is_petite": false,
         "is_tall": true,
+        "is_plus_sized": false,
         "position": 24
     }
 },
@@ -296,6 +320,7 @@
         "size_upper": 18,
         "is_petite": false,
         "is_tall": true,
+        "is_plus_sized": false,
         "position": 25
     }
 },
@@ -308,6 +333,7 @@
         "size_upper": 22,
         "is_petite": false,
         "is_tall": true,
+        "is_plus_sized": false,
         "position": 26
     }
 }
