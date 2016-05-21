@@ -762,6 +762,18 @@
             "casual-black-dress"
         ],
         "formality": [
+            "dressy-business-casual"
+        ],
+        "importance": "not"
+    }
+},
+{
+    "model": "chiton_runway.propriety",
+    "fields": {
+        "basic": [
+            "casual-black-dress"
+        ],
+        "formality": [
             "dressy-casual"
         ],
         "importance": "always"
