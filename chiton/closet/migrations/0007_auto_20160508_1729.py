@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('base', models.CharField(choices=[('xxs', 'XXS'), ('xs', 'XS'), ('s', 'S'), ('m', 'M'), ('l', 'L'), ('xl', 'XL'), ('xxl', 'XXL'), ('plus1', 'Plus 1X'), ('plus2', 'Plus 2X'), ('plus3', 'Plus 3X'), ('plus4', 'Plus 4X'), ('plus5', 'Plus 5X')], max_length=15, verbose_name='base size')),
-                ('slug', autoslug.fields.AutoSlugField(editable=False, max_length=255, populate_from=chiton.closet.models._slug_for_size, unique=True, verbose_name='slug')),
+                ('slug', autoslug.fields.AutoSlugField(editable=False, max_length=255, unique=True, verbose_name='slug')),
                 ('size_lower', models.PositiveSmallIntegerField(verbose_name='lower numeric size')),
                 ('size_upper', models.PositiveSmallIntegerField(verbose_name='upper numeric size')),
                 ('is_petite', models.BooleanField(default=False, verbose_name='is petite')),

@@ -123,18 +123,6 @@ class Color(models.Model):
         return (self.slug,)
 
 
-def _slug_for_size(size):
-    """Create the slug for a Size model instance."""
-    parts = [size.name]
-
-    if size.is_tall:
-        parts.append('tall')
-    elif size.is_petite:
-        parts.append('petite')
-
-    return '-'.join(parts)
-
-
 class SizeManager(models.Manager):
     """A custom manager for sizes."""
 
@@ -145,16 +133,12 @@ class SizeManager(models.Manager):
 class Size(models.Model):
     """A canonical size for an item."""
 
-    VARIANT_FIELDS = ('is_petite', 'is_plus_sized', 'is_tall')
-
     objects = SizeManager()
 
-    name = models.CharField(max_length=15, choices=data.SIZE_CHOICES, verbose_name=_('name'))
-    slug = AutoSlugField(max_length=255, populate_from=_slug_for_size, verbose_name=_('slug'), unique=True)
-    size_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'), null=True, blank=True)
-    size_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'), null=True, blank=True)
-    is_petite = models.BooleanField(verbose_name=_('is petite'), default=False)
-    is_tall = models.BooleanField(verbose_name=_('is tall'), default=False)
+    name = models.CharField(max_length=25, choices=data.SIZE_CHOICES, verbose_name=_('name'))
+    slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
+    range_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'), null=True, blank=True)
+    range_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'), null=True, blank=True)
     is_plus_sized = models.BooleanField(verbose_name=_('is plus-sized'), default=False)
     position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
 
@@ -164,39 +148,12 @@ class Size(models.Model):
         verbose_name_plural = _('sizes')
 
     def __str__(self):
-        return self.display_name
+        return self.name
 
     def natural_key(self):
         return (self.slug,)
 
     def clean(self):
-        """Ensure correct ordering of the size range and unique variants."""
-        if self.size_lower is not None or self.size_upper is not None:
-            validate_range(self.size_lower, self.size_upper)
-
-        variants = [getattr(self, v) for v in self.VARIANT_FIELDS]
-        if len([v for v in variants if v]) > 1:
-            raise ValidationError(_('A size cannot have multiple variants'))
-
-    @property
-    def display_name(self):
-        """Show the full name of the size, with its possible variant and range.
-
-        Returns:
-            str: The display name for the size
-        """
-        name_parts = [self.get_name_display()]
-
-        if self.size_lower is not None and self.size_upper is not None:
-            ranges = sorted(list(set([self.size_lower, self.size_upper])))
-            range_display = '(%s)' % '-'.join([str(r) for r in ranges])
-            name_parts.append(range_display)
-
-        name = ' '.join(name_parts)
-
-        if self.is_tall:
-            return _('Tall %(size)s') % {'size': name}
-        elif self.is_petite:
-            return _('Petite %(size)s') % {'size': name}
-        else:
-            return name
+        """Ensure correct ordering of the size range."""
+        if self.range_lower is not None or self.range_upper is not None:
+            validate_range(self.range_lower, self.range_upper)

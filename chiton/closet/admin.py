@@ -69,5 +69,5 @@ class GarmentAdmin(admin.ModelAdmin):
 @admin.register(models.Size, site=site)
 class SizeAdmin(SortableAdminMixin, admin.ModelAdmin):
 
-    list_display = ('display_name',)
+    list_display = ('name', 'range_lower', 'range_upper', 'is_plus_sized')
     ordering = ('position',)
