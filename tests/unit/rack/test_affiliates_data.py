@@ -223,7 +223,7 @@ class TestUpdateAffiliateItemDetails:
 
         assert availability_by_name['Large']
         assert not availability_by_name['Medium']
-        assert 'Jumbo (10)' not in availability_by_name
+        assert 'Jumbo' not in availability_by_name
 
     def test_network_data_stock_records_in_stock(self, affiliate_item):
         """It creates in-stock records for all known sizes if an affiliate signals that an item is globally available."""
