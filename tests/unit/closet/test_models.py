@@ -125,16 +125,21 @@ class TestSize:
         with pytest.raises(ValidationError):
             size.full_clean()
 
-    def test_clean_tall_petite(self):
-        """It prevents a size from being both tall and petite."""
+    def test_clean_variants(self):
+        """It prevents a size from having multiple variants."""
         size = Size(name=SIZES['M'])
         size.is_tall = True
         size.is_petite = True
+        size.is_plus_sized = True
 
         with pytest.raises(ValidationError):
             size.full_clean()
 
         size.is_tall = False
+        with pytest.raises(ValidationError):
+            size.full_clean()
+
+        size.is_plus_sized = False
         assert size.full_clean() is None
 
     def test_full_name(self):
@@ -152,10 +157,23 @@ class TestSize:
         size = Size(name=SIZES['M'], size_lower=4, size_upper=4)
         assert size.display_name == 'M (4)'
 
-    def test_full_name_variant(self):
-        """It shows the variant as a prefix in the full name."""
+    def test_full_name_tall(self):
+        """It uses a prefix for tall sizes."""
         tall = Size(name=SIZES['M'], size_lower=4, size_upper=6, is_tall=True)
-        petite = Size(name=SIZES['M'], size_lower=4, size_upper=6, is_petite=True)
-
         assert tall.display_name == 'Tall M (4-6)'
+
+    def test_full_name_petite(self):
+        """It uses a prefix for petite sizes."""
+        petite = Size(name=SIZES['M'], size_lower=4, size_upper=6, is_petite=True)
         assert petite.display_name == 'Petite M (4-6)'
+
+    def test_full_name_plus(self):
+        """It does not use a variant for plus sizes."""
+        plus_normal = Size(name=SIZES['PLUS_1X'], size_lower=18, size_upper=22, is_plus_sized=False)
+        plus_variant = Size(name=SIZES['PLUS_1X'], size_lower=18, size_upper=22, is_plus_sized=True)
+
+        assert plus_variant.display_name == 'Plus 1X (18-22)'
+        assert plus_normal.display_name == plus_variant.display_name
+
+        assert not plus_normal.is_plus_sized
+        assert plus_variant.is_plus_sized

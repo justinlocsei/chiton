@@ -145,6 +145,8 @@ class SizeManager(models.Manager):
 class Size(models.Model):
     """A canonical size for an item."""
 
+    VARIANT_FIELDS = ('is_petite', 'is_plus_sized', 'is_tall')
+
     objects = SizeManager()
 
     name = models.CharField(max_length=15, choices=data.SIZE_CHOICES, verbose_name=_('name'))
@@ -153,6 +155,7 @@ class Size(models.Model):
     size_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'), null=True, blank=True)
     is_petite = models.BooleanField(verbose_name=_('is petite'), default=False)
     is_tall = models.BooleanField(verbose_name=_('is tall'), default=False)
+    is_plus_sized = models.BooleanField(verbose_name=_('is plus-sized'), default=False)
     position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
 
     class Meta:
@@ -171,8 +174,9 @@ class Size(models.Model):
         if self.size_lower is not None or self.size_upper is not None:
             validate_range(self.size_lower, self.size_upper)
 
-        if self.is_tall and self.is_petite:
-            raise ValidationError(_('A size cannot be both tall and petite'))
+        variants = [getattr(self, v) for v in self.VARIANT_FIELDS]
+        if len([v for v in variants if v]) > 1:
+            raise ValidationError(_('A size cannot have multiple variants'))
 
     @property
     def display_name(self):
