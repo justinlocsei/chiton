@@ -55,6 +55,21 @@ class TestGarment:
         found = Garment.objects.get_by_natural_key('cocktail-dress', 'givenchy')
         assert garment.pk == found.pk
 
+    def test_size_validation(self, basic_factory, brand_factory):
+        """It requires at least one size to selected."""
+        garment = Garment(name="Ball Gown", brand=brand_factory(), basic=basic_factory())
+
+        garment.is_regular_sized = False
+        garment.is_plus_sized = False
+        garment.is_petite_sized = False
+        garment.is_tall_sized = False
+
+        with pytest.raises(ValidationError):
+            garment.full_clean()
+
+        garment.is_regular_sized = True
+        assert garment.full_clean() is None
+
 
 @pytest.mark.django_db
 class TestSize:

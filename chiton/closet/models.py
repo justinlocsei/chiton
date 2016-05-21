@@ -19,6 +19,8 @@ class GarmentManager(models.Manager):
 class Garment(models.Model):
     """An article of clothing."""
 
+    SIZE_FIELDS = ('is_petite_sized', 'is_plus_sized', 'is_regular_sized', 'is_tall_sized')
+
     objects = GarmentManager()
 
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
@@ -54,6 +56,11 @@ class Garment(models.Model):
 
     def natural_key(self):
         return (self.slug, self.brand.slug)
+
+    def clean(self):
+        """Ensure that at least one size is marked as available."""
+        if not any([getattr(self, s) for s in self.SIZE_FIELDS]):
+            raise ValidationError(_('At least one size-availability field must be true'))
 
 
 class BrandManager(models.Manager):
