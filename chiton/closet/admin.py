@@ -42,7 +42,7 @@ class GarmentAdmin(admin.ModelAdmin):
             'fields': ('formalities', 'styles', 'shoulder_emphasis', 'waist_emphasis', 'hip_emphasis', 'is_featured')
         }),
         (_('Dimensions'), {
-            'fields': ('sleeve_length', 'bottom_length', 'pant_rise', 'is_busty')
+            'fields': ('sleeve_length', 'bottom_length', 'pant_rise', 'is_busty', 'is_regular_sized', 'is_plus_sized', 'is_tall_sized', 'is_petite_sized')
         }),
         (_('Details'), {
             'fields': ('care',)
