@@ -144,6 +144,7 @@ class CanonicalSize(models.Model):
 
     class Meta:
         ordering = ('position',)
+        unique_together = ('name', 'range_lower', 'range_upper', 'is_plus_sized')
         verbose_name = _('canonical size')
         verbose_name_plural = _('canonical sizes')
 
