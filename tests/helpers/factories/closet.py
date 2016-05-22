@@ -38,16 +38,19 @@ class GarmentFactory(DjangoModelFactory):
 
 def standard_size_factory(canonical_size_factory):
     def create_standard_size(lower_size=None, upper_size=None, is_petite=False, is_plus_sized=False, is_tall=False):
-        canonical_kwargs = {'is_plus_sized': is_plus_sized}
-
+        canonical_kwargs = {}
         if lower_size is not None:
             canonical_kwargs['range_lower'] = lower_size
         if upper_size is not None or lower_size is not None:
             canonical_kwargs['range_upper'] = upper_size or lower_size
 
+        is_regular = not any([is_petite, is_plus_sized, is_tall])
+
         return StandardSize.objects.create(
             canonical=canonical_size_factory(**canonical_kwargs),
             is_petite=is_petite,
+            is_plus_sized=is_plus_sized,
+            is_regular=is_regular,
             is_tall=is_tall
         )
 
