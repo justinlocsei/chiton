@@ -12,7 +12,7 @@ from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet.apps import Config as ClosetConfig
-from chiton.closet.models import Size
+from chiton.closet.models import StandardSize
 from chiton.core.admin import site
 from chiton.rack.apps import Config as RackConfig
 from chiton.runway.models import Basic, Formality, Style
@@ -157,7 +157,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
         # Add information on the available and selected sizes
         sizes = []
-        for size in Size.objects.all():
+        for size in StandardSize.objects.all():
             selected = False
             if selected_sizes:
                 selected = selected_sizes.get(size.slug, False)

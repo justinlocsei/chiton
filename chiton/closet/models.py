@@ -123,29 +123,29 @@ class Color(models.Model):
         return (self.slug,)
 
 
-class SizeManager(models.Manager):
-    """A custom manager for sizes."""
+class CanonicalSizeManager(models.Manager):
+    """A custom manager for canonical sizes."""
 
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
 
-class Size(models.Model):
+class CanonicalSize(models.Model):
     """A canonical size for an item."""
 
-    objects = SizeManager()
+    objects = CanonicalSizeManager()
 
-    name = models.CharField(max_length=25, choices=data.SIZE_CHOICES, verbose_name=_('name'))
+    name = models.CharField(max_length=25, choices=data.SIZE_CHOICES, verbose_name=_('name'), unique=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    range_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'), null=True, blank=True)
-    range_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'), null=True, blank=True)
+    range_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'))
+    range_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'))
     is_plus_sized = models.BooleanField(verbose_name=_('is plus-sized'), default=False)
     position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
 
     class Meta:
         ordering = ('position',)
-        verbose_name = _('size')
-        verbose_name_plural = _('sizes')
+        verbose_name = _('canonical size')
+        verbose_name_plural = _('canonical sizes')
 
     def __str__(self):
         return self.name
@@ -155,5 +155,100 @@ class Size(models.Model):
 
     def clean(self):
         """Ensure correct ordering of the size range."""
-        if self.range_lower is not None or self.range_upper is not None:
+        if self.range_lower is not None and self.range_upper is not None:
             validate_range(self.range_lower, self.range_upper)
+
+    def range_lower_display(self):
+        """The lower size range, formatted for display.
+
+        Returns:
+            str: The formatted lower size
+        """
+        return self._format_size(self.range_lower)
+
+    def range_upper_display(self):
+        """The upper size range, formatted for display.
+
+        Returns:
+            str: The formatted upper size
+        """
+        return self._format_size(self.range_upper)
+
+    def _format_size(self, size):
+        """Return the display value for a numeric size.
+
+        Returns:
+            str: The formatted numeric size
+        """
+        parts = [str(size)]
+        if self.is_plus_sized:
+            parts.append('W')
+
+        return ''.join(parts)
+
+
+def _make_slug_for_standard_size(size):
+    """Make a slug for a given size.
+
+    Args:
+        chiton.closet.models.StandardSize: A standard size model
+
+    Returns:
+        str: The slug for the size
+    """
+    parts = [size.canonical.slug]
+
+    if size.is_tall:
+        parts.append('tall')
+    elif size.is_petite:
+        parts.append('petite')
+
+    return '-'.join(parts)
+
+
+class StandardSizeManager(models.Manager):
+    """A custom manager for standard sizes."""
+
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
+class StandardSize(models.Model):
+    """A standard size for an item."""
+
+    objects = StandardSizeManager()
+
+    canonical = models.ForeignKey(CanonicalSize, on_delete=models.CASCADE, verbose_name=_('canonical size'))
+    slug = AutoSlugField(max_length=255, populate_from=_make_slug_for_standard_size, verbose_name=_('slug'), unique=True)
+    is_tall = models.BooleanField(verbose_name=_('tall'), default=False)
+    is_petite = models.BooleanField(verbose_name=_('petite'), default=False)
+    position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
+
+    class Meta:
+        ordering = ('position',)
+        unique_together = ('canonical', 'is_tall', 'is_petite')
+        verbose_name = _('standard size')
+        verbose_name_plural = _('standard sizes')
+
+    def __str__(self):
+        return self.display_name
+
+    def natural_key(self):
+        return (self.slug,)
+
+    @property
+    def display_name(self):
+        """Get the formatted name of the size for display.
+
+        Returns:
+            str: The formatted size name
+        """
+        if self.is_tall:
+            variant = 'Tall'
+        elif self.is_petite:
+            variant = 'Petite'
+        else:
+            variant = 'Regular'
+
+        return '%s %s' % (variant, self.canonical.name)
+

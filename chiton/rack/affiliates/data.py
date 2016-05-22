@@ -1,4 +1,4 @@
-from chiton.closet.models import Size
+from chiton.closet.models import StandardSize
 from chiton.rack.affiliates import create_affiliate
 from chiton.rack.models import ProductImage, StockRecord
 
@@ -105,7 +105,7 @@ def _update_stock_records(item, availability):
         item (chiton.rack.models.AffiliateItem): An affiliate item
         availability (bool,list): Information on the item's availability
     """
-    all_sizes = Size.objects.all()
+    all_sizes = StandardSize.objects.all()
     existing_records = item.stock_records.all().select_related('size')
 
     if isinstance(availability, bool):

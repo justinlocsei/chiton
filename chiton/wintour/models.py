@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet.data import CARE_CHOICES
-from chiton.closet.models import Size
+from chiton.closet.models import StandardSize
 from chiton.runway.models import Formality, Style
 from chiton.wintour import data
 
@@ -70,7 +70,7 @@ class WardrobeProfile(models.Model):
     body_shape = models.CharField(max_length=25, choices=data.BODY_SHAPE_CHOICES, verbose_name=_('body shape'))
     age = models.PositiveSmallIntegerField(verbose_name=_('age'))
     styles = models.ManyToManyField(Style, verbose_name=_('styles'))
-    sizes = models.ManyToManyField(Size, verbose_name=_('sizes'))
+    sizes = models.ManyToManyField(StandardSize, verbose_name=_('sizes'))
     created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name=_('person'), null=True, blank=True)
 

@@ -75,7 +75,7 @@ CARE_CHOICES = (
     (CARE_TYPES['DRY_CLEAN'], _('Dry clean'))
 )
 
-SIZES = (
+SIZE_NAMES = (
     'XXS',
     'XS',
     'S',
@@ -90,4 +90,4 @@ SIZES = (
     'Plus 5X'
 )
 
-SIZE_CHOICES = tuple((size, size) for size in SIZES)
+SIZE_CHOICES = tuple((name, name) for name in SIZE_NAMES)

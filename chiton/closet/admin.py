@@ -18,6 +18,13 @@ class BrandAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+@admin.register(models.CanonicalSize, site=site)
+class CanonicalSizeAdmin(SortableAdminMixin, admin.ModelAdmin):
+
+    list_display = ('name', 'range_lower', 'range_upper', 'is_plus_sized')
+    ordering = ('position',)
+
+
 @admin.register(models.Color, site=site)
 class ColorAdmin(admin.ModelAdmin):
 
@@ -66,8 +73,8 @@ class GarmentAdmin(admin.ModelAdmin):
     affiliate_view_links.short_description = _('Links')
 
 
-@admin.register(models.Size, site=site)
-class SizeAdmin(SortableAdminMixin, admin.ModelAdmin):
+@admin.register(models.StandardSize, site=site)
+class StandardSizeAdmin(SortableAdminMixin, admin.ModelAdmin):
 
-    list_display = ('name', 'range_lower', 'range_upper', 'is_plus_sized')
+    list_display = ('canonical', 'is_tall', 'is_petite')
     ordering = ('position',)
