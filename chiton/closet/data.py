@@ -83,11 +83,11 @@ SIZE_NAMES = (
     'L',
     'XL',
     'XXL',
-    'Plus 1X',
-    'Plus 2X',
-    'Plus 3X',
-    'Plus 4X',
-    'Plus 5X'
+    '1X',
+    '2X',
+    '3X',
+    '4X',
+    '5X'
 )
 
 SIZE_CHOICES = tuple((name, name) for name in SIZE_NAMES)

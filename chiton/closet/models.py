@@ -139,12 +139,11 @@ class CanonicalSize(models.Model):
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
     range_lower = models.PositiveSmallIntegerField(verbose_name=_('lower numeric size'))
     range_upper = models.PositiveSmallIntegerField(verbose_name=_('upper numeric size'))
-    is_plus_sized = models.BooleanField(verbose_name=_('is plus-sized'), default=False)
     position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
 
     class Meta:
         ordering = ('position',)
-        unique_together = ('name', 'range_lower', 'range_upper', 'is_plus_sized')
+        unique_together = ('name', 'range_lower', 'range_upper')
         verbose_name = _('canonical size')
         verbose_name_plural = _('canonical sizes')
 
@@ -157,36 +156,6 @@ class CanonicalSize(models.Model):
     def clean(self):
         """Ensure correct ordering of the size range."""
         validate_range(self.range_lower, self.range_upper)
-
-    @property
-    def range_lower_display(self):
-        """The lower size range, formatted for display.
-
-        Returns:
-            str: The formatted lower size
-        """
-        return self._format_size(self.range_lower)
-
-    @property
-    def range_upper_display(self):
-        """The upper size range, formatted for display.
-
-        Returns:
-            str: The formatted upper size
-        """
-        return self._format_size(self.range_upper)
-
-    def _format_size(self, size):
-        """Return the display value for a numeric size.
-
-        Returns:
-            str: The formatted numeric size
-        """
-        parts = [str(size)]
-        if self.is_plus_sized:
-            parts.append('W')
-
-        return ''.join(parts)
 
 
 def _make_slug_for_standard_size(size):
@@ -204,6 +173,8 @@ def _make_slug_for_standard_size(size):
         parts.append('tall')
     elif size.is_petite:
         parts.append('petite')
+    elif size.is_plus_sized:
+        parts.append('plus')
 
     return '-'.join(parts)
 
@@ -218,17 +189,21 @@ class StandardSizeManager(models.Manager):
 class StandardSize(models.Model):
     """A standard size for an item."""
 
+    VARIANT_FIELDS = ('is_regular', 'is_tall', 'is_petite', 'is_plus_sized')
+
     objects = StandardSizeManager()
 
     canonical = models.ForeignKey(CanonicalSize, on_delete=models.CASCADE, verbose_name=_('canonical size'))
     slug = AutoSlugField(max_length=255, populate_from=_make_slug_for_standard_size, verbose_name=_('slug'), unique=True)
+    is_regular = models.BooleanField(verbose_name=_('regular'), default=True)
     is_tall = models.BooleanField(verbose_name=_('tall'), default=False)
     is_petite = models.BooleanField(verbose_name=_('petite'), default=False)
+    is_plus_sized = models.BooleanField(verbose_name=_('plus-sized'), default=False)
     position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
 
     class Meta:
         ordering = ('position',)
-        unique_together = ('canonical', 'is_tall', 'is_petite')
+        unique_together = ('canonical', 'is_tall', 'is_petite', 'is_regular', 'is_plus_sized')
         verbose_name = _('standard size')
         verbose_name_plural = _('standard sizes')
 
@@ -237,6 +212,16 @@ class StandardSize(models.Model):
 
     def natural_key(self):
         return (self.slug,)
+
+    def clean(self):
+        """Ensure that only one variant is selected."""
+        variants = [getattr(self, field) for field in self.VARIANT_FIELDS]
+        variant_count = len([v for v in variants if v])
+
+        if not variant_count:
+            raise ValidationError('A variant type must be selected')
+        elif variant_count > 1:
+            raise ValidationError('Only one variant type may be selected')
 
     @property
     def display_name(self):
@@ -249,6 +234,8 @@ class StandardSize(models.Model):
             variant = 'Tall'
         elif self.is_petite:
             variant = 'Petite'
+        elif self.is_plus_sized:
+            variant = 'Plus'
         else:
             variant = 'Regular'
 

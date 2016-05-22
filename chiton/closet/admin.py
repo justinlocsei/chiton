@@ -21,7 +21,7 @@ class BrandAdmin(admin.ModelAdmin):
 @admin.register(models.CanonicalSize, site=site)
 class CanonicalSizeAdmin(SortableAdminMixin, admin.ModelAdmin):
 
-    list_display = ('name', 'range_lower', 'range_upper', 'is_plus_sized')
+    list_display = ('name', 'range_lower', 'range_upper')
     ordering = ('position',)
 
 
