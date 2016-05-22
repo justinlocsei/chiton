@@ -155,9 +155,9 @@ class CanonicalSize(models.Model):
 
     def clean(self):
         """Ensure correct ordering of the size range."""
-        if self.range_lower is not None and self.range_upper is not None:
-            validate_range(self.range_lower, self.range_upper)
+        validate_range(self.range_lower, self.range_upper)
 
+    @property
     def range_lower_display(self):
         """The lower size range, formatted for display.
 
@@ -166,6 +166,7 @@ class CanonicalSize(models.Model):
         """
         return self._format_size(self.range_lower)
 
+    @property
     def range_upper_display(self):
         """The upper size range, formatted for display.
 
@@ -251,4 +252,3 @@ class StandardSize(models.Model):
             variant = 'Regular'
 
         return '%s %s' % (variant, self.canonical.name)
-

@@ -3,7 +3,7 @@ from factory.django import DjangoModelFactory
 from faker import Faker
 
 from .runway import BasicFactory
-from chiton.closet.models import Brand, Garment
+from chiton.closet.models import Brand, CanonicalSize, Garment
 
 fake = Faker()
 
@@ -14,6 +14,16 @@ class BrandFactory(DjangoModelFactory):
 
     class Meta:
         model = Brand
+
+
+class CanonicalSizeFactory(DjangoModelFactory):
+
+    name = factory.Sequence(lambda n: '%s-%d' % (fake.word(), n))
+    range_lower = factory.Sequence(lambda n: n)
+    range_upper = factory.Sequence(lambda n: n)
+
+    class Meta:
+        model = CanonicalSize
 
 
 class GarmentFactory(DjangoModelFactory):
