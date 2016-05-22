@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import autoslug.fields
-import chiton.closet.models
+import chiton.closet.models # noqa
 from django.db import migrations, models
 
 
