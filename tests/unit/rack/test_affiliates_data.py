@@ -3,7 +3,7 @@ from decimal import Decimal
 import mock
 import pytest
 
-from chiton.closet.models import Color, Size
+from chiton.closet.models import Color
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
 from chiton.rack.affiliates.base import Affiliate
 
@@ -14,6 +14,8 @@ CREATE_AFFILIATE = 'chiton.rack.affiliates.data.create_affiliate'
 class FullAffiliate(Affiliate):
     """An affiliate that returns full API information."""
 
+    availability = []
+
     def provide_overview(self, url):
         return {
             'name': 'Overview',
@@ -22,10 +24,7 @@ class FullAffiliate(Affiliate):
 
     def provide_details(self, guid, colors=[]):
         return {
-            'availability': [
-                {'size': 'Large'},
-                {'size': 'Jumbo'}
-            ],
+            'availability': self.availability,
             'image': {
                 'height': 100,
                 'url': 'http://example.com/%s' % '/'.join(colors),
@@ -208,27 +207,103 @@ class TestUpdateAffiliateItemDetails:
         assert affiliate_item.image.height == 100
         assert affiliate_item.thumbnail.height == 50
 
-    def test_network_data_stock_records(self, affiliate_item):
-        """It creates stock records for all sizes that match a known size's full display name."""
-        Size.objects.create(name='Medium')
-        Size.objects.create(name='Large')
+    def test_network_data_stock_records(self, affiliate_item, standard_size_factory):
+        """It creates stock records for all sizes that match a standard size's number."""
+        size_8 = standard_size_factory(8)
+        size_10 = standard_size_factory(10)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = FullAffiliate()
+            affiliate = FullAffiliate()
+            affiliate.availability = [
+                {'size': 8, 'is_regular': True},
+                {'size': 12, 'is_regular': True}
+            ]
+
+            create_affiliate.return_value = affiliate
             update_affiliate_item_details(affiliate_item)
 
-        availability_by_name = {}
-        for record in affiliate_item.stock_records.all():
-            availability_by_name[record.size.display_name] = record.is_available
+        availability_by_pk = {}
+        stock_records = affiliate_item.stock_records.all()
+        for record in stock_records:
+            availability_by_pk[record.size.pk] = record.is_available
 
-        assert availability_by_name['Large']
-        assert not availability_by_name['Medium']
-        assert 'Jumbo' not in availability_by_name
+        assert availability_by_pk[size_8.pk]
+        assert not availability_by_pk[size_10.pk]
+        assert len(stock_records) == 2
 
-    def test_network_data_stock_records_in_stock(self, affiliate_item):
+    def test_network_data_stock_records_range(self, affiliate_item, standard_size_factory):
+        """It maps numeric sizes to the range of standard sizes."""
+        size_small = standard_size_factory(4, 6)
+        size_medium = standard_size_factory(8, 10)
+        size_large = standard_size_factory(12, 14)
+        size_plus = standard_size_factory(16, 22)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.availability = [
+                {'size': 8, 'is_regular': True},
+                {'size': 14, 'is_regular': True},
+                {'size': 18, 'is_regular': True}
+            ]
+
+            create_affiliate.return_value = affiliate
+            update_affiliate_item_details(affiliate_item)
+
+        availability_by_pk = {}
+        stock_records = affiliate_item.stock_records.all()
+        for record in stock_records:
+            availability_by_pk[record.size.pk] = record.is_available
+
+        assert len(stock_records) == 4
+        assert not availability_by_pk[size_small.pk]
+        assert availability_by_pk[size_medium.pk]
+        assert availability_by_pk[size_large.pk]
+        assert availability_by_pk[size_plus.pk]
+
+    def test_network_data_stock_records_variants(self, affiliate_item, standard_size_factory):
+        """It ignores reported availability for sizes outside of the item's garment's size types."""
+        garment = affiliate_item.garment
+
+        standard_size_factory(2)
+        standard_size_factory(4)
+        standard_size_factory(6, is_petite=True)
+        standard_size_factory(8, is_petite=True)
+        standard_size_factory(10, is_tall=True)
+        standard_size_factory(12, is_tall=True)
+        standard_size_factory(14, is_plus_sized=True)
+        standard_size_factory(16, is_plus_sized=True)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.availability = [
+                {'size': 2, 'is_regular': True},
+                {'size': 6, 'is_petite': True},
+                {'size': 10, 'is_tall': True},
+                {'size': 14, 'is_plus_sized': True}
+            ]
+            create_affiliate.return_value = affiliate
+
+            sizes_by_type = {}
+            for size_field in ('regular', 'petite', 'tall', 'plus'):
+                setattr(garment, 'is_%s_sized' % size_field, True)
+                garment.save()
+
+                update_affiliate_item_details(affiliate_item)
+                sizes_by_type[size_field] = sorted([
+                    record.size.canonical.range_lower
+                    for record in affiliate_item.stock_records.all()
+                    if record.is_available
+                ])
+
+        assert sizes_by_type['regular'] == [2]
+        assert sizes_by_type['petite'] == [2, 6]
+        assert sizes_by_type['tall'] == [2, 6, 10]
+        assert sizes_by_type['plus'] == [2, 6, 10, 14]
+
+    def test_network_data_stock_records_in_stock(self, affiliate_item, standard_size_factory):
         """It creates in-stock records for all known sizes if an affiliate signals that an item is globally available."""
-        Size.objects.create(name='Small')
-        Size.objects.create(name='Medium')
+        standard_size_factory(8)
+        standard_size_factory(10)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = InStockAffiliate()
@@ -238,10 +313,41 @@ class TestUpdateAffiliateItemDetails:
         assert len(records) == 2
         assert all([r.is_available for r in records])
 
-    def test_network_data_stock_records_out_of_stock(self, affiliate_item):
+    def test_network_data_stock_records_in_stock_variants(self, affiliate_item, standard_size_factory):
+        """It only creates in-stock records for sizes that match the item's garment's size types when global availability is specified."""
+        garment = affiliate_item.garment
+
+        standard_size_factory(6)
+        standard_size_factory(8, is_petite=True)
+        standard_size_factory(10, is_tall=True)
+        standard_size_factory(12, is_plus_sized=True)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.availability = True
+            create_affiliate.return_value = affiliate
+
+            sizes_by_type = {}
+            for size_field in ('regular', 'petite', 'tall', 'plus'):
+                setattr(garment, 'is_%s_sized' % size_field, True)
+                garment.save()
+
+                update_affiliate_item_details(affiliate_item)
+                sizes_by_type[size_field] = sorted([
+                    record.size.canonical.range_lower
+                    for record in affiliate_item.stock_records.all()
+                    if record.is_available
+                ])
+
+        assert sizes_by_type['regular'] == [6]
+        assert sizes_by_type['petite'] == [6, 8]
+        assert sizes_by_type['tall'] == [6, 8, 10]
+        assert sizes_by_type['plus'] == [6, 8, 10, 12]
+
+    def test_network_data_stock_records_out_of_stock(self, affiliate_item, standard_size_factory):
         """It creates unavailable in-stock records for all known sizes if an affiliate signals that an item is globally unavailable."""
-        Size.objects.create(name='Small')
-        Size.objects.create(name='Medium')
+        standard_size_factory(8)
+        standard_size_factory(10)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = OutOfStockAffiliate()
@@ -251,9 +357,24 @@ class TestUpdateAffiliateItemDetails:
         assert len(records) == 2
         assert not any([r.is_available for r in records])
 
-    def test_network_data_stock_records_existing(self, affiliate_item):
+    def test_network_data_stock_records_out_of_stock_variants(self, affiliate_item, standard_size_factory):
+        """It creates out-of-stock records for all sizes, even those outside a garment's size types, when global unavailability is specified."""
+        standard_size_factory(6)
+        standard_size_factory(8, is_petite=True)
+        standard_size_factory(10, is_tall=True)
+        standard_size_factory(12, is_plus_sized=True)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = OutOfStockAffiliate()
+            update_affiliate_item_details(affiliate_item)
+
+        records = affiliate_item.stock_records.all()
+        assert len(records) == 4
+        assert not any([r.is_available for r in records])
+
+    def test_network_data_stock_records_existing(self, affiliate_item, standard_size_factory):
         """It updates stock records for items with existing records."""
-        Size.objects.create(name='Medium')
+        standard_size_factory(8)
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = InStockAffiliate()
@@ -262,20 +383,20 @@ class TestUpdateAffiliateItemDetails:
             records = affiliate_item.stock_records.all()
 
             assert len(records) == 1
-            medium = records[0]
-            create_medium_pk = medium.pk
+            stock_record_8 = records[0]
+            created_pk = stock_record_8.pk
 
-            medium.is_available = False
-            medium.save()
+            stock_record_8.is_available = False
+            stock_record_8.save()
 
             update_affiliate_item_details(affiliate_item)
             records = affiliate_item.stock_records.all()
 
             assert len(records) == 1
-            medium = records[0]
-            update_medium_pk = medium.pk
+            stock_record_8 = records[0]
+            updated_pk = stock_record_8.pk
 
-        assert create_medium_pk is not None
-        assert create_medium_pk == update_medium_pk
+        assert created_pk is not None
+        assert created_pk == updated_pk
 
-        assert medium.is_available
+        assert stock_record_8.is_available
