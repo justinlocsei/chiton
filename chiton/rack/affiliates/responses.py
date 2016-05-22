@@ -66,26 +66,57 @@ class ItemImage:
         self.width = width
 
 
+def SizeNumber():
+    def validator(v):
+        if v < 0:
+            raise ValueError('Sizes cannot be negative')
+    return validator
+
+
 class ItemAvailability:
     """Details of an item's availability in a particular size."""
 
+    VARIANT_FIELDS = ('is_petite', 'is_plus_sized', 'is_regular', 'is_tall')
+
     SCHEMA = V.Schema({
-        V.Required('size'): V.All(str, V.Length(min=1))
+        'is_petite': bool,
+        'is_plus_sized': bool,
+        'is_regular': bool,
+        'is_tall': bool,
+        V.Required('size'): V.All(int, SizeNumber())
     })
 
-    def __init__(self, size=None):
+    def __init__(self, is_petite=False, is_plus_sized=False, is_regular=False, is_tall=False, size=None):
         """Create a record of an item's availability.
 
         Keyword Args:
+            is_petite (bool): Whether the availability is for the tall variant
+            is_plus_sized (bool): Whether the availability is for plus sizes
+            is_regular (bool): Whether the availability is for regular sizes
+            is_tall (bool): Whether the availability is for the short variant
             size (str): The name of the item's size
         """
+        data = {
+            'is_petite': is_petite,
+            'is_plus_sized': is_plus_sized,
+            'is_regular': is_regular,
+            'is_tall': is_tall,
+            'size': size
+        }
+
         try:
-            self.SCHEMA({
-                'size': size
-            })
+            self.SCHEMA(data)
         except V.MultipleInvalid as e:
             raise ConfigurationError(e)
 
+        variants = [data.get(f) for f in self.VARIANT_FIELDS]
+        if len([v for v in variants if v]) != 1:
+            raise ConfigurationError('A single variant type must be selected')
+
+        self.is_petite = is_petite
+        self.is_plus_sized = is_plus_sized
+        self.is_regular = is_regular
+        self.is_tall = is_tall
         self.size = size
 
 
@@ -134,4 +165,4 @@ class ItemDetails:
         if isinstance(availability, bool):
             self.availability = availability
         else:
-            self.availability = [ItemAvailability(size=a['size']) for a in availability]
+            self.availability = [ItemAvailability(**a) for a in availability]
