@@ -230,13 +230,26 @@ class StandardSize(models.Model):
         Returns:
             str: The formatted size name
         """
-        if self.is_tall:
-            variant = 'Tall'
-        elif self.is_petite:
-            variant = 'Petite'
-        elif self.is_plus_sized:
-            variant = 'Plus'
-        else:
-            variant = 'Regular'
+        canonical = self.canonical
+        names = []
 
-        return '%s %s' % (variant, self.canonical.name)
+        if self.is_tall:
+            names.append('Tall')
+        elif self.is_petite:
+            names.append('Petite')
+        elif self.is_plus_sized:
+            names.append('Plus')
+
+        names.append(canonical.name)
+
+        lower_range = canonical.range_lower
+        upper_range = canonical.range_upper
+        if lower_range != upper_range:
+            numbers = [lower_range, upper_range]
+        else:
+            numbers = [lower_range]
+
+        return '%s (%s)' % (
+            ' '.join(names),
+            '-'.join([str(n) for n in numbers])
+        )

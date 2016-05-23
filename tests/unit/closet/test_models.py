@@ -122,18 +122,18 @@ class TestStandardSize:
 
     def test_display_name(self, canonical_size_factory):
         """It shows the size variant as a prefix of the canonical name."""
-        xl = canonical_size_factory(name='XL')
-        x2 = canonical_size_factory(name='2X')
+        xl = canonical_size_factory(name='XL', range_lower=10, range_upper=10)
+        x2 = canonical_size_factory(name='2X', range_lower=16, range_upper=18)
 
         xl_regular = StandardSize.objects.create(canonical=xl)
         xl_petite = StandardSize.objects.create(canonical=xl, is_petite=True)
         xl_tall = StandardSize.objects.create(canonical=xl, is_tall=True)
         plus_2x = StandardSize.objects.create(canonical=x2, is_plus_sized=True)
 
-        assert xl_regular.display_name == 'Regular XL'
-        assert xl_petite.display_name == 'Petite XL'
-        assert xl_tall.display_name == 'Tall XL'
-        assert plus_2x.display_name == 'Plus 2X'
+        assert xl_regular.display_name == 'XL (10)'
+        assert xl_petite.display_name == 'Petite XL (10)'
+        assert xl_tall.display_name == 'Tall XL (10)'
+        assert plus_2x.display_name == 'Plus 2X (16-18)'
 
     def test_validation_variants(self, canonical_size_factory):
         """It ensure that only one variant is selected."""
