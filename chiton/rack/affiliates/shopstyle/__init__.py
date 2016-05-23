@@ -10,7 +10,8 @@ from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
 
 
-# The match for extracting the numeric range from a size
+# Matches for extracting numeric sizes from canonical-size names
+SIZE_NUMBER_MATCH = re.compile(r'(\d+)')
 SIZE_RANGE_MATCH = re.compile(r'\s+\((\d+(-\d+)?)\)$')
 
 # The names used for size variants
@@ -161,8 +162,11 @@ class Affiliate(BaseAffiliate):
         name = size['name']
 
         size_range = SIZE_RANGE_MATCH.search(name)
-        range_parts = size_range.groups()[0].split('-')
-        size_number = int(range_parts[0])
+        if size_range:
+            raw_size = size_range.groups()[0].split('-')[0]
+        else:
+            raw_size = SIZE_NUMBER_MATCH.search(name).groups()[0]
+        size_number = int(raw_size)
 
         variant_name = size.get('variant', None)
         is_petite = variant_name == SIZE_PETITE
@@ -174,7 +178,7 @@ class Affiliate(BaseAffiliate):
             'is_plus_sized': is_plus_sized,
             'is_regular': not any([is_petite, is_plus_sized, is_tall]),
             'is_tall': is_tall,
-            'size': size_number,
+            'size': size_number
         }
 
     def _request_product(self, product_id):
