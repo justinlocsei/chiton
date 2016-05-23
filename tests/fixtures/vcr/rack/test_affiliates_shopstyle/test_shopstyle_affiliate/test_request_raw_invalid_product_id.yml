@@ -10,18 +10,18 @@ interactions:
     uri: http://api.shopstyle.com/api/v2/products/0000000000?format=json
   response:
     body: {string: '{"errorCode":404,"errorName":"InvalidProductId","errorMessage":"Invalid
-        product id: 0000000000","detailedErrors":[],"errorId":"D1KKFC"}'}
+        product id: 0000000000","detailedErrors":[],"errorId":"6E0E4M"}'}
     headers:
       Cache-Control: [max-age=1800]
       Connection: [keep-alive]
       Content-Length: ['135']
       Content-Type: [application/json;charset=UTF-8]
-      Date: ['Thu, 12 May 2016 01:15:48 GMT']
-      Expires: ['Thu, 12 May 2016 01:45:49 GMT']
+      Date: ['Mon, 23 May 2016 00:10:37 GMT']
+      Expires: ['Mon, 23 May 2016 00:40:37 GMT']
       P3P: [CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVA IVD CONi HIS OUR DELi SAMi
           IND UNI INT CNT"]
       Server: [Apache-Coyote/1.1]
-      X-API-Response-Time: [2ms]
-      X-Powered-By: [Store#8b572BC130@shopstyleprodapi11]
+      X-API-Response-Time: [5ms]
+      X-Powered-By: [Store#8b573E685F@shopstyleprodapi41]
     status: {code: 404, message: Not Found}
 version: 1

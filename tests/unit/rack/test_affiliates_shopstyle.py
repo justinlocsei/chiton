@@ -157,8 +157,8 @@ class TestShopstyleAffiliate:
 
         assert raw['id'] == 471281504
 
-    def test_request_raw_invalid_asin(self, shopstyle_api_request):
-        """It raises an error when getting a raw response for an inavlid ASIN."""
+    def test_request_raw_invalid_product_id(self, shopstyle_api_request):
+        """It raises an error when getting a raw response for an invalid product ID."""
         with shopstyle_api_request():
             with pytest.raises(LookupError):
                 Affiliate().request_raw('0000000000')
