@@ -76,5 +76,5 @@ class GarmentAdmin(admin.ModelAdmin):
 @admin.register(models.StandardSize, site=site)
 class StandardSizeAdmin(SortableAdminMixin, admin.ModelAdmin):
 
-    list_display = ('canonical', 'is_tall', 'is_petite')
+    list_display = ('canonical', 'is_tall', 'is_petite', 'is_plus_sized')
     ordering = ('position',)
