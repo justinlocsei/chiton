@@ -128,7 +128,7 @@ class TestAmazonAffiliate:
                 Affiliate().request_details('B00ZGRB7UO')
 
     def test_request_details_invalid_asin(self, amazon_api_request):
-        """It raises an error when looking up details for an inavlid ASIN."""
+        """It raises an error when looking up details for an invalid ASIN."""
         with amazon_api_request():
             with pytest.raises(LookupError):
                 Affiliate().request_details('0000000000')
@@ -147,7 +147,7 @@ class TestAmazonAffiliate:
         assert raw['Item']['ASIN'] == 'B00ZGRB7UO'
 
     def test_request_raw_invalid_asin(self, amazon_api_request):
-        """It raises an error when getting a raw response for an inavlid ASIN."""
+        """It raises an error when getting a raw response for an invalid ASIN."""
         with amazon_api_request():
             with pytest.raises(LookupError):
                 Affiliate().request_raw('0000000000')
