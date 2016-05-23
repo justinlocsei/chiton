@@ -154,6 +154,8 @@ class Affiliate(BaseAffiliate):
 
         if color_matches:
             for variation in variations:
+                if size_name not in variation:
+                    continue
                 color_name = variation['ItemAttributes']['Color'].lower()
                 if color_name in color_matches:
                     color_images[color_name] = variation[size_name]

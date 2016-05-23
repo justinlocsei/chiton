@@ -114,6 +114,14 @@ class TestAmazonAffiliate:
         assert black_first.image.url == black.image.url
         assert black_first.thumbnail.url == black.thumbnail.url
 
+    def test_request_details_image_incomplete(self, amazon_api_request):
+        """It handles item variations that lack full image sets for a requested color."""
+        with amazon_api_request():
+            details = Affiliate().request_details('B00NZJJM1Q', colors=['Black'])
+
+        assert '.jpg' in details.image.url
+        assert '.jpg' in details.thumbnail.url
+
     def test_request_details_availability(self, amazon_api_request):
         """It marks every item as globally available."""
         with amazon_api_request():
