@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: http://api.shopstyle.com/api/v2/products/504335769?format=json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1YbW/bNhD+K4QwrBtg2XrzSwwMRZp2aYDmBXHSDQiKgpbOFheKEkiqahrkv+8o
+        ybKkZIuzId/8xbCOD++eu+PpeLq3WGTNx07g++Pp5GBgCZqANbeO2TcQYXxHLiDjeULecfoDJGGC
+        LLQEHcb2kYQMrIG1lFREEJ29dF8uujuf3RDmUqLuO8ReL96jIJMsxJ2+M3WGTv34iS6BI+Inf4Bi
+        BDGx0Gl4a821zGFgqerh5t4KU55Ka36/8RgN48oDQtgPaMn9mfXwMNgdHziI/zKwkDxlHMotJsaW
+        N7Wa8J59uLIP7Yvzy6sPl8Oj81OjpwxHg3a9Nn4TVoPjaUi5EYL4er1ATAQqlCzTLBVPZGDZBFTV
+        AQ1NQAdkA3yjDCa8bZCKJKBZmPM0V/yOGDdSCRFZyTTpKjFaKYmY0kyEGvWRzyzUqWRU2EyojJlt
+        ivE4zUFrtBmmScZBAymYjkkEKyYMAtd5BFIRjAAqRAjVKM9KD4bkKgaSfsN1jHRJQ2iyzLVOhSFL
+        yS3coS7Dk+hYpvka9Wn8C+QSVCo1eeNO0DTnEJogEZsUQDi7BRKnBWGaRJIWqAgpihKg03K3whhk
+        hkhB0UWyQPNz4s+G5Bjw4Mo5+R0STMWQHK6BHKPhbE4Oo5zroTmunIW319IcxljrTM1HI5qxIfqa
+        KX2HuzAWI1oSMgufmWL6sj4zb1n0W1OTP2f4lLPInziO7fuOHwSBYwczUwF0DVsTaKEoip6FbLSu
+        82xX4bSrNGN+7E4uR43Bt/9skCVo0ZxRkwpl/iwwAnwjqUu5kmGJd7yXmItchqD6DFkyCsYj8PEX
+        fHc1nowD150dhF60OvCCwI/An62c5TL8qozi4V/ZGpUXLNIxVr83sGJg61hb8wDfAhjRnPI/qkVv
+        vBF8bCBYQX9+onLrRk26Fr4C6+/caO7TnrV4u4+JP2buGuqnELE86VGvhbtSV7tTT0rNux6hrouu
+        20qN+yg3s2nfQ7dMzlO5eVlqdvfvPzo2CbaOec6455hrUtv1DEHo2clFnAp4qmDaK7t6mfyvsnEd
+        p5Ucr+/D9JELiEEX3oHSPe6l6BWqZol6u5ynXovzgdM/UOOJ0yeNICR9LtmaCdoPeiN+XfK7caxO
+        wJPH4hVORDeu3qz1LvInj95FXtDnjCC8E1UXledsmSsL5RqkwJ5+YvoH9o0bvCCVFypV3sU6V6p9
+        l9l3mX2X2XeZfZfZd5kXdZmQilQwHI6Ptp2lmqUn20m6Htu/mBG9bi83nVl/0J7kW0oX9Zhfapz5
+        W40L8ktgT36tpv4Qm9waB2Boma/KXXU41AIMrdRnfWk54ZtZ96S93aiH71pikN6jFfNFwXHHtuvZ
+        nmHDqdKnacRWDKJqbWI7Y9szTixp1LRdBXCK4/zmQ0nzuaBFqkI8M1guZVooGNXsmnfcvwyPmYTz
+        Qhh2K8oVmE8kQpuCKR8f/gaXtCGSixIAAA==
+    headers:
+      Cache-Control: [max-age=1800]
+      Connection: [keep-alive]
+      Content-Encoding: [gzip]
+      Content-Length: ['1108']
+      Content-Type: [application/json;charset=UTF-8]
+      Date: ['Mon, 23 May 2016 00:14:05 GMT']
+      Expires: ['Mon, 23 May 2016 00:44:05 GMT']
+      Last-Modified: ['Sat, 21 May 2016 03:53:47 GMT']
+      P3P: [CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVA IVD CONi HIS OUR DELi SAMi
+          IND UNI INT CNT"]
+      Server: [Apache-Coyote/1.1]
+      Vary: [Accept-Encoding]
+      X-API-Response-Time: [8ms]
+      X-Powered-By: [Store#8b573E685F@shopstyleprodapi41]
+    status: {code: 200, message: OK}
+version: 1

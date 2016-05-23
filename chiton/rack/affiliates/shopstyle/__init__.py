@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.conf import settings
 from moneyed import Money, USD
@@ -7,6 +8,15 @@ import requests
 from chiton.rack.affiliates.shopstyle.urls import extract_product_id_from_api_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
+
+
+# The match for extracting the numeric range from a size
+SIZE_RANGE_MATCH = re.compile(r'\s+\((\d+(-\d+)?)\)$')
+
+# The names used for size variants
+SIZE_TALL = 'Tall'
+SIZE_PETITE = 'Petite'
+SIZE_PLUS = 'Plus'
 
 
 class Affiliate(BaseAffiliate):
@@ -37,9 +47,9 @@ class Affiliate(BaseAffiliate):
 
         found_sizes = self._check_stock(parsed, color_names)
         if found_sizes:
-            availability = [{'size': s} for s in found_sizes]
+            availability = [self._parse_size(size) for size in found_sizes]
         else:
-            availability = parsed.get('inStock', True)
+            availability = parsed.get('inStock', False)
 
         return {
             'availability': availability,
@@ -107,12 +117,15 @@ class Affiliate(BaseAffiliate):
             color_names (list): The names of the colors to check for
 
         Returns:
-            set: The names of all available sizes
+            set: Information on all available sizes
         """
+        item_colors = parsed.get('colors', [])
+        has_colors = len(item_colors) > 0
+
         stock_colors = []
         if color_names:
             color_searches = [cn.lower() for cn in color_names]
-            for color in parsed.get('colors', []):
+            for color in item_colors:
                 canonical = color.get('canonicalColors', [])
                 has_match = any([c for c in canonical if c['name'].lower() in color_searches])
                 if has_match:
@@ -120,19 +133,49 @@ class Affiliate(BaseAffiliate):
 
         stock_sizes = {}
         for size in parsed.get('sizes', []):
-            if 'canonicalSize' in size:
-                canonical = size['canonicalSize']
-                stock_sizes[size['name']] = canonical['name']
+            canonical = size.get('canonicalSize', None)
+            if canonical:
+                stock_sizes[size['name']] = canonical
 
-        sizes = set()
+        found_sizes = set()
+        sizes = []
         for stock in parsed.get('stock', []):
-            if 'color' in stock and 'size' in stock:
+            if 'size' in stock and ('color' in stock or not has_colors):
                 color_match = not stock_colors or stock['color']['name'] in stock_colors
-                size_name = stock_sizes.get(stock['size']['name'], None)
-                if color_match and size_name:
-                    sizes.add(size_name)
+                canonical = stock_sizes.get(stock['size']['name'], None)
+                if color_match and canonical and canonical['name'] not in found_sizes:
+                    sizes.append(canonical)
+                    found_sizes.add(canonical['name'])
 
         return sizes
+
+    def _parse_size(self, size):
+        """Parse a Shopstyle size into a response-friendly format.
+
+        Args:
+            size (dict): Size information as returned by the Shopstyle API
+
+        Returns:
+            dict: Size information packaged for an availability response
+        """
+        name = size['name']
+
+        size_range = SIZE_RANGE_MATCH.search(name)
+        range_parts = size_range.groups()[0].split('-')
+        size_number = int(range_parts[0])
+
+        variant_name = size.get('variant', None)
+        is_petite = variant_name == SIZE_PETITE
+        is_plus_sized = variant_name == SIZE_PLUS
+        is_tall = variant_name == SIZE_TALL
+
+        return {
+            'is_petite': is_petite,
+            'is_plus_sized': is_plus_sized,
+            'is_regular': not any([is_petite, is_plus_sized, is_tall]),
+            'is_tall': is_tall,
+            'size': size_number,
+        }
 
     def _request_product(self, product_id):
         """Make a request for information on a single product.

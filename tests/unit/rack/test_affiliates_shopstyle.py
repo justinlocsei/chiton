@@ -113,9 +113,49 @@ class TestShopstyleAffiliate:
 
         assert details.availability is not None
 
-        size_names = [a.size for a in details.availability]
-        assert 'XXS (0)' in size_names
-        assert size_names.count('XXS (0)') == 1
+        size_numbers = [a.size for a in details.availability]
+        assert len(size_numbers) == 5
+        assert len(set(size_numbers)) == 5
+
+        regular_sizes = [a.is_regular for a in details.availability]
+        assert len([s for s in regular_sizes if s]) == 5
+
+    def test_request_details_availability_size(self, shopstyle_api_request):
+        """It returns the lower bound of a size's range."""
+        with shopstyle_api_request():
+            blazer = Affiliate().request_details('504335769')
+
+        size_numbers = [r.size for r in blazer.availability]
+
+        assert 4 in size_numbers
+        assert 6 not in size_numbers
+
+    def test_request_details_availability_variants(self, shopstyle_api_request):
+        """It maps Shopstyle's canonical sizes to known size variants."""
+        with shopstyle_api_request():
+            pants = Affiliate().request_details('487070535')
+            plus_size_dress = Affiliate().request_details('470962583')
+
+        sizes_by_variant = {
+            'regular': 0,
+            'petite': 0,
+            'tall': 0
+        }
+        for record in pants.availability:
+            if record.is_regular:
+                type_key = 'regular'
+            elif record.is_petite:
+                type_key = 'petite'
+            elif record.is_tall:
+                type_key = 'tall'
+
+            sizes_by_variant[type_key] += 1
+
+        assert all(sizes_by_variant.values())
+        assert sum(sizes_by_variant.values()) == len(pants.availability)
+
+        assert all([s.is_plus_sized for s in plus_size_dress.availability])
+        assert not any([s.is_regular for s in plus_size_dress.availability])
 
     def test_request_details_availability_color(self, shopstyle_api_request):
         """It can return color-specific availability information."""
@@ -129,6 +169,15 @@ class TestShopstyleAffiliate:
         assert purple.availability is not None
 
         assert len(default.availability) > len(purple.availability)
+
+    def test_request_details_availability_no_colors(self, shopstyle_api_request):
+        """It returns size-specific availability when an item lacks color information but has canonical sizes."""
+        with shopstyle_api_request():
+            dress_no_colors = Affiliate().request_details('470962583')
+
+        availability = dress_no_colors.availability
+        assert not isinstance(availability, bool)
+        assert len(availability) > 0
 
     def test_request_details_availability_no_stock_records(self, shopstyle_api_request):
         """It signals global availability when no stock information is present but the item is marked as in stock."""
