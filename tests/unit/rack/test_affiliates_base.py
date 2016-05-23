@@ -111,9 +111,12 @@ class TestBaseAffiliate:
         is_unavailable = affiliate.request_details(False)
         assert is_unavailable.availability is False
 
-        with_availability = affiliate.request_details([{'size': 'XS'}, {'size': 'S'}])
+        with_availability = affiliate.request_details([
+            {'size': 8, 'is_regular': True},
+            {'size': 10, 'is_regular': True}
+        ])
         assert len(with_availability.availability) == 2
-        assert set([a.size for a in with_availability.availability]) == set(['XS', 'S'])
+        assert set([a.size for a in with_availability.availability]) == set([8, 10])
 
         with pytest.raises(LookupError):
             affiliate.request_details([{'invalid': 'field'}])
