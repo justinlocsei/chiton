@@ -300,6 +300,36 @@ class TestUpdateAffiliateItemDetails:
         assert sizes_by_type['tall'] == [2, 6, 10]
         assert sizes_by_type['plus'] == [2, 6, 10, 14]
 
+    def test_network_data_stock_records_unlisted(self, affiliate_item, standard_size_factory):
+        """It marks an item as available in all of its garment's size types if the returned availability records are all outside of those size types."""
+        garment = affiliate_item.garment
+        garment.is_regular_sized = False
+        garment.is_petite_sized = True
+        garment.save()
+
+        standard_size_factory(2)
+        standard_size_factory(4, is_petite=True)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.availability = [
+                {'size': 2, 'is_regular': True}
+            ]
+
+            create_affiliate.return_value = affiliate
+            update_affiliate_item_details(affiliate_item)
+
+        records = affiliate_item.stock_records.all()
+        assert len(records) == 2
+
+        available = [r for r in records if r.is_available]
+        assert len(available) == 1
+
+        size = available[0].size
+        assert size.canonical.range_lower == 4
+        assert size.is_petite
+        assert not size.is_regular
+
     def test_network_data_stock_records_in_stock(self, affiliate_item, standard_size_factory):
         """It creates in-stock records for all known sizes if an affiliate signals that an item is globally available."""
         standard_size_factory(8)

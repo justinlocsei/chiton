@@ -156,6 +156,11 @@ def _update_stock_records(item, availability):
                 if len(matches) == 1:
                     reported_sizes.add(matches[0])
 
+        # Unmark the has-records flag if none of the reported sizes match a size
+        # type selected by the garment
+        if has_records and not reported_sizes:
+            has_records = False
+
         # Update the availability map with the computed values
         for size in type_sizes:
             if has_records:
