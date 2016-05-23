@@ -1,0 +1,122 @@
+[
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "XXS",
+        "slug": "xxs",
+        "range_lower": 0,
+        "range_upper": 0,
+        "position": 1
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "XS",
+        "slug": "xs",
+        "range_lower": 2,
+        "range_upper": 2,
+        "position": 2
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "S",
+        "slug": "s",
+        "range_lower": 4,
+        "range_upper": 6,
+        "position": 3
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "M",
+        "slug": "m",
+        "range_lower": 8,
+        "range_upper": 10,
+        "position": 4
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "L",
+        "slug": "l",
+        "range_lower": 12,
+        "range_upper": 14,
+        "position": 5
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "XL",
+        "slug": "xl",
+        "range_lower": 16,
+        "range_upper": 18,
+        "position": 6
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "XXL",
+        "slug": "xxl",
+        "range_lower": 20,
+        "range_upper": 22,
+        "position": 7
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "1X",
+        "slug": "1x",
+        "range_lower": 14,
+        "range_upper": 16,
+        "position": 8
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "2X",
+        "slug": "2x",
+        "range_lower": 18,
+        "range_upper": 20,
+        "position": 9
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "3X",
+        "slug": "3x",
+        "range_lower": 22,
+        "range_upper": 24,
+        "position": 10
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "4X",
+        "slug": "4x",
+        "range_lower": 26,
+        "range_upper": 28,
+        "position": 11
+    }
+},
+{
+    "model": "chiton_closet.canonicalsize",
+    "fields": {
+        "name": "5X",
+        "slug": "5x",
+        "range_lower": 30,
+        "range_upper": 32,
+        "position": 12
+    }
+}
+]
