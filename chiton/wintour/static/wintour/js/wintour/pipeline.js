@@ -403,8 +403,11 @@ PipelineVisualizer.prototype = {
 
             // Render the affiliate-item details for each affiliate item
             _.forEach(data.affiliate_items, function(item) {
-                var price = (item.price / 100).toFixed(2);
-                price = price.replace(/\.0+$/, '');
+                var price;
+                if (item.price) {
+                    price = (item.price / 100).toFixed(2);
+                    price = price.replace(/\.0+$/, '');
+                }
 
                 var affiliates = renderTemplate('pipeline-template-garment-affiliate', {
                     adminLinks: item.admin_links,

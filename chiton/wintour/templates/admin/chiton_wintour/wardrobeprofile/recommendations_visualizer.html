@@ -191,7 +191,10 @@
 
                 <ul class="c--pipeline__affiliate__links">
                     <li class="c--pipeline__affiliate__link">
-                        <a class="c--pipeline__affiliate__link-text" href="<%- url %>" target="_blank">$<%- price %> on <%- networkName %></a>
+                        <a class="c--pipeline__affiliate__link-text" href="<%- url %>" target="_blank">
+                            <%- price ? '$' + price : 'Out of stock' %>
+                            on <%- networkName %>
+                        </a>
                     </li>
                     <% _.forEach(adminLinks, function(link) { %>
                         <li class="c--pipeline__affiliate__link">

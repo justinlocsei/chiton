@@ -146,7 +146,7 @@ def _serialize_weighted_garment(weighted):
 
         item_dict.update({
             'id': item.pk,
-            'price': int(float(item.price) * 100),
+            'price': int(float(item.price) * 100) if item.price else None,
             'network_name': item.network.name,
             'network_id': item.network.pk,
             'url': item.url
