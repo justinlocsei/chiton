@@ -1,3 +1,4 @@
+from itertools import chain
 from operator import itemgetter
 
 from chiton.closet.models import Garment
@@ -26,8 +27,7 @@ class BasePipeline:
         """
         garments = self.provide_garments()
 
-        steps = self.provide_facets() + self.provide_filters() + self.provide_weights()
-        for step in steps:
+        for step in self.get_all_steps():
             garments = step.prepare_garments(garments)
 
         return garments
@@ -40,11 +40,11 @@ class BasePipeline:
         """
         return []
 
-    def provide_filters(self):
-        """Provide all filters for the pipeline.
+    def provide_query_filters(self):
+        """Provide all query filters for the pipeline.
 
         Returns:
-            list: A list of all filter classes
+            list: A list of all query-filter classes
         """
         return []
 
@@ -55,6 +55,20 @@ class BasePipeline:
             list: A list of all weight classes
         """
         return []
+
+    def get_all_steps(self):
+        """Get a list of all steps for the pipeline.
+
+        Returns:
+            list: All step instances
+        """
+        steps = [
+            self.provide_facets(),
+            self.provide_query_filters(),
+            self.provide_weights()
+        ]
+        return list(chain.from_iterable(steps))
+
 
     def make_recommendations(self, profile, debug=False):
         """Make recommendations for a wardrobe profile.
@@ -74,22 +88,18 @@ class BasePipeline:
         """
         garments_qs = self.load_garments().select_related('basic')
 
-        filters = self.provide_filters()
         facets = self.provide_facets()
+        query_filters = self.provide_query_filters()
         weights = self.provide_weights()
 
         # Enable debug mode on all pipeline steps when debugging
         if debug:
-            for step in filters + facets + weights:
+            for step in facets + query_filters + weights:
                 step.debug = debug
-
-        # Apply all filters to the set of garments
-        for filter_instance in filters:
-            with filter_instance.apply_to_profile(profile) as filter_function:
-                garments_qs = filter_function(garments_qs)
 
         # Generate the master list of weighted garments as a dict keyed by a
         # basic instance with garment core data and metadata
+        garments_qs = self._filter_garments_queryset(query_filters, garments_qs, profile)
         weightings = self._weight_garments(weights, garments_qs, profile)
         weighted_garments = self._combine_garment_weights(weightings, debug)
         garments_by_basic = self._normalize_weightings(weighted_garments)
@@ -113,6 +123,18 @@ class BasePipeline:
             }
 
         return recs
+
+    def _filter_garments_queryset(self, query_filters, garments_qs, profile):
+        """Apply a series of filters to a queryset of garments.
+
+        This applies each filter's logic to the queryset, and returns the
+        unevaluated queryset primed with filtering calls.
+        """
+        for query_filter in query_filters:
+            with query_filter.apply_to_profile(profile) as filter_garments:
+                garments_qs = filter_garments(garments_qs)
+
+        return garments_qs
 
     def _weight_garments(self, weights, garments, profile):
         """Apply a series of weights to a list of garments for a profile.

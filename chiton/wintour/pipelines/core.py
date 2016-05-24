@@ -1,7 +1,6 @@
 from chiton.wintour.facets.price import PriceFacet
-from chiton.wintour.filters.availability import AvailabilityFilter
-from chiton.wintour.filters.formality import FormalityFilter
 from chiton.wintour.pipelines import BasePipeline
+from chiton.wintour.query_filters.formality import FormalityQueryFilter
 from chiton.wintour.weights.age import AgeWeight
 from chiton.wintour.weights.body_shape import BodyShapeWeight
 from chiton.wintour.weights.care import CareWeight
@@ -13,10 +12,9 @@ from chiton.wintour.weights.style import StyleWeight
 class CorePipeline(BasePipeline):
     """The core pipeline used for matching."""
 
-    def provide_filters(self):
+    def provide_query_filters(self):
         return [
-            AvailabilityFilter(),
-            FormalityFilter()
+            FormalityQueryFilter()
         ]
 
     def provide_weights(self):

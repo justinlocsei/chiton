@@ -1,8 +1,8 @@
 from chiton.wintour.pipeline import PipelineStep
 
 
-class BaseFilter(PipelineStep):
-    """The base class for all filters."""
+class BaseQueryFilter(PipelineStep):
+    """The base class for all query filters."""
 
     def apply(self, garments):
         """Apply the filter to a set of garments.

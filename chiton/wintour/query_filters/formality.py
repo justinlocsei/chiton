@@ -2,7 +2,7 @@ from chiton.runway.models import Formality, Propriety
 from chiton.runway.data import PROPRIETY_IMPORTANCES
 from chiton.wintour import build_choice_weights_lookup
 from chiton.wintour.data import EXPECTATION_FREQUENCIES
-from chiton.wintour.filters import BaseFilter
+from chiton.wintour.query_filters import BaseQueryFilter
 
 
 # Rankings of expectation data, from least to most important
@@ -10,7 +10,7 @@ PROPRIETY_IMPORTANCE_ORDER = ('NOT', 'MILDLY', 'SOMEWHAT', 'VERY', 'ALWAYS')
 EXPECTATION_FREQUENCY_ORDER = ('NEVER', 'RARELY', 'SOMETIMES', 'OFTEN', 'ALWAYS')
 
 
-class FormalityFilter(BaseFilter):
+class FormalityQueryFilter(BaseQueryFilter):
     """A filter that excludes garments whose basic type is inappropriate.
 
     Appropriateness is determined by examining how strongly a basic is
