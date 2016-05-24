@@ -40,6 +40,14 @@ class BasePipeline:
         """
         return []
 
+    def provide_garment_filters(self):
+        """Provide all garment filters for the pipeline.
+
+        Returns:
+            list: A list of all garment-filter classes
+        """
+        return []
+
     def provide_query_filters(self):
         """Provide all query filters for the pipeline.
 
@@ -64,11 +72,11 @@ class BasePipeline:
         """
         steps = [
             self.provide_facets(),
+            self.provide_garment_filters(),
             self.provide_query_filters(),
             self.provide_weights()
         ]
         return list(chain.from_iterable(steps))
-
 
     def make_recommendations(self, profile, debug=False):
         """Make recommendations for a wardrobe profile.
@@ -89,6 +97,7 @@ class BasePipeline:
         garments_qs = self.load_garments().select_related('basic')
 
         facets = self.provide_facets()
+        garment_filters = self.provide_garment_filters()
         query_filters = self.provide_query_filters()
         weights = self.provide_weights()
 
@@ -100,7 +109,8 @@ class BasePipeline:
         # Generate the master list of weighted garments as a dict keyed by a
         # basic instance with garment core data and metadata
         garments_qs = self._filter_garments_queryset(query_filters, garments_qs, profile)
-        weightings = self._weight_garments(weights, garments_qs, profile)
+        garments = self._filter_garments(garment_filters, garments_qs, profile)
+        weightings = self._weight_garments(weights, garments, profile)
         weighted_garments = self._combine_garment_weights(weightings, debug)
         garments_by_basic = self._normalize_weightings(weighted_garments)
 
@@ -135,6 +145,22 @@ class BasePipeline:
                 garments_qs = filter_garments(garments_qs)
 
         return garments_qs
+
+    def _filter_garments(self, garment_filters, garments, profile):
+        """Apply a series of filters to a individual garments.
+
+        This applies each filter's logic to the each garment in the input, and
+        returns a list of all non-excluded garments.
+        """
+        for garment_filter in garment_filters:
+            to_keep = []
+            with garment_filter.apply_to_profile(profile) as determine_exclude:
+                for garment in garments:
+                    if not determine_exclude(garment):
+                        to_keep.append(garment)
+            garments = to_keep
+
+        return garments
 
     def _weight_garments(self, weights, garments, profile):
         """Apply a series of weights to a list of garments for a profile.
