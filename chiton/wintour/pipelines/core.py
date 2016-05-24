@@ -1,4 +1,5 @@
 from chiton.wintour.facets.price import PriceFacet
+from chiton.wintour.garment_filters.availability import AvailabilityGarmentFilter
 from chiton.wintour.pipelines import BasePipeline
 from chiton.wintour.query_filters.formality import FormalityQueryFilter
 from chiton.wintour.weights.age import AgeWeight
@@ -15,6 +16,11 @@ class CorePipeline(BasePipeline):
     def provide_query_filters(self):
         return [
             FormalityQueryFilter()
+        ]
+
+    def provide_garment_filters(self):
+        return [
+            AvailabilityGarmentFilter()
         ]
 
     def provide_weights(self):
