@@ -336,6 +336,32 @@
     margin: 0;
 }
 
+.c--pipeline__basic__price-groups {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basic__price-group {
+    flex: 1;
+    list-style: none;
+    padding: 0 !important;
+}
+
+.c--pipeline__basic__price-group + .c--pipeline__basic__price-group {
+    margin-left: 0.5em;
+}
+
+.c--pipeline__basic__price-group__name {
+    font-size: 0.9em;
+    margin: 0;
+    padding-top: 0.5em;
+}
+
+.c--pipeline__basic__price-group__garments {
+
+}
+
 .c--pipeline__basic__garments {
     margin: 0;
     padding: 0;

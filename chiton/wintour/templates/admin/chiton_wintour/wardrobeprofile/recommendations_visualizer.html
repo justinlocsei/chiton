@@ -152,13 +152,26 @@
                 <% _.forEach(basics, function(basic) { %>
                     <li class="c--pipeline__basic js-pipeline-basic" data-slug="<%- basic.slug %>">
                         <h4 class="c--pipeline__basic__name"><%- basic.name %></h4>
-                        <ol class="c--pipeline__basic__garments">
-                            <% _.forEach(basic.garments, function(garment) { %>
-                                <li class="c--pipeline__basic__garment">
-                                    <%= garment %>
+
+                        <ul class="c--pipeline__basic__price-groups">
+                            <% _.forEach(basic.priceGroups, function(priceGroup) { %>
+                                <li class="c--pipeline__basic__price-group">
+
+                                    <h5 class="c--pipeline__basic__price-group__name"><%- priceGroup.name %></h5>
+                                    <div class="c--pipeline__basic__price-group__garments">
+                                        <ol class="c--pipeline__basic__garments">
+                                            <% _.forEach(priceGroup.garments, function(garment) { %>
+                                                <li class="c--pipeline__basic__garment">
+                                                    <%= garment %>
+                                                </li>
+                                            <% }); %>
+                                        </ol>
+                                    </div>
+
                                 </li>
                             <% }); %>
-                        </ol>
+                        </ul>
+
                     </li>
                 <% }); %>
             </ul>
