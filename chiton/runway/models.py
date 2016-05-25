@@ -2,6 +2,7 @@ from autoslug import AutoSlugField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from chiton.closet.model_fields import PriceField
 from chiton.runway import data
 
 
@@ -23,6 +24,8 @@ class Basic(models.Model):
     formalities = models.ManyToManyField('Formality', verbose_name=_('levels of formality'), through='Propriety')
     primary_color = models.ForeignKey('chiton_closet.Color', on_delete=models.SET_NULL, verbose_name=_('primary color'), related_name='primary_for', null=True, blank=True)
     secondary_colors = models.ManyToManyField('chiton_closet.Color', verbose_name=_('secondary colors'), related_name='secondary_for', blank=True)
+    budget_end = PriceField(verbose_name=_('budget end price'), null=True, blank=True)
+    luxury_start = PriceField(verbose_name=_('luxury start price'), null=True, blank=True)
 
     class Meta:
         ordering = ('name',)
