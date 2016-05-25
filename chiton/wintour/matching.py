@@ -88,8 +88,8 @@ def serialize_recommendations(recommendations):
             'garments': _serialize_weighted_garments(values['garments'])
         }
 
-        for facet, garments in values['facets'].items():
-            value['facets'][facet.slug] = _serialize_weighted_garments(garments)
+        for facet, groups in values['facets'].items():
+            value['facets'][facet.slug] = groups
 
         basics[basic.slug] = value
 

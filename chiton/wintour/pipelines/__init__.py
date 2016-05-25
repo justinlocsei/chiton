@@ -114,22 +114,23 @@ class BasePipeline:
         weighted_garments = self._combine_garment_weights(weightings, debug)
         garments_by_basic = self._normalize_weightings(weighted_garments)
 
-        # Generate the final recommendations as a dict keyed by basic type, each
-        # of which will have a key for facets as well as a key for all garments,
-        # sorted in descending order by weight
+        # Generate the final recommendations as a dict keyed by basic type, with
+        # values that describe the basic, its garments, and any facets applied
+        # to the garments
         recs = {}
         weight_fetcher = itemgetter('weight')
         for basic, weighted_garments in garments_by_basic.items():
-            sorted_garments = sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
+            garments_by_weight = sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
 
             faceted = {}
             for facet in facets:
-                faceted[facet] = facet.apply(sorted_garments)
+                with facet.apply_to_profile(profile) as apply_facet:
+                    faceted[facet] = apply_facet(basic, garments_by_weight)
 
             recs[basic] = {
                 'basic': basic,
                 'facets': faceted,
-                'garments': sorted_garments
+                'garments': garments_by_weight
             }
 
         return recs
