@@ -153,9 +153,9 @@
                     <li class="c--pipeline__basic js-pipeline-basic" data-slug="<%- basic.slug %>">
                         <h4 class="c--pipeline__basic__name"><%- basic.name %></h4>
 
-                        <ul class="c--pipeline__basic__price-groups">
+                        <ul class="c--pipeline__basic__price-groups js-pipeline-price-groups">
                             <% _.forEach(basic.priceGroups, function(priceGroup) { %>
-                                <li class="c--pipeline__basic__price-group">
+                                <li class="c--pipeline__basic__price-group js-pipeline-price-group">
 
                                     <h5 class="c--pipeline__basic__price-group__name"><%- priceGroup.name %></h5>
                                     <div class="c--pipeline__basic__price-group__garments">
@@ -181,14 +181,12 @@
             <div class="c--pipeline__garment js-pipeline-garment" data-id="<%- id %>">
                 <div class="c--pipeline__garment__media">
                     <p class="c--pipeline__garment__weight"><%- weight %></p>
+                    <a class="c--pipeline__garment__edit-button" href="<%- editURL %>" target="_blank">Edit Garment</a>
                     <div class="c--pipeline__garment__affiliates js-pipeline-garment-affiliates"></div>
                 </div>
                 <div class="c--pipeline__garment__body">
                     <div class="c--pipeline__garment__meta js-pipeline-garment-meta">
-                        <h5 class="c--pipeline__garment__name">
-                            <%- name %>
-                            <a class="c--pipeline__garment__name__edit js-pipeline-garment-edit" href="<%- editURL %>" target="_blank">Edit Garment</a>
-                        </h5>
+                        <h5 class="c--pipeline__garment__name"><%- name %></h5>
                         <p class="c--pipeline__garment__brand"><%- brand %></p>
                     </div>
                     <div class="c--pipeline__garment__details js-pipeline-garment-details"></div>
@@ -229,24 +227,27 @@
         </script>
 
         <script type="text/template" id="pipeline-template-garment-details">
-            <table class="c--pipeline__garment-log">
-                <thead>
-                    <tr>
-                        <th>Weight</th>
-                        <th>Value</th>
-                        <th>Reason</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% _.forEach(weights, function(weight) { %>
-                        <tr class="<%- !weight.weight ? 'for-miss' : '' %> <%- weight.isNormalized ? 'for-normalized' : '' %>">
-                            <td class="for-weight-name"><%- weight.weightName %></th>
-                            <td><%- weight.weight.toFixed(2) %></td>
-                            <td><%- weight.message %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+            <ul class="c--pipeline__weights for-normalized">
+                <% _.forEach(weights.normalized, function(weight) { %>
+                    <li class="c--pipeline__weight <%- !weight.weight ? 'for-miss' : '' %>">
+                        <div class="c--pipeline__weight__overview">
+                            <p class="c--pipeline__weight__name"><%- weight.weightName %></p>
+                            <p class="c--pipeline__weight__value"><%- weight.weight.toFixed(2) %></p>
+                        </div>
+                    </li>
+                <% }); %>
+            </ul>
+           <ul class="c--pipeline__weights for-details">
+                <% _.forEach(weights.detailed, function(weight) { %>
+                    <li class="c--pipeline__weight <%- !weight.weight ? 'for-miss' : '' %>">
+                        <div class="c--pipeline__weight__overview">
+                            <p class="c--pipeline__weight__name"><%- weight.weightName %></p>
+                            <p class="c--pipeline__weight__value"><%- weight.weight.toFixed(2) %></p>
+                        </div>
+                        <p class="c--pipeline__weight__reason"><%- weight.message %></p>
+                    </li>
+                <% }); %>
+            </ul>
         </script>
 
         <script type="text/template" id="pipeline-template-debug">

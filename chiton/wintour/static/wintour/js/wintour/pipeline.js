@@ -367,14 +367,15 @@ PipelineVisualizer.prototype = {
             var $garment = $meta.parents('.js-pipeline-garment');
             var $details = $garment.find('.js-pipeline-garment-details');
             var $affiliates = $garment.find('.js-pipeline-garment-affiliates');
-
-            var inEditLink = $(e.target).closest('.js-pipeline-garment-edit').length;
-            if (inEditLink) { return; }
+            var $priceGroup = $meta.parents('.js-pipeline-price-group');
+            var $priceGroups = $meta.parents('.js-pipeline-price-groups');
 
             if (!$details.is(':empty')) {
                 $affiliates.empty();
                 $details.empty();
                 $garment.removeClass('is-expanded');
+                $priceGroup.removeClass('is-focused');
+                $priceGroups.removeClass('is-active');
                 return;
             }
 
@@ -408,14 +409,17 @@ PipelineVisualizer.prototype = {
                 };
             });
 
-            var allWeights = that._orderWeights(weights).concat(that._orderWeights(normalization));
-
             // Render the details and add them to the garment
             var details = renderTemplate('pipeline-template-garment-details', {
-                weights: allWeights
+                weights: {
+                    detailed: that._orderWeights(weights),
+                    normalized: that._orderWeights(normalization)
+                }
             });
             $details.html(details);
             $garment.addClass('is-expanded');
+            $priceGroup.addClass('is-focused');
+            $priceGroups.addClass('is-active');
 
             // Render the affiliate-item details for each affiliate item
             _.forEach(data.affiliate_items, function(item) {
