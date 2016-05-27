@@ -28,7 +28,7 @@ class CorePipeline(BasePipeline):
             AgeWeight(),
             BodyShapeWeight(),
             CareWeight(),
-            FeaturedWeight(),
+            FeaturedWeight(importance=0.25),
             FormalityWeight(),
             StyleWeight()
         ]
