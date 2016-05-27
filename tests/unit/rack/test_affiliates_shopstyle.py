@@ -41,6 +41,13 @@ class TestShopstyleAffiliate:
 
         assert details.price == Decimal('198.00')
 
+    def test_request_details_price_sale(self, shopstyle_api_request):
+        """It returns the item's sale price when one is provided."""
+        with shopstyle_api_request():
+            details = Affiliate().request_details('497747666')
+
+        assert details.price == Decimal('49.99')
+
     def test_request_details_image(self, shopstyle_api_request):
         """It returns a primary and thumbnail image for the item."""
         with shopstyle_api_request():

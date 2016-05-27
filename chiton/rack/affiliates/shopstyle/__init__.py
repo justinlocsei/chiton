@@ -42,7 +42,7 @@ class Affiliate(BaseAffiliate):
         response = self._request_product(product_id)
         parsed = self._validate_response(response, product_id)
 
-        price = Money(str(parsed['price']), USD)
+        price = Money(str(parsed.get('salePrice', parsed['price'])), USD)
         image = self._find_image(parsed, 'XLarge', color_names)
         thumbnail = self._find_image(parsed, 'Medium', color_names)
 
