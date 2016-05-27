@@ -26,10 +26,10 @@ class CorePipeline(BasePipeline):
     def provide_weights(self):
         return [
             AgeWeight(),
-            BodyShapeWeight(),
+            BodyShapeWeight(importance=2),
             CareWeight(),
             FeaturedWeight(importance=0.25),
-            FormalityWeight(),
+            FormalityWeight(importance=2),
             StyleWeight()
         ]
 
