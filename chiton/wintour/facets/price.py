@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from chiton.runway.models import Basic
 from chiton.wintour.facets import BaseFacet
 
@@ -18,8 +16,8 @@ class PriceFacet(BaseFacet):
         basic_prices = {}
         for basic in Basic.objects.all():
             basic_prices[basic.pk] = {
-                'budget': basic.budget_end or Decimal(0),
-                'luxury': basic.luxury_start or Decimal(0)
+                'budget': basic.budget_end,
+                'luxury': basic.luxury_start
             }
 
         return {
