@@ -1,3 +1,4 @@
+from itertools import chain
 from operator import itemgetter
 
 from chiton.closet.models import Garment
@@ -26,8 +27,7 @@ class BasePipeline:
         """
         garments = self.provide_garments()
 
-        steps = self.provide_facets() + self.provide_filters() + self.provide_weights()
-        for step in steps:
+        for step in self.get_all_steps():
             garments = step.prepare_garments(garments)
 
         return garments
@@ -40,11 +40,19 @@ class BasePipeline:
         """
         return []
 
-    def provide_filters(self):
-        """Provide all filters for the pipeline.
+    def provide_garment_filters(self):
+        """Provide all garment filters for the pipeline.
 
         Returns:
-            list: A list of all filter classes
+            list: A list of all garment-filter classes
+        """
+        return []
+
+    def provide_query_filters(self):
+        """Provide all query filters for the pipeline.
+
+        Returns:
+            list: A list of all query-filter classes
         """
         return []
 
@@ -55,6 +63,20 @@ class BasePipeline:
             list: A list of all weight classes
         """
         return []
+
+    def get_all_steps(self):
+        """Get a list of all steps for the pipeline.
+
+        Returns:
+            list: All step instances
+        """
+        steps = [
+            self.provide_facets(),
+            self.provide_garment_filters(),
+            self.provide_query_filters(),
+            self.provide_weights()
+        ]
+        return list(chain.from_iterable(steps))
 
     def make_recommendations(self, profile, debug=False):
         """Make recommendations for a wardrobe profile.
@@ -74,45 +96,70 @@ class BasePipeline:
         """
         garments_qs = self.load_garments().select_related('basic')
 
-        filters = self.provide_filters()
         facets = self.provide_facets()
+        garment_filters = self.provide_garment_filters()
+        query_filters = self.provide_query_filters()
         weights = self.provide_weights()
 
         # Enable debug mode on all pipeline steps when debugging
         if debug:
-            for step in filters + facets + weights:
+            for step in facets + query_filters + weights:
                 step.debug = debug
-
-        # Apply all filters to the set of garments
-        for filter_instance in filters:
-            with filter_instance.apply_to_profile(profile) as filter_function:
-                garments_qs = filter_function(garments_qs)
 
         # Generate the master list of weighted garments as a dict keyed by a
         # basic instance with garment core data and metadata
-        weightings = self._weight_garments(weights, garments_qs, profile)
+        garments_qs = self._filter_garments_queryset(query_filters, garments_qs, profile)
+        garments = self._filter_garments(garment_filters, garments_qs, profile)
+        weightings = self._weight_garments(weights, garments, profile)
         weighted_garments = self._combine_garment_weights(weightings, debug)
         garments_by_basic = self._normalize_weightings(weighted_garments)
 
-        # Generate the final recommendations as a dict keyed by basic type, each
-        # of which will have a key for facets as well as a key for all garments,
-        # sorted in descending order by weight
+        # Generate the final recommendations as a dict keyed by basic type, with
+        # values that describe the basic, its garments, and its facets
         recs = {}
         weight_fetcher = itemgetter('weight')
         for basic, weighted_garments in garments_by_basic.items():
-            sorted_garments = sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
-
-            faceted = {}
-            for facet in facets:
-                faceted[facet] = facet.apply(sorted_garments)
-
             recs[basic] = {
                 'basic': basic,
-                'facets': faceted,
-                'garments': sorted_garments
+                'facets': {},
+                'garments': sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
             }
 
+        # Add facets to each basic in the recommendations
+        for facet in facets:
+            with facet.apply_to_profile(profile) as apply_facet:
+                for basic, data in recs.items():
+                    recs[basic]['facets'][facet] = apply_facet(basic, data['garments'])
+
         return recs
+
+    def _filter_garments_queryset(self, query_filters, garments_qs, profile):
+        """Apply a series of filters to a queryset of garments.
+
+        This applies each filter's logic to the queryset, and returns the
+        unevaluated queryset primed with filtering calls.
+        """
+        for query_filter in query_filters:
+            with query_filter.apply_to_profile(profile) as filter_garments:
+                garments_qs = filter_garments(garments_qs)
+
+        return garments_qs
+
+    def _filter_garments(self, garment_filters, garments, profile):
+        """Apply a series of filters to a individual garments.
+
+        This applies each filter's logic to the each garment in the input, and
+        returns a list of all non-excluded garments.
+        """
+        for garment_filter in garment_filters:
+            to_keep = []
+            with garment_filter.apply_to_profile(profile) as determine_exclude:
+                for garment in garments:
+                    if not determine_exclude(garment):
+                        to_keep.append(garment)
+            garments = to_keep
+
+        return garments
 
     def _weight_garments(self, weights, garments, profile):
         """Apply a series of weights to a list of garments for a profile.

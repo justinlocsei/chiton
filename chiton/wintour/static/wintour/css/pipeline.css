@@ -17,15 +17,15 @@
 
 .c--pipeline__results__data {
     display: table-cell;
-    padding-right: 4em;
+    padding-right: 3em;
     transition: opacity 500ms;
 }
 
 .c--pipeline__results__basics {
     display: table-cell;
-    font-size: 1.125em;
+    font-size: 1em;
     vertical-align: top;
-    width: 15em;
+    width: 12em;
 }
 
 /*==============================================================================
@@ -226,7 +226,7 @@
 ==============================================================================*/
 
 .c--pipeline__basics-filter {
-    margin-top: 0.4em;
+    margin-top: 0.75em;
 }
 
 .c--pipeline__basics-filter__title {
@@ -336,6 +336,33 @@
     margin: 0;
 }
 
+.c--pipeline__basic__price-groups {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.c--pipeline__basic__price-group {
+    flex: 1;
+    list-style: none;
+    padding: 0 !important;
+    transition: flex-grow 125ms, opacity 250ms;
+}
+
+.c--pipeline__basic__price-group + .c--pipeline__basic__price-group {
+    margin-left: 1em;
+}
+
+.c--pipeline__basic__price-group__name {
+    font-size: 0.9em;
+    margin: 0;
+    padding-top: 0.5em;
+}
+
+.c--pipeline__basic__price-group__garments {
+
+}
+
 .c--pipeline__basic__garments {
     margin: 0;
     padding: 0;
@@ -397,19 +424,6 @@
     text-transform: none;
 }
 
-.c--pipeline__garment__name__edit {
-    background-color: #447e9b;
-    border-radius: 0.25em;
-    color: #fff !important;
-    display: none;
-    font-size: 0.6em;
-    font-weight: normal;
-    margin-left: 1em;
-    padding: 0.25em 1em;
-    text-transform: uppercase;
-    vertical-align: middle;
-}
-
 .c--pipeline__garment__name__edit:hover {
     background-color: #44729B;
 }
@@ -420,8 +434,23 @@
     margin: 0;
 }
 
+.c--pipeline__garment__edit-button {
+    background-color: #447e9b;
+    color: #fff !important;
+    display: none;
+    font-size: 0.65em;
+    margin-top: 0.5em;
+    padding: 0.25em 1em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.c--pipeline__garment__edit-button:hover {
+    background-color: #36657c;
+}
+
+
 .c--pipeline__garment__details {
-    border: 1px solid #333;
     display: none;
     margin-top: 1.375em;
 }
@@ -451,7 +480,7 @@
 }
 
 .c--pipeline__affiliate__links {
-    border-top: 1px solid #333;
+    border-top: 1px solid #999;
     margin: 0;
     padding: 0;
     padding-top: 0.5em;
@@ -530,46 +559,65 @@
 | Garment Log
 ==============================================================================*/
 
-.c--pipeline__garment-log {
+.c--pipeline__weights {
+    margin: 0;
+    padding: 0;
     width: 100%;
 }
 
-.c--pipeline__garment-log thead th {
-    background-color: #333;
-    border-top: 0;
-    color: #fff;
-    padding: 0.5em 1.25em;
-    font-weight: normal;
-    text-transform: none;
-    white-space: nowrap;
+.c--pipeline__weight {
+    font-size: 0.8em;
+    list-style: none;
+    padding: 0 !important;
 }
 
-.c--pipeline__garment-log tbody td {
-    border-bottom: 1px solid #ccc;
+.c--pipeline__weight.for-miss {
+    color: #aaa;
+}
+
+.c--pipeline__weight__overview {
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.c--pipeline__weight__name {
+    margin: 0;
+}
+
+.c--pipeline__weight__value {
+    margin: 0;
+}
+
+.c--pipeline__weight__reason {
     font-size: 0.9em;
-    padding: 0.75em 1.25em;
+    margin: 0 0 1.5em;
 }
 
-.c--pipeline__garment-log tbody tr:last-child td {
-    border-bottom: 0;
+.c--pipeline__weights.for-normalized {
+    border-top: 1px solid #ccc;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.125);
 }
 
-.c--pipeline__garment-log .for-weight-name {
-    white-space: nowrap;
+.c--pipeline__weights.for-normalized .c--pipeline__weight__overview {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ccc;
+    margin: 0;
+    padding: 0.5em;
 }
 
-.c--pipeline__garment-log tr.for-miss {
-    color: #999;
+.c--pipeline__weights.for-details {
+    margin-top: 2em;
 }
 
-.c--pipeline__garment-log .for-normalized td {
-    background-color: #fafafa;
-    border-top: 3px double #ccc;
+.c--pipeline__weights.for-details .c--pipeline__weight__overview {
+    font-weight: bold;
+    margin-bottom: 0.25em;
+    padding-bottom: 0.25em;
 }
 
-.c--pipeline__garment-log .for-normalized + .for-normalized td {
-    border-top: 0;
-}
 
 /*==============================================================================
 | Debug Information
@@ -641,7 +689,26 @@ body.is-modal {
 .c--pipeline.is-scrolling .c--pipeline__basics-filter {
     position: fixed;
     top: 0;
-    width: 15em;
+    width: 12em;
+}
+
+.c--pipeline__basic__price-groups.is-active .c--pipeline__basic__price-group {
+    opacity: 0.5;
+}
+
+.c--pipeline__basic__price-group.is-focused {
+    flex: 2;
+    margin-left: 2em;
+    margin-right: 2em;
+    opacity: 1 !important;
+}
+
+.c--pipeline__basic__price-group.is-focused:first-child {
+    margin-left: 0;
+}
+
+.c--pipeline__basic__price-group.is-focused:last-child {
+    margin-right: 0;
 }
 
 .c--pipeline__garment.is-expanded {
@@ -665,8 +732,8 @@ body.is-modal {
     font-weight: bold;
 }
 
-.c--pipeline__garment.is-expanded .c--pipeline__garment__name__edit {
-    display: inline-block;
+.c--pipeline__garment.is-expanded .c--pipeline__garment__edit-button {
+    display: block;
 }
 
 .c--pipeline__garment.is-expanded .c--pipeline__garment__meta:hover .c--pipeline__garment__brand {

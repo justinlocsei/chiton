@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet.models import Garment, StandardSize
+from chiton.closet.model_fields import PriceField
 
 
 class AffiliateNetworkManager(models.Manager):
@@ -40,7 +41,7 @@ class AffiliateItem(models.Model):
     guid = models.CharField(max_length=255, verbose_name=_('GUID'))
     garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'), related_name='affiliate_items')
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_('price'), null=True, blank=True)
+    price = PriceField(verbose_name=_('price'), null=True, blank=True)
     image = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('image'), null=True, blank=True, related_name='image_for')
     thumbnail = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('thumbnail'), null=True, blank=True, related_name='thumbnail_for')
 
