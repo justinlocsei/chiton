@@ -42,7 +42,7 @@ class BaseWeight(PipelineStep):
         Returns:
             list: A list of dicts describing the garment's applied weights
         """
-        return self.get_debug_messages(self._make_garment_log_key(garment))
+        return self.get_log_messages(self._make_garment_log_key(garment))
 
     def apply(self, garment):
         """Return the weight value to apply to a garment.

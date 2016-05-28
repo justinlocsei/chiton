@@ -51,31 +51,14 @@ class PipelineStep:
         """Add a message to the debug log.
 
         Args:
-            key (str): A dot-separated namespace for the log message
+            key (str): A namespace for the log message
             message (*): Any Python data type that describes the message
         """
-        debug_log = self._debug_log
+        self._debug_log.setdefault(key, [])
+        self._debug_log[key].append(message)
 
-        levels = key.split('.')
-        for level in levels[:-1]:
-            debug_log.setdefault(level, {})
-            debug_log = debug_log[level]
-
-        target = levels.pop()
-        debug_log.setdefault(target, [])
-        debug_log[target].append(message)
-
-    @property
-    def debug_log(self):
-        """The debug log.
-
-        Returns:
-            dict: A series of namespaced messages
-        """
-        return self._debug_log
-
-    def get_debug_messages(self, key):
-        """Return the debug messages associated with a given log key.
+    def get_log_messages(self, key):
+        """Return the log messages associated with a given log key.
 
         Args:
             key (str): The log key
@@ -83,15 +66,7 @@ class PipelineStep:
         Returns:
             list: All log messages for the key
         """
-        debug_log = self._debug_log
-
-        levels = key.split('.')
-        for level in levels[:-1]:
-            debug_log = debug_log.get(level, None)
-            if debug_log is None:
-                return []
-
-        return debug_log.get(levels.pop(), [])
+        return self._debug_log.get(key, [])
 
     def provide_profile_data(self, profile):
         """Provide a data structure of important information from the profile.
