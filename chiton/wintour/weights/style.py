@@ -24,19 +24,19 @@ class StyleWeight(BaseWeight):
             garment_styles.setdefault(garment_pk, set())
             garment_styles[garment_pk].add(garment_style.style.slug)
 
-        # Create a lookup table for style names for use in debug logging
+        # Create a lookup table of style names for use in debug logging
         if self.debug:
             for style in Style.objects.all():
                 style_names[style.slug] = style.name
 
         return {
             'garment_styles': garment_styles,
-            'styles': set(profile.styles),
+            'profile_styles': set(profile.styles),
             'style_names': style_names
         }
 
-    def apply(self, garment, garment_styles=None, styles=None, style_names=None):
-        matching_styles = styles & garment_styles[garment.pk]
+    def apply(self, garment, garment_styles=None, profile_styles=None, style_names=None):
+        matching_styles = profile_styles & garment_styles[garment.pk]
         match_count = len(matching_styles)
 
         if self.debug and match_count:
