@@ -35,6 +35,15 @@ class GarmentFactory(DjangoModelFactory):
     class Meta:
         model = Garment
 
+    @factory.post_generation
+    def styles(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for style in extracted:
+                self.styles.add(style)
+
 
 def standard_size_factory(canonical_size_factory):
     def create_standard_size(lower_size=None, upper_size=None, is_petite=False, is_plus_sized=False, is_tall=False):
