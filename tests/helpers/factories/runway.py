@@ -2,7 +2,7 @@ import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-from chiton.runway.models import Basic, Category
+from chiton.runway.models import Basic, Category, Style
 
 fake = Faker()
 
@@ -22,3 +22,11 @@ class BasicFactory(DjangoModelFactory):
 
     class Meta:
         model = Basic
+
+
+class StyleFactory(DjangoModelFactory):
+
+    name = factory.Sequence(lambda n: '%s-%d' % (fake.sentence(), n))
+
+    class Meta:
+        model = Style
