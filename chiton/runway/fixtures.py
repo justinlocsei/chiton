@@ -7,6 +7,5 @@ def load_fixtures():
         Fixture(Category, Category.objects.all()),
         Fixture(Formality, Formality.objects.all()),
         Fixture(Style, Style.objects.all()),
-        Fixture(Basic, Basic.objects.all()),
         Fixture(Propriety, Propriety.objects.for_export()),
     ]
