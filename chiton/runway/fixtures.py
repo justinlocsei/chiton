@@ -1,4 +1,4 @@
-from chiton.runway.models import Basic, Category, Formality, Propriety, Style
+from chiton.runway.models import Category, Formality, Propriety, Style
 from chiton.core.data import Fixture
 
 

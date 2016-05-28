@@ -3,7 +3,6 @@ from operator import itemgetter
 
 from chiton.closet.models import Garment
 from chiton.rack.models import AffiliateItem
-from chiton.utils.numbers import format_float
 
 
 class BasePipeline:
