@@ -233,17 +233,11 @@ class BasePipeline:
                         'slug': weight.slug,
                         'reasons': weight.get_explanations(garment)
                     })
-
-                    if data['importance'] > 1:
-                        weight_action = 'Normalized weight with a %sx boost factor' % format_float(data['importance'])
-                    else:
-                        weight_action = 'Normalized weight'
-
                     weighted_garments[garment]['explanations']['normalization'].append({
                         'name': weight.name,
                         'slug': weight.slug,
-                        'weight': normalized_weight,
-                        'action': weight_action
+                        'importance': data['importance'],
+                        'weight': weighted_garment['weight']
                     })
 
         return weighted_garments

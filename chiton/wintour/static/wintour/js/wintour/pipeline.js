@@ -402,8 +402,7 @@ PipelineVisualizer.prototype = {
 
             var normalization = data.explanations.normalization.map(function(action) {
                 return {
-                    isNormalized: true,
-                    message: action.action,
+                    importance: action.importance,
                     weight: action.weight,
                     weightName: action.name
                 };

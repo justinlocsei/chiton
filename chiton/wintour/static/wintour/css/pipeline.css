@@ -577,18 +577,33 @@
 
 .c--pipeline__weight__overview {
     border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
+    box-sizing: border-box;
+    display: table;
     margin-bottom: 0.5em;
     padding-bottom: 0.5em;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.c--pipeline__weight__name,
+.c--pipeline__weight__value,
+.c--pipeline__weight__importance {
+    display: table-cell;
+    margin: 0;
 }
 
 .c--pipeline__weight__name {
-    margin: 0;
+    width: 75%;
 }
 
 .c--pipeline__weight__value {
-    margin: 0;
+    font-weight: bold;
+    text-align: right;
+}
+
+.c--pipeline__weight__importance {
+    font-size: 0.9em;
+    text-align: right;
 }
 
 .c--pipeline__weight__reason {
@@ -596,9 +611,12 @@
     margin: 0 0 1.5em;
 }
 
-.c--pipeline__weights.for-normalized {
-    border-top: 1px solid #ccc;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.125);
+.c--pipeline__weights.for-normalized .c--pipeline__weight:first-child .c--pipeline__weight__overview {
+    border-top: 2px solid #bbb;
+}
+
+.c--pipeline__weights.for-normalized .c--pipeline__weight:last-child .c--pipeline__weight__overview {
+    border-bottom: 2px solid #bbb;
 }
 
 .c--pipeline__weights.for-normalized .c--pipeline__weight__overview {

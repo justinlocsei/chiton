@@ -232,6 +232,7 @@
                     <li class="c--pipeline__weight <%- !weight.weight ? 'for-miss' : '' %>">
                         <div class="c--pipeline__weight__overview">
                             <p class="c--pipeline__weight__name"><%- weight.weightName %></p>
+                            <p class="c--pipeline__weight__importance"><%- weight.importance %>&times;</p>
                             <p class="c--pipeline__weight__value"><%- weight.weight.toFixed(2) %></p>
                         </div>
                     </li>
