@@ -70,26 +70,3 @@ class TestAffiliateItemURLForm:
 
         assert not form.cleaned_data['name']
         assert not form.cleaned_data['guid']
-
-    def test_refresh_item_on_save(self, garment_factory, affiliate_network_factory):
-        """It applies network information to the affiliate item when the form is saved."""
-        garment = garment_factory()
-        network = affiliate_network_factory(slug='test_affiliate')
-
-        form = AffiliateItemURLForm({
-            'garment': garment.pk,
-            'network': network.pk,
-            'url': 'http://example.com'
-        })
-
-        with mock.patch('chiton.rack.forms.create_affiliate') as create_affiliate:
-            affiliate = mock.MagicMock()
-            affiliate.request_overview = mock.MagicMock()
-            affiliate.request_overview.return_value = ItemOverview(guid='guid', name='name')
-            create_affiliate.return_value = affiliate
-
-            with mock.patch('chiton.rack.forms.update_affiliate_item_details') as update_affiliate_item_details:
-                assert form.is_valid()
-
-                item = form.save()
-                update_affiliate_item_details.assert_called_with(item)

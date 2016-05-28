@@ -3,7 +3,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from chiton.rack.models import AffiliateItem
 from chiton.rack.affiliates import create_affiliate
-from chiton.rack.affiliates.data import update_affiliate_item_details
 from chiton.rack.affiliates.exceptions import LookupError
 
 
@@ -48,9 +47,3 @@ class AffiliateItemURLForm(forms.ModelForm):
 
             self.cleaned_data['guid'] = response.guid
             self.cleaned_data['name'] = response.name
-
-    def save(self, *args, **kwargs):
-        """Update the affiliate item's data after saving."""
-        item = super().save(*args, **kwargs)
-        update_affiliate_item_details(item)
-        return item

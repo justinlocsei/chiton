@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from chiton.closet import models
 from chiton.core.admin import site
 from chiton.rack.admin import AffiliateItemInline
+from chiton.rack.affiliates.data import update_affiliate_item_details
 
 
 @admin.register(models.Brand, site=site)
@@ -71,6 +72,11 @@ class GarmentAdmin(admin.ModelAdmin):
 
         return format_html('<br>'.join(links))
     affiliate_view_links.short_description = _('Links')
+
+    def save_related(self, request, form, formset, change):
+        super().save_related(request, form, formset, change)
+        for affiliate_item in form.instance.affiliate_items.all():
+            update_affiliate_item_details(affiliate_item)
 
 
 @admin.register(models.StandardSize, site=site)
