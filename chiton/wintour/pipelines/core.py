@@ -29,7 +29,7 @@ class CorePipeline(BasePipeline):
             BodyShapeWeight(importance=2),
             CareWeight(),
             FeaturedWeight(importance=0.25),
-            FormalityWeight(importance=2),
+            FormalityWeight(importance=3),
             StyleWeight()
         ]
 
