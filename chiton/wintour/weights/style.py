@@ -36,7 +36,7 @@ class StyleWeight(BaseWeight):
         }
 
     def apply(self, garment, garment_styles=None, profile_styles=None, style_names=None):
-        matching_styles = profile_styles & garment_styles[garment.pk]
+        matching_styles = profile_styles & garment_styles.get(garment.pk, set())
         match_count = len(matching_styles)
 
         if self.debug and match_count:
