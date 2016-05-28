@@ -2,6 +2,13 @@
 {
     "model": "chiton_closet.color",
     "fields": {
+        "name": "Beige",
+        "slug": "beige"
+    }
+},
+{
+    "model": "chiton_closet.color",
+    "fields": {
         "name": "Black",
         "slug": "black"
     }
