@@ -38,6 +38,15 @@ class GarmentFactory(DjangoModelFactory):
         model = Garment
 
     @factory.post_generation
+    def formalities(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for formality in extracted:
+                self.formalities.add(formality)
+
+    @factory.post_generation
     def styles(self, create, extracted, **kwargs):
         if not create:
             return
