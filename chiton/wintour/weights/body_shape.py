@@ -44,7 +44,7 @@ IMPORTANCE_DISPLAY = {
 BODY_SHAPE_WEIGHTS = {
     BODY_SHAPES['APPLE']: {
         'shoulder': {
-            'emphasis': EMPHASES['STRONG'],
+            'emphasis': EMPHASES['WEAK'],
             'importance': IMPORTANCES['MEDIUM']
         },
         'waist': {
@@ -60,15 +60,15 @@ BODY_SHAPE_WEIGHTS = {
     BODY_SHAPES['HOURGLASS']: {
         'shoulder': {
             'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['MEDIUM']
+            'importance': IMPORTANCES['LOW']
         },
         'waist': {
             'emphasis': EMPHASES['STRONG'],
-            'importance': IMPORTANCES['HIGH']
+            'importance': IMPORTANCES['MEDIUM']
         },
         'hip': {
             'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['MEDIUM']
+            'importance': IMPORTANCES['LOW']
         },
         'pant_rises': (PANT_RISES['NORMAL'], PANT_RISES['HIGH'])
     },
@@ -104,12 +104,12 @@ BODY_SHAPE_WEIGHTS = {
     },
     BODY_SHAPES['RECTANGLE']: {
         'shoulder': {
-            'emphasis': EMPHASES['NEUTRAL'],
+            'emphasis': EMPHASES['STRONG'],
             'importance': IMPORTANCES['MEDIUM']
         },
         'waist': {
             'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['MEDIUM']
+            'importance': IMPORTANCES['LOW']
         },
         'hip': {
             'emphasis': EMPHASES['STRONG'],
