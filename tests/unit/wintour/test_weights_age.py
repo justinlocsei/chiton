@@ -100,7 +100,6 @@ class TestAgeWeight:
 
         with weight.apply_to_profile(profile) as apply_fn:
             apply_fn(garment_young)
-
             apply_fn(garment_mature)
             apply_fn(garment_old)
 
