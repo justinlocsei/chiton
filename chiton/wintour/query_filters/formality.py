@@ -1,13 +1,8 @@
 from chiton.runway.models import Formality, Propriety
-from chiton.runway.data import PROPRIETY_IMPORTANCES
+from chiton.runway.data import PROPRIETY_IMPORTANCE_CHOICES
 from chiton.wintour import build_choice_weights_lookup
-from chiton.wintour.data import EXPECTATION_FREQUENCIES
+from chiton.wintour.data import EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.query_filters import BaseQueryFilter
-
-
-# Rankings of expectation data, from least to most important
-PROPRIETY_IMPORTANCE_ORDER = ('NOT', 'MILDLY', 'SOMEWHAT', 'VERY', 'ALWAYS')
-EXPECTATION_FREQUENCY_ORDER = ('NEVER', 'RARELY', 'SOMETIMES', 'OFTEN', 'ALWAYS')
 
 
 class FormalityQueryFilter(BaseQueryFilter):
@@ -36,8 +31,8 @@ class FormalityQueryFilter(BaseQueryFilter):
         self.cutoff = cutoff
 
     def provide_profile_data(self, profile):
-        frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_ORDER, EXPECTATION_FREQUENCIES)
-        importance_weights = build_choice_weights_lookup(PROPRIETY_IMPORTANCE_ORDER, PROPRIETY_IMPORTANCES)
+        frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_CHOICES)
+        importance_weights = build_choice_weights_lookup(PROPRIETY_IMPORTANCE_CHOICES)
 
         # Use the lowest non-zero value of the combined weights as the cutoff,
         # if no explicit cutoff for the filter has been provided

@@ -1,12 +1,8 @@
 from chiton.closet.models import Garment
 from chiton.runway.models import Formality
 from chiton.wintour import build_choice_weights_lookup
-from chiton.wintour.data import EXPECTATION_FREQUENCIES
+from chiton.wintour.data import EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.weights import BaseWeight
-
-
-# The order of importance for formality expectations
-EXPECTATION_FREQUENCY_ORDER = ('NEVER', 'RARELY', 'SOMETIMES', 'OFTEN', 'ALWAYS')
 
 
 class FormalityWeight(BaseWeight):
@@ -16,7 +12,7 @@ class FormalityWeight(BaseWeight):
     slug = 'formality'
 
     def provide_profile_data(self, profile):
-        frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_ORDER, EXPECTATION_FREQUENCIES)
+        frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_CHOICES)
 
         garment_formalities = {}
         formality_weights = {}
