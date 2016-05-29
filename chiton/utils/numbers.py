@@ -2,7 +2,7 @@ import re
 
 # A list of text transforms to apply to a formatted floating-point value
 FLOAT_TRANSFORMS = (
-    re.compile(r'0+$'),
+    re.compile(r'\.0+$'),
     re.compile(r'\.$')
 )
 
