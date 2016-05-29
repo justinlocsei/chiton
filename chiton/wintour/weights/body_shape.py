@@ -164,9 +164,6 @@ class BodyShapeWeight(BaseWeight):
         if garment.pant_rise and garment.pant_rise in weights['pant_rises']:
             weight += pant_weight
             pant_reason = 'A %s pant rise is flattering for a %s shape' % (garment.pant_rise, body_shape.lower())
-        elif garment.pant_rise:
-            pant_weight = 0
-            pant_reason = 'A %s pant rise is neutral for a %s shape' % (garment.pant_rise, body_shape.lower())
 
         if self.debug and pant_reason:
             self.explain_weight(garment, pant_weight, pant_reason)
