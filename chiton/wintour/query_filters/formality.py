@@ -56,7 +56,7 @@ class FormalityQueryFilter(BaseQueryFilter):
         frequency_weights = weights['frequency']
 
         # Build a lookup table mapping Basic primary keys to the number of times
-        # that the weight for basic, as derived from the combination of the
+        # that the weight for the basic, as derived from the combination of the
         # formality/basic weight and the frequency/formality weight, falls below
         # the provided cutoff value
         basic_exclusions = {}
