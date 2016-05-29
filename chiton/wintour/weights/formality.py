@@ -48,7 +48,7 @@ class FormalityWeight(BaseWeight):
     def apply(self, garment, formality_weights=None, formality_names=None, garment_formalities=None):
         total_weight = 0
 
-        formalities = garment_formalities[garment.pk]
+        formalities = garment_formalities.get(garment.pk, [])
         for formality_slug in formalities:
             importance = formality_weights.get(formality_slug, 0)
             total_weight += importance
