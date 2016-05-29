@@ -40,3 +40,9 @@ EXPECTATION_FREQUENCY_CHOICES = (
     (EXPECTATION_FREQUENCIES['OFTEN'], _('3-4 times per week')),
     (EXPECTATION_FREQUENCIES['ALWAYS'], _('5+ times per week'))
 )
+
+IMPORTANCES = {
+    'LOW': 2,
+    'MEDIUM': 3,
+    'HIGH': 4
+}
