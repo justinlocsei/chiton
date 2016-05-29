@@ -3,7 +3,6 @@ import pytest
 from chiton.wintour.pipelines.core import CorePipeline
 
 
-@pytest.mark.current
 class TestCorePipeline:
 
     def test_query_filters(self):
