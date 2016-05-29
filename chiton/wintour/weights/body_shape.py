@@ -21,7 +21,7 @@ EMPHASIS_DELTA_STATES = {
     2: 'bad'
 }
 
-# A mappnig of emphases to their numeric weight
+# A mapping of emphases to their numeric weight
 EMPHASIS_RANKS = {
     EMPHASES['WEAK']: 0,
     EMPHASES['NEUTRAL']: 1,
