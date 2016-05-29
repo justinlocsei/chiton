@@ -1,5 +1,3 @@
-import pytest
-
 from chiton.wintour.pipelines.core import CorePipeline
 
 
