@@ -108,7 +108,7 @@ class CorePipeline(BasePipeline):
 
     def provide_weights(self):
         return [
-            AgeWeight(),
+            AgeWeight(tail_years=3),
             BodyShapeWeight(importance=2, metrics=BODY_SHAPE_METRICS),
             CareWeight(),
             FeaturedWeight(importance=0.25),
