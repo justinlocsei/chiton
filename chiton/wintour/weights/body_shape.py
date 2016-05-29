@@ -1,5 +1,9 @@
+import voluptuous as V
+
 from chiton.closet.data import EMPHASES, EMPHASIS_DISPLAY, PANT_RISES
-from chiton.wintour.data import BODY_SHAPES, BODY_SHAPE_DISPLAY
+from chiton.core.exceptions import ConfigurationError
+from chiton.utils.validation import OneOf
+from chiton.wintour.data import BODY_SHAPES, BODY_SHAPE_DISPLAY, IMPORTANCES
 from chiton.wintour.weights import BaseWeight
 
 
@@ -24,13 +28,6 @@ EMPHASIS_RANKS = {
     EMPHASES['STRONG']: 2
 }
 
-# A mapping of internal importance IDs to their weight
-IMPORTANCES = {
-    'LOW': 2,
-    'MEDIUM': 3,
-    'HIGH': 4
-}
-
 # A mapping of importances to readable values
 IMPORTANCE_DISPLAY = {
     IMPORTANCES['LOW']: 'low',
@@ -38,86 +35,17 @@ IMPORTANCE_DISPLAY = {
     IMPORTANCES['HIGH']: 'high'
 }
 
-# A map that defines the ideal garment style for each body shape.  This includes
-# the best emphasis for each body part, the importance of finding a good
-# emphasis, and information on ideal pant rises.
-BODY_SHAPE_WEIGHTS = {
-    BODY_SHAPES['APPLE']: {
-        'shoulder': {
-            'emphasis': EMPHASES['WEAK'],
-            'importance': IMPORTANCES['MEDIUM']
-        },
-        'waist': {
-            'emphasis': EMPHASES['WEAK'],
-            'importance': IMPORTANCES['HIGH']
-        },
-        'hip': {
-            'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['MEDIUM']
-        },
-        'pant_rises': (PANT_RISES['LOW'], PANT_RISES['NORMAL'])
-    },
-    BODY_SHAPES['HOURGLASS']: {
-        'shoulder': {
-            'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['LOW']
-        },
-        'waist': {
-            'emphasis': EMPHASES['STRONG'],
-            'importance': IMPORTANCES['MEDIUM']
-        },
-        'hip': {
-            'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['LOW']
-        },
-        'pant_rises': (PANT_RISES['NORMAL'], PANT_RISES['HIGH'])
-    },
-    BODY_SHAPES['INVERTED_TRIANGLE']: {
-        'shoulder': {
-            'emphasis': EMPHASES['WEAK'],
-            'importance': IMPORTANCES['HIGH']
-        },
-        'waist': {
-            'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['LOW']
-        },
-        'hip': {
-            'emphasis': EMPHASES['STRONG'],
-            'importance': IMPORTANCES['MEDIUM']
-        },
-        'pant_rises': (PANT_RISES['LOW'], PANT_RISES['NORMAL'])
-    },
-    BODY_SHAPES['PEAR']: {
-        'shoulder': {
-            'emphasis': EMPHASES['STRONG'],
-            'importance': IMPORTANCES['MEDIUM']
-        },
-        'waist': {
-            'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['LOW']
-        },
-        'hip': {
-            'emphasis': EMPHASES['WEAK'],
-            'importance': IMPORTANCES['HIGH']
-        },
-        'pant_rises': (PANT_RISES['NORMAL'], PANT_RISES['HIGH'])
-    },
-    BODY_SHAPES['RECTANGLE']: {
-        'shoulder': {
-            'emphasis': EMPHASES['STRONG'],
-            'importance': IMPORTANCES['MEDIUM']
-        },
-        'waist': {
-            'emphasis': EMPHASES['NEUTRAL'],
-            'importance': IMPORTANCES['LOW']
-        },
-        'hip': {
-            'emphasis': EMPHASES['STRONG'],
-            'importance': IMPORTANCES['HIGH']
-        },
-        'pant_rises': (PANT_RISES['LOW'], PANT_RISES['NORMAL'])
-    }
-}
+# Schemas for validating metrics
+IDEAL_SCHEMA = V.Schema({
+    V.Required('emphasis'): OneOf(EMPHASES.values()),
+    V.Required('importance'): OneOf(IMPORTANCES.values())
+})
+METRICS_SCHEMA = V.Schema({
+    V.Required('hip'): IDEAL_SCHEMA,
+    V.Required('pant_rises'): tuple(PANT_RISES.values()),
+    V.Required('shoulder'): IDEAL_SCHEMA,
+    V.Required('waist'): IDEAL_SCHEMA
+})
 
 
 class BodyShapeWeight(BaseWeight):
@@ -126,10 +54,21 @@ class BodyShapeWeight(BaseWeight):
     name = 'Body shape'
     slug = 'body-shape'
 
+    def configure_weight(self, metrics=None):
+        """Configure the weight with specific body-shape metrics.
+
+        Keyword Args:
+            metrics (dict): The body-shape metrics used to make recommendations
+
+        Raises:
+            chiton.core.exceptions.ConfigurationError: If the metrics are invalid
+        """
+        self.metrics = self._validate_metrics(metrics)
+
     def provide_profile_data(self, profile):
         return {
             'body_shape': BODY_SHAPE_DISPLAY[profile.body_shape],
-            'weights': BODY_SHAPE_WEIGHTS[profile.body_shape]
+            'weights': self.metrics[profile.body_shape]
         }
 
     def apply(self, garment, body_shape=None, weights=None):
@@ -169,3 +108,30 @@ class BodyShapeWeight(BaseWeight):
             self.explain_weight(garment, pant_weight, pant_reason)
 
         return weight
+
+    def _validate_metrics(self, metrics):
+        """Ensure that body-shape metrics are valid.
+
+        Args:
+            metrics (dict): Body-shape metrics to use for generating recommendations
+
+        Returns:
+            dict: The validated metrics
+
+        Raises:
+            chiton.core.exceptions.ConfigurationError: If the metrics are invalid
+        """
+        known_shapes = set(BODY_SHAPES.values())
+        given_shapes = set(metrics.keys())
+
+        invalid_shapes = sorted(list(given_shapes - known_shapes))
+        if invalid_shapes:
+            raise ConfigurationError('%s is not a known body-shape identifier' % invalid_shapes[0])
+
+        for body_shape, data in metrics.items():
+            try:
+                METRICS_SCHEMA(data)
+            except V.MultipleInvalid as e:
+                raise ConfigurationError('Invalid metrics format: %s' % e)
+
+        return metrics
