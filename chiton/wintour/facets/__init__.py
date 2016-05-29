@@ -4,14 +4,6 @@ from chiton.wintour.pipeline import PipelineStep
 class BaseFacet(PipelineStep):
     """The base class for all facets."""
 
-    def configure(self, **kwargs):
-        """Create a new facet."""
-        self.configure_facet(**kwargs)
-
-    def configure_facet(self, **kwargs):
-        """Allow the facet to perform custom configuration."""
-        pass
-
     def apply(self, basic, garments):
         """Apply a facet to a set of garments associated with a basic.
 
