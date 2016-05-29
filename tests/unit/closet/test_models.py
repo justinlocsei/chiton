@@ -9,7 +9,7 @@ class TestBrand:
 
     def test_natural_key(self):
         """It uses its slug."""
-        brand = Brand.objects.create(name="Chanel", slug="chanel")
+        brand = Brand.objects.create(name="Chanel", slug="chanel", age_lower=20, age_upper=30)
         assert brand.natural_key() == ('chanel',)
 
         found = Brand.objects.get_by_natural_key('chanel')
@@ -17,7 +17,7 @@ class TestBrand:
 
     def test_clean_age_range(self):
         """It requires a properly ordered age range."""
-        brand = Brand.objects.create(name="Ann Taylor")
+        brand = Brand(name="Ann Taylor")
         brand.age_lower = 50
         brand.age_upper = 25
 
@@ -43,10 +43,10 @@ class TestColor:
 @pytest.mark.django_db
 class TestGarment:
 
-    def test_natural_key(self, basic_factory):
+    def test_natural_key(self, basic_factory, brand_factory):
         """It uses its slug and the slug of its brand."""
         basic = basic_factory()
-        brand = Brand.objects.create(name="Givenchy", slug="givenchy")
+        brand = brand_factory(name="Givenchy", slug="givenchy")
 
         garment = Garment.objects.create(name="Cocktail Dress", slug="cocktail-dress", brand=brand, basic=basic)
         assert garment.natural_key() == ('cocktail-dress', 'givenchy')

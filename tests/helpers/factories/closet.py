@@ -11,6 +11,8 @@ fake = Faker()
 class BrandFactory(DjangoModelFactory):
 
     name = factory.LazyAttribute(lambda m: fake.company())
+    age_lower = 20
+    age_upper = 40
 
     class Meta:
         model = Brand

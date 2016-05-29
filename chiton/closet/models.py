@@ -77,8 +77,8 @@ class Brand(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_('name'), db_index=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
-    age_lower = models.PositiveSmallIntegerField(verbose_name=_('lower target age'), null=True, blank=True)
-    age_upper = models.PositiveSmallIntegerField(verbose_name=_('upper target age'), null=True, blank=True)
+    age_lower = models.PositiveSmallIntegerField(verbose_name=_('lower target age'))
+    age_upper = models.PositiveSmallIntegerField(verbose_name=_('upper target age'))
 
     class Meta:
         ordering = ('name',)
