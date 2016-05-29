@@ -18,28 +18,13 @@ class FormalityQueryFilter(BaseQueryFilter):
     name = 'Formality'
     slug = 'formality'
 
-    def configure(self, cutoff=None):
-        """Create a new formality filter.
-
-        The cutoff keyword arg should be a floating-point value expressing the
-        percentage at which garments should be excluded based upon the
-        importance of their basic type to a wardrobe profile.
-
-        Keyword Args:
-            cutoff (float): The cutoff value for excluding basics
-        """
-        self.cutoff = cutoff
-
     def provide_profile_data(self, profile):
         frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_CHOICES)
         importance_weights = build_choice_weights_lookup(PROPRIETY_IMPORTANCE_CHOICES)
 
-        # Use the lowest non-zero value of the combined weights as the cutoff,
-        # if no explicit cutoff for the filter has been provided
-        cutoff = self.cutoff
-        if cutoff is None:
-            weight_values = list(frequency_weights.values()) + list(importance_weights.values())
-            cutoff = min([v for v in weight_values if v])
+        # Use the lowest non-zero value of the combined weights as the cutoff
+        weight_values = list(frequency_weights.values()) + list(importance_weights.values())
+        cutoff = min([v for v in weight_values if v])
 
         return {
             'cutoff': cutoff,
