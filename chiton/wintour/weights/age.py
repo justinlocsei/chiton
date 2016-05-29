@@ -4,10 +4,6 @@ from chiton.wintour.weights import BaseWeight
 # The base weight to apply for age matches
 AGE_WEIGHT = 1
 
-# Default values for missing brand age ranges for weighting calculations
-AGE_RANGE_MIN = 0
-AGE_RANGE_MAX = 100
-
 
 class AgeWeight(BaseWeight):
     """A weight that compares a user's age with a brand's target age."""
@@ -38,8 +34,8 @@ class AgeWeight(BaseWeight):
     def apply(self, garment, age=None):
         brand = garment.brand
 
-        lower_age = brand.age_lower or AGE_RANGE_MIN
-        upper_age = brand.age_upper or AGE_RANGE_MAX
+        lower_age = brand.age_lower
+        upper_age = brand.age_upper
         is_in_range = lower_age <= age <= upper_age
 
         lower_tail = lower_age - self.tail_years
