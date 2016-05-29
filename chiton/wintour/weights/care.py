@@ -1,18 +1,9 @@
-from chiton.closet.data import CARE_TYPES
+from chiton.closet.data import CARE_CHOICES
 from chiton.wintour.weights import BaseWeight
 
 
 # The weight to apply to garments whose care is in a blacklist
 BLACKLIST_WEIGHT = -1
-
-# The care types that merit being on a blacklist
-BLACKLIST_TYPES = (CARE_TYPES['HAND_WASH'], CARE_TYPES['DRY_CLEAN'])
-
-# Readable names for blacklisted care types
-CARE_NAMES = {
-    CARE_TYPES['HAND_WASH']: 'hand washing',
-    CARE_TYPES['DRY_CLEAN']: 'dry cleaning'
-}
 
 
 class CareWeight(BaseWeight):
@@ -22,19 +13,22 @@ class CareWeight(BaseWeight):
     slug = 'care'
 
     def provide_profile_data(self, profile):
-        avoid_care = [c for c in profile.avoid_care if c in BLACKLIST_TYPES]
+        care_names = {}
+        for choice in CARE_CHOICES:
+            care_names[choice[0]] = choice[1].lower()
 
         return {
-            'avoid_care': set(avoid_care)
+            'avoid_care': set(profile.avoid_care),
+            'care_names': care_names
         }
 
-    def apply(self, garment, avoid_care=None):
+    def apply(self, garment, avoid_care=None, care_names=None):
         weight = None
         if garment.care in avoid_care:
             weight = BLACKLIST_WEIGHT
 
         if self.debug and weight:
-            reason = 'The garment requires %s' % CARE_NAMES[garment.care]
+            reason = 'The garment has a care type of %s' % care_names[garment.care]
             self.explain_weight(garment, weight, reason)
 
         return weight or 0

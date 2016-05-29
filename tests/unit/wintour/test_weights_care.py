@@ -38,20 +38,6 @@ class TestCareWeight:
             result = apply_fn(garment)
             assert result < 0
 
-    def test_blacklist_machine(self, garment_factory):
-        """It ignores blacklist requests for machine-wash garments."""
-        garment_machine_machine = garment_factory(care=CARE_TYPES['MACHINE_MACHINE'])
-        garment_machine_air = garment_factory(care=CARE_TYPES['MACHINE_AIR'])
-        profile = PipelineProfile(avoid_care=[CARE_TYPES['MACHINE_MACHINE'], CARE_TYPES['MACHINE_AIR']])
-
-        weight = CareWeight()
-        with weight.apply_to_profile(profile) as apply_fn:
-            machine_machine_result = apply_fn(garment_machine_machine)
-            machine_air_result = apply_fn(garment_machine_air)
-
-            assert not machine_machine_result
-            assert not machine_air_result
-
     def test_debug(self, garment_factory):
         """It logs explanations for any garments with blacklisted care types."""
         garment_blacklist = garment_factory(care=CARE_TYPES['DRY_CLEAN'])
