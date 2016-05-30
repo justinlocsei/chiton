@@ -2,7 +2,7 @@ import voluptuous as V
 
 from chiton.closet.data import EMPHASES, EMPHASIS_DISPLAY, PANT_RISES
 from chiton.core.exceptions import ConfigurationError
-from chiton.utils.validation import OneOf
+from chiton.core.schema import OneOf
 from chiton.wintour.data import BODY_SHAPES, BODY_SHAPE_DISPLAY, IMPORTANCES
 from chiton.wintour.weights import BaseWeight
 
