@@ -96,7 +96,7 @@ class BasePipeline:
         garments_qs = self._filter_garments_queryset(query_filters, garments_qs, profile)
         garments = self._filter_garments(garment_filters, garments_qs, profile)
         weightings = self._weight_garments(weights, garments, profile)
-        weighted_garments = self._combine_garment_weights(weightings, debug)
+        weighted_garments = self._combine_garment_weights(weightings)
         garments_by_basic = self._normalize_weightings(weighted_garments)
         recommendations = self._facet_garments(facets, garments_by_basic, profile)
 
@@ -210,7 +210,7 @@ class BasePipeline:
 
         return weightings
 
-    def _combine_garment_weights(self, weightings, debug):
+    def _combine_garment_weights(self, weightings):
         """Combine all weights applied to a garment.
 
         This expects to receive a dict keyed by weight instances with values of
@@ -220,7 +220,6 @@ class BasePipeline:
 
         Args:
             weightings (dict): A mapping between weight instances and weighted garments
-            debug (bool): Whether debug mode is enabled
 
         Returns:
             dict: A dict keyed by garment instance that provides weight and debug data
@@ -242,7 +241,7 @@ class BasePipeline:
 
                 # Add debug information on each logged weight application and
                 # on the results of combining the weights
-                if debug:
+                if weight.debug:
                     explanations = weighted_garments[garment]['explanations']
                     explanations['weights'].append({
                         'name': weight.name,
