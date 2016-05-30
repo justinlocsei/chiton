@@ -88,7 +88,7 @@ class BasePipeline:
 
         # Enable debug mode on all pipeline steps when debugging
         if debug:
-            for step in facets + query_filters + weights:
+            for step in facets + garment_filters + query_filters + weights:
                 step.debug = debug
 
         # Generate the master list of weighted garments as a dict keyed by a
@@ -98,25 +98,9 @@ class BasePipeline:
         weightings = self._weight_garments(weights, garments, profile)
         weighted_garments = self._combine_garment_weights(weightings, debug)
         garments_by_basic = self._normalize_weightings(weighted_garments)
+        recommendations = self._facet_garments(facets, garments_by_basic, profile)
 
-        # Generate the final recommendations as a dict keyed by basic type, with
-        # values that describe the basic, its garments, and its facets
-        recs = {}
-        weight_fetcher = itemgetter('weight')
-        for basic, weighted_garments in garments_by_basic.items():
-            recs[basic] = {
-                'basic': basic,
-                'facets': {},
-                'garments': sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
-            }
-
-        # Add facets to each basic in the recommendations
-        for facet in facets:
-            with facet.apply_to_profile(profile) as apply_facet:
-                for basic, data in recs.items():
-                    recs[basic]['facets'][facet] = apply_facet(basic, data['garments'])
-
-        return recs
+        return recommendations
 
     def _get_all_steps(self):
         """Get a list of all steps for the pipeline.
@@ -137,6 +121,14 @@ class BasePipeline:
 
         This applies each filter's logic to the queryset, and returns the
         unevaluated queryset primed with filtering calls.
+
+        Args:
+            query_filters (list): A list of BaseQueryFilter subclass instances
+            garments_qs (django.db.models.query.QuerySet): A queryset of garments
+            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
+
+        Returns:
+            django.db.models.query.QuerySet: The filtered garment queryset
         """
         for query_filter in query_filters:
             with query_filter.apply_to_profile(profile) as filter_garments:
@@ -149,12 +141,20 @@ class BasePipeline:
 
         This applies each filter's logic to the each garment in the input, and
         returns a list of all non-excluded garments.
+
+        Args:
+            garment_filters (list): A list of BaseGarmentFilter subclass instances
+            garments (django.db.models.query.QuerySet): A queryset of garments
+            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
+
+        Returns:
+            list: The evaluated queryset, with any excluded garments removed
         """
         for garment_filter in garment_filters:
             to_keep = []
-            with garment_filter.apply_to_profile(profile) as determine_exclude:
+            with garment_filter.apply_to_profile(profile) as should_exclude:
                 for garment in garments:
-                    if not determine_exclude(garment):
+                    if not should_exclude(garment):
                         to_keep.append(garment)
             garments = to_keep
 
@@ -166,6 +166,18 @@ class BasePipeline:
         This applies each weight to each garment, and exposes the results in a
         dict keyed by the weight instance with values of the weighted garments
         and the weight's relative importance.
+
+        This returns a dict that maps weight instances to weighted garments,
+        with the garments sorted in descending order by weight and rendered as
+        dicts that expose the garment instance and an applied weight.
+
+        Args:
+            weights (list): A list of BaseWeight subclass instances
+            garments (list): An unordered list of garments
+            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
+
+        Returns:
+            dict: A mapping between weight instances and weighted garments
         """
         weightings = {}
 
@@ -194,10 +206,7 @@ class BasePipeline:
                     zeroed_weight = weighted_garment['weight'] - min_weight
                     weighted_garment['weight'] = zeroed_weight / weight_range
 
-            weightings[weight] = {
-                'garments': weighted_garments,
-                'importance': weight.importance
-            }
+            weightings[weight] = weighted_garments
 
         return weightings
 
@@ -208,34 +217,40 @@ class BasePipeline:
         the garments in the weight and the weight's importance.  This structure
         is used to build a dict keyed by garment instance that exposes core
         garment data and weighting metadata.
+
+        Args:
+            weightings (dict): A mapping between weight instances and weighted garments
+            debug (bool): Whether debug mode is enabled
+
+        Returns:
+            dict: A dict keyed by garment instance that provides weight and debug data
         """
         weighted_garments = {}
 
-        for weight, data in weightings.items():
-            for weighted_garment in data['garments']:
+        for weight, garments in weightings.items():
+            for weighted_garment in garments:
                 garment = weighted_garment['garment']
                 weighted_garments.setdefault(garment, {
                     'explanations': {
-                        'weights': [],
-                        'normalization': []
+                        'normalization': [],
+                        'weights': []
                     },
                     'weight': 0
                 })
-                normalized_weight = weighted_garment['weight'] * data['importance']
+                normalized_weight = weighted_garment['weight'] * weight.importance
                 weighted_garments[garment]['weight'] += normalized_weight
 
                 # Add debug information on each logged weight application and
                 # on the results of combining the weights
                 if debug:
-                    weighted_garments[garment]['explanations']['weights'].append({
+                    explanations = weighted_garments[garment]['explanations']
+                    explanations['weights'].append({
                         'name': weight.name,
-                        'slug': weight.slug,
                         'reasons': weight.get_explanations(garment)
                     })
-                    weighted_garments[garment]['explanations']['normalization'].append({
+                    explanations['normalization'].append({
+                        'importance': weight.importance,
                         'name': weight.name,
-                        'slug': weight.slug,
-                        'importance': data['importance'],
                         'weight': weighted_garment['weight']
                     })
 
@@ -248,6 +263,12 @@ class BasePipeline:
         describe the garment's weighting.  This information is converted into a
         dict keyed by a basic instance that exposes normalized weighting data
         and supplemental garment data.
+
+        Args:
+            dict: A mapping between garment instance and weight/debug information
+
+        Returns:
+            dict: A mapping between basic instances and annotated garment instances
         """
         by_basic = {}
         max_weight = 0
@@ -257,11 +278,11 @@ class BasePipeline:
         for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic', 'image', 'thumbnail', 'network__name'):
             garment = affiliate_item.garment
             try:
-                data = weighted_garments[garment]
+                garment_data = weighted_garments[garment]
             except KeyError:
                 continue
 
-            max_weight = max(max_weight, data['weight'])
+            max_weight = max(max_weight, garment_data['weight'])
 
             by_basic.setdefault(garment.basic, {})
             if garment in by_basic[garment.basic]:
@@ -269,16 +290,46 @@ class BasePipeline:
             else:
                 by_basic[garment.basic][garment] = {
                     'affiliate_items': [affiliate_item],
-                    'explanations': data['explanations'],
+                    'explanations': garment_data['explanations'],
                     'garment': garment,
-                    'weight': data['weight']
+                    'weight': garment_data['weight']
                 }
 
-        # Update all weights to be a floating-point percentage, based on the
-        # maximum detected final weight
+        # Update all weights to use floating-point percentages calibrated
+        # against the maximum total weight
         if max_weight:
             for basic, garments in by_basic.items():
                 for garment, data in garments.items():
                     data['weight'] = data['weight'] / max_weight
 
         return by_basic
+
+    def _facet_garments(self, facets, garments_by_basic, profile):
+        """Create faceted garment groups.
+
+        Args:
+            facets (list): A list of BaseFacet subclass instances
+            garments_by_basic (dict): A mapping of basic instances to annotated garment instances
+            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
+
+        Returns:
+            dict: A mapping between basics and facet/garment data
+        """
+        faceted = {}
+
+        # Generate the mapping between basics and garments, with a placeholder
+        # for the faceted data
+        weight_fetcher = itemgetter('weight')
+        for basic, weighted_garments in garments_by_basic.items():
+            faceted[basic] = {
+                'facets': {},
+                'garments': sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
+            }
+
+        # Apply all facets to the data
+        for facet in facets:
+            with facet.apply_to_profile(profile) as apply_facet:
+                for basic, data in faceted.items():
+                    faceted[basic]['facets'][facet] = apply_facet(basic, data['garments'])
+
+        return faceted

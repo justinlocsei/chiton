@@ -49,18 +49,15 @@ class PriceFacet(BaseFacet):
             else:
                 group_name = 'normal'
 
-            groups[group_name].append({
-                'id': garment['garment'].pk,
-                'price': garment_price,
-            })
+            groups[group_name].append(garment['garment'].pk)
 
         # Create a dict for each group that exposes the IDs of its garments
         facets = []
         for group_slug in PRICE_GROUP_ORDER:
-            items = groups[group_slug]
+            garment_ids = groups[group_slug]
             facets.append({
-                'count': len(items),
-                'items': [i['id'] for i in items],
+                'count': len(garment_ids),
+                'garment_ids': garment_ids,
                 'slug': group_slug
             })
 

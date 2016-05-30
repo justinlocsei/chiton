@@ -10,9 +10,15 @@ class BaseFacet(PipelineStep):
         The facet should return a list of dicts defining each facet grouping,
         with the dict having the following format:
 
-            count - The number of items in the group
-            items - The IDs of all garments in the group
-            slug  - The slug of the group
+            count (int): The number of items in the group
+            garment_ids (list): The IDs of all garments in the group
+            slug (str): The slug of the group
+
+        The garments in the provided list will have the following structure:
+
+            affiliate_items (list): A list of AffiliateItem model instances
+            garment (chiton.closet.models.Garment): A Garment model instance
+            weight (float): The numerical weight for the garment
 
         Args:
             basic (chiton.runway.models.Basic): The basic type of the given garments

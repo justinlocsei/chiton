@@ -101,7 +101,7 @@ PipelineVisualizer.prototype = {
             // Provide data on each price group that contains rendered garments
             var priceGroups = data.facets.price.map(function(priceGroup) {
                 var garments = [];
-                var garmentIDs = priceGroup.items;
+                var garmentIDs = priceGroup.garment_ids;
                 var numGarments = Math.min(data.garments.length, garmentIDs.length);
 
                 for (var j = 0; j < numGarments; j++) {
