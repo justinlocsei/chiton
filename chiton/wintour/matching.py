@@ -11,7 +11,7 @@ GARMENT_IMAGE_FIELDS = ('image', 'thumbnail')
 GARMENT_IMAGE_ATTRIBUTES = ('height', 'url', 'width')
 
 
-def make_recommendations(pipeline_profile, pipeline_class=CorePipeline, debug=False):
+def make_recommendations(pipeline_profile, pipeline=CorePipeline, debug=False):
     """Return garment recommendations for a wardrobe profile.
 
     Args:
@@ -28,7 +28,7 @@ def make_recommendations(pipeline_profile, pipeline_class=CorePipeline, debug=Fa
         previous_queries = set([q['sql'] for q in connection.queries])
         start_time = default_timer()
 
-    pipeline = pipeline_class()
+    pipeline = pipeline()
     recs = {'basics': pipeline.make_recommendations(pipeline_profile, debug=debug)}
 
     if debug:
