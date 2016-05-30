@@ -26,7 +26,7 @@ class BasePipeline:
         """
         garments = self.provide_garments()
 
-        for step in self.get_all_steps():
+        for step in self._get_all_steps():
             garments = step.prepare_garments(garments)
 
         return garments
@@ -62,20 +62,6 @@ class BasePipeline:
             list: A list of all weight classes
         """
         return []
-
-    def get_all_steps(self):
-        """Get a list of all steps for the pipeline.
-
-        Returns:
-            list: All step instances
-        """
-        steps = [
-            self.provide_facets(),
-            self.provide_garment_filters(),
-            self.provide_query_filters(),
-            self.provide_weights()
-        ]
-        return list(chain.from_iterable(steps))
 
     def make_recommendations(self, profile, debug=False):
         """Make recommendations for a wardrobe profile.
@@ -131,6 +117,20 @@ class BasePipeline:
                     recs[basic]['facets'][facet] = apply_facet(basic, data['garments'])
 
         return recs
+
+    def _get_all_steps(self):
+        """Get a list of all steps for the pipeline.
+
+        Returns:
+            list: All step instances
+        """
+        steps = [
+            self.provide_facets(),
+            self.provide_garment_filters(),
+            self.provide_query_filters(),
+            self.provide_weights()
+        ]
+        return list(chain.from_iterable(steps))
 
     def _filter_garments_queryset(self, query_filters, garments_qs, profile):
         """Apply a series of filters to a queryset of garments.
