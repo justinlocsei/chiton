@@ -4,11 +4,13 @@ from pytest_factoryboy import register as register_factory
 from .helpers.factories.closet import BrandFactory, CanonicalSizeFactory, GarmentFactory, standard_size_factory
 from .helpers.factories.rack import AffiliateItemFactory, AffiliateNetworkFactory
 from .helpers.factories.runway import BasicFactory, CategoryFactory, FormalityFactory, StyleFactory
+from .helpers.factories.wintour import wardrobe_profile_factory
 from .helpers.vcr import amazon_api_request, shopstyle_api_request
 
 pytest.fixture()(amazon_api_request)
 pytest.fixture()(shopstyle_api_request)
 pytest.fixture()(standard_size_factory)
+pytest.fixture()(wardrobe_profile_factory)
 
 register_factory(AffiliateItemFactory)
 register_factory(AffiliateNetworkFactory)
