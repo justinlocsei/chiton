@@ -1,0 +1,11 @@
+[run]
+omit =
+    */admin.py
+    */management/*
+    */migrations/*
+    */urls.py
+    chiton/settings.py
+    chiton/wsgi.py
+
+[report]
+show_missing = True
