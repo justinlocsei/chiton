@@ -93,12 +93,14 @@ class BasePipeline:
 
         # Generate the master list of weighted garments as a dict keyed by a
         # basic instance with garment core data and metadata
-        garments_qs = self._filter_garments_queryset(query_filters, garments_qs, profile)
-        garments = self._filter_garments(garment_filters, garments_qs, profile)
-        weightings = self._weight_garments(weights, garments, profile)
+        self._current_profile = profile
+        garments_qs = self._filter_garments_queryset(query_filters, garments_qs)
+        garments = self._filter_garments(garment_filters, garments_qs)
+        weightings = self._weight_garments(weights, garments)
         weighted_garments = self._combine_garment_weights(weightings)
         garments_by_basic = self._normalize_weightings(weighted_garments)
-        recommendations = self._facet_garments(facets, garments_by_basic, profile)
+        recommendations = self._facet_garments(facets, garments_by_basic)
+        self._current_profile = None
 
         return recommendations
 
@@ -116,7 +118,7 @@ class BasePipeline:
         ]
         return list(chain.from_iterable(steps))
 
-    def _filter_garments_queryset(self, query_filters, garments_qs, profile):
+    def _filter_garments_queryset(self, query_filters, garments_qs):
         """Apply a series of filters to a queryset of garments.
 
         This applies each filter's logic to the queryset, and returns the
@@ -125,18 +127,17 @@ class BasePipeline:
         Args:
             query_filters (list): A list of BaseQueryFilter subclass instances
             garments_qs (django.db.models.query.QuerySet): A queryset of garments
-            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
 
         Returns:
             django.db.models.query.QuerySet: The filtered garment queryset
         """
         for query_filter in query_filters:
-            with query_filter.apply_to_profile(profile) as filter_garments:
+            with query_filter.apply_to_profile(self._current_profile) as filter_garments:
                 garments_qs = filter_garments(garments_qs)
 
         return garments_qs
 
-    def _filter_garments(self, garment_filters, garments, profile):
+    def _filter_garments(self, garment_filters, garments):
         """Apply a series of filters to a individual garments.
 
         This applies each filter's logic to the each garment in the input, and
@@ -145,14 +146,13 @@ class BasePipeline:
         Args:
             garment_filters (list): A list of BaseGarmentFilter subclass instances
             garments (django.db.models.query.QuerySet): A queryset of garments
-            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
 
         Returns:
             list: The evaluated queryset, with any excluded garments removed
         """
         for garment_filter in garment_filters:
             to_keep = []
-            with garment_filter.apply_to_profile(profile) as should_exclude:
+            with garment_filter.apply_to_profile(self._current_profile) as should_exclude:
                 for garment in garments:
                     if not should_exclude(garment):
                         to_keep.append(garment)
@@ -160,7 +160,7 @@ class BasePipeline:
 
         return garments
 
-    def _weight_garments(self, weights, garments, profile):
+    def _weight_garments(self, weights, garments):
         """Apply a series of weights to a list of garments for a profile.
 
         This applies each weight to each garment, and exposes the results in a
@@ -174,7 +174,6 @@ class BasePipeline:
         Args:
             weights (list): A list of BaseWeight subclass instances
             garments (list): An unordered list of garments
-            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
 
         Returns:
             dict: A mapping between weight instances and weighted garments
@@ -188,7 +187,7 @@ class BasePipeline:
 
             # Apply the weight to the garment, and update the max and min
             # weights in response to the results
-            with weight.apply_to_profile(profile) as weight_function:
+            with weight.apply_to_profile(self._current_profile) as weight_function:
                 for garment in garments:
                     applied_weight = weight_function(garment)
                     weighted_garments.append({
@@ -303,13 +302,12 @@ class BasePipeline:
 
         return by_basic
 
-    def _facet_garments(self, facets, garments_by_basic, profile):
+    def _facet_garments(self, facets, garments_by_basic):
         """Create faceted garment groups.
 
         Args:
             facets (list): A list of BaseFacet subclass instances
             garments_by_basic (dict): A mapping of basic instances to annotated garment instances
-            profile (chiton.wintour.pipeline.PipelineProfile): A pipeline profile
 
         Returns:
             dict: A mapping between basics and facet/garment data
@@ -327,7 +325,7 @@ class BasePipeline:
 
         # Apply all facets to the data
         for facet in facets:
-            with facet.apply_to_profile(profile) as apply_facet:
+            with facet.apply_to_profile(self._current_profile) as apply_facet:
                 for basic, data in faceted.items():
                     faceted[basic]['facets'][facet] = apply_facet(basic, data['garments'])
 
