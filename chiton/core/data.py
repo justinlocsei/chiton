@@ -3,8 +3,29 @@ import os.path
 from django.conf import settings
 from django.core import serializers
 from inflection import underscore
+import voluptuous as V
 
-from chiton.core.exceptions import FilesystemError
+from chiton.core.exceptions import FilesystemError, FormatError
+
+
+def make_data_shape_creator(schema):
+    """Create a function that validates a dict according to a schema.
+
+    Args:
+        schema (dict): A Voluptuous schema
+
+    Returns:
+        function: A function that creates and validates a dict according to the schema
+    """
+    def validate(data):
+        try:
+            V.Schema(schema)(data)
+        except V.MultipleInvalid as e:
+            raise FormatError('Invalid data format: %s' % e)
+        else:
+            return data
+
+    return validate
 
 
 class Fixture:
