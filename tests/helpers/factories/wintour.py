@@ -1,10 +1,6 @@
-import factory
-from factory.django import DjangoModelFactory
 from faker import Faker
 
-from .runway import BasicFactory
-from chiton.closet.data import CARE_TYPES
-from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
+from chiton.wintour.data import BODY_SHAPES
 from chiton.wintour.models import WardrobeProfile
 
 fake = Faker()

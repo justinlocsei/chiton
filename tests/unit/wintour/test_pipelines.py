@@ -1,9 +1,7 @@
 import pytest
 
-from chiton.closet.models import Garment
 from chiton.wintour.facets import BaseFacet
 from chiton.wintour.garment_filters import BaseGarmentFilter
-from chiton.wintour.pipeline import PipelineStep
 from chiton.wintour.pipelines import BasePipeline
 from chiton.wintour.query_filters import BaseQueryFilter
 from chiton.wintour.weights import BaseWeight

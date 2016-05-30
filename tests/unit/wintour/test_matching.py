@@ -3,7 +3,6 @@ import pytest
 from chiton.closet.data import CARE_TYPES
 from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
 from chiton.wintour.matching import package_wardrobe_profile
-from chiton.wintour.models import WardrobeProfile
 from chiton.wintour.pipeline import PipelineProfile
 
 
@@ -41,7 +40,7 @@ class TestPackageWardrobeProfile:
 
         assert sorted(pipeline_profile.styles) == ['classy', 'fancy']
 
-    def test_styles(self, wardrobe_profile_factory, standard_size_factory):
+    def test_sizes(self, wardrobe_profile_factory, standard_size_factory):
         """It uses the slugs of all sizes."""
         medium = standard_size_factory(slug='medium')
         large = standard_size_factory(slug='large')
