@@ -1,4 +1,4 @@
-from chiton.core.data import Fixture
+from chiton.core.fixture import Fixture
 from chiton.rack.models import AffiliateNetwork
 
 

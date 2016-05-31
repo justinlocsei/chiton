@@ -1,5 +1,5 @@
 from chiton.closet.models import CanonicalSize, Color, StandardSize
-from chiton.core.data import Fixture
+from chiton.core.fixture import Fixture
 
 
 def load_fixtures():

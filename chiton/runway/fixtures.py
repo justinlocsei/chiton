@@ -1,5 +1,5 @@
+from chiton.core.fixture import Fixture
 from chiton.runway.models import Category, Formality, Propriety, Style
-from chiton.core.data import Fixture
 
 
 def load_fixtures():
