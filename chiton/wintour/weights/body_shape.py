@@ -1,7 +1,7 @@
 import voluptuous as V
 
 from chiton.closet.data import EMPHASES, EMPHASIS_DISPLAY, PANT_RISES
-from chiton.core.exceptions import ConfigurationError
+from chiton.core.exceptions import FormatError
 from chiton.core.schema import OneOf
 from chiton.wintour.data import BODY_SHAPES, BODY_SHAPE_DISPLAY, IMPORTANCES
 from chiton.wintour.weights import BaseWeight
@@ -61,7 +61,7 @@ class BodyShapeWeight(BaseWeight):
             metrics (dict): The body-shape metrics used to make recommendations
 
         Raises:
-            chiton.core.exceptions.ConfigurationError: If the metrics are invalid
+            chiton.core.exceptions.FormatError: If the metrics are invalid
         """
         self.metrics = self._validate_metrics(metrics)
 
@@ -119,19 +119,19 @@ class BodyShapeWeight(BaseWeight):
             dict: The validated metrics
 
         Raises:
-            chiton.core.exceptions.ConfigurationError: If the metrics are invalid
+            chiton.core.exceptions.FormatError: If the metrics are invalid
         """
         known_shapes = set(BODY_SHAPES.values())
         given_shapes = set(metrics.keys())
 
         invalid_shapes = sorted(list(given_shapes - known_shapes))
         if invalid_shapes:
-            raise ConfigurationError('%s is not a known body-shape identifier' % invalid_shapes[0])
+            raise FormatError('%s is not a known body-shape identifier' % invalid_shapes[0])
 
         for body_shape, data in metrics.items():
             try:
                 METRICS_SCHEMA(data)
             except V.MultipleInvalid as e:
-                raise ConfigurationError('Invalid metrics format: %s' % e)
+                raise FormatError('Invalid metrics format: %s' % e)
 
         return metrics

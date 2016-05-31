@@ -1,7 +1,7 @@
 import pytest
 
 from chiton.closet.data import EMPHASES, PANT_RISES
-from chiton.core.exceptions import ConfigurationError
+from chiton.core.exceptions import FormatError
 from chiton.wintour.data import BODY_SHAPES, IMPORTANCES
 from chiton.wintour.weights.body_shape import BodyShapeWeight
 
@@ -43,29 +43,29 @@ class TestBodyShapeWeight:
 
     def test_metrics_validation_shapes(self, metrics_factory):
         """It raises an error when the metrics use an unknown body-shape key."""
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(FormatError):
             BodyShapeWeight(metrics={
                 'invalid': metrics_factory()
             })
 
     def test_metrics_validation_structure(self, metrics_factory):
         """It raises an error when the metrics use an invalid format for a shape's data."""
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(FormatError):
             BodyShapeWeight(metrics={
                 BODY_SHAPES['APPLE']: metrics_factory({'shoulder': {'importance': 'invalid'}})
             })
 
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(FormatError):
             BodyShapeWeight(metrics={
                 BODY_SHAPES['APPLE']: metrics_factory({'hip': {'emphasis': 'invalid'}})
             })
 
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(FormatError):
             BodyShapeWeight(metrics={
                 BODY_SHAPES['APPLE']: metrics_factory({'waist': 'value'})
             })
 
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(FormatError):
             BodyShapeWeight(metrics={
                 BODY_SHAPES['APPLE']: metrics_factory({'pant_rises': ('invalid',)})
             })
