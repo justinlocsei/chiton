@@ -32,6 +32,32 @@ class TestDefineDataShape:
 
         assert 'bmi' in str(validation_error)
 
+    def test_defaults(self):
+        """It accepts default values."""
+        create_person = define_data_shape(
+            {'name': str},
+            {'name': 'John'}
+        )
+
+        john = create_person()
+        jane = create_person({'name': 'Jane'})
+
+        assert john['name'] == 'John'
+        assert jane['name'] == 'Jane'
+
+    def test_defaults_persistence(self):
+        """It does not persist default values."""
+        create_person = define_data_shape(
+            {'name': str},
+            {'name': 'John'}
+        )
+
+        jane = create_person({'name': 'Jane'})
+        john = create_person()
+
+        assert john['name'] == 'John'
+        assert jane['name'] == 'Jane'
+
 
 class TestOneOf:
 
