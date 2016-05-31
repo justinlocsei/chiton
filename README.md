@@ -51,8 +51,7 @@ you will now be able to interact with the Django application.
 
 The following management commands are available:
 
-* `chiton_dumpfixtures`: Create or update fixture files for core data.
-* `chiton_ensuresuperuser`: Ensure that a superuser exists with an email,
-  username, and password provided as arguments.
-* `chiton_loadfixtures`: Load all fixtures for core data.
-* `chiton_savesnapshot`: Export a snapshot of all current app data.
+* `chiton_dump_fixtures`: Create or update fixture files for core data.
+* `chiton_ensure_superuser`: Ensure that a superuser exists with an email, username, and password provided as arguments.
+* `chiton_load_fixtures`: Load all fixtures for core data.
+* `chiton_save_snapshot`: Export a snapshot of all current app data.
