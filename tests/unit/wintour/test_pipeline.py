@@ -1,7 +1,7 @@
 import pytest
 
 from chiton.closet.models import Garment
-from chiton.wintour.pipeline import PipelineProfile, PipelineStep
+from chiton.wintour.pipeline import PipelineStep
 
 
 class TestStep(PipelineStep):
@@ -78,20 +78,20 @@ class TestPipelineStep:
         assert garments.count() == 2
         assert prepared.count() == 2
 
-    def test_apply_to_profile(self):
+    def test_apply_to_profile(self, pipeline_profile_factory):
         """It acts as a context manager that provides a function to apply the step to an object."""
         class Step(TestStep):
 
             def provide_profile_data(self, profile):
                 return {
-                    'age': profile.age,
+                    'age': profile['age'],
                     'multiplier': 2
                 }
 
             def apply(self, unit, age=None, multiplier=None):
                 return '%d %s' % (age * multiplier, unit)
 
-        profile = PipelineProfile(age=10)
+        profile = pipeline_profile_factory(age=10)
         step = Step()
 
         with step.apply_to_profile(profile) as apply_fn:
@@ -99,7 +99,7 @@ class TestPipelineStep:
 
             assert result == '20 years'
 
-    def test_apply_to_profile_memoized(self):
+    def test_apply_to_profile_memoized(self, pipeline_profile_factory):
         """It memoizes the profile data within the application context."""
         class Step(TestStep):
 
@@ -115,7 +115,7 @@ class TestPipelineStep:
             def apply(self, counter):
                 return counter
 
-        profile = PipelineProfile()
+        profile = pipeline_profile_factory()
         step = Step()
 
         with step.apply_to_profile(profile) as first_apply:

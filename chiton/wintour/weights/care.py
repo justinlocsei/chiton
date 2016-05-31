@@ -18,7 +18,7 @@ class CareWeight(BaseWeight):
             care_names[choice[0]] = choice[1].lower()
 
         return {
-            'avoid_care': set(profile.avoid_care),
+            'avoid_care': set(profile['avoid_care']),
             'care_names': care_names
         }
 

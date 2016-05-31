@@ -1,14 +1,13 @@
 import pytest
 
 from chiton.rack.models import StockRecord
-from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.garment_filters.availability import AvailabilityGarmentFilter
 
 
 @pytest.mark.django_db
 class TestAvailabilityGarmentFilter:
 
-    def test_include_available(self, affiliate_item_factory, garment_factory, standard_size_factory):
+    def test_include_available(self, affiliate_item_factory, garment_factory, pipeline_profile_factory, standard_size_factory):
         """It excludes garments that are not available in the user's size."""
         jeans = garment_factory()
         blazer = garment_factory()
@@ -25,7 +24,7 @@ class TestAvailabilityGarmentFilter:
         StockRecord.objects.create(item=blazer_item, size=medium, is_available=False)
         StockRecord.objects.create(item=blazer_item, size=large, is_available=True)
 
-        profile = PipelineProfile(sizes=['small', 'medium'])
+        profile = pipeline_profile_factory(sizes=['small', 'medium'])
         availability_filter = AvailabilityGarmentFilter()
 
         with availability_filter.apply_to_profile(profile) as filter_fn:

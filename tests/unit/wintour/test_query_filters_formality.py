@@ -4,21 +4,20 @@ from chiton.closet.models import Garment
 from chiton.runway.data import PROPRIETY_IMPORTANCES
 from chiton.runway.models import Propriety
 from chiton.wintour.data import EXPECTATION_FREQUENCIES
-from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.query_filters.formality import FormalityQueryFilter
 
 
 @pytest.mark.django_db
 class TestFormalityQueryFilter:
 
-    def test_apply_default(self, garment_factory):
+    def test_apply_default(self, garment_factory, pipeline_profile_factory):
         """It returns an unfiltered garment queryset by default."""
         garment_factory()
         garment_factory()
         query = Garment.objects.all()
 
         query_filter = FormalityQueryFilter()
-        profile = PipelineProfile()
+        profile = pipeline_profile_factory()
 
         with query_filter.apply_to_profile(profile) as filter_fn:
             result = filter_fn(query)
@@ -26,7 +25,7 @@ class TestFormalityQueryFilter:
         assert query.count() == 2
         assert result.count() == 2
 
-    def test_apply_exclusion(self, basic_factory, formality_factory, garment_factory):
+    def test_apply_exclusion(self, basic_factory, formality_factory, garment_factory, pipeline_profile_factory):
         """It excludes garments whose basic type is inappropriate for the user's formality."""
         casual = formality_factory(slug='casual')
         executive = formality_factory(slug='executive')
@@ -47,15 +46,15 @@ class TestFormalityQueryFilter:
         Propriety.objects.create(basic=dress_basic, formality=executive, importance=PROPRIETY_IMPORTANCES['MILDLY'])
         Propriety.objects.create(basic=dress_basic, formality=casual, importance=PROPRIETY_IMPORTANCES['MILDLY'])
 
-        casual_profile = PipelineProfile(expectations={
+        casual_profile = pipeline_profile_factory(expectations={
             'casual': EXPECTATION_FREQUENCIES['ALWAYS'],
             'executive': EXPECTATION_FREQUENCIES['NEVER']
         })
-        executive_profile = PipelineProfile(expectations={
+        executive_profile = pipeline_profile_factory(expectations={
             'casual': EXPECTATION_FREQUENCIES['NEVER'],
             'executive': EXPECTATION_FREQUENCIES['ALWAYS']
         })
-        mixed_profile = PipelineProfile(expectations={
+        mixed_profile = pipeline_profile_factory(expectations={
             'casual': EXPECTATION_FREQUENCIES['SOMETIMES'],
             'executive': EXPECTATION_FREQUENCIES['SOMETIMES']
         })

@@ -28,7 +28,7 @@ class AgeWeight(BaseWeight):
 
     def provide_profile_data(self, profile):
         return {
-            'age': profile.age
+            'age': profile['age']
         }
 
     def apply(self, garment, age=None):

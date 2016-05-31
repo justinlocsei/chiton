@@ -63,7 +63,7 @@ def package_wardrobe_profile(profile):
         expectations[expectation.formality.slug] = expectation.frequency
     data['expectations'] = expectations
 
-    return PipelineProfile(**data)
+    return PipelineProfile(data)
 
 
 def serialize_recommendations(recommendations):

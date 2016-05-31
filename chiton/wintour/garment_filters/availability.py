@@ -16,7 +16,7 @@ class AvailabilityGarmentFilter(BaseGarmentFilter):
         # least one available size that matches the user's sizes
         in_stock_records = (
             StockRecord.objects
-            .filter(size__slug__in=profile.sizes, is_available=True)
+            .filter(size__slug__in=profile['sizes'], is_available=True)
             .select_related('item')
         )
         for record in in_stock_records:

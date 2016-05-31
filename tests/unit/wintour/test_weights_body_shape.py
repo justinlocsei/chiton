@@ -3,7 +3,6 @@ import pytest
 from chiton.closet.data import EMPHASES, PANT_RISES
 from chiton.core.exceptions import ConfigurationError
 from chiton.wintour.data import BODY_SHAPES, IMPORTANCES
-from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.weights.body_shape import BodyShapeWeight
 
 
@@ -71,13 +70,13 @@ class TestBodyShapeWeight:
                 BODY_SHAPES['APPLE']: metrics_factory({'pant_rises': ('invalid',)})
             })
 
-    def test_matches_emphasis(self, garment_factory, metrics_factory):
+    def test_matches_emphasis(self, garment_factory, metrics_factory, pipeline_profile_factory):
         """It applies weights based on how ideally a garment's body-part emphasis matches the ideal."""
         weak_hip = garment_factory(hip_emphasis=EMPHASES['WEAK'])
         neutral_hip = garment_factory(hip_emphasis=EMPHASES['NEUTRAL'])
         strong_hip = garment_factory(hip_emphasis=EMPHASES['STRONG'])
 
-        profile = PipelineProfile(body_shape=BODY_SHAPES['PEAR'])
+        profile = pipeline_profile_factory(body_shape=BODY_SHAPES['PEAR'])
         weight = BodyShapeWeight(metrics={
             BODY_SHAPES['PEAR']: metrics_factory({
                 'hip': {
@@ -95,13 +94,13 @@ class TestBodyShapeWeight:
         assert weak_result > neutral_result > strong_result
         assert strong_result
 
-    def test_matches_emphasis_midpoint(self, garment_factory, metrics_factory):
+    def test_matches_emphasis_midpoint(self, garment_factory, metrics_factory, pipeline_profile_factory):
         """It applies equal, lesser weights to misses when a neutral emphasis is ideal."""
         weak_shoulders = garment_factory(shoulder_emphasis=EMPHASES['WEAK'])
         neutral_shoulders = garment_factory(shoulder_emphasis=EMPHASES['NEUTRAL'])
         strong_shoulders = garment_factory(shoulder_emphasis=EMPHASES['STRONG'])
 
-        profile = PipelineProfile(body_shape=BODY_SHAPES['PEAR'])
+        profile = pipeline_profile_factory(body_shape=BODY_SHAPES['PEAR'])
         weight = BodyShapeWeight(metrics={
             BODY_SHAPES['PEAR']: metrics_factory({
                 'shoulder': {
@@ -121,10 +120,10 @@ class TestBodyShapeWeight:
         assert weak_result == strong_result
         assert weak_result
 
-    def test_matches_emphasis_importance(self, garment_factory, metrics_factory):
+    def test_matches_emphasis_importance(self, garment_factory, metrics_factory, pipeline_profile_factory):
         """It modifies emphasis weights based on their importance."""
         neutral_waist = garment_factory(waist_emphasis=EMPHASES['NEUTRAL'])
-        profile = PipelineProfile(body_shape=BODY_SHAPES['PEAR'])
+        profile = pipeline_profile_factory(body_shape=BODY_SHAPES['PEAR'])
 
         results = {}
         for importance in ('low', 'medium', 'high'):
@@ -143,13 +142,13 @@ class TestBodyShapeWeight:
         assert results['low'] < results['medium'] < results['high']
         assert results['low']
 
-    def test_matches_pant_rises(self, garment_factory, metrics_factory):
+    def test_matches_pant_rises(self, garment_factory, metrics_factory, pipeline_profile_factory):
         """It adds a constant weight for garments whose pant rise flatters the user's body shape."""
         low_rise = garment_factory(pant_rise=PANT_RISES['LOW'])
         normal_rise = garment_factory(pant_rise=PANT_RISES['NORMAL'])
         high_rise = garment_factory(pant_rise=PANT_RISES['HIGH'])
 
-        profile = PipelineProfile(body_shape=BODY_SHAPES['PEAR'])
+        profile = pipeline_profile_factory(body_shape=BODY_SHAPES['PEAR'])
         weight = BodyShapeWeight(metrics={
             BODY_SHAPES['PEAR']: metrics_factory({
                 'pant_rises': (PANT_RISES['LOW'], PANT_RISES['NORMAL'])
@@ -164,12 +163,12 @@ class TestBodyShapeWeight:
         assert low_result == normal_result
         assert high_result < low_result
 
-    def test_matches_metrics_shape(self, garment_factory, metrics_factory):
+    def test_matches_metrics_shape(self, garment_factory, metrics_factory, pipeline_profile_factory):
         """It uses shape-specific metrics to make recommendations."""
         neutral_waist = garment_factory(waist_emphasis=EMPHASES['NEUTRAL'])
 
-        pear_profile = PipelineProfile(body_shape=BODY_SHAPES['PEAR'])
-        apple_profile = PipelineProfile(body_shape=BODY_SHAPES['APPLE'])
+        pear_profile = pipeline_profile_factory(body_shape=BODY_SHAPES['PEAR'])
+        apple_profile = pipeline_profile_factory(body_shape=BODY_SHAPES['APPLE'])
 
         weight = BodyShapeWeight(metrics={
             BODY_SHAPES['APPLE']: metrics_factory({
@@ -195,7 +194,7 @@ class TestBodyShapeWeight:
         assert pear_result > apple_result
         assert apple_result
 
-    def test_debug(self, garment_factory, metrics_factory):
+    def test_debug(self, garment_factory, metrics_factory, pipeline_profile_factory):
         """It logs explanations for all garments, with more messages for pant-rise matches."""
         garment_shape = garment_factory(hip_emphasis=EMPHASES['STRONG'])
         garment_pants = garment_factory(pant_rise=PANT_RISES['LOW'])
@@ -211,7 +210,7 @@ class TestBodyShapeWeight:
         })
         weight.debug = True
 
-        profile = PipelineProfile(body_shape=BODY_SHAPES['HOURGLASS'])
+        profile = pipeline_profile_factory(body_shape=BODY_SHAPES['HOURGLASS'])
         with weight.apply_to_profile(profile) as apply_fn:
             apply_fn(garment_shape)
             apply_fn(garment_pants)
@@ -223,7 +222,7 @@ class TestBodyShapeWeight:
         assert pant_messages
         assert len(pant_messages) > len(shape_messages)
 
-    def test_debug_flag(self, garment_factory, metrics_factory):
+    def test_debug_flag(self, garment_factory, metrics_factory, pipeline_profile_factory):
         """It does not log explanations when debug mode is not enabled."""
         garment = garment_factory(pant_rise=PANT_RISES['LOW'])
 
@@ -233,7 +232,7 @@ class TestBodyShapeWeight:
             })
         })
 
-        profile = PipelineProfile(body_shape=BODY_SHAPES['HOURGLASS'])
+        profile = pipeline_profile_factory(body_shape=BODY_SHAPES['HOURGLASS'])
         with weight.apply_to_profile(profile) as apply_fn:
             apply_fn(garment)
 

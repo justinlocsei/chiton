@@ -98,7 +98,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         for style in Style.objects.all():
             selected = False
             if profile:
-                selected = style.slug in profile.styles
+                selected = style.slug in profile['styles']
 
             styles.append({
                 'name': style.name,
@@ -111,7 +111,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         for formality in Formality.objects.all():
             frequency = None
             if profile:
-                frequency = profile.expectations.get(formality.slug, None)
+                frequency = profile['expectations'].get(formality.slug, None)
 
             formalities.append({
                 'frequency': frequency,
@@ -200,14 +200,14 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 formality_slug = formality_match.group(1)
                 expectations[formality_slug] = get_data[param]
 
-        return PipelineProfile(
-            age=int(get_data['age']),
-            avoid_care=get_data.getlist('avoid_care'),
-            body_shape=get_data['body_shape'],
-            expectations=expectations,
-            sizes=get_data.getlist('size'),
-            styles=get_data.getlist('style')
-        )
+        return PipelineProfile({
+            'age': int(get_data['age']),
+            'avoid_care': get_data.getlist('avoid_care'),
+            'body_shape': get_data['body_shape'],
+            'expectations': expectations,
+            'sizes': get_data.getlist('size'),
+            'styles': get_data.getlist('style')
+        })
 
     def _add_admin_urls_to_recs(self, recs):
         """Add admin-site URLs to each garment in a recommendations dict."""

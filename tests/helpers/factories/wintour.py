@@ -1,9 +1,38 @@
 from faker import Faker
 
-from chiton.wintour.data import BODY_SHAPES
+from chiton.closet.data import CARE_TYPES
+from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
+from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.models import WardrobeProfile
 
 fake = Faker()
+
+
+def pipeline_profile_factory():
+    def create_pipeline_profile(age=50, avoid_care=None, body_shape=BODY_SHAPES['APPLE'], expectations=None, sizes=None, styles=None):
+        if not sizes:
+            sizes = [fake.slug()]
+
+        if not styles:
+            styles = [fake.slug()]
+
+        if not expectations:
+            expectations = {
+                fake.slug(): EXPECTATION_FREQUENCIES['SOMETIMES']
+            }
+
+        data = {
+            'age': age,
+            'avoid_care': avoid_care or [CARE_TYPES['HAND_WASH']],
+            'body_shape': body_shape,
+            'expectations': expectations,
+            'sizes': sizes,
+            'styles': styles
+        }
+
+        return PipelineProfile(data)
+
+    return create_pipeline_profile
 
 
 def wardrobe_profile_factory(standard_size_factory, style_factory):

@@ -31,7 +31,7 @@ class StyleWeight(BaseWeight):
 
         return {
             'garment_styles': garment_styles,
-            'profile_styles': set(profile.styles),
+            'profile_styles': set(profile['styles']),
             'style_names': style_names
         }
 

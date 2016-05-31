@@ -28,7 +28,7 @@ class FormalityQueryFilter(BaseQueryFilter):
 
         return {
             'cutoff': cutoff,
-            'expectations': profile.expectations,
+            'expectations': profile['expectations'],
             'formality_count': Formality.objects.count(),
             'weights': {
                 'formality': self._build_formality_weights_lookup(importance_weights),
@@ -47,7 +47,7 @@ class FormalityQueryFilter(BaseQueryFilter):
         basic_exclusions = {}
         for formality_slug, frequency in expectations.items():
             frequency_weight = frequency_weights[frequency]
-            for basic_pk, basic_weight in formality_weights[formality_slug].items():
+            for basic_pk, basic_weight in formality_weights.get(formality_slug, {}).items():
                 total_weight = basic_weight * frequency_weight
                 if total_weight < cutoff:
                     basic_exclusions.setdefault(basic_pk, 0)

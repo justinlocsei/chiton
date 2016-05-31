@@ -1,7 +1,6 @@
 import pytest
 
 from chiton.closet.models import Garment
-from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.weights.age import AgeWeight
 
 
@@ -25,16 +24,16 @@ class TestAgeWeight:
         assert garments.count() == 2
         assert prepared.count() == 2
 
-    def test_outside_range(self, garment_40_to_50):
+    def test_outside_range(self, garment_40_to_50, pipeline_profile_factory):
         """It returns a null weight when a garment's brand's age range is well outside the user's age."""
-        profile = PipelineProfile(age=30)
+        profile = pipeline_profile_factory(age=30)
         weight = AgeWeight(tail_years=5)
 
         with weight.apply_to_profile(profile) as apply_fn:
             result = apply_fn(garment_40_to_50)
             assert not result
 
-    def test_inside_range(self, garment_40_to_50):
+    def test_inside_range(self, garment_40_to_50, pipeline_profile_factory):
         """It applies weight to garments whose brand's age range is inside of or near the user's age."""
         weight = AgeWeight(tail_years=5)
 
@@ -52,7 +51,7 @@ class TestAgeWeight:
 
         results = {}
         for label, age in ages.items():
-            profile = PipelineProfile(age=age)
+            profile = pipeline_profile_factory(age=age)
             with weight.apply_to_profile(profile) as apply_fn:
                 results[label] = apply_fn(garment_40_to_50)
 
@@ -67,12 +66,12 @@ class TestAgeWeight:
         assert results['in_lower_tail'] < results['in_lower']
         assert results['in_upper_tail'] < results['in_upper']
 
-    def test_inside_range_tail(self, garment_40_to_50):
+    def test_inside_range_tail(self, garment_40_to_50, pipeline_profile_factory):
         """It allows the tail range in years to be configurable."""
         weight_long_tail = AgeWeight(tail_years=10)
         weight_short_tail = AgeWeight(tail_years=1)
 
-        profile = PipelineProfile(age=35)
+        profile = pipeline_profile_factory(age=35)
 
         with weight_long_tail.apply_to_profile(profile) as apply_fn:
             result_long_tail = apply_fn(garment_40_to_50)
@@ -83,7 +82,7 @@ class TestAgeWeight:
         assert not result_short_tail
         assert result_long_tail
 
-    def test_debug(self, brand_factory, garment_factory):
+    def test_debug(self, brand_factory, garment_factory, pipeline_profile_factory):
         """It logs explanations for any garments that receive an age weight."""
         young_brand = brand_factory(age_lower=20, age_upper=30)
         mature_brand = brand_factory(age_lower=35, age_upper=40)
@@ -96,7 +95,7 @@ class TestAgeWeight:
         weight = AgeWeight(tail_years=10)
         weight.debug = True
 
-        profile = PipelineProfile(age=25)
+        profile = pipeline_profile_factory(age=25)
 
         with weight.apply_to_profile(profile) as apply_fn:
             apply_fn(garment_young)
@@ -107,9 +106,9 @@ class TestAgeWeight:
         assert weight.get_explanations(garment_mature)
         assert not weight.get_explanations(garment_old)
 
-    def test_debug_flag(self, garment_40_to_50):
+    def test_debug_flag(self, garment_40_to_50, pipeline_profile_factory):
         """It does not log explanations when debug mode is not enabled."""
-        profile = PipelineProfile(age=45)
+        profile = pipeline_profile_factory(age=45)
 
         weight = AgeWeight()
         with weight.apply_to_profile(profile) as apply_fn:
