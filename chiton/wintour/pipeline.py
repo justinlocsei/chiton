@@ -1,27 +1,21 @@
 from contextlib import contextmanager
 from functools import partial
 
+import voluptuous as V
 
-class PipelineProfile:
-    """A value object that represents a profile for user in a pipeline."""
+from chiton.closet.data import CARE_TYPES
+from chiton.core.schema import define_data_shape, OneOf
+from chiton.wintour.data import BODY_SHAPES
 
-    def __init__(self, age=None, avoid_care=[], body_shape=None, expectations={}, sizes=[], styles=[]):
-        """Create a new pipeline profile.
 
-        Keyword Args:
-            age (int): The age of the user
-            avoid_care (list): Identifiers for care instructions to avoid
-            body_shape (str): The identifier for the user's body shape
-            expectations (dict): A dict mapping formality slugs to frequency identifiers
-            size (list): A list of the slugs of all target sizes
-            styles (list): A list of the slugs of all target styles
-        """
-        self.age = age
-        self.avoid_care = avoid_care
-        self.body_shape = body_shape
-        self.sizes = sizes
-        self.styles = styles
-        self.expectations = expectations
+PipelineProfile = define_data_shape({
+    V.Required('age'): int,
+    V.Required('avoid_care'): list(CARE_TYPES.values()),
+    V.Required('body_shape'): OneOf(BODY_SHAPES.values()),
+    V.Required('expectations'): dict,
+    V.Required('sizes'): [str],
+    V.Required('styles'): [str]
+})
 
 
 class PipelineStep:
