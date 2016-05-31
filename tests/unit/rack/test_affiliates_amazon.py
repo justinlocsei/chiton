@@ -13,16 +13,16 @@ class TestAmazonAffiliate:
         with amazon_api_request():
             overview = Affiliate().request_overview('http://www.amazon.com/dp/B00ZGRB7S6')
 
-        assert overview.guid == 'B00ZGRB7S6'
-        assert overview.name == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red'
+        assert overview['guid'] == 'B00ZGRB7S6'
+        assert overview['name'] == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red'
 
     def test_request_overview_valid_asin_parent_asin(self, amazon_api_request):
         """It returns the parent ASIN when given the URL for a child item."""
         with amazon_api_request():
             overview = Affiliate().request_overview('http://www.amazon.com/dp/B00ZGRB7UO')
 
-        assert overview.guid == 'B00ZGRB7S6'
-        assert overview.name == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red (16)'
+        assert overview['guid'] == 'B00ZGRB7S6'
+        assert overview['name'] == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red (16)'
 
     def test_request_overview_invalid_asin(self, amazon_api_request):
         """It raises an error when an invalid ASIN is used."""
@@ -46,7 +46,7 @@ class TestAmazonAffiliate:
         with amazon_api_request():
             details = Affiliate().request_details('B00ZGRB7S6')
 
-        assert details.name == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red'
+        assert details['name'] == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red'
 
     def test_request_details_price(self, amazon_api_request):
         """It returns the average price of all item offers."""
@@ -56,12 +56,12 @@ class TestAmazonAffiliate:
             raw = affiliate.request_raw('B00ZGRB7S6')
             details = affiliate.request_details('B00ZGRB7S6')
 
-        assert details.price == Decimal('69.99')
+        assert details['price'] == Decimal('69.99')
 
         prices = raw['Item']['VariationSummary']
         low_price = int(prices['LowestPrice']['Amount'])
         high_price = int(prices['HighestPrice']['Amount'])
-        avg_price = int(details.price * 100)
+        avg_price = int(details['price'] * 100)
 
         assert low_price <= avg_price <= high_price
 
@@ -70,11 +70,11 @@ class TestAmazonAffiliate:
         with amazon_api_request():
             details = Affiliate().request_details('B00YJJ4SNS')
 
-        assert '.jpg' in details.image.url
-        assert '.jpg' in details.thumbnail.url
+        assert '.jpg' in details['image']['url']
+        assert '.jpg' in details['thumbnail']['url']
 
-        assert details.image.width > details.thumbnail.width
-        assert details.image.height > details.thumbnail.height
+        assert details['image']['width'] > details['thumbnail']['width']
+        assert details['image']['height'] > details['thumbnail']['height']
 
     def test_request_details_image_color(self, amazon_api_request):
         """It returns color-specific images when possible."""
@@ -85,16 +85,16 @@ class TestAmazonAffiliate:
             green = affiliate.request_details('B00YJJ4SNS', colors=['Green'])
             missing = affiliate.request_details('B00YJJ4SNS', colors=['Orange Green'])
 
-        assert '.jpg' in default.image.url
-        assert '.jpg' in default.thumbnail.url
-        assert '.jpg' in green.image.url
-        assert '.jpg' in green.image.url
+        assert '.jpg' in default['image']['url']
+        assert '.jpg' in default['thumbnail']['url']
+        assert '.jpg' in green['image']['url']
+        assert '.jpg' in green['image']['url']
 
-        assert default.image.url != green.image.url
-        assert default.thumbnail.url != green.thumbnail.url
+        assert default['image']['url'] != green['image']['url']
+        assert default['thumbnail']['url'] != green['thumbnail']['url']
 
-        assert default.image.url == missing.image.url
-        assert default.thumbnail.url == missing.thumbnail.url
+        assert default['image']['url'] == missing['image']['url']
+        assert default['thumbnail']['url'] == missing['thumbnail']['url']
 
     def test_request_details_image_color_preference(self, amazon_api_request):
         """It gets the image for the first color in the list."""
@@ -106,28 +106,28 @@ class TestAmazonAffiliate:
             black_first = affiliate.request_details('B00YJJ4SNS', colors=['Black', 'Green'])
             green_first = affiliate.request_details('B00YJJ4SNS', colors=['Green', 'Black'])
 
-        assert black.image.url != green.image.url
-        assert black.thumbnail.url != green.thumbnail.url
+        assert black['image']['url'] != green['image']['url']
+        assert black['thumbnail']['url'] != green['thumbnail']['url']
 
-        assert green_first.image.url == green.image.url
-        assert green_first.thumbnail.url == green.thumbnail.url
-        assert black_first.image.url == black.image.url
-        assert black_first.thumbnail.url == black.thumbnail.url
+        assert green_first['image']['url'] == green['image']['url']
+        assert green_first['thumbnail']['url'] == green['thumbnail']['url']
+        assert black_first['image']['url'] == black['image']['url']
+        assert black_first['thumbnail']['url'] == black['thumbnail']['url']
 
     def test_request_details_image_incomplete(self, amazon_api_request):
         """It handles item variations that lack full image sets for a requested color."""
         with amazon_api_request():
             details = Affiliate().request_details('B00NZJJM1Q', colors=['Black'])
 
-        assert '.jpg' in details.image.url
-        assert '.jpg' in details.thumbnail.url
+        assert '.jpg' in details['image']['url']
+        assert '.jpg' in details['thumbnail']['url']
 
     def test_request_details_availability(self, amazon_api_request):
         """It marks every item as globally available."""
         with amazon_api_request():
             details = Affiliate().request_details('B00ZGRB7S6')
 
-        assert details.availability is True
+        assert details['availability'] is True
 
     def test_request_details_valid_asin_child(self, amazon_api_request):
         """It raises an error when requesting details for a child item."""

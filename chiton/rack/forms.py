@@ -41,9 +41,9 @@ class AffiliateItemURLForm(forms.ModelForm):
             affiliate = create_affiliate(slug=network.slug)
 
             try:
-                response = affiliate.request_overview(url)
+                overview = affiliate.request_overview(url)
             except LookupError as e:
                 raise forms.ValidationError(str(e))
 
-            self.cleaned_data['guid'] = response.guid
-            self.cleaned_data['name'] = response.name
+            self.cleaned_data['guid'] = overview['guid']
+            self.cleaned_data['name'] = overview['name']

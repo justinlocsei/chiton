@@ -28,8 +28,8 @@ class TestBaseAffiliate:
 
         overview = Child().request_overview('test-url')
 
-        assert overview.guid == 'test-url'
-        assert overview.name == 'Test'
+        assert overview['guid'] == 'test-url'
+        assert overview['name'] == 'Test'
 
     def test_request_overview_format(self):
         """It ensures that a child affiliate's overview has all required fields."""
@@ -65,23 +65,23 @@ class TestBaseAffiliate:
         without_color = affiliate.request_details('guid')
         with_color = affiliate.request_details('guid', colors=['Black'])
 
-        assert without_color.price == Decimal('12.99')
-        assert with_color.price == Decimal('12.99')
-        assert without_color.name == 'Item Name'
-        assert with_color.name == 'Item Name'
-        assert without_color.availability
-        assert with_color.availability
+        assert without_color['price'] == Decimal('12.99')
+        assert with_color['price'] == Decimal('12.99')
+        assert without_color['name'] == 'Item Name'
+        assert with_color['name'] == 'Item Name'
+        assert without_color['availability']
+        assert with_color['availability']
 
-        assert without_color.image.height == 100
-        assert without_color.image.width == 100
-        assert without_color.thumbnail.height == 50
-        assert without_color.thumbnail.width == 50
+        assert without_color['image']['height'] == 100
+        assert without_color['image']['width'] == 100
+        assert without_color['thumbnail']['height'] == 50
+        assert without_color['thumbnail']['width'] == 50
 
-        assert without_color.image.url == 'http://guidNone.com'
-        assert without_color.thumbnail.url == 'http://guidNone.net'
+        assert without_color['image']['url'] == 'http://guidNone.com'
+        assert without_color['thumbnail']['url'] == 'http://guidNone.net'
 
-        assert with_color.image.url == 'http://guidBlack.com'
-        assert with_color.thumbnail.url == 'http://guidBlack.net'
+        assert with_color['image']['url'] == 'http://guidBlack.com'
+        assert with_color['thumbnail']['url'] == 'http://guidBlack.net'
 
     def test_request_details_availability(self):
         """It accepts either a boolean or a list for availability."""
@@ -106,17 +106,17 @@ class TestBaseAffiliate:
         affiliate = Child()
 
         is_available = affiliate.request_details(True)
-        assert is_available.availability is True
+        assert is_available['availability'] is True
 
         is_unavailable = affiliate.request_details(False)
-        assert is_unavailable.availability is False
+        assert is_unavailable['availability'] is False
 
         with_availability = affiliate.request_details([
             {'size': 8, 'is_regular': True},
             {'size': 10, 'is_regular': True}
         ])
-        assert len(with_availability.availability) == 2
-        assert set([a.size for a in with_availability.availability]) == set([8, 10])
+        assert len(with_availability['availability']) == 2
+        assert set([a['size'] for a in with_availability['availability']]) == set([8, 10])
 
         with pytest.raises(LookupError):
             affiliate.request_details([{'invalid': 'field'}])

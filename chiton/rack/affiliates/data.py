@@ -18,8 +18,8 @@ def update_affiliate_item_metadata(item):
     affiliate = create_affiliate(slug=item.network.slug)
 
     overview = affiliate.request_overview(item.url)
-    item.guid = overview.guid
-    item.name = overview.name
+    item.guid = overview['guid']
+    item.name = overview['name']
 
     item.save()
     return item
@@ -55,11 +55,11 @@ def update_affiliate_item_details(item):
 
     details = affiliate.request_details(item.guid, colors=color_names)
 
-    item.name = details.name
-    item.price = details.price
-    _update_item_image(item, 'image', details.image)
-    _update_item_image(item, 'thumbnail', details.thumbnail)
-    _update_stock_records(item, details.availability)
+    item.name = details['name']
+    item.price = details['price']
+    _update_item_image(item, 'image', details['image'])
+    _update_item_image(item, 'thumbnail', details['thumbnail'])
+    _update_stock_records(item, details['availability'])
 
     item.save()
     return item
@@ -76,15 +76,15 @@ def _update_item_image(item, image_field, data):
     image = getattr(item, image_field)
 
     if image:
-        image.height = data.height
-        image.width = data.width
-        image.url = data.url
+        image.height = data['height']
+        image.width = data['width']
+        image.url = data['url']
         image.save()
     else:
         image = ProductImage.objects.create(
-            height=data.height,
-            width=data.width,
-            url=data.url
+            height=data['height'],
+            width=data['width'],
+            url=data['url']
         )
         setattr(item, image_field, image)
 
@@ -147,11 +147,11 @@ def _update_stock_records(item, availability):
             for record in availability:
                 matches = [
                     size for size in type_sizes
-                    if record.is_regular == size.is_regular
-                    and record.is_petite == size.is_petite
-                    and record.is_tall == size.is_tall
-                    and record.is_plus_sized == size.is_plus_sized
-                    and size.canonical.range_lower <= record.size <= size.canonical.range_upper
+                    if record['is_regular'] == size.is_regular
+                    and record['is_petite'] == size.is_petite
+                    and record['is_tall'] == size.is_tall
+                    and record['is_plus_sized'] == size.is_plus_sized
+                    and size.canonical.range_lower <= record['size'] <= size.canonical.range_upper
                 ]
                 if len(matches) == 1:
                     reported_sizes.add(matches[0])

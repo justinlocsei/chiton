@@ -1,5 +1,6 @@
-from chiton.rack.affiliates.exceptions import ConfigurationError, LookupError
-from chiton.rack.affiliates.responses import ItemDetails, ItemOverview
+from chiton.core.exceptions import FormatError
+from chiton.rack.affiliates.exceptions import LookupError
+from chiton.rack.affiliates.responses import ItemAvailability, ItemDetails, ItemOverview
 
 
 class Affiliate:
@@ -28,8 +29,8 @@ class Affiliate:
         data = self.provide_overview(url)
 
         try:
-            return ItemOverview(**data)
-        except ConfigurationError as e:
+            return ItemOverview(data)
+        except FormatError as e:
             raise LookupError('Incorrect overview format: %s' % e)
 
     def request_details(self, guid, colors=[]):
@@ -50,9 +51,20 @@ class Affiliate:
         data = self.provide_details(guid, colors)
 
         try:
-            return ItemDetails(**data)
-        except ConfigurationError as e:
+            details = ItemDetails(data)
+        except FormatError as e:
             raise LookupError('Incorrect details format: %s' % e)
+
+        if not isinstance(details['availability'], bool) and details['availability']:
+            try:
+                details['availability'] = [
+                    ItemAvailability(record)
+                    for record in details['availability']
+                ]
+            except FormatError as e:
+                raise LookupError('Incorrect availability format: %s' % e)
+
+        return details
 
     def request_raw(self, guid):
         """Request the raw API response for an item.
@@ -76,35 +88,23 @@ class Affiliate:
     def provide_overview(self, url):
         """Allow a child affiliate to return an item's overview.
 
-        The returned dict should provide the following information:
-
-            name - The name of the item
-            guid - The GUID of the item
-
         Args:
             url (str): The item's URL
 
         Returns:
-            dict: Information on the item's overview
+            chiton.rack.affiliates.responses.ItemOverview: Information on the item's overview
         """
         raise NotImplementedError()
 
     def provide_details(self, guid, colors):
         """Allow a child affiliate to return an item's details.
 
-        The returned dict should provide the following information:
-
-            availability - An optional list of availability details
-            image        - Information on the item's primary image
-            price        - A decimal of the item's price
-            thumbnail    - Information on the item's thumbnail image
-
         Args:
             guid (str): The item's GUID
             colors (list): The names of the item's colors
 
         Returns:
-            dict: Information on the item's overview
+            chiton.rack.affiliates.responses.ItemDetails: Information on the item's overview
         """
         raise NotImplementedError()
 

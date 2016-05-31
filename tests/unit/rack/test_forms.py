@@ -39,7 +39,7 @@ class TestAffiliateItemURLForm:
         with mock.patch('chiton.rack.forms.create_affiliate') as create_affiliate:
             affiliate = mock.MagicMock()
             affiliate.request_overview = mock.MagicMock()
-            affiliate.request_overview.return_value = ItemOverview(guid='guid', name='name')
+            affiliate.request_overview.return_value = ItemOverview({'guid': 'guid', 'name': 'name'})
             create_affiliate.return_value = affiliate
 
             assert form.is_valid()
