@@ -49,7 +49,7 @@ class PriceFacet(BaseFacet):
                 continue
 
             garment_price = total_price / len(priced_items)
-            if garment_price <= cutoffs['low']:
+            if garment_price < cutoffs['low']:
                 group_slug = GROUP_LOW
             elif garment_price >= cutoffs['high']:
                 group_slug = GROUP_HIGH
