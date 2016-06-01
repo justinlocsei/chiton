@@ -73,7 +73,7 @@ def serialize_recommendations(recommendations):
         recommendations (dict): A dict of recommendations with model instances
 
     Returns:
-        dict: The recommenations as a dict of primitives
+        dict: The recommendations as a dict of primitives
     """
     basics = {}
 

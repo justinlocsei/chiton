@@ -1,5 +1,6 @@
 from chiton.runway.models import Basic
 from chiton.wintour.facets import BaseFacet
+from chiton.wintour.pipeline import FacetGroup
 
 
 # The order of the prices groups, by slug
@@ -55,10 +56,10 @@ class PriceFacet(BaseFacet):
         facets = []
         for group_slug in PRICE_GROUP_ORDER:
             garment_ids = groups[group_slug]
-            facets.append({
+            facets.append(FacetGroup({
                 'count': len(garment_ids),
                 'garment_ids': garment_ids,
                 'slug': group_slug
-            })
+            }))
 
         return facets

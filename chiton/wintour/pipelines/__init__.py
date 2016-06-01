@@ -3,6 +3,7 @@ from operator import itemgetter
 
 from chiton.closet.models import Garment
 from chiton.rack.models import AffiliateItem
+from chiton.wintour.pipeline import BasicRecommendations, GarmentRecommendation
 
 
 class BasePipeline:
@@ -263,10 +264,10 @@ class BasePipeline:
         and supplemental garment data.
 
         Args:
-            dict: A mapping between garment instance and weight/debug information
+            dict: A mapping between garment instances and weight/debug information
 
         Returns:
-            dict: A mapping between basic instances and annotated garment instances
+            dict: A mapping between basic instances and garment recommendations
         """
         by_basic = {}
         max_weight = 0
@@ -286,12 +287,12 @@ class BasePipeline:
             if garment in by_basic[garment.basic]:
                 by_basic[garment.basic][garment]['affiliate_items'].append(affiliate_item)
             else:
-                by_basic[garment.basic][garment] = {
+                by_basic[garment.basic][garment] = GarmentRecommendation({
                     'affiliate_items': [affiliate_item],
                     'explanations': garment_data['explanations'],
                     'garment': garment,
                     'weight': garment_data['weight']
-                }
+                })
 
         # Update all weights to use floating-point percentages calibrated
         # against the maximum total weight
@@ -310,7 +311,7 @@ class BasePipeline:
             garments_by_basic (dict): A mapping of basic instances to annotated garment instances
 
         Returns:
-            dict: A mapping between basics and facet/garment data
+            dict: A mapping between basic instances and recommendations
         """
         faceted = {}
 
@@ -318,10 +319,10 @@ class BasePipeline:
         # for the faceted data
         weight_fetcher = itemgetter('weight')
         for basic, weighted_garments in garments_by_basic.items():
-            faceted[basic] = {
+            faceted[basic] = BasicRecommendations({
                 'facets': {},
                 'garments': sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
-            }
+            })
 
         # Apply all facets to the data
         for facet in facets:

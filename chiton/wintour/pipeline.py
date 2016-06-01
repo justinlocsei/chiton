@@ -4,7 +4,9 @@ from functools import partial
 import voluptuous as V
 
 from chiton.closet.data import CARE_TYPES
+from chiton.closet.models import Garment
 from chiton.core.schema import define_data_shape, OneOf
+from chiton.rack.models import AffiliateItem
 from chiton.wintour.data import BODY_SHAPES
 
 
@@ -16,6 +18,40 @@ PipelineProfile = define_data_shape({
     V.Required('sizes'): [str],
     V.Required('styles'): [str]
 })
+
+
+FacetGroup = define_data_shape({
+    V.Required('count'): int,
+    V.Required('garment_ids'): [int],
+    V.Required('slug'): str
+}, validated=False)
+
+
+GarmentRecommendation = define_data_shape({
+    V.Required('affiliate_items'): [AffiliateItem],
+    V.Required('explanations'): {
+        V.Required('weights'): [{
+            V.Required('name'): str,
+            V.Required('reasons'): [{
+                V.Required('reason'): str,
+                V.Required('weight'): V.Any(float, int)
+            }]
+        }],
+        V.Required('normalization'): [{
+            V.Required('importance'): V.Any(float, int),
+            V.Required('name'): str,
+            V.Required('weight'): V.Any(float, int)
+        }]
+    },
+    V.Required('garment'): Garment,
+    V.Required('weight'): V.Any(float, int)
+}, validated=False)
+
+
+BasicRecommendations = define_data_shape({
+    V.Required('facets'): dict,
+    V.Required('garments'): [GarmentRecommendation]
+}, validated=False)
 
 
 class PipelineStep:
