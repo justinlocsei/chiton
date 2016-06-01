@@ -32,6 +32,28 @@ class TestDefineDataShape:
 
         assert 'bmi' in str(validation_error)
 
+    def test_validation_disabled_global(self):
+        """It can disable validation by default at a global level."""
+        create_and_validate = define_data_shape({'age': int})
+        create_and_ignore = define_data_shape({'age': int}, validated=False)
+
+        with pytest.raises(FormatError):
+            create_and_validate({'age': '10'})
+
+        ignored = create_and_ignore({'age': '10'})
+        assert ignored['age'] == '10'
+
+    def test_validation_disabled_local(self):
+        """It can disable validation by default on a per-call basis."""
+        create_and_validate = define_data_shape({'age': int})
+        create_and_ignore = define_data_shape({'age': int}, validated=False)
+
+        with pytest.raises(FormatError):
+            create_and_ignore({'age': '10'}, validate=True)
+
+        ignored = create_and_validate({'age': '10'}, validate=False)
+        assert ignored['age'] == '10'
+
     def test_defaults(self):
         """It accepts default values."""
         create_person = define_data_shape(

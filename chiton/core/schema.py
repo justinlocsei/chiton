@@ -3,7 +3,7 @@ import voluptuous as V
 from chiton.core.exceptions import FormatError
 
 
-def define_data_shape(schema, defaults=None):
+def define_data_shape(schema, defaults=None, validated=True):
     """Create a function that validates a dict according to a schema.
 
     If the dict given to the generated function is valid, it will be returned
@@ -14,11 +14,15 @@ def define_data_shape(schema, defaults=None):
 
     Keyword Args:
         defaults (dict): Default values to apply to the input
+        validated (bool): Whether the data should be validated by default
 
     Returns:
         function: A function that creates and validates a dict according to the schema
     """
-    def validate(data={}):
+    def validate_data(data={}, validate=validated):
+        if not validate:
+            return data
+
         if defaults:
             base = defaults.copy()
             base.update(data)
@@ -31,7 +35,7 @@ def define_data_shape(schema, defaults=None):
         else:
             return data
 
-    return validate
+    return validate_data
 
 
 def OneOf(choices):
