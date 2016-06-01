@@ -29,7 +29,7 @@ FacetGroup = define_data_shape({
 
 GarmentRecommendation = define_data_shape({
     V.Required('affiliate_items'): [AffiliateItem],
-    V.Required('explanations'): {
+    'explanations': {
         V.Required('weights'): [{
             V.Required('name'): str,
             V.Required('reasons'): [{
