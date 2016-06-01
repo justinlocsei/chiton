@@ -3,8 +3,14 @@ from chiton.wintour.facets import BaseFacet
 from chiton.wintour.pipeline import FacetGroup
 
 
+# The slugs of all available price groups
+GROUP_LOW = 'low'
+GROUP_MEDIUM = 'medium'
+GROUP_HIGH = 'high'
+
+
 # The order of the prices groups, by slug
-PRICE_GROUP_ORDER = ('budget', 'normal', 'luxury')
+PRICE_GROUP_ORDER = (GROUP_LOW, GROUP_MEDIUM, GROUP_HIGH)
 
 
 class PriceFacet(BaseFacet):
@@ -17,8 +23,8 @@ class PriceFacet(BaseFacet):
         basic_prices = {}
         for basic in Basic.objects.all():
             basic_prices[basic.pk] = {
-                'budget': basic.budget_end,
-                'luxury': basic.luxury_start
+                'low': basic.budget_end,
+                'high': basic.luxury_start
             }
 
         return {
@@ -29,9 +35,9 @@ class PriceFacet(BaseFacet):
         cutoffs = basic_prices[basic.pk]
 
         groups = {
-            'budget': [],
-            'normal': [],
-            'luxury': []
+            GROUP_LOW: [],
+            GROUP_MEDIUM: [],
+            GROUP_HIGH: []
         }
 
         # Place items with prices into one of the groups, based on where the
@@ -43,14 +49,14 @@ class PriceFacet(BaseFacet):
                 continue
 
             garment_price = total_price / len(priced_items)
-            if garment_price <= cutoffs['budget']:
-                group_name = 'budget'
-            elif garment_price >= cutoffs['luxury']:
-                group_name = 'luxury'
+            if garment_price <= cutoffs['low']:
+                group_slug = GROUP_LOW
+            elif garment_price >= cutoffs['high']:
+                group_slug = GROUP_HIGH
             else:
-                group_name = 'normal'
+                group_slug = GROUP_MEDIUM
 
-            groups[group_name].append(garment['garment'].pk)
+            groups[group_slug].append(garment['garment'].pk)
 
         # Create a dict for each group that exposes the IDs of its garments
         facets = []
