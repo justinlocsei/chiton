@@ -30,7 +30,7 @@ class CanonicalSizeFactory(DjangoModelFactory):
 
 class GarmentFactory(DjangoModelFactory):
 
-    name = factory.LazyAttribute(lambda m: '%s %s' % (fake.color_name(), fake.word()))
+    name = factory.LazyAttribute(lambda m: fake.sentence())
     brand = factory.SubFactory(BrandFactory)
     basic = factory.SubFactory(BasicFactory)
 
