@@ -10,7 +10,7 @@ class BasePipeline:
     """The base class for all pipelines."""
 
     def provide_garments(self):
-        """Provide the set of all garments on which to search.
+        """Provide the set of all garments to pass through the pipeline.
 
         Returns:
             django.db.models.query.QuerySet: All garment models
@@ -33,52 +33,48 @@ class BasePipeline:
         return garments
 
     def provide_facets(self):
-        """Provide all facets for the pipeline.
+        """Provide the facets used by the pipeline.
 
         Returns:
-            list: A list of all facet classes
+            list[chiton.wintour.facets.BaseFacet]: Instances of the facet classes to use
         """
         return []
 
     def provide_garment_filters(self):
-        """Provide all garment filters for the pipeline.
+        """Provide the garment filters used by the pipeline.
 
         Returns:
-            list: A list of all garment-filter classes
+            list[chiton.wintour.facets.BaseGarmentFilter]: Instances of the garment-filter classes to use
         """
         return []
 
     def provide_query_filters(self):
-        """Provide all query filters for the pipeline.
+        """Provide the query filters used by the pipeline.
 
         Returns:
-            list: A list of all query-filter classes
+            list[chiton.wintour.facets.BaseQueryFilter]: Instances of the query-filter classes to use
         """
         return []
 
     def provide_weights(self):
-        """Provide all weights for the pipeline.
+        """Provide the weights used by the pipeline.
 
         Returns:
-            list: A list of all weight classes
+            list[chiton.wintour.facets.BaseWeight]: Instances of the weight classes to use
         """
         return []
 
     def make_recommendations(self, profile, debug=False):
         """Make recommendations for a wardrobe profile.
 
-        The recommendations are exposed as a dict keyed by Basic model
-        instances, whose subkeys provide information on the raw set of garments
-        returned, as well as any applied facets.
-
         Args:
             profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
 
         Keyword Args:
-            debug (bool): Whether to generate debugging statistics
+            debug (bool): Whether to generate debug statistics
 
         Returns:
-            dict: The garment recommendations
+            dict[chiton.runway.models.Basic, chiton.wintour.pipeline.BasicRecommendations]: The per-basic garment recommendations
         """
         garments_qs = self.load_garments().select_related('basic')
 
@@ -95,12 +91,12 @@ class BasePipeline:
         # Generate the master list of weighted garments as a dict keyed by a
         # basic instance with garment core data and metadata
         self._current_profile = profile
-        garments_qs = self._filter_garments_queryset(query_filters, garments_qs)
-        garments = self._filter_garments(garment_filters, garments_qs)
-        weightings = self._weight_garments(weights, garments)
-        weighted_garments = self._combine_garment_weights(weightings)
-        garments_by_basic = self._normalize_weightings(weighted_garments)
-        recommendations = self._facet_garments(facets, garments_by_basic)
+        garments_qs = self._filter_garments_queryset(garments_qs, query_filters)
+        garments = self._filter_garments(garments_qs, garment_filters)
+        weightings = self._weight_garments(garments, weights)
+        weighted_garments = self._coalesce_garment_weights(weightings)
+        garments_by_basic = self._convert_garment_weights_to_basic_weights(weighted_garments)
+        recommendations = self._finalize_recommendations(garments_by_basic, facets)
         self._current_profile = None
 
         return recommendations
@@ -109,7 +105,7 @@ class BasePipeline:
         """Get a list of all steps for the pipeline.
 
         Returns:
-            list: All step instances
+            list[chiton.wintour.pipeline.PipelineStep]: All step instances
         """
         steps = [
             self.provide_facets(),
@@ -119,37 +115,37 @@ class BasePipeline:
         ]
         return list(chain.from_iterable(steps))
 
-    def _filter_garments_queryset(self, query_filters, garments_qs):
+    def _filter_garments_queryset(self, garments, query_filters):
         """Apply a series of filters to a queryset of garments.
 
         This applies each filter's logic to the queryset, and returns the
         unevaluated queryset primed with filtering calls.
 
         Args:
-            query_filters (list): A list of BaseQueryFilter subclass instances
-            garments_qs (django.db.models.query.QuerySet): A queryset of garments
+            garments (django.db.models.query.QuerySet): A queryset of garments
+            query_filters (list[chiton.wintour.query_filters.BaseQueryFilter]): Instances of query filters
 
         Returns:
             django.db.models.query.QuerySet: The filtered garment queryset
         """
         for query_filter in query_filters:
             with query_filter.apply_to_profile(self._current_profile) as filter_garments:
-                garments_qs = filter_garments(garments_qs)
+                garments = filter_garments(garments)
 
-        return garments_qs
+        return garments
 
-    def _filter_garments(self, garment_filters, garments):
+    def _filter_garments(self, garments, garment_filters):
         """Apply a series of filters to a individual garments.
 
         This applies each filter's logic to the each garment in the input, and
         returns a list of all non-excluded garments.
 
         Args:
-            garment_filters (list): A list of BaseGarmentFilter subclass instances
             garments (django.db.models.query.QuerySet): A queryset of garments
+            garment_filters (list[chiton.wintour.garment_filters.BaseGarmentFilter]): Instances of garment filters
 
         Returns:
-            list: The evaluated queryset, with any excluded garments removed
+            list[chiton.closet.models.Garment]: The evaluated queryset, with any excluded garments removed
         """
         for garment_filter in garment_filters:
             to_keep = []
@@ -161,23 +157,18 @@ class BasePipeline:
 
         return garments
 
-    def _weight_garments(self, weights, garments):
+    def _weight_garments(self, garments, weights):
         """Apply a series of weights to a list of garments for a profile.
 
-        This applies each weight to each garment, and exposes the results in a
-        dict keyed by the weight instance with values of the weighted garments
-        and the weight's relative importance.
-
-        This returns a dict that maps weight instances to weighted garments,
-        with the garments sorted in descending order by weight and rendered as
-        dicts that expose the garment instance and an applied weight.
+        This applies each weight to every garment in the list and exposes this
+        information in a dict keyed by weight.
 
         Args:
-            weights (list): A list of BaseWeight subclass instances
-            garments (list): An unordered list of garments
+            garments (list[chiton.closet.models.Garment]): Garments without ordering
+            weights (list[chiton.wintour.weights.BaseWeight]): Instances of weights
 
         Returns:
-            dict: A mapping between weight instances and weighted garments
+            dict[chiton.wintour.weights.BaseWeight, list[dict]]: Per-weight weightings for every garment
         """
         weightings = {}
 
@@ -210,19 +201,17 @@ class BasePipeline:
 
         return weightings
 
-    def _combine_garment_weights(self, weightings):
-        """Combine all weights applied to a garment.
+    def _coalesce_garment_weights(self, weightings):
+        """Transform per-weight garment weightings into per-garment weightings.
 
-        This expects to receive a dict keyed by weight instances with values of
-        the garments in the weight and the weight's importance.  This structure
-        is used to build a dict keyed by garment instance that exposes core
-        garment data and weighting metadata.
+        This takes the per-weight values for each garment and combines them in
+        a dict keyed by garment.
 
         Args:
-            weightings (dict): A mapping between weight instances and weighted garments
+            weightings (dict[chiton.wintour.weights.BaseWeight, list[dict]]): Per-weight garment weightings
 
         Returns:
-            dict: A dict keyed by garment instance that provides weight and debug data
+            dict[chiton.closet.models.Garment, dict]: Per-garment weighting information
         """
         weighted_garments = {}
 
@@ -255,19 +244,18 @@ class BasePipeline:
 
         return weighted_garments
 
-    def _normalize_weightings(self, weighted_garments):
+    def _convert_garment_weights_to_basic_weights(self, weighted_garments):
         """Normalize weighted garments.
 
-        This expects a dict keyed by a garment instance with values that
-        describe the garment's weighting.  This information is converted into a
-        dict keyed by a basic instance that exposes normalized weighting data
-        and supplemental garment data.
+        This transforms per-garment weight information into a dict keyed by
+        basics that exposes weight values that are normalized to the global max,
+        with each basic's garments sorted by weight.
 
         Args:
-            dict: A mapping between garment instances and weight/debug information
+            dict[chiton.closet.models.Garment, dict]: Per-garment weighting information
 
         Returns:
-            dict: A mapping between basic instances and garment recommendations
+            dict[chiton.runway.models.Basic, dict[chiton.closet.models.Garment, chiton.wintour.pipeline.GarmentRecommendation]]: Per-basic garment recommendations
         """
         by_basic = {}
         max_weight = 0
@@ -303,31 +291,31 @@ class BasePipeline:
 
         return by_basic
 
-    def _facet_garments(self, facets, garments_by_basic):
-        """Create faceted garment groups.
+    def _finalize_recommendations(self, garments_by_basic, facets):
+        """Convert raw per-basic recommendations into annotated recommendations.
 
         Args:
-            facets (list): A list of BaseFacet subclass instances
-            garments_by_basic (dict): A mapping of basic instances to annotated garment instances
+            dict[chiton.runway.models.Basic, dict[chiton.closet.models.Garment, chiton.wintour.pipeline.GarmentRecommendation]]: Per-basic garment recommendations
+            facets (list[chiton.wintour.facets.BaseFacet]): Instances of facet classes
 
         Returns:
-            dict: A mapping between basic instances and recommendations
+            dict[chiton.runway.models.Basic, chiton.wintour.pipeline.BasicRecommendations]: Per-basic annotated garment recommendations
         """
-        faceted = {}
+        basic_recommendations = {}
 
-        # Generate the mapping between basics and garments, with a placeholder
-        # for the faceted data
+        # Build the initial recommendations by sorting each basic's garments by
+        # weight and adding a placeholder for facets
         weight_fetcher = itemgetter('weight')
-        for basic, weighted_garments in garments_by_basic.items():
-            faceted[basic] = BasicRecommendations({
+        for basic, garments in garments_by_basic.items():
+            basic_recommendations[basic] = BasicRecommendations({
                 'facets': {},
-                'garments': sorted(weighted_garments.values(), key=weight_fetcher, reverse=True)
+                'garments': sorted(garments.values(), key=weight_fetcher, reverse=True)
             })
 
-        # Apply all facets to the data
+        # Apply all facets to each basic's garments
         for facet in facets:
             with facet.apply_to_profile(self._current_profile) as apply_facet:
-                for basic, data in faceted.items():
-                    faceted[basic]['facets'][facet] = apply_facet(basic, data['garments'])
+                for basic, data in basic_recommendations.items():
+                    basic_recommendations[basic]['facets'][facet] = apply_facet(basic, data['garments'])
 
-        return faceted
+        return basic_recommendations
