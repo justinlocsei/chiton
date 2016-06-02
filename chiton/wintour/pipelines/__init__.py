@@ -260,9 +260,17 @@ class BasePipeline:
         by_basic = {}
         max_weight = 0
 
+        # Get all affiliate items with pre-selected fields and order them by
+        # price, to ensure that each garment's items are ordered by price
+        affiliate_items = (
+            AffiliateItem.objects.all()
+            .select_related('garment__basic', 'image', 'thumbnail', 'network__name')
+            .order_by('-price')
+        )
+
         # Group garments by their basic type, exposing information on each
         # garment's associated affiliate items
-        for affiliate_item in AffiliateItem.objects.all().select_related('garment__basic', 'image', 'thumbnail', 'network__name'):
+        for affiliate_item in affiliate_items:
             garment = affiliate_item.garment
             try:
                 garment_data = weighted_garments[garment]
@@ -283,7 +291,7 @@ class BasePipeline:
                 })
 
         # Update all weights to use floating-point percentages calibrated
-        # against the maximum total weight
+        # against the maximum total weight, and sort affiliate items by price
         if max_weight:
             for basic, garments in by_basic.items():
                 for garment, data in garments.items():
