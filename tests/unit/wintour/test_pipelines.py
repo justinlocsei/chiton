@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import pytest
 
 from chiton.wintour.facets import BaseFacet
@@ -165,6 +167,37 @@ class TestBasePipeline:
         assert len(shirt_facets) == 1
         assert set(shirt_facets[0]['garment_ids']) == set([shirt_four.pk, shirt_one.pk])
 
+    def test_make_recommendations_affiliate_items(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
+        """It exposes information on each garment's available affiliate items, sorted by price."""
+        class Weight(TestWeight):
+            def apply(self, garment):
+                return int(garment.name)
+
+        basic = basic_factory()
+        garment_single = garment_factory(basic=basic, name="1")
+        garment_multi = garment_factory(basic=basic, name="2")
+
+        item_one_one = affiliate_item_factory(garment=garment_single)
+        item_two_one = affiliate_item_factory(garment=garment_multi, price=Decimal(10))
+        item_two_two = affiliate_item_factory(garment=garment_multi, price=Decimal(20))
+
+        profile = pipeline_profile_factory()
+        pipeline = pipeline_factory(weights=[Weight()])
+
+        recommendations = pipeline.make_recommendations(profile)
+        garments = recommendations[basic]['garments']
+
+        assert len(garments) == 2
+        assert [g['garment'] for g in garments] == [garment_multi, garment_single]
+
+        garment_multi_items = garments[0]['affiliate_items']
+        assert len(garment_multi_items) == 2
+        assert garment_multi_items == [item_two_two, item_two_one]
+
+        garment_single_items = garments[1]['affiliate_items']
+        assert len(garment_single_items) == 1
+        assert garment_single_items == [item_one_one]
+
     def test_make_recommendations_queryset_filters(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It combines all queryset filters."""
         class TallFilter(TestQueryFilter):
@@ -270,6 +303,57 @@ class TestBasePipeline:
 
         assert weights_by_garment[positive_garment] == 1.0
         assert weights_by_garment[negative_garment] == 0.75
+
+    def test_make_recommendations_weights_debug(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
+        """It adds debugging information for weights when requested."""
+        class Weight(TestWeight):
+            name = 'Custom Weight'
+
+            def apply(self, garment):
+                if self.debug:
+                    self.explain_weight(garment, 2.0, "Constant weight")
+                return 2.0
+
+        basic = basic_factory()
+        affiliate_item_factory(garment=garment_factory(basic=basic))
+
+        query_filter = TestQueryFilter()
+        garment_filter = TestGarmentFilter()
+        facet = TestFacet()
+        weight = Weight()
+
+        profile = pipeline_profile_factory()
+        pipeline = pipeline_factory(
+            query_filters=[query_filter],
+            garment_filters=[garment_filter],
+            weights=[weight],
+            facets=[facet]
+        )
+
+        recommendations = pipeline.make_recommendations(profile, debug=True)
+        garments = recommendations[basic]['garments']
+
+        assert len(garments) == 1
+
+        explanations = garments[0]['explanations']
+        normalization = explanations['normalization']
+        weights = explanations['weights']
+
+        assert len(normalization) == 1
+        assert len(weights) == 1
+
+        normalized = normalization[0]
+        assert normalized['importance'] == 1
+        assert normalized['weight'] == 1.0
+        assert normalized['name'] == 'Custom Weight'
+
+        weighted = weights[0]
+        assert weighted['name'] == 'Custom Weight'
+        assert len(weighted['reasons']) == 1
+
+        reason = weighted['reasons'][0]
+        assert reason['reason'] == 'Constant weight'
+        assert reason['weight'] == 2.0
 
     def test_make_recommendations_facets(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It creates facets for the final recommendations."""
