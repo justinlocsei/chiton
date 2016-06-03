@@ -9,7 +9,7 @@ class TestBasic:
 
     def test_natural_key(self, category_factory):
         """It uses its slug."""
-        basic = Basic.objects.create(name="Cargo Shorts", slug="cargo-shorts", category=category_factory())
+        basic = Basic.objects.create(name='Cargo Shorts', slug='cargo-shorts', category=category_factory())
         assert basic.natural_key() == ('cargo-shorts',)
 
         found = Basic.objects.get_by_natural_key('cargo-shorts')
@@ -21,7 +21,7 @@ class TestCategory:
 
     def test_natural_key(self):
         """It uses its slug."""
-        category = Category.objects.create(name="Leisure Wear", slug="leisure-wear")
+        category = Category.objects.create(name='Leisure Wear', slug='leisure-wear')
         assert category.natural_key() == ('leisure-wear',)
 
         found = Category.objects.get_by_natural_key('leisure-wear')
@@ -33,7 +33,7 @@ class TestFormality:
 
     def test_natural_key(self):
         """It uses its slug."""
-        formality = Formality.objects.create(name="Snappy Boardroom", slug="snappy-boardroom")
+        formality = Formality.objects.create(name='Snappy Boardroom', slug='snappy-boardroom')
         assert formality.natural_key() == ('snappy-boardroom',)
 
         found = Formality.objects.get_by_natural_key('snappy-boardroom')
@@ -46,8 +46,8 @@ class TestPropriety:
     def test_natural_key(self, category_factory):
         """It uses the slug of its basic and formality as well as its importance."""
         importance = data.PROPRIETY_IMPORTANCE_CHOICES[0][0]
-        basic = Basic.objects.create(name="Cargo Shorts", slug="cargo-shorts", category=category_factory())
-        formality = Formality.objects.create(name="Snappy Boardroom", slug="snappy-boardroom")
+        basic = Basic.objects.create(name='Cargo Shorts', slug='cargo-shorts', category=category_factory())
+        formality = Formality.objects.create(name='Snappy Boardroom', slug='snappy-boardroom')
 
         propriety = Propriety.objects.create(basic=basic, formality=formality, importance=importance)
         assert propriety.natural_key() == ('cargo-shorts', 'snappy-boardroom', importance)
@@ -61,7 +61,7 @@ class TestStyle:
 
     def test_natural_key(self):
         """It uses its slug."""
-        style = Style.objects.create(name="Nervous, Skittish", slug="nervous-skittish")
+        style = Style.objects.create(name='Nervous, Skittish', slug='nervous-skittish')
         assert style.natural_key() == ('nervous-skittish',)
 
         found = Style.objects.get_by_natural_key('nervous-skittish')
