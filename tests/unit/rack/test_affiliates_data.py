@@ -6,6 +6,7 @@ import pytest
 from chiton.closet.models import Color
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
 from chiton.rack.affiliates.base import Affiliate
+from chiton.rack.models import ProductImage
 
 
 CREATE_AFFILIATE = 'chiton.rack.affiliates.data.create_affiliate'
@@ -23,6 +24,15 @@ class FullAffiliate(Affiliate):
         }
 
     def provide_details(self, guid, colors=[]):
+        if hasattr(self, 'custom_thumbnail'):
+            thumbnail = self.custom_thumbnail
+        else:
+            thumbnail = {
+                'height': 50,
+                'url': 'http://example.net/%s' % guid,
+                'width': 50
+            }
+
         return {
             'availability': self.availability,
             'image': {
@@ -32,11 +42,7 @@ class FullAffiliate(Affiliate):
             },
             'name': 'Details',
             'price': Decimal('9.99'),
-            'thumbnail': {
-                'height': 50,
-                'url': 'http://example.net/%s' % guid,
-                'width': 50
-            }
+            'thumbnail': thumbnail
         }
 
 
@@ -206,6 +212,25 @@ class TestUpdateAffiliateItemDetails:
 
         assert affiliate_item.image.height == 100
         assert affiliate_item.thumbnail.height == 50
+
+    def test_network_data_images_clearing(self, affiliate_item):
+        """It removes existing images if a subsequent details request defines no image."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = FullAffiliate()
+            update_affiliate_item_details(affiliate_item)
+
+            assert affiliate_item.thumbnail
+            thumbnail_pk = affiliate_item.thumbnail.pk
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.custom_thumbnail = None
+
+            create_affiliate.return_value = affiliate
+            update_affiliate_item_details(affiliate_item)
+
+            assert not affiliate_item.thumbnail
+            assert not ProductImage.objects.filter(pk=thumbnail_pk).count()
 
     def test_network_data_stock_records(self, affiliate_item, standard_size_factory):
         """It creates stock records for all sizes that match a standard size's number."""

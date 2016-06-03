@@ -142,6 +142,20 @@ class TestBaseAffiliate:
         with pytest.raises(LookupError):
             Child().request_details('guid')
 
+    def test_request_details_format_images(self):
+        """It can accept unspecified images."""
+        class Child(Affiliate):
+            def provide_details(self, guid, colors):
+                return {
+                    'availability': True,
+                    'image': None,
+                    'name': 'Name',
+                    'price': Decimal('12.99'),
+                    'thumbnail': None
+                }
+
+        assert Child().request_details('guid')
+
     def test_request_details_empty(self):
         """It raises an error when an affiliate does not provide detailss."""
         with pytest.raises(NotImplementedError):

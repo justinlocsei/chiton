@@ -56,13 +56,7 @@ class Affiliate:
             raise LookupError('Incorrect details format: %s' % e)
 
         if not isinstance(details['availability'], bool) and details['availability']:
-            try:
-                details['availability'] = [
-                    ItemAvailability(record)
-                    for record in details['availability']
-                ]
-            except FormatError as e:
-                raise LookupError('Incorrect availability format: %s' % e)
+            details['availability'] = [ItemAvailability(a) for a in details['availability']]
 
         return details
 

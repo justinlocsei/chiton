@@ -79,10 +79,10 @@ SerializedItemImage = define_data_shape({
 SerializedGarmentRecommendation = define_data_shape({
     V.Required('affiliate_items'): [{
         V.Required('id'): int,
-        V.Required('image'): V.Any(SerializedItemImage, None),
-        V.Required('price'): V.Any(int, None),
+        V.Required('image'): V.Any(None, SerializedItemImage),
+        V.Required('price'): V.Any(None, int),
         V.Required('network_name'): str,
-        V.Required('thumbnail'): V.Any(SerializedItemImage, None),
+        V.Required('thumbnail'): V.Any(None, SerializedItemImage),
         V.Required('url'): str
     }],
     'explanations': DebugExplanations,

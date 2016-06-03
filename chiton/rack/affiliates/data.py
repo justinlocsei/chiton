@@ -75,12 +75,15 @@ def _update_item_image(item, image_field, data):
     """
     image = getattr(item, image_field)
 
-    if image:
+    if image and data:
         image.height = data['height']
         image.width = data['width']
         image.url = data['url']
         image.save()
-    else:
+    elif image:
+        setattr(item, image_field, None)
+        image.delete()
+    elif data:
         image = ProductImage.objects.create(
             height=data['height'],
             width=data['width'],
