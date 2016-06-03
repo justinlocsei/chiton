@@ -27,22 +27,25 @@ FacetGroup = define_data_shape({
 }, validated=False)
 
 
-GarmentRecommendation = define_data_shape({
-    V.Required('affiliate_items'): [AffiliateItem],
-    'explanations': {
-        V.Required('weights'): [{
-            V.Required('name'): str,
-            V.Required('reasons'): [{
-                V.Required('reason'): str,
-                V.Required('weight'): V.Any(float, int)
-            }]
-        }],
-        V.Required('normalization'): [{
-            V.Required('importance'): V.Any(float, int),
-            V.Required('name'): str,
+DebugExplanations = define_data_shape({
+    V.Required('weights'): [{
+        V.Required('name'): str,
+        V.Required('reasons'): [{
+            V.Required('reason'): str,
             V.Required('weight'): V.Any(float, int)
         }]
-    },
+    }],
+    V.Required('normalization'): [{
+        V.Required('importance'): V.Any(float, int),
+        V.Required('name'): str,
+        V.Required('weight'): V.Any(float, int)
+    }]
+}, validated=False)
+
+
+GarmentRecommendation = define_data_shape({
+    V.Required('affiliate_items'): [AffiliateItem],
+    'explanations': DebugExplanations,
     V.Required('garment'): Garment,
     V.Required('weight'): V.Any(float, int)
 }, validated=False)
@@ -51,6 +54,55 @@ GarmentRecommendation = define_data_shape({
 BasicRecommendations = define_data_shape({
     V.Required('facets'): dict,
     V.Required('garments'): [GarmentRecommendation]
+}, validated=False)
+
+
+Recommendations = define_data_shape({
+    V.Required('basics'): dict,
+    'debug': {
+        V.Required('queries'): [{
+            V.Required('time'): float,
+            V.Required('sql'): str
+        }],
+        V.Required('time'): float
+    }
+}, validated=False)
+
+
+SerializedItemImage = define_data_shape({
+    V.Required('height'): int,
+    V.Required('url'): str,
+    V.Required('width'): int
+})
+
+
+SerializedGarmentRecommendation = define_data_shape({
+    V.Required('affiliate_items'): [{
+        V.Required('id'): int,
+        V.Required('image'): SerializedItemImage,
+        V.Required('price'): V.Any(int, None),
+        V.Required('network_name'): str,
+        V.Required('thumbnail'): SerializedItemImage,
+        V.Required('url'): str
+    }],
+    'explanations': DebugExplanations,
+    V.Required('garment'): {
+        V.Required('brand'): str,
+        V.Required('id'): int,
+        V.Required('name'): str
+    },
+    V.Required('weight'): V.Any(float, int)
+}, validated=False)
+
+
+SerializedBasicRecommendations = define_data_shape({
+    V.Required('basic'): {
+        V.Required('id'): int,
+        V.Required('name'): str,
+        V.Required('slug'): str
+    },
+    'facets': dict,
+    'garments': [SerializedGarmentRecommendation]
 }, validated=False)
 
 
