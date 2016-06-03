@@ -127,18 +127,14 @@ class TestSerializeRecommendations:
         blazer_garment = garment_factory(
             basic=blazers_basic,
             brand=brand,
-            pk=6666,
             name='Blazer',
             slug='blazer'
         )
 
         affiliate_network = affiliate_network_factory(name='Network')
-        image = ProductImage.objects.create(height=100, width=100, url='http://example.com')
         thumbnail = ProductImage.objects.create(height=10, width=10, url='http://example.net')
         blazer_item = affiliate_item_factory(
             garment=blazer_garment,
-            image=image,
-            pk=9999,
             network=affiliate_network,
             price=Decimal(10.25),
             thumbnail=thumbnail,
@@ -181,7 +177,7 @@ class TestSerializeRecommendations:
         }, validate=True))
 
     @pytest.fixture
-    def blazer(self, serialized):
+    def serialized_blazer(self, serialized):
         return serialized['basics']['blazers']['garments'][0]
 
     def test_top_level(self, serialized):
@@ -219,29 +215,25 @@ class TestSerializeRecommendations:
         """It preserves the garment list."""
         assert len(serialized['basics']['blazers']['garments']) == 1
 
-    def test_garment_affiliate_items(self, blazer):
-        """It serialized affiliate items with integer-based prices."""
-        assert len(blazer['affiliate_items']) == 1
-        assert blazer['affiliate_items'][0] == {
-            'id': 9999,
-            'image': {
-                'height': 100,
-                'url': 'http://example.com',
-                'width': 100
-            },
-            'price': 1025,
-            'network_name': 'Network',
-            'thumbnail': {
-                'height': 10,
-                'url': 'http://example.net',
-                'width': 10
-            },
-            'url': 'http://example.org'
-        }
+    def test_garment_affiliate_items(self, serialized_blazer):
+        """It serializes affiliate items with integer-based prices and optional images."""
+        assert len(serialized_blazer['affiliate_items']) == 1
 
-    def test_garment_explanations(self, blazer):
+        item = serialized_blazer['affiliate_items'][0]
+        assert item['id'] > 0
+        assert item['image'] is None
+        assert item['price'] == 1025
+        assert item['network_name'] == 'Network'
+        assert item['thumbnail'] == {
+            'height': 10,
+            'url': 'http://example.net',
+            'width': 10
+        }
+        assert item['url'] == 'http://example.org'
+
+    def test_garment_explanations(self, serialized_blazer):
         """It preserves garment explanations."""
-        assert blazer['explanations'] == {
+        assert serialized_blazer['explanations'] == {
             'weights': [{
                 'name': 'Test',
                 'reasons': [{
@@ -256,14 +248,15 @@ class TestSerializeRecommendations:
             }]
         }
 
-    def test_garment_data(self, blazer):
+    def test_garment_data(self, serialized_blazer):
         """It exposes a simplified subset of the garment's data."""
-        assert blazer['garment'] == {
-            'brand': 'Givenchy',
-            'id': 6666,
-            'name': 'Blazer'
-        }
+        garment = serialized_blazer['garment']
 
-    def test_garment_weight(self, blazer):
+        assert garment['brand'] == 'Givenchy'
+        assert garment['name'] == 'Blazer'
+
+        assert garment['id'] > 0
+
+    def test_garment_weight(self, serialized_blazer):
         """It preserves the floating-point weight."""
-        assert blazer['weight'] == 1.0
+        assert serialized_blazer['weight'] == 1.0
