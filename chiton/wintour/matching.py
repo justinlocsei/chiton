@@ -121,13 +121,14 @@ def _serialize_garment_recommendation(recommendation):
         item_dict = {}
         for image_field in GARMENT_IMAGE_FIELDS:
             image_obj = getattr(item, image_field)
-            if not image_obj:
-                continue
+            if image_obj:
+                image_data = {}
+                for image_attribute in GARMENT_IMAGE_ATTRIBUTES:
+                    image_data[image_attribute] = getattr(image_obj, image_attribute)
+            else:
+                image_data = None
 
-            image_dict = {}
-            for image_attribute in GARMENT_IMAGE_ATTRIBUTES:
-                image_dict[image_attribute] = getattr(image_obj, image_attribute)
-            item_dict[image_field] = image_dict
+            item_dict[image_field] = image_data
 
         item_dict.update({
             'id': item.pk,
