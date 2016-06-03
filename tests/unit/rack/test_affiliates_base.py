@@ -6,6 +6,10 @@ from chiton.rack.affiliates.base import Affiliate
 from chiton.rack.affiliates.exceptions import LookupError
 
 
+class DefaultAffiliate(Affiliate):
+    pass
+
+
 class TestBaseAffiliate:
 
     def test_configure(self):
@@ -39,6 +43,11 @@ class TestBaseAffiliate:
 
         with pytest.raises(LookupError):
             Child().request_overview('guid')
+
+    def test_request_overview_empty(self):
+        """It raises an error when an affiliate does not provide overviews."""
+        with pytest.raises(NotImplementedError):
+            DefaultAffiliate().request_overview('url')
 
     def test_request_details(self):
         """It returns a child affiliate's details with or without a color."""
@@ -133,6 +142,11 @@ class TestBaseAffiliate:
         with pytest.raises(LookupError):
             Child().request_details('guid')
 
+    def test_request_details_empty(self):
+        """It raises an error when an affiliate does not provide detailss."""
+        with pytest.raises(NotImplementedError):
+            DefaultAffiliate().request_details('guid')
+
     def test_request_raw(self):
         """It returns a child affiliate's raw API response."""
         class Child(Affiliate):
@@ -150,3 +164,8 @@ class TestBaseAffiliate:
 
         with pytest.raises(LookupError):
             Child().request_raw('guid')
+
+    def test_request_raw_empty(self):
+        """It raises an error when an affiliate does not provide raw responses."""
+        with pytest.raises(NotImplementedError):
+            DefaultAffiliate().request_raw('guid')

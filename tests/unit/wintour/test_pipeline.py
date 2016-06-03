@@ -129,3 +129,12 @@ class TestPipelineStep:
             third_result = second_apply()
 
             assert third_result == 2
+
+    def test_apply_to_profile_empty(self, pipeline_profile_factory):
+        """It raises an error when a step does not define its application."""
+        profile = pipeline_profile_factory()
+        step = TestStep()
+
+        with pytest.raises(NotImplementedError):
+            with step.apply_to_profile(profile) as apply_fn:
+                apply_fn()
