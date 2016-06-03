@@ -20,6 +20,7 @@ from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.matching import make_recommendations, serialize_recommendations
 from chiton.wintour.pipeline import PipelineProfile
+from chiton.wintour.pipelines.core import CorePipeline
 
 
 # A regex for formality expectations as exposed via GET params
@@ -87,7 +88,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         """Show an interactive visualizer for recommendations."""
         if request.GET:
             profile = self._convert_get_params_to_pipeline_profile(request.GET)
-            recs = make_recommendations(profile, debug=True)
+            recs = make_recommendations(profile, CorePipeline(), debug=True)
             recs_dict = serialize_recommendations(recs)
         else:
             profile = None
@@ -186,7 +187,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
     def recalculate_recommendations(self, request):
         """Return recalculate recommendations based on request data as JSON."""
         profile = self._convert_get_params_to_pipeline_profile(request.GET)
-        recs_dict = make_recommendations(profile, debug=True)
+        recs_dict = make_recommendations(profile, CorePipeline(), debug=True)
         serialized = serialize_recommendations(recs_dict)
 
         return JsonResponse(self._add_admin_urls_to_recs(serialized))
