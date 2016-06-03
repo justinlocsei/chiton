@@ -2,7 +2,7 @@ from timeit import default_timer
 
 from django.db import connection
 
-from chiton.wintour.pipeline import PipelineProfile
+from chiton.wintour.pipeline import PipelineProfile, Recommendations, SerializedBasicRecommendations, SerializedGarmentRecommendation
 
 
 # Field names for serializing garments
@@ -46,7 +46,7 @@ def make_recommendations(pipeline_profile, pipeline, debug=False):
         debug (bool): Whether to generate debug statistics
 
     Returns:
-        dict: The recommendations data
+        chiton.wintour.pipeline.Recommendations: The recommendations data
     """
     if debug:
         previous_queries = set([q['sql'] for q in connection.queries])
@@ -69,69 +69,54 @@ def make_recommendations(pipeline_profile, pipeline, debug=False):
 def serialize_recommendations(recommendations):
     """Serialize generated recommendations as a primitive-only dictionary.
 
+    This preserves the top-level structure of the recommendations, but
+    transforms each the top-level values into serializable objects.
+
     Args:
-        recommendations (dict): A dict of recommendations with model instances
+        recommendations (chiton.wintour.pipeline.Recommendations): Recommendations for a profile
 
     Returns:
-        dict: The recommendations as a dict of primitives
+        chiton.wintour.pipeline.Recommendations: The recommendations as a dict of primitives
     """
-    basics = {}
+    serialized = {
+        'basics': {}
+    }
 
-    for basic, values in recommendations['basics'].items():
-        value = {
+    for basic, basic_recommendations in recommendations['basics'].items():
+        serialized_basic_recommendations = SerializedBasicRecommendations({
             'basic': {
                 'id': basic.pk,
                 'name': basic.name,
                 'slug': basic.slug
             },
             'facets': {},
-            'garments': _serialize_weighted_garments(values['garments'])
-        }
+            'garments': [_serialize_garment_recommendation(g) for g in basic_recommendations['garments']]
+        })
 
-        for facet, groups in values['facets'].items():
-            value['facets'][facet.slug] = groups
+        for facet, facet_groups in basic_recommendations['facets'].items():
+            serialized_basic_recommendations['facets'][facet.slug] = facet_groups
 
-        basics[basic.slug] = value
+        serialized['basics'][basic.slug] = serialized_basic_recommendations
 
-    serialized = {'basics': basics}
     if 'debug' in recommendations:
         serialized['debug'] = recommendations['debug']
 
     return serialized
 
 
-def _serialize_weighted_garments(garments):
-    """Serialize a list of weighted garments.
+def _serialize_garment_recommendation(recommendation):
+    """Serialize a single garment recommendation.
 
     Args:
-        garments (list): One or more dicts describing a weighted garment
+        recommendation (chiton.wintour.pipeline.GarmentRecommendation): A single garment recommendation
 
     Returns:
-        list: The serialized weighted garments
+        chiton.wintour.pipeline.SerializedGarmentRecommendation: A primitive-only representation of the garment and its weight
     """
-    return [_serialize_weighted_garment(garment) for garment in garments]
-
-
-def _serialize_weighted_garment(weighted):
-    """Serialize a single weighted garment.
-
-    Args:
-        weighted (dict): A dictionary describing the weighted garment
-
-    Returns:
-        dict: A primitive-only representation of the garment and its weight
-    """
-    garment = weighted['garment']
-
-    garment_dict = {
-        'brand': garment.brand.name,
-        'id': garment.pk,
-        'name': garment.name,
-        'slug': garment.slug
-    }
+    garment = recommendation['garment']
 
     items_list = []
-    for item in weighted['affiliate_items']:
+    for item in recommendation['affiliate_items']:
 
         item_dict = {}
         for image_field in GARMENT_IMAGE_FIELDS:
@@ -148,14 +133,17 @@ def _serialize_weighted_garment(weighted):
             'id': item.pk,
             'price': int(float(item.price) * 100) if item.price else None,
             'network_name': item.network.name,
-            'network_id': item.network.pk,
             'url': item.url
         })
         items_list.append(item_dict)
 
-    return {
+    return SerializedGarmentRecommendation({
         'affiliate_items': items_list,
-        'explanations': weighted['explanations'],
-        'garment': garment_dict,
-        'weight': weighted['weight']
-    }
+        'explanations': recommendation['explanations'],
+        'garment': {
+            'brand': garment.brand.name,
+            'id': garment.pk,
+            'name': garment.name
+        },
+        'weight': recommendation['weight']
+    })
