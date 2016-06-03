@@ -28,6 +28,7 @@ class TestAffiliateNetwork:
         network = AffiliateNetwork.objects.create(name='Network')
         assert str(network) == 'Network'
 
+
 @pytest.mark.django_db
 class TestProductImage:
 
