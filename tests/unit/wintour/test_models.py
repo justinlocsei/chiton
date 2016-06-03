@@ -4,13 +4,12 @@ import pytest
 from chiton.wintour.models import Person
 
 
-@pytest.fixture
-def john_doe():
-    return User.objects.create_user('jdoe', 'jdoe@example.com')
-
-
 @pytest.mark.django_db
 class TestPerson:
+
+    @pytest.fixture
+    def john_doe(self):
+        return User.objects.create_user('jdoe', 'jdoe@example.com')
 
     def test_full_name(self, john_doe):
         """It builds the person's full name from their first and last name."""
