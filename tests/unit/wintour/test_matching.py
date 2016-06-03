@@ -1,8 +1,14 @@
+from decimal import Decimal
+
+import mock
 import pytest
 
 from chiton.closet.data import CARE_TYPES
+from chiton.rack.models import ProductImage
 from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
-from chiton.wintour.matching import package_wardrobe_profile
+from chiton.wintour.facets import BaseFacet
+from chiton.wintour.matching import make_recommendations, package_wardrobe_profile, serialize_recommendations
+from chiton.wintour.pipeline import BasicRecommendations, FacetGroup, GarmentRecommendation, Recommendations
 
 
 @pytest.mark.django_db
@@ -73,3 +79,191 @@ class TestPackageWardrobeProfile:
 
         assert pipeline_profile['expectations']['casual'] == EXPECTATION_FREQUENCIES['SOMETIMES']
         assert pipeline_profile['expectations']['executive'] == EXPECTATION_FREQUENCIES['OFTEN']
+
+
+@pytest.mark.django_db
+class TestMakeRecommendations:
+
+    def test_basic_recommendations(self, pipeline_profile_factory):
+        """It returns per-basic recommendations."""
+        pipeline = mock.Mock()
+        pipeline.make_recommendations = mock.MagicMock()
+        pipeline.make_recommendations.return_value = {}
+
+        profile = pipeline_profile_factory()
+        recommendations = make_recommendations(profile, pipeline)
+
+        pipeline.make_recommendations.assert_called_with(profile, debug=False)
+
+        assert recommendations['basics'] == {}
+        assert 'debug' not in recommendations
+
+    def test_debug(self, pipeline_profile_factory):
+        """It generates performance metrics when called in debug mode."""
+        pipeline = mock.Mock()
+        pipeline.make_recommendations = mock.MagicMock()
+
+        profile = pipeline_profile_factory()
+        recommendations = make_recommendations(profile, pipeline, debug=True)
+
+        pipeline.make_recommendations.assert_called_with(profile, debug=True)
+
+        assert 'debug' in recommendations
+        assert isinstance(recommendations['debug']['queries'], list)
+        assert recommendations['debug']['time'] > 0
+
+
+@pytest.mark.django_db
+class TestSerializeRecommendations:
+
+    @pytest.fixture
+    def serialized(self, affiliate_item_factory, affiliate_network_factory, basic_factory, brand_factory, garment_factory):
+        class TestFacet(BaseFacet):
+            name = 'Test'
+            slug = 'test'
+
+        brand = brand_factory(name='Givenchy')
+        blazers_basic = basic_factory(name='Blazers', slug='blazers')
+        blazer_garment = garment_factory(
+            basic=blazers_basic,
+            brand=brand,
+            pk=6666,
+            name='Blazer',
+            slug='blazer'
+        )
+
+        affiliate_network = affiliate_network_factory(name='Network')
+        image = ProductImage.objects.create(height=100, width=100, url='http://example.com')
+        thumbnail = ProductImage.objects.create(height=10, width=10, url='http://example.net')
+        blazer_item = affiliate_item_factory(
+            garment=blazer_garment,
+            image=image,
+            pk=9999,
+            network=affiliate_network,
+            price=Decimal(10.25),
+            thumbnail=thumbnail,
+            url='http://example.org'
+        )
+
+        return serialize_recommendations(Recommendations({
+            'basics': {
+                blazers_basic: BasicRecommendations({
+                    'facets': {
+                        TestFacet(): [
+                            FacetGroup({'count': 0, 'garment_ids': [], 'slug': 'all'}, validate=True)
+                        ]
+                    },
+                    'garments': [GarmentRecommendation({
+                        'affiliate_items': [blazer_item],
+                        'explanations': {
+                            'weights': [{
+                                'name': 'Test',
+                                'reasons': [{
+                                    'reason': 'Reason',
+                                    'weight': 1.0
+                                }]
+                            }],
+                            'normalization': [{
+                                'importance': 1,
+                                'name': 'Test',
+                                'weight': 1.0
+                            }]
+                        },
+                        'garment': blazer_garment,
+                        'weight': 1.0
+                    }, validate=True)]
+                }, validate=True)
+            },
+            'debug': {
+                'queries': [{'sql': 'SELECT * FROM auth_user', 'time': 0.5}],
+                'time': 2.25
+            }
+        }, validate=True))
+
+    @pytest.fixture
+    def blazer(self, serialized):
+        return serialized['basics']['blazers']['garments'][0]
+
+    def test_top_level(self, serialized):
+        """It maintains the top-level keys of the recommendations."""
+        assert 'basics' in serialized
+        assert 'debug' in serialized
+
+    def test_debug(self, serialized):
+        """It preserves the debug information."""
+        debug = serialized['debug']
+
+        assert len(debug['queries']) == 1
+        assert debug['queries'][0] == {
+            'sql': 'SELECT * FROM auth_user',
+            'time': 0.5
+        }
+
+    def test_basic_slug(self, serialized):
+        """It converts basic instances to slugs."""
+        basics = serialized['basics']
+        assert list(basics.keys()) == ['blazers']
+
+    def test_basic_facets(self, serialized):
+        """It converts facet instances to facet slugs."""
+        blazers = serialized['basics']['blazers']
+
+        assert 'facets' in blazers
+        assert blazers['facets'] == {
+            'test': [
+                {'count': 0, 'garment_ids': [], 'slug': 'all'}
+            ]
+        }
+
+    def test_basic_garments(self, serialized):
+        """It preserves the garment list."""
+        assert len(serialized['basics']['blazers']['garments']) == 1
+
+    def test_garment_affiliate_items(self, blazer):
+        """It serialized affiliate items with integer-based prices."""
+        assert len(blazer['affiliate_items']) == 1
+        assert blazer['affiliate_items'][0] == {
+            'id': 9999,
+            'image': {
+                'height': 100,
+                'url': 'http://example.com',
+                'width': 100
+            },
+            'price': 1025,
+            'network_name': 'Network',
+            'thumbnail': {
+                'height': 10,
+                'url': 'http://example.net',
+                'width': 10
+            },
+            'url': 'http://example.org'
+        }
+
+    def test_garment_explanations(self, blazer):
+        """It preserves garment explanations."""
+        assert blazer['explanations'] == {
+            'weights': [{
+                'name': 'Test',
+                'reasons': [{
+                    'reason': 'Reason',
+                    'weight': 1.0
+                }]
+            }],
+            'normalization': [{
+                'importance': 1,
+                'name': 'Test',
+                'weight': 1.0
+            }]
+        }
+
+    def test_garment_data(self, blazer):
+        """It exposes a simplified subset of the garment's data."""
+        assert blazer['garment'] == {
+            'brand': 'Givenchy',
+            'id': 6666,
+            'name': 'Blazer'
+        }
+
+    def test_garment_weight(self, blazer):
+        """It preserves the floating-point weight."""
+        assert blazer['weight'] == 1.0
