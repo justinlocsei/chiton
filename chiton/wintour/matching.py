@@ -11,6 +11,31 @@ GARMENT_IMAGE_FIELDS = ('image', 'thumbnail')
 GARMENT_IMAGE_ATTRIBUTES = ('height', 'url', 'width')
 
 
+def package_wardrobe_profile(profile):
+    """Convert a wardrobe profile into a pipeline profile.
+
+    Args:
+        profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
+
+    Returns:
+        chiton.wintour.pipeline.PipelineProfile: The packaged profile
+    """
+    data = {
+        'age': profile.age,
+        'avoid_care': [c.care for c in profile.unwanted_care_types.all()],
+        'body_shape': profile.body_shape,
+        'sizes': [size.slug for size in profile.sizes.all()],
+        'styles': [style.slug for style in profile.styles.all()]
+    }
+
+    expectations = {}
+    for expectation in profile.expectations.all().select_related('formality'):
+        expectations[expectation.formality.slug] = expectation.frequency
+    data['expectations'] = expectations
+
+    return PipelineProfile(data)
+
+
 def make_recommendations(pipeline_profile, pipeline=CorePipeline, debug=False):
     """Return garment recommendations for a wardrobe profile.
 
@@ -39,31 +64,6 @@ def make_recommendations(pipeline_profile, pipeline=CorePipeline, debug=False):
         }
 
     return recs
-
-
-def package_wardrobe_profile(profile):
-    """Convert a wardrobe profile into a pipeline profile.
-
-    Args:
-        profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
-
-    Returns:
-        chiton.wintour.pipeline.PipelineProfile: The packaged profile
-    """
-    data = {
-        'age': profile.age,
-        'avoid_care': [c.care for c in profile.unwanted_care_types.all()],
-        'body_shape': profile.body_shape,
-        'sizes': [size.slug for size in profile.sizes.all()],
-        'styles': [style.slug for style in profile.styles.all()]
-    }
-
-    expectations = {}
-    for expectation in profile.expectations.all().select_related('formality'):
-        expectations[expectation.formality.slug] = expectation.frequency
-    data['expectations'] = expectations
-
-    return PipelineProfile(data)
 
 
 def serialize_recommendations(recommendations):
