@@ -102,11 +102,11 @@ class TestBasePipeline:
         """It produces per-basic garment recommendations for a wardrobe profile."""
         class QueryFilter(TestQueryFilter):
             def apply(self, garments):
-                return garments.exclude(name="3")
+                return garments.exclude(name='3')
 
         class GarmentFilter(TestGarmentFilter):
             def apply(self, garment):
-                return garment.name == "2"
+                return garment.name == '2'
 
         class Weight(TestWeight):
             def apply(self, garment):
@@ -125,11 +125,11 @@ class TestBasePipeline:
         skirts = basic_factory()
         shirts = basic_factory()
 
-        skirt_one = garment_factory(basic=skirts, name="1")
-        skirt_two = garment_factory(basic=skirts, name="2")
-        skirt_three = garment_factory(basic=skirts, name="3")
-        shirt_one = garment_factory(basic=shirts, name="1")
-        shirt_four = garment_factory(basic=shirts, name="4")
+        skirt_one = garment_factory(basic=skirts, name='1')
+        skirt_two = garment_factory(basic=skirts, name='2')
+        skirt_three = garment_factory(basic=skirts, name='3')
+        shirt_one = garment_factory(basic=shirts, name='1')
+        shirt_four = garment_factory(basic=shirts, name='4')
 
         affiliate_item_factory(garment=skirt_one)
         affiliate_item_factory(garment=skirt_two)
@@ -174,8 +174,8 @@ class TestBasePipeline:
                 return int(garment.name)
 
         basic = basic_factory()
-        garment_single = garment_factory(basic=basic, name="1")
-        garment_multi = garment_factory(basic=basic, name="2")
+        garment_single = garment_factory(basic=basic, name='1')
+        garment_multi = garment_factory(basic=basic, name='2')
 
         item_one_one = affiliate_item_factory(garment=garment_single)
         item_two_one = affiliate_item_factory(garment=garment_multi, price=Decimal(10))
@@ -224,16 +224,16 @@ class TestBasePipeline:
         """It combines all garment filters."""
         class PantsFilter(TestGarmentFilter):
             def apply(self, garment):
-                return garment.name == "Pants"
+                return garment.name == 'Pants'
 
         class ShirtFilter(TestGarmentFilter):
             def apply(self, garment):
-                return garment.name == "Shirt"
+                return garment.name == 'Shirt'
 
         basic = basic_factory()
-        affiliate_item_factory(garment=garment_factory(basic=basic, name="Dress"))
-        affiliate_item_factory(garment=garment_factory(basic=basic, name="Pants"))
-        affiliate_item_factory(garment=garment_factory(basic=basic, name="Shirt"))
+        affiliate_item_factory(garment=garment_factory(basic=basic, name='Dress'))
+        affiliate_item_factory(garment=garment_factory(basic=basic, name='Pants'))
+        affiliate_item_factory(garment=garment_factory(basic=basic, name='Shirt'))
 
         profile = pipeline_profile_factory()
         pipeline = pipeline_factory(garment_filters=[PantsFilter(), ShirtFilter()])
@@ -249,9 +249,9 @@ class TestBasePipeline:
                 return int(garment.name)
 
         basic = basic_factory()
-        positive_garment = garment_factory(basic=basic, name="100")
-        negative_garment = garment_factory(basic=basic, name="-100")
-        zero_garment = garment_factory(basic=basic, name="0")
+        positive_garment = garment_factory(basic=basic, name='100')
+        negative_garment = garment_factory(basic=basic, name='-100')
+        zero_garment = garment_factory(basic=basic, name='0')
 
         affiliate_item_factory(garment=positive_garment)
         affiliate_item_factory(garment=negative_garment)
@@ -286,8 +286,8 @@ class TestBasePipeline:
                 return abs(int(garment.name))
 
         basic = basic_factory()
-        positive_garment = garment_factory(basic=basic, name="1")
-        negative_garment = garment_factory(basic=basic, name="-1")
+        positive_garment = garment_factory(basic=basic, name='1')
+        negative_garment = garment_factory(basic=basic, name='-1')
 
         affiliate_item_factory(garment=positive_garment)
         affiliate_item_factory(garment=negative_garment)
@@ -365,19 +365,19 @@ class TestBasePipeline:
                 return [
                     FacetGroup({
                         'count': 1,
-                        'garment_ids': [g.pk for g in gs if g.name == "Shirt"],
+                        'garment_ids': [g.pk for g in gs if g.name == 'Shirt'],
                         'slug': 'low'
                     }),
                     FacetGroup({
                         'count': 1,
-                        'garment_ids': [g.pk for g in gs if g.name == "Jeans"],
+                        'garment_ids': [g.pk for g in gs if g.name == 'Jeans'],
                         'slug': 'high'
                     })
                 ]
 
         basic = basic_factory()
-        shirt = garment_factory(basic=basic, name="Shirt")
-        jeans = garment_factory(basic=basic, name="Jeans")
+        shirt = garment_factory(basic=basic, name='Shirt')
+        jeans = garment_factory(basic=basic, name='Jeans')
 
         affiliate_item_factory(garment=shirt)
         affiliate_item_factory(garment=jeans)
