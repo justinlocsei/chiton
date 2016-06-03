@@ -15,6 +15,11 @@ class TestBasic:
         found = Basic.objects.get_by_natural_key('cargo-shorts')
         assert basic.pk == found.pk
 
+    def test_str_name(self):
+        """It uses its name for display."""
+        basic = Basic.objects.create(name='Jeans')
+        assert str(basic) == 'Jeans'
+
 
 @pytest.mark.django_db
 class TestCategory:
@@ -27,6 +32,11 @@ class TestCategory:
         found = Category.objects.get_by_natural_key('leisure-wear')
         assert category.pk == found.pk
 
+    def test_str_name(self):
+        """It uses its name for display."""
+        category = Category.objects.create(name='Pants')
+        assert str(category) == 'Pants'
+
 
 @pytest.mark.django_db
 class TestFormality:
@@ -38,6 +48,11 @@ class TestFormality:
 
         found = Formality.objects.get_by_natural_key('snappy-boardroom')
         assert formality.pk == found.pk
+
+    def test_str_name(self):
+        """It uses its name for display."""
+        formality = Formality.objects.create(name='Executive')
+        assert str(formality) == 'Executive'
 
 
 @pytest.mark.django_db
@@ -66,3 +81,8 @@ class TestStyle:
 
         found = Style.objects.get_by_natural_key('nervous-skittish')
         assert style.pk == found.pk
+
+    def test_str_name(self):
+        """It uses its name for display."""
+        style = Style.objects.create(name='Classy')
+        assert str(style) == 'Classy'

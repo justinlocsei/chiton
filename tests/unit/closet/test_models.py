@@ -27,6 +27,11 @@ class TestBrand:
         brand.age_upper = 75
         assert brand.full_clean() is None
 
+    def test_str_name(self):
+        """It uses its name for display."""
+        brand = Brand.objects.create(name='Armani', age_lower=20, age_upper=40)
+        assert str(brand) == 'Armani'
+
 
 @pytest.mark.django_db
 class TestColor:
@@ -38,6 +43,11 @@ class TestColor:
 
         found = Color.objects.get_by_natural_key('black')
         assert color.pk == found.pk
+
+    def test_str_name(self):
+        """It uses its name for display."""
+        color = Color.objects.create(name='Blue')
+        assert str(color) == 'Blue'
 
 
 @pytest.mark.django_db
@@ -69,6 +79,11 @@ class TestGarment:
         garment.is_regular_sized = True
         assert garment.full_clean() is None
 
+    def test_str_name(self, basic_factory, brand_factory):
+        """It uses its name for display."""
+        garment = Garment(name='Blazer', brand=brand_factory(), basic=basic_factory())
+        assert str(garment) == 'Blazer'
+
 
 @pytest.mark.django_db
 class TestCanonicalSize:
@@ -92,6 +107,11 @@ class TestCanonicalSize:
 
         size.range_upper = 6
         assert size.full_clean() is None
+
+    def test_str_name(self):
+        """It uses its name for display."""
+        size = CanonicalSize(name='L')
+        assert str(size) == 'L'
 
 
 @pytest.mark.django_db
@@ -151,3 +171,10 @@ class TestStandardSize:
 
         size.is_tall = False
         assert size.full_clean() is None
+
+    def test_str_display_name(self, canonical_size_factory):
+        """It uses its display name for display."""
+        m = canonical_size_factory(name='M', range_lower=6, range_upper=8)
+        m_regular = StandardSize.objects.create(canonical=m)
+
+        assert str(m_regular) == 'M (6-8)'
