@@ -3,7 +3,7 @@ from factory.django import DjangoModelFactory
 from faker import Faker
 
 from .closet import GarmentFactory
-from chiton.rack.models import AffiliateItem, AffiliateNetwork
+from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage
 
 fake = Faker()
 
@@ -27,3 +27,13 @@ class AffiliateItemFactory(DjangoModelFactory):
 
     class Meta:
         model = AffiliateItem
+
+
+class ProductImageFactory(DjangoModelFactory):
+
+    url = factory.LazyAttribute(lambda m: fake.url())
+    height = 100
+    width = 100
+
+    class Meta:
+        model = ProductImage
