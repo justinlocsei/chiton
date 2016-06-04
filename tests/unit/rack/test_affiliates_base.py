@@ -1,7 +1,9 @@
 from decimal import Decimal
 
+import mock
 import pytest
 
+from chiton.core.exceptions import FormatError
 from chiton.rack.affiliates.base import Affiliate
 from chiton.rack.affiliates.exceptions import LookupError
 
@@ -47,14 +49,17 @@ class TestBaseAffiliate:
         assert overview['guid'] == 'test-url'
         assert overview['name'] == 'Test'
 
-    def test_request_overview_format(self):
-        """It ensures that a child affiliate's overview has all required fields."""
+    def test_request_overview_error(self):
+        """It raises an error when the overview has an invalid format."""
         class Child(Affiliate):
             def provide_overview(self, guid):
-                return {'name': 'Name'}
+                return {}
 
-        with pytest.raises(LookupError):
-            Child().request_overview('guid')
+        with mock.patch('chiton.rack.affiliates.base.ItemOverview') as ItemOverview:
+            ItemOverview.side_effect = FormatError
+
+            with pytest.raises(LookupError):
+                Child().request_overview('url')
 
     def test_request_overview_empty(self):
         """It raises an error when an affiliate does not provide overviews."""
@@ -104,69 +109,17 @@ class TestBaseAffiliate:
         assert with_color['image']['url'] == 'http://guidBlack.com'
         assert with_color['thumbnail']['url'] == 'http://guidBlack.net'
 
-    def test_request_details_availability(self):
-        """It accepts either a boolean or a list for availability."""
-        class Child(Affiliate):
-            def provide_details(self, availability, colors):
-                return {
-                    'availability': availability,
-                    'image': {
-                        'height': 100,
-                        'url': 'image',
-                        'width': 100
-                    },
-                    'name': 'Item Name',
-                    'price': Decimal('12.99'),
-                    'thumbnail': {
-                        'height': 50,
-                        'url': 'thumbnail',
-                        'width': 50
-                    }
-                }
-
-        affiliate = Child()
-
-        is_available = affiliate.request_details(True)
-        assert is_available['availability'] is True
-
-        is_unavailable = affiliate.request_details(False)
-        assert is_unavailable['availability'] is False
-
-        with_availability = affiliate.request_details([
-            {'size': 8, 'is_regular': True},
-            {'size': 10, 'is_regular': True}
-        ])
-        assert len(with_availability['availability']) == 2
-        assert set([a['size'] for a in with_availability['availability']]) == set([8, 10])
-
-        with pytest.raises(LookupError):
-            affiliate.request_details([{'invalid': 'field'}])
-
-        with pytest.raises(LookupError):
-            affiliate.request_details(None)
-
-    def test_request_details_format(self):
-        """It ensures that a child affiliate's details have all required fields."""
+    def test_request_details_error(self):
+        """It raises an error when the details have an invalid format."""
         class Child(Affiliate):
             def provide_details(self, guid, colors):
                 return {}
 
-        with pytest.raises(LookupError):
-            Child().request_details('guid')
+        with mock.patch('chiton.rack.affiliates.base.ItemDetails') as ItemDetails:
+            ItemDetails.side_effect = FormatError
 
-    def test_request_details_format_images(self):
-        """It can accept unspecified images."""
-        class Child(Affiliate):
-            def provide_details(self, guid, colors):
-                return {
-                    'availability': True,
-                    'image': None,
-                    'name': 'Name',
-                    'price': Decimal('12.99'),
-                    'thumbnail': None
-                }
-
-        assert Child().request_details('guid')
+            with pytest.raises(LookupError):
+                Child().request_details('guid')
 
     def test_request_details_empty(self):
         """It raises an error when an affiliate does not provide detailss."""
