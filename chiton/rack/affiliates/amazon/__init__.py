@@ -182,8 +182,6 @@ class Affiliate(BaseAffiliate):
         errors = lookup['Items']['Request'].get('Errors')
         if errors:
             error = errors['Error']
-            if isinstance(error, list):
-                error = error[0]
             raise LookupError('Invalid lookup for ASIN %s: %s (%s)' % (
                 asin, error['Code'], error['Message']))
 
