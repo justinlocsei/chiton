@@ -6,11 +6,11 @@ from chiton.rack.affiliates.responses import ItemAvailability, ItemDetails, Item
 class Affiliate:
     """The base class for all affiliates."""
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Initialize the affiliate."""
-        self.configure()
+        self.configure(*args, **kwargs)
 
-    def configure(self):
+    def configure(self, *args, **kwargs):
         """Allow a child affiliate to perform initial configuration."""
         pass
 

@@ -24,6 +24,18 @@ class TestBaseAffiliate:
         assert not hasattr(affiliate, 'is_child')
         assert child.is_child is True
 
+    def test_configure_args(self):
+        """It forwards all argument's to a child affiliate's configure method."""
+        class Child(Affiliate):
+            def configure(self, one, two=None):
+                self.one = one
+                self.two = two
+
+        child = Child(1, two=2)
+
+        assert child.one == 1
+        assert child.two == 2
+
     def test_request_overview(self):
         """It allows a child affiliate to provide overview information."""
         class Child(Affiliate):
