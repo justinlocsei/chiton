@@ -1,5 +1,7 @@
 from decimal import Decimal
+from urllib.error import HTTPError
 
+import mock
 import pytest
 
 from chiton.rack.affiliates.amazon import Affiliate
@@ -7,6 +9,17 @@ from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
 
 
 class TestAmazonAffiliate:
+
+    @pytest.fixture
+    def http_error_factory(self):
+        def factory(code):
+            return HTTPError(code=code, hdrs=None, fp=None, msg=None, url=None)
+
+        return factory
+
+    def test_connect(self):
+        """It exposes a connection to the Amazon API."""
+        assert Affiliate().connect()
 
     def test_request_overview_valid_asin(self, amazon_api_request):
         """It returns a name and GUID when using a URL with a valid ASIN."""
@@ -35,11 +48,23 @@ class TestAmazonAffiliate:
         with pytest.raises(LookupError):
             Affiliate().request_overview('http://www.amazon.com')
 
-    def test_request_overview_throttling(self, amazon_api_request):
+    def test_request_overview_throttling(self, http_error_factory):
         """It raises a throttling error in response to an HTTP 503 code."""
-        with amazon_api_request():
-            with pytest.raises(ThrottlingError):
-                Affiliate().request_overview('http://www.amazon.com/dp/B00ZGRB7S6')
+        affiliate = Affiliate()
+        affiliate.connect = mock.Mock(side_effect=http_error_factory(503))
+
+        with pytest.raises(ThrottlingError):
+            affiliate.request_overview('http://www.amazon.com/dp/B00ZGRB7S6')
+
+    def test_request_overview_http_error(self, http_error_factory):
+        """It re-raises non-throttled HTTP errors."""
+        affiliate = Affiliate()
+        affiliate.connect = mock.Mock(side_effect=http_error_factory(400))
+
+        with pytest.raises(HTTPError) as http_error:
+            affiliate.request_overview('http://www.amazon.com/dp/B00ZGRB7S6')
+
+        assert http_error.value.code == 400
 
     def test_request_details_name(self, amazon_api_request):
         """It returns the item's name."""
@@ -141,11 +166,23 @@ class TestAmazonAffiliate:
             with pytest.raises(LookupError):
                 Affiliate().request_details('0000000000')
 
-    def test_request_details_throttling(self, amazon_api_request):
+    def test_request_details_throttling(self, http_error_factory):
         """It raises a throttling error in response to an HTTP 503 code."""
-        with amazon_api_request():
-            with pytest.raises(ThrottlingError):
-                Affiliate().request_details('B00ZGRB7S6')
+        affiliate = Affiliate()
+        affiliate.connect = mock.Mock(side_effect=http_error_factory(503))
+
+        with pytest.raises(ThrottlingError):
+            affiliate.request_details('B00ZGRB7S6')
+
+    def test_request_details_http_error(self, http_error_factory):
+        """It re-raises non-throttling HTTP errors."""
+        affiliate = Affiliate()
+        affiliate.connect = mock.Mock(side_effect=http_error_factory(400))
+
+        with pytest.raises(HTTPError) as http_error:
+            affiliate.request_details('B00ZGRB7S6')
+
+        assert http_error.value.code == 400
 
     def test_request_raw(self, amazon_api_request):
         """It returns the full API response."""
@@ -160,8 +197,20 @@ class TestAmazonAffiliate:
             with pytest.raises(LookupError):
                 Affiliate().request_raw('0000000000')
 
-    def test_request_raw_throttling(self, amazon_api_request):
+    def test_request_raw_throttling(self, http_error_factory):
         """It raises a throttling error in response to an HTTP 503 code."""
-        with amazon_api_request():
-            with pytest.raises(ThrottlingError):
-                Affiliate().request_raw('B00ZGRB7S6')
+        affiliate = Affiliate()
+        affiliate.connect = mock.Mock(side_effect=http_error_factory(503))
+
+        with pytest.raises(ThrottlingError):
+            affiliate.request_raw('B00ZGRB7S6')
+
+    def test_request_raw_http_error(self, http_error_factory):
+        """It re-raises non-throttling HTTP errors."""
+        affiliate = Affiliate()
+        affiliate.connect = mock.Mock(side_effect=http_error_factory(400))
+
+        with pytest.raises(HTTPError) as http_error:
+            affiliate.request_raw('B00ZGRB7S6')
+
+        assert http_error.value.code == 400
