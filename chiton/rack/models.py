@@ -46,6 +46,7 @@ class AffiliateItem(models.Model):
     thumbnail = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('thumbnail'), null=True, blank=True, related_name='thumbnail_for')
 
     class Meta:
+        unique_together = ('guid', 'network')
         verbose_name = _('affiliate item')
         verbose_name_plural = _('affiliate items')
 
