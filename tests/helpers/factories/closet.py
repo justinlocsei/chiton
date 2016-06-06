@@ -3,7 +3,7 @@ from factory.django import DjangoModelFactory
 from faker import Faker
 
 from .runway import BasicFactory
-from chiton.closet.models import Brand, CanonicalSize, Garment, StandardSize
+from chiton.closet.models import Brand, CanonicalSize, Color, Garment, StandardSize
 
 fake = Faker()
 
@@ -26,6 +26,14 @@ class CanonicalSizeFactory(DjangoModelFactory):
 
     class Meta:
         model = CanonicalSize
+
+
+class ColorFactory(DjangoModelFactory):
+
+    name = factory.LazyAttribute(lambda m: fake.company())
+
+    class Meta:
+        model = Color
 
 
 class GarmentFactory(DjangoModelFactory):
@@ -56,20 +64,32 @@ class GarmentFactory(DjangoModelFactory):
                 self.styles.add(style)
 
 
-def standard_size_factory(canonical_size_factory):
-    def create_standard_size(lower_size=None, upper_size=None, is_petite=False, is_plus_sized=False, is_tall=False, slug=None):
-        canonical_kwargs = {}
-        if lower_size is not None:
-            canonical_kwargs['range_lower'] = lower_size
-        if upper_size is not None or lower_size is not None:
-            canonical_kwargs['range_upper'] = upper_size or lower_size
-        if slug:
-            canonical_kwargs['slug'] = slug
+class StandardSizeFactory(DjangoModelFactory):
 
-        is_regular = not any([is_petite, is_plus_sized, is_tall])
+    canonical = factory.SubFactory(CanonicalSizeFactory)
+
+    class Meta:
+        model = StandardSize
+
+
+def standard_size_factory(canonical_size_factory):
+    def create_standard_size(lower_size=None, upper_size=None, is_petite=False, is_plus_sized=False, is_tall=False, is_regular=None, slug=None, canonical=None):
+        if not canonical:
+            canonical_kwargs = {}
+            if lower_size is not None:
+                canonical_kwargs['range_lower'] = lower_size
+            if upper_size is not None or lower_size is not None:
+                canonical_kwargs['range_upper'] = upper_size or lower_size
+            if slug:
+                canonical_kwargs['slug'] = slug
+
+            canonical = canonical_size_factory(**canonical_kwargs)
+
+        if is_regular is None:
+            is_regular = not any([is_petite, is_plus_sized, is_tall])
 
         return StandardSize.objects.create(
-            canonical=canonical_size_factory(**canonical_kwargs),
+            canonical=canonical,
             is_petite=is_petite,
             is_plus_sized=is_plus_sized,
             is_regular=is_regular,

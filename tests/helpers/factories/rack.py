@@ -2,8 +2,8 @@ import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-from .closet import GarmentFactory
-from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage
+from .closet import GarmentFactory, StandardSizeFactory
+from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage, StockRecord
 
 fake = Faker()
 
@@ -37,3 +37,12 @@ class ProductImageFactory(DjangoModelFactory):
 
     class Meta:
         model = ProductImage
+
+
+class StockRecordFactory(DjangoModelFactory):
+
+    item = factory.SubFactory(AffiliateItemFactory)
+    size = factory.SubFactory(StandardSizeFactory)
+
+    class Meta:
+        model = StockRecord

@@ -2,7 +2,8 @@ import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-from chiton.runway.models import Basic, Category, Formality, Style
+from chiton.runway.data import PROPRIETY_IMPORTANCE_CHOICES
+from chiton.runway.models import Basic, Category, Formality, Propriety, Style
 
 fake = Faker()
 
@@ -31,6 +32,16 @@ class FormalityFactory(DjangoModelFactory):
 
     class Meta:
         model = Formality
+
+
+class ProprietyFactory(DjangoModelFactory):
+
+    basic = factory.SubFactory(BasicFactory)
+    formality = factory.SubFactory(FormalityFactory)
+    importance = factory.Sequence(lambda n: PROPRIETY_IMPORTANCE_CHOICES[n % (len(PROPRIETY_IMPORTANCE_CHOICES) - 1)][0])
+
+    class Meta:
+        model = Propriety
 
 
 class StyleFactory(DjangoModelFactory):
