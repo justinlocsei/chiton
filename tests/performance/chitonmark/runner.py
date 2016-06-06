@@ -14,7 +14,7 @@ from .templates import create_pytest_file
 def run():
     """Run benchmarks."""
     args = parse_args()
-    run_benchmark(args.benchmark, calls=args.calls)
+    run_benchmark(args.benchmark, calls=args.calls, source_only=args.source_only)
 
 
 def parse_args():
@@ -29,10 +29,11 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run a bechmark')
     parser.add_argument('benchmark', metavar='BENCHMARK', choices=benchmarks, help='The benchmark to run')
     parser.add_argument('--calls', default=False, action='store_true', help='Whether to show call metrics')
+    parser.add_argument('--source-only', default=False, action='store_true', help='Hide non-source calls')
     return parser.parse_args()
 
 
-def run_benchmark(module_name, calls=False):
+def run_benchmark(module_name, calls=False, source_only=False):
     """Run a single benchmark.
 
     Args:
@@ -40,6 +41,7 @@ def run_benchmark(module_name, calls=False):
 
     Keyword Args:
         calls (bool): Whether to show call metrics
+        source_only (bool): Whether to only show source calls
     """
     term_size = shutil.get_terminal_size((80, 20))
     divider = '-' * term_size.columns
@@ -74,6 +76,8 @@ def run_benchmark(module_name, calls=False):
         print('Calls')
         print(divider)
         for call in results.calls:
+            if source_only and 'SITE' in call:
+                continue
             print(call)
 
     print(divider)
