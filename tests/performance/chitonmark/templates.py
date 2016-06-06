@@ -74,7 +74,7 @@ class TestBenchmark:
                 pass
 
         stats_data = io.StringIO()
-        stats = pstats.Stats(profile, stream=stats_data).sort_stats('cumulative')
+        stats = pstats.Stats(profile, stream=stats_data).sort_stats('cumulative').reverse_order()
         stats.print_stats()
         result.add_profile(stats_data.getvalue())
 
