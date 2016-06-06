@@ -15,14 +15,22 @@ class BaseBenchmark:
         """
         return {}
 
-    def pre_run(self, *fixtures):
-        """Allow the benchmark to perform pre-run setup."""
+    def pre_run(self, fixtures):
+        """Allow the benchmark to perform pre-run setup.
+
+        Args:
+            fixtures (dict): A mapping of fixture names to instances
+        """
         pass
 
     def post_run(self):
         """Allow the benchmark to perform post-run teardown."""
         pass
 
-    def run(self, *fixtures):
-        """Allow the benchmark to provide its code."""
+    def run(self, fixtures):
+        """Allow the benchmark to provide its code.
+
+        Args:
+            fixtures (dict): A mapping of fixture names to instances
+        """
         raise NotImplementedError()

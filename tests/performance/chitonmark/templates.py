@@ -19,11 +19,11 @@ def create_pytest_file(module_name, results_path, fixtures=[], runs=100):
     """
     fixtures = sorted(fixtures)
 
-    fixture_args = ['[']
+    fixtures_dict = ['{']
     for fixture in fixtures:
-        fixture_args.append("%s," % fixture)
-    fixture_args.append(']')
-    fixture_args = ''.join(fixture_args)
+        fixtures_dict.append("'%s': %s," % (fixture, fixture))
+    fixtures_dict.append('}')
+    fixtures_dict = ''.join(fixtures_dict)
 
     if fixtures:
         fixtures_signature = ', %s' % ', '.join(fixtures)
@@ -48,10 +48,10 @@ class TestBenchmark:
 
     @pytest.mark.django_db(transaction=True)
     def test_performance(self%(fixtures_signature)s):
-        fixture_args = %(fixture_args)s
+        fixtures = %(fixtures_dict)s
 
         benchmark = Benchmark()
-        benchmark.pre_run(*fixture_args)
+        benchmark.pre_run(fixtures)
 
         result = BenchmarkResults()
         profile = cProfile.Profile()
@@ -62,7 +62,7 @@ class TestBenchmark:
                     start_time = get_time()
                     profile.enable()
 
-                    benchmark.run(*fixture_args)
+                    benchmark.run(fixtures)
 
                     profile.disable()
                     end_time = get_time()
@@ -82,7 +82,7 @@ class TestBenchmark:
 
         result.export("%(results_path)s")
     """ % {
-        'fixture_args': fixture_args,
+        'fixtures_dict': fixtures_dict,
         'fixtures_signature': fixtures_signature,
         'module_name': module_name,
         'results_path': results_path,
