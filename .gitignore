@@ -6,3 +6,6 @@
 
 /.cache/
 /.tox/
+
+/tests/performance/tests/*
+!/tests/performance/tests/__init__.py
