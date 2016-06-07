@@ -6,7 +6,7 @@ import shutil
 import sys
 import tempfile
 
-from .paths import BENCHMARKS_DIR
+from .paths import BENCHMARKS_DIR, ROOT_DIR
 from .results import load_results
 from .templates import create_pytest_file
 
@@ -76,8 +76,10 @@ def run_benchmark(module_name, calls=False, source_only=False):
         print('Calls')
         print(divider)
         for call in results.calls:
-            if source_only and 'SITE' in call:
+            if source_only and ROOT_DIR not in call:
                 continue
+            elif source_only:
+                call = call.replace('%s%s' % (ROOT_DIR, os.path.sep), '')
             print(call)
 
     print(divider)

@@ -8,3 +8,6 @@ CHITONMARK_CONTAINER_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path
 
 # The absolute path to the directory for generated performance tests
 TESTS_DIR = os.path.join(CHITONMARK_CONTAINER_DIR, 'tests')
+
+# The absolute path to the root directory
+ROOT_DIR = os.path.normpath(os.path.join(CHITONMARK_CONTAINER_DIR, '..', '..'))
