@@ -73,7 +73,7 @@ SerializedItemImage = define_data_shape({
     V.Required('height'): int,
     V.Required('url'): str,
     V.Required('width'): int
-})
+}, validated=False)
 
 
 SerializedGarmentRecommendation = define_data_shape({
