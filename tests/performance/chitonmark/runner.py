@@ -14,7 +14,12 @@ from .templates import create_pytest_file
 def run():
     """Run benchmarks."""
     args = parse_args()
-    run_benchmark(args.benchmark, calls=args.calls, source_only=args.source_only)
+    run_benchmark(
+        args.benchmark,
+        calls=args.calls,
+        source_only=args.source_only,
+        runs=args.runs
+    )
 
 
 def parse_args():
@@ -29,11 +34,12 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run a bechmark')
     parser.add_argument('benchmark', metavar='BENCHMARK', choices=benchmarks, help='The benchmark to run')
     parser.add_argument('--calls', default=False, action='store_true', help='Whether to show call metrics')
+    parser.add_argument('--runs', default=100, type=int, help='The number of test runs')
     parser.add_argument('--source-only', default=False, action='store_true', help='Hide non-source calls')
     return parser.parse_args()
 
 
-def run_benchmark(module_name, calls=False, source_only=False):
+def run_benchmark(module_name, calls=False, source_only=False, runs=100):
     """Run a single benchmark.
 
     Args:
@@ -41,6 +47,7 @@ def run_benchmark(module_name, calls=False, source_only=False):
 
     Keyword Args:
         calls (bool): Whether to show call metrics
+        runs (int): The number of test runs
         source_only (bool): Whether to only show source calls
     """
     term_size = shutil.get_terminal_size((80, 20))
@@ -50,7 +57,12 @@ def run_benchmark(module_name, calls=False, source_only=False):
     Benchmark = module.Benchmark
 
     results_file_fd, results_file_path = tempfile.mkstemp(suffix='.json')
-    pytest_file_path = create_pytest_file(module_name, results_file_path, fixtures=Benchmark.fixtures)
+    pytest_file_path = create_pytest_file(
+        module_name,
+        results_file_path,
+        fixtures=Benchmark.fixtures,
+        runs=runs
+    )
 
     print(divider)
     print('Test Run')
