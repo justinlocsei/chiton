@@ -80,7 +80,7 @@ class TestBenchmark:
 
         benchmark.post_run()
 
-        result.export("%(results_path)s")
+        result.export('%(results_path)s')
     """ % {
         'fixtures_dict': fixtures_dict,
         'fixtures_signature': fixtures_signature,
