@@ -15,13 +15,19 @@ class BaseBenchmark:
         """
         return {}
 
-    def log(self, message):
+    def log(self, message, update=False):
         """Log a message.
 
         Args:
             message (str): The text of the message
+
+        Keyword Args:
+            update (bool): Whether to update the line in-place
         """
-        print(message)
+        if update:
+            print('%s\r' % message, end="")
+        else:
+            print(message)
 
     def pre_run(self, fixtures):
         """Allow the benchmark to perform pre-run setup.
