@@ -55,7 +55,7 @@ def run_benchmark(module_name, calls=False, source_only=False):
     print(divider)
     print('Test Run')
     print(divider)
-    pytest = subprocess.Popen(['py.test', pytest_file_path])
+    pytest = subprocess.Popen(['py.test', '-s', pytest_file_path])
 
     try:
         pytest.wait()

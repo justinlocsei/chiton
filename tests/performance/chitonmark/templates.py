@@ -67,7 +67,9 @@ class TestBenchmark:
                     profile.disable()
                     end_time = get_time()
 
-                    result.times.append(end_time - start_time)
+                    run_time = end_time - start_time
+                    result.times.append(run_time)
+                    benchmark.log('Run %%d / %%d: %%dms' %% (run + 1, %(runs)d, run_time * 1000))
 
                     raise IntegrityError()
             except IntegrityError:

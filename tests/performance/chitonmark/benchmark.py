@@ -15,6 +15,14 @@ class BaseBenchmark:
         """
         return {}
 
+    def log(self, message):
+        """Log a message.
+
+        Args:
+            message (str): The text of the message
+        """
+        print(message)
+
     def pre_run(self, fixtures):
         """Allow the benchmark to perform pre-run setup.
 
