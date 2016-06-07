@@ -1,5 +1,6 @@
+import itertools
+
 from chitonmark.benchmark import BaseBenchmark
-import sys
 
 
 class Benchmark(BaseBenchmark):
@@ -43,7 +44,7 @@ class Benchmark(BaseBenchmark):
         # Create a pool of colors
         self.log('Creating colors')
         colors = [fixtures['color_factory']() for i in range(0, 3)]
-        color_cycle = len(colors) - 1
+        color_cycle = itertools.cycle(colors)
 
         # Create a pool of sizes
         self.log('Creating sizes')
@@ -72,7 +73,7 @@ class Benchmark(BaseBenchmark):
         proprieties = self.imports['PROPRIETY_IMPORTANCE_CHOICES']
         for i in range(0, 20):
             basic = fixtures['basic_factory'](
-                primary_color=colors[i % color_cycle],
+                primary_color=next(color_cycle),
                 budget_end=i * 5,
                 luxury_start=i * 10
             )
@@ -85,7 +86,7 @@ class Benchmark(BaseBenchmark):
                 )
 
             basics.append(basic)
-        basic_cycle = len(basics) - 1
+        basic_cycle = itertools.cycle(basics)
 
         # Create a pool of styles
         self.log('Creating styles')
@@ -97,15 +98,12 @@ class Benchmark(BaseBenchmark):
         brands = []
         for age in range(20, 80, 10):
             brands.append(fixtures['brand_factory'](age_lower=age, age_upper=age + 10))
-        brand_cycle = len(brands) - 1
+        brand_cycle = itertools.cycle(brands)
 
         # Create cycle metrics for garment data
-        care_types = self.imports['CARE_CHOICES']
-        emphases = self.imports['EMPHASIS_CHOICES']
-        pant_rises = self.imports['PANT_RISE_CHOICES']
-        care_type_cycle = len(care_types) - 1
-        emphasis_cycle = len(emphases) - 1
-        pant_rise_cycle = len(pant_rises) - 1
+        care_type_cycle = itertools.cycle(self.imports['CARE_CHOICES'])
+        emphasis_cycle = itertools.cycle(self.imports['EMPHASIS_CHOICES'])
+        pant_rise_cycle = itertools.cycle(self.imports['PANT_RISE_CHOICES'])
 
         # Create a pool of affiliate networks
         self.log('Creating affiliate networks')
@@ -115,19 +113,16 @@ class Benchmark(BaseBenchmark):
         # Create a large pool of garments
         for i in range(0, 100):
             self.log('Creating garment %d' % (i + 1), update=True)
-            care_type = care_types[i % care_type_cycle][0]
-            emphasis = emphases[i % emphasis_cycle][0]
-            pant_rise = pant_rises[i % pant_rise_cycle][0]
-
+            emphasis = next(emphasis_cycle)[0]
             garment = fixtures['garment_factory'](
-                brand=brands[i % brand_cycle],
-                basic=basics[i % basic_cycle],
+                brand=next(brand_cycle),
+                basic=next(basic_cycle),
                 formalities=formalities[i % formality_cycle:-1],
                 shoulder_emphasis=emphasis,
                 waist_emphasis=emphasis,
                 hip_emphasis=emphasis,
-                pant_rise=pant_rise,
-                care=care_type,
+                pant_rise=next(pant_rise_cycle)[0],
+                care=next(care_type_cycle)[0],
                 styles=styles[i % style_cycle:-1]
             )
 
@@ -170,4 +165,4 @@ class Benchmark(BaseBenchmark):
         self.log('--')
 
     def run(self, fixtures):
-        recommendations = self.imports['make_recommendations'](self._profile, pipeline=self.imports['CorePipeline']())
+        self.imports['make_recommendations'](self._profile, pipeline=self.imports['CorePipeline']())
