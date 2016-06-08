@@ -274,9 +274,9 @@ class BasePipeline:
             max_weight = max(max_weight, garment_data['weight'])
 
             by_basic.setdefault(garment.basic, {})
-            if garment in by_basic[garment.basic]:
+            try:
                 by_basic[garment.basic][garment]['affiliate_items'].append(affiliate_item)
-            else:
+            except KeyError:
                 by_basic[garment.basic][garment] = GarmentRecommendation({
                     'affiliate_items': [affiliate_item],
                     'explanations': garment_data['explanations'],
