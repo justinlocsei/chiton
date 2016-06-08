@@ -14,13 +14,14 @@ class AvailabilityGarmentFilter(BaseGarmentFilter):
         # Build a lookup table that maps garment primary keys to arbitrary
         # booleans, with the presence of garments determined by their having at
         # least one available size that matches the user's sizes
-        in_stock_records = (
+        available_garment_ids = (
             StockRecord.objects
             .filter(size__slug__in=profile['sizes'], is_available=True)
             .select_related('item')
+            .values_list('item__garment_id', flat=True)
         )
-        for record in in_stock_records:
-            available_garments[record.item.garment_id] = True
+        for garment_id in available_garment_ids:
+            available_garments[garment_id] = True
 
         return {
             'available_garments': available_garments
