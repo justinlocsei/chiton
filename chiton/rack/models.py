@@ -41,7 +41,7 @@ class AffiliateItem(models.Model):
     guid = models.CharField(max_length=255, verbose_name=_('GUID'))
     garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'), related_name='affiliate_items')
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
-    price = PriceField(verbose_name=_('price'), null=True, blank=True)
+    price = PriceField(verbose_name=_('price'), null=True, blank=True, db_index=True)
     image = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('image'), null=True, blank=True, related_name='image_for')
     thumbnail = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('thumbnail'), null=True, blank=True, related_name='thumbnail_for')
 
