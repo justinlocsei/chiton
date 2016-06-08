@@ -14,16 +14,25 @@ class FormalityWeight(BaseWeight):
     def provide_profile_data(self, profile):
         frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_CHOICES)
 
-        garment_formalities = {}
+        formalities_by_garment = {}
         formality_weights = {}
         formality_names = {}
 
         # Create a lookup table mapping garment primary keys to sets containing
         # the slugs of all formalities associated with the garment
-        for garment_formality in Garment.formalities.through.objects.all().select_related('formality'):
-            garment_pk = garment_formality.garment_id
-            garment_formalities.setdefault(garment_pk, set())
-            garment_formalities[garment_pk].add(garment_formality.formality.slug)
+        garment_formalities = (
+            Garment.formalities.through
+            .objects.all()
+            .select_related('formality')
+            .values_list('garment_id', 'formality__slug')
+        )
+        for garment_formality in garment_formalities:
+            garment_pk = garment_formality[0]
+            formality_slug = garment_formality[1]
+            try:
+                formalities_by_garment[garment_pk].add(formality_slug)
+            except KeyError:
+                formalities_by_garment[garment_pk] = set([formality_slug])
 
         # Create a lookup table for formality names for use in debug logging
         if self.debug:
@@ -38,7 +47,7 @@ class FormalityWeight(BaseWeight):
         return {
             'formality_names': formality_names,
             'formality_weights': formality_weights,
-            'garment_formalities': garment_formalities
+            'garment_formalities': formalities_by_garment
         }
 
     def apply(self, garment, formality_weights=None, formality_names=None, garment_formalities=None):
