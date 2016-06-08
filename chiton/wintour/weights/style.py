@@ -14,15 +14,24 @@ class StyleWeight(BaseWeight):
     slug = 'style'
 
     def provide_profile_data(self, profile):
-        garment_styles = {}
+        styles_by_garment = {}
         style_names = {}
 
         # Create a lookup table mapping garment primary keys to sets containing
         # the slugs of all styles associated with the garment
-        for garment_style in Garment.styles.through.objects.all().select_related('style'):
-            garment_pk = garment_style.garment_id
-            garment_styles.setdefault(garment_pk, set())
-            garment_styles[garment_pk].add(garment_style.style.slug)
+        garment_styles = (
+            Garment.styles.through
+            .objects.all()
+            .select_related('style')
+            .values_list('garment_id', 'style__slug')
+        )
+        for garment_style in garment_styles:
+            garment_pk = garment_style[0]
+            style_slug = garment_style[1]
+            try:
+                styles_by_garment[garment_pk].add(style_slug)
+            except KeyError:
+                styles_by_garment[garment_pk] = set([style_slug])
 
         # Create a lookup table of style names for use in debug logging
         if self.debug:
@@ -30,7 +39,7 @@ class StyleWeight(BaseWeight):
                 style_names[style.slug] = style.name
 
         return {
-            'garment_styles': garment_styles,
+            'garment_styles': styles_by_garment,
             'profile_styles': set(profile['styles']),
             'style_names': style_names
         }
