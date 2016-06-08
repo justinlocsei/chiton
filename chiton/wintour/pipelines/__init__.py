@@ -173,31 +173,23 @@ class BasePipeline:
         weightings = {}
 
         for weight in weights:
-            weighted_garments = []
-            max_weight = 0
-            min_weight = 0
 
             # Apply the weight to the garment, and update the max and min
             # weights in response to the results
             with weight.apply_to_profile(self._current_profile) as weight_function:
-                for garment in garments:
-                    applied_weight = weight_function(garment)
-                    weighted_garments.append({
-                        'garment': garment,
-                        'weight': applied_weight
-                    })
-                    max_weight = max(max_weight, applied_weight)
-                    min_weight = min(min_weight, applied_weight)
+                weighted_garments = [
+                    {'garment': garment, 'weight': weight_function(garment)}
+                    for garment in garments
+                ]
 
-            # Recalculate the garment weights as a floating-point percentage
-            # based on the range of values for the weight
-            weight_range = max_weight - min_weight
-            if weight_range:
-                for weighted_garment in weighted_garments:
-                    zeroed_weight = weighted_garment['weight'] - min_weight
-                    weighted_garment['weight'] = zeroed_weight / weight_range
-
-            weightings[weight] = weighted_garments
+            # Expose the garments and the max and min weight value for the
+            # current weight to support later normalization
+            weight_values = [0] + [g['weight'] for g in weighted_garments]
+            weightings[weight] = {
+                'garments': weighted_garments,
+                'max_weight': max(weight_values),
+                'min_weight': min(weight_values)
+            }
 
         return weightings
 
@@ -215,8 +207,12 @@ class BasePipeline:
         """
         weighted_garments = {}
 
-        for weight, garments in weightings.items():
-            for weighted_garment in garments:
+        for weight, weight_data in weightings.items():
+            max_weight = weight_data['max_weight']
+            min_weight = weight_data['min_weight']
+            weight_range = (max_weight - min_weight) or 1
+
+            for weighted_garment in weight_data['garments']:
                 garment = weighted_garment['garment']
                 weighted_garments.setdefault(garment, {
                     'explanations': {
@@ -225,8 +221,9 @@ class BasePipeline:
                     },
                     'weight': 0
                 })
-                normalized_weight = weighted_garment['weight'] * weight.importance
-                weighted_garments[garment]['weight'] += normalized_weight
+
+                normalized_weight = (weighted_garment['weight'] - min_weight) / weight_range
+                weighted_garments[garment]['weight'] += normalized_weight * weight.importance
 
                 # Add debug information on each logged weight application and
                 # on the results of combining the weights
@@ -239,7 +236,7 @@ class BasePipeline:
                     explanations['normalization'].append({
                         'importance': weight.importance,
                         'name': weight.name,
-                        'weight': weighted_garment['weight']
+                        'weight': normalized_weight
                     })
 
         return weighted_garments
