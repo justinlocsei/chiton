@@ -148,11 +148,8 @@ class BasePipeline:
             list[chiton.closet.models.Garment]: The evaluated queryset, with any excluded garments removed
         """
         for garment_filter in garment_filters:
-            to_keep = []
             with garment_filter.apply_to_profile(self._current_profile) as should_exclude:
-                for garment in garments:
-                    if not should_exclude(garment):
-                        to_keep.append(garment)
+                to_keep = [garment for garment in garments if not should_exclude(garment)]
             garments = to_keep
 
         return garments

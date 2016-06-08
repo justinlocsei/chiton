@@ -230,13 +230,17 @@ class TestBasePipeline:
             def apply(self, garment):
                 return garment.name == 'Shirt'
 
+        class CombinedFilter(TestGarmentFilter):
+            def apply(self, garment):
+                return garment.name in ['Pants', 'Shirt']
+
         basic = basic_factory()
         affiliate_item_factory(garment=garment_factory(basic=basic, name='Dress'))
         affiliate_item_factory(garment=garment_factory(basic=basic, name='Pants'))
         affiliate_item_factory(garment=garment_factory(basic=basic, name='Shirt'))
 
         profile = pipeline_profile_factory()
-        pipeline = pipeline_factory(garment_filters=[PantsFilter(), ShirtFilter()])
+        pipeline = pipeline_factory(garment_filters=[PantsFilter(), ShirtFilter(), CombinedFilter()])
 
         recommendations = pipeline.make_recommendations(profile)
 
