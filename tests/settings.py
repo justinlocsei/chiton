@@ -1,0 +1,2 @@
+from chiton.settings import *
+
