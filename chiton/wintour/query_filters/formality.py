@@ -76,12 +76,15 @@ class FormalityQueryFilter(BaseQueryFilter):
         Returns:
             dict: A lookup table for formality/basic weights
         """
-        lookup = {}
-        proprieties = Propriety.objects.all().select_related('basic', 'formality')
+        proprieties = (
+            Propriety.objects.all()
+            .select_related('basic', 'formality')
+            .values('basic_id', 'formality__slug', 'importance')
+        )
 
+        lookup = {}
         for propriety in proprieties:
-            formality_slug = propriety.formality.slug
-            lookup.setdefault(formality_slug, {})
-            lookup[formality_slug][propriety.basic.pk] = importance_weights[propriety.importance]
+            lookup.setdefault(propriety['formality__slug'], {})
+            lookup[propriety['formality__slug']][propriety['basic_id']] = importance_weights[propriety['importance']]
 
         return lookup
