@@ -1,7 +1,6 @@
 import json
 import tempfile
 
-from django.test import override_settings
 import mock
 import pytest
 
@@ -24,11 +23,12 @@ class TestFixture:
         """It creates a label using the underscored version of its model's name."""
         assert product_images_fixture.label == 'product_image'
 
-    def test_find(self, product_images_fixture):
+    def test_find(self, product_images_fixture, settings):
         """It returns the absolute path to the fixture's file using the app label and fixture label."""
-        with override_settings(CHITON_ROOT='/tmp'):
-            path = product_images_fixture.find()
-            assert path == '/tmp/rack/fixtures/product_image.json'
+        settings.CHITON_ROOT = '/tmp'
+
+        path = product_images_fixture.find()
+        assert path == '/tmp/rack/fixtures/product_image.json'
 
     def test_export(self, product_images_fixture):
         """It writes a queryset's models to a JSON file."""
