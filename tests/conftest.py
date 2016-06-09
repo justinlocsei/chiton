@@ -1,6 +1,7 @@
 import pytest
 from pytest_factoryboy import register as register_factory
 
+from .helpers.environment import isolate_cache_tests
 from .helpers.factories.closet import BrandFactory, CanonicalSizeFactory, ColorFactory, GarmentFactory, standard_size_factory
 from .helpers.factories.rack import AffiliateItemFactory, AffiliateNetworkFactory, ProductImageFactory, StockRecordFactory
 from .helpers.factories.runway import BasicFactory, CategoryFactory, FormalityFactory, ProprietyFactory, StyleFactory
@@ -26,3 +27,5 @@ register_factory(ProprietyFactory)
 register_factory(ProductImageFactory)
 register_factory(StockRecordFactory)
 register_factory(StyleFactory)
+
+pytest.fixture(autouse=True)(isolate_cache_tests)

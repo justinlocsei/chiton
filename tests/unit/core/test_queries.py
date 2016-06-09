@@ -1,4 +1,3 @@
-from django.core.cache import cache
 import pytest
 
 from chiton.closet.models import Brand, Color
@@ -9,7 +8,6 @@ from chiton.core.queries import cache_query, prime_cached_queries, unbind_signal
 class TestQueryCaching:
 
     def teardown_method(self, method):
-        cache.clear()
         unbind_signal_handlers()
 
 
