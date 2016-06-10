@@ -2,7 +2,8 @@ from itertools import chain
 from operator import itemgetter
 
 from chiton.closet.models import Garment
-from chiton.rack.models import AffiliateItem
+from chiton.core.queries import cache_query
+from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage
 from chiton.wintour.pipeline import BasicRecommendations, GarmentRecommendation
 
 
@@ -254,17 +255,9 @@ class BasePipeline:
         by_basic = {}
         max_weight = 0
 
-        # Get all affiliate items with pre-selected fields and order them by
-        # price, to ensure that each garment's items are ordered by price
-        affiliate_items = (
-            AffiliateItem.objects.all()
-            .select_related('garment__basic', 'image', 'thumbnail', 'network__name')
-            .order_by('-price')
-        )
-
         # Group garments by their basic type, exposing information on each
         # garment's associated affiliate items
-        for affiliate_item in affiliate_items:
+        for affiliate_item in _get_deep_affiliate_items():
             garment = affiliate_item.garment
             try:
                 garment_data = weighted_garments[garment]
@@ -321,3 +314,17 @@ class BasePipeline:
                     basic_recommendations[basic]['facets'][facet] = apply_facet(basic, data['garments'])
 
         return basic_recommendations
+
+
+@cache_query(AffiliateItem, AffiliateNetwork, Garment, ProductImage)
+def _get_deep_affiliate_items():
+    """Get all affiliate items, with extended relations selected.
+
+    Returns:
+        django.db.models.query.QuerySet: A queryset of all affiliate items
+    """
+    return (
+        AffiliateItem.objects.all()
+        .select_related('garment__basic', 'image', 'thumbnail', 'network__name')
+        .order_by('-price')
+    )
