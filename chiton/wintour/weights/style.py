@@ -1,4 +1,5 @@
 from chiton.closet.models import Garment
+from chiton.core.queries import cache_query
 from chiton.runway.models import Style
 from chiton.wintour.weights import BaseWeight
 
@@ -14,32 +15,13 @@ class StyleWeight(BaseWeight):
     slug = 'style'
 
     def provide_profile_data(self, profile):
-        styles_by_garment = {}
-        style_names = {}
-
-        # Create a lookup table mapping garment primary keys to sets containing
-        # the slugs of all styles associated with the garment
-        garment_styles = (
-            Garment.styles.through
-            .objects.all()
-            .select_related('style')
-            .values_list('garment_id', 'style__slug')
-        )
-        for garment_style in garment_styles:
-            garment_pk = garment_style[0]
-            style_slug = garment_style[1]
-            try:
-                styles_by_garment[garment_pk].add(style_slug)
-            except KeyError:
-                styles_by_garment[garment_pk] = set([style_slug])
-
-        # Create a lookup table of style names for use in debug logging
         if self.debug:
-            for style in Style.objects.all():
-                style_names[style.slug] = style.name
+            style_names = _build_style_names_lookup()
+        else:
+            style_names = {}
 
         return {
-            'garment_styles': styles_by_garment,
+            'garment_styles': _build_garment_styles_lookup(),
             'profile_styles': set(profile['styles']),
             'style_names': style_names
         }
@@ -54,3 +36,43 @@ class StyleWeight(BaseWeight):
                 self.explain_weight(garment, MATCH_WEIGHT, reason)
 
         return match_count * MATCH_WEIGHT
+
+
+@cache_query(Garment, Style)
+def _build_garment_styles_lookup():
+    """Create a lookup table mapping garment IDs to sets of style slugs.
+
+    Returns:
+        dict[int, set[str]]: A lookup table of garment styles
+    """
+    garment_styles = (
+        Garment.styles.through
+        .objects.all()
+        .select_related('style')
+        .values_list('garment_id', 'style__slug')
+    )
+
+    lookup = {}
+    for garment_style in garment_styles:
+        garment_pk = garment_style[0]
+        style_slug = garment_style[1]
+        try:
+            lookup[garment_pk].add(style_slug)
+        except KeyError:
+            lookup[garment_pk] = set([style_slug])
+
+    return lookup
+
+
+@cache_query(Style)
+def _build_style_names_lookup():
+    """Create a lookup table mapping style slugs to names.
+
+    Returns:
+        dict[str, str]: A lookup table for style names
+    """
+    lookup = {}
+    for style in Style.objects.all():
+        lookup[style.slug] = style.name
+
+    return lookup
