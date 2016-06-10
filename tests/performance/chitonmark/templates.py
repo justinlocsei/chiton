@@ -52,6 +52,7 @@ class TestBenchmark:
 
         benchmark = Benchmark()
         benchmark.pre_run(fixtures)
+        benchmark.log('--')
 
         result = BenchmarkResults()
         profile = cProfile.Profile()

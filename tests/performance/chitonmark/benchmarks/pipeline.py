@@ -162,7 +162,6 @@ class Benchmark(BaseBenchmark):
             styles=[style.slug for style in styles[-2:]]
         )
 
-        self.log('--')
 
     def run(self, fixtures):
         self.imports['make_recommendations'](self._profile, pipeline=self.imports['CorePipeline']())
