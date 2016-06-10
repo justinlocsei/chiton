@@ -1,5 +1,6 @@
-from chiton.runway.models import Formality, Propriety
+from chiton.core.queries import cache_query
 from chiton.runway.data import PROPRIETY_IMPORTANCE_CHOICES
+from chiton.runway.models import Basic, Formality, Propriety
 from chiton.wintour import build_choice_weights_lookup
 from chiton.wintour.data import EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.query_filters import BaseQueryFilter
@@ -20,7 +21,7 @@ class FormalityQueryFilter(BaseQueryFilter):
 
     def provide_profile_data(self, profile):
         frequency_weights = build_choice_weights_lookup(EXPECTATION_FREQUENCY_CHOICES)
-        importance_weights = build_choice_weights_lookup(PROPRIETY_IMPORTANCE_CHOICES)
+        importance_weights = _build_importance_weights()
 
         # Use the lowest non-zero value of the combined weights as the cutoff
         weight_values = list(frequency_weights.values()) + list(importance_weights.values())
@@ -29,9 +30,9 @@ class FormalityQueryFilter(BaseQueryFilter):
         return {
             'cutoff': cutoff,
             'expectations': profile['expectations'],
-            'formality_count': Formality.objects.count(),
+            'formality_count': _get_formality_count(),
             'weights': {
-                'formality': self._build_formality_weights_lookup(importance_weights),
+                'formality': _build_formality_weights_lookup(),
                 'frequency': frequency_weights
             }
         }
@@ -67,24 +68,44 @@ class FormalityQueryFilter(BaseQueryFilter):
         else:
             return garments
 
-    def _build_formality_weights_lookup(self, importance_weights):
-        """Create a lookup table mapping formalities to per-basic weights.
 
-        Args:
-            importance_weights (dict): A mapping of propriety importances to weights
+@cache_query(Formality)
+def _get_formality_count():
+    """Return the number of possible formalities.
 
-        Returns:
-            dict: A lookup table for formality/basic weights
-        """
-        proprieties = (
-            Propriety.objects.all()
-            .select_related('basic', 'formality')
-            .values('basic_id', 'formality__slug', 'importance')
-        )
+    Returns:
+        int: The number of formalities
+    """
+    return Formality.objects.count()
 
-        lookup = {}
-        for propriety in proprieties:
-            lookup.setdefault(propriety['formality__slug'], {})
-            lookup[propriety['formality__slug']][propriety['basic_id']] = importance_weights[propriety['importance']]
 
-        return lookup
+@cache_query(Basic, Formality, Propriety)
+def _build_formality_weights_lookup():
+    """Create a lookup mapping formality slugs to weights keyed by basic ID.
+
+    Returns:
+        dict[str, dict]: A lookup table for formality/basic weights
+    """
+    importance_weights = _build_importance_weights()
+
+    proprieties = (
+        Propriety.objects.all()
+        .select_related('basic', 'formality')
+        .values('basic_id', 'formality__slug', 'importance')
+    )
+
+    lookup = {}
+    for propriety in proprieties:
+        lookup.setdefault(propriety['formality__slug'], {})
+        lookup[propriety['formality__slug']][propriety['basic_id']] = importance_weights[propriety['importance']]
+
+    return lookup
+
+
+def _build_importance_weights():
+    """Build weights for importance choices.
+
+    Returns:
+        dict[str, float]: Weights for importance choices
+    """
+    return build_choice_weights_lookup(PROPRIETY_IMPORTANCE_CHOICES)
