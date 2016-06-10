@@ -23,6 +23,7 @@ class Benchmark(BaseBenchmark):
     ]
 
     def resolve_imports(self):
+        from chiton.core.queries import prime_cached_queries
         from chiton.closet.data import CARE_CHOICES, EMPHASIS_CHOICES, PANT_RISE_CHOICES
         from chiton.runway.data import PROPRIETY_IMPORTANCE_CHOICES
         from chiton.wintour.data import EXPECTATION_FREQUENCY_CHOICES
@@ -36,6 +37,7 @@ class Benchmark(BaseBenchmark):
             'EXPECTATION_FREQUENCY_CHOICES': EXPECTATION_FREQUENCY_CHOICES,
             'make_recommendations': make_recommendations,
             'PANT_RISE_CHOICES': PANT_RISE_CHOICES,
+            'prime_cached_queries': prime_cached_queries,
             'PROPRIETY_IMPORTANCE_CHOICES': PROPRIETY_IMPORTANCE_CHOICES
         }
 
@@ -162,6 +164,8 @@ class Benchmark(BaseBenchmark):
             styles=[style.slug for style in styles[-2:]]
         )
 
+        # Prime all cached queries now that the database is populated
+        self.imports['prime_cached_queries']()
 
     def run(self, fixtures):
         self.imports['make_recommendations'](self._profile, pipeline=self.imports['CorePipeline']())
