@@ -10,4 +10,4 @@ class Config(AppConfig):
 
     def ready(self):
         """Import all code that uses cached queries."""
-        from chiton.wintour.pipelines.core import CorePipeline
+        from chiton.wintour.pipelines.core import CorePipeline # noqa
