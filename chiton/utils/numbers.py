@@ -29,3 +29,15 @@ def format_float(value, precision=2):
         formatted = re.sub(transform, '', formatted)
 
     return formatted
+
+
+def price_to_integer(price):
+    """Convert a price to an integer representing its value in cents.
+
+    Params:
+        price (decimal.Decimal): A price as a decimal
+
+    Returns:
+        int: The price as an integer in cents
+    """
+    return int(float(price) * 100) if price is not None else None

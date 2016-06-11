@@ -1,4 +1,6 @@
-from chiton.utils.numbers import format_float
+from decimal import Decimal
+
+from chiton.utils.numbers import format_float, price_to_integer
 
 
 class TestFormatFloat:
@@ -24,3 +26,25 @@ class TestFormatFloat:
         assert format_float(number, precision=1) == '10.5'
         assert format_float(number, precision=2) == '10.50'
         assert format_float(number, precision=3) == '10.500'
+
+
+class TestPriceToInteger:
+
+    def test_whole(self):
+        """It converts whole decimal numbers to integer cents."""
+        price = Decimal(10)
+        assert price_to_integer(price) == 1000
+
+    def test_fractional(self):
+        """It converts fractional decimal numbers to integer cents."""
+        price = Decimal('10.25')
+        assert price_to_integer(price) == 1025
+
+    def test_zero(self):
+        """It converts a zero-dollar price to an integer."""
+        price = Decimal(0)
+        assert price_to_integer(price) == 0
+
+    def test_null(self):
+        """It converts an undefined price to an integer."""
+        assert price_to_integer(None) is None
