@@ -8,7 +8,7 @@ class BaseFacet(PipelineStep):
         """Apply a facet to a set of garments associated with a basic.
 
         Args:
-            basic (chiton.runway.models.Basic): The basic type of the given garments
+            basic (chiton.wintour.pipeline.BasicOverview): The basic type of the given garments
             garments (list[chiton.wintour.pipeline.GarmentRecommendation]): A list of garment recommendations, sorted by weight
 
         Returns:

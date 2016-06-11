@@ -1,4 +1,5 @@
 from chiton.runway.models import Basic
+from chiton.utils.numbers import price_to_integer
 from chiton.wintour.facets import BaseFacet
 from chiton.wintour.pipeline import FacetGroup
 
@@ -32,7 +33,9 @@ class PriceFacet(BaseFacet):
         }
 
     def apply(self, basic, garments, basic_prices=None):
-        cutoffs = basic_prices[basic.pk]
+        cutoffs = basic_prices[basic['id']]
+        low_cutoff = price_to_integer(cutoffs['low'])
+        high_cutoff = price_to_integer(cutoffs['high'])
 
         groups = {
             GROUP_LOW: [],
@@ -43,20 +46,20 @@ class PriceFacet(BaseFacet):
         # Place items with prices into one of the groups, based on where the
         # item's price falls relative to the basic's cutoff points
         for garment in garments:
-            priced_items = [ai for ai in garment['affiliate_items'] if ai.price]
-            total_price = sum([pi.price for pi in priced_items])
+            priced_items = [po for po in garment['purchase_options'] if po['price']]
+            total_price = sum([pi['price'] for pi in priced_items])
             if not total_price:
                 continue
 
             garment_price = total_price / len(priced_items)
-            if garment_price < cutoffs['low']:
+            if garment_price < low_cutoff:
                 group_slug = GROUP_LOW
-            elif garment_price >= cutoffs['high']:
+            elif garment_price >= high_cutoff:
                 group_slug = GROUP_HIGH
             else:
                 group_slug = GROUP_MEDIUM
 
-            groups[group_slug].append(garment['garment'].pk)
+            groups[group_slug].append(garment['garment']['id'])
 
         # Create a dict for each group that exposes the IDs of its garments
         facets = []
