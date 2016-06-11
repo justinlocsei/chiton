@@ -57,6 +57,7 @@ The following management commands are available:
 * `chiton_ensure_superuser`: Ensure that a superuser exists with an email, username, and password provided as arguments.
 * `chiton_load_fixtures`: Load all fixtures for core data.
 * `chiton_refresh_affiliate_items`: Update the local cache of items from the affiliate APIs
+* `chiton_refresh_cache`: Clear the cache and prime it
 * `chiton_save_snapshot`: Export a snapshot of all current app data.
 * `chiton_update_basic_price_points`: Recalculate the price points for all basics
 * `chiton_update_stock`: Refresh affiliate items and update price points
