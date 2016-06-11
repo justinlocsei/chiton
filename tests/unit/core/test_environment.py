@@ -193,6 +193,22 @@ class TestUseConfig:
         config = use_config()
         assert config['log_level'] == 'INFO'
 
+    def test_redis_socket(self):
+        """It expects a non-empty string for the redis socket's path."""
+        config = use_config({'redis_socket': '/tmp/redis.sock'})
+        assert config['redis_socket'] == '/tmp/redis.sock'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'redis_socket': ''})
+
+    def test_redis_socket_absolute(self):
+        """It expects an absolute path for the redis socket's path."""
+        config = use_config({'redis_socket': '/tmp/dir/redis.sock'})
+        assert config['redis_socket'] == '/tmp/dir/redis.sock'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'redis_socket': 'redis.sock'})
+
     def test_secret_key(self):
         """It expects a non-empty string for the secret key."""
         config = use_config({'secret_key': 'secret'})
