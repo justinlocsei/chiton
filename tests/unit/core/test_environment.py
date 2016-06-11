@@ -4,6 +4,7 @@ from chiton.core.environment import use_config
 from chiton.core.exceptions import ConfigurationError
 
 
+@pytest.mark.current
 class TestUseConfig:
 
     def test_default(self):
@@ -192,6 +193,14 @@ class TestUseConfig:
         """It defaults to info logging."""
         config = use_config()
         assert config['log_level'] == 'INFO'
+
+    def test_redis_db(self):
+        """It expects a Redis database number."""
+        config = use_config({'redis_db': 1})
+        assert config['redis_db'] == 1
+
+        with pytest.raises(ConfigurationError):
+            use_config({'redis_db': '1'})
 
     def test_redis_socket(self):
         """It expects a non-empty string for the redis socket's path."""
