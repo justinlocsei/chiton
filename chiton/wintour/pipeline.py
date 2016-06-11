@@ -4,9 +4,7 @@ from functools import partial
 import voluptuous as V
 
 from chiton.closet.data import CARE_TYPES
-from chiton.closet.models import Garment
 from chiton.core.schema import define_data_shape, OneOf
-from chiton.rack.models import AffiliateItem
 from chiton.wintour.data import BODY_SHAPES
 
 
@@ -18,13 +16,6 @@ PipelineProfile = define_data_shape({
     V.Required('sizes'): [str],
     V.Required('styles'): [str]
 })
-
-
-FacetGroup = define_data_shape({
-    V.Required('count'): int,
-    V.Required('garment_ids'): [int],
-    V.Required('slug'): str
-}, validated=False)
 
 
 DebugExplanations = define_data_shape({
@@ -43,22 +34,68 @@ DebugExplanations = define_data_shape({
 }, validated=False)
 
 
+ItemImage = define_data_shape({
+    V.Required('height'): int,
+    V.Required('url'): str,
+    V.Required('width'): int
+}, validated=False)
+
+
+PurchaseOption = define_data_shape({
+    V.Required('id'): int,
+    V.Required('image'): V.Any(None, ItemImage),
+    V.Required('price'): V.Any(None, int),
+    V.Required('network_name'): str,
+    V.Required('thumbnail'): V.Any(None, ItemImage),
+    V.Required('url'): str
+}, validated=False)
+
+
+GarmentOverview = define_data_shape({
+    V.Required('brand'): str,
+    V.Required('id'): int,
+    V.Required('name'): str
+}, validated=False)
+
+
 GarmentRecommendation = define_data_shape({
-    V.Required('affiliate_items'): [AffiliateItem],
     'explanations': DebugExplanations,
-    V.Required('garment'): Garment,
+    V.Required('garment'): GarmentOverview,
+    V.Required('purchase_options'): [PurchaseOption],
     V.Required('weight'): V.Any(float, int)
 }, validated=False)
 
 
+BasicOverview = define_data_shape({
+    V.Required('id'): int,
+    V.Required('name'): str,
+    V.Required('slug'): str
+}, validated=False)
+
+
+FacetGroup = define_data_shape({
+    V.Required('count'): int,
+    V.Required('garment_ids'): [int],
+    V.Required('slug'): str
+}, validated=False)
+
+
+Facet = define_data_shape({
+    V.Required('name'): str,
+    V.Required('groups'): [FacetGroup],
+    V.Required('slug'): str
+}, validated=False)
+
+
 BasicRecommendations = define_data_shape({
-    V.Required('facets'): dict,
+    V.Required('basic'): BasicOverview,
+    V.Required('facets'): [Facet],
     V.Required('garments'): [GarmentRecommendation]
 }, validated=False)
 
 
 Recommendations = define_data_shape({
-    V.Required('basics'): dict,
+    V.Required('basics'): [BasicRecommendations],
     'debug': {
         V.Required('queries'): [{
             V.Required('time'): float,
@@ -66,43 +103,6 @@ Recommendations = define_data_shape({
         }],
         V.Required('time'): float
     }
-}, validated=False)
-
-
-SerializedItemImage = define_data_shape({
-    V.Required('height'): int,
-    V.Required('url'): str,
-    V.Required('width'): int
-}, validated=False)
-
-
-SerializedGarmentRecommendation = define_data_shape({
-    V.Required('affiliate_items'): [{
-        V.Required('id'): int,
-        V.Required('image'): V.Any(None, SerializedItemImage),
-        V.Required('price'): V.Any(None, int),
-        V.Required('network_name'): str,
-        V.Required('thumbnail'): V.Any(None, SerializedItemImage),
-        V.Required('url'): str
-    }],
-    'explanations': DebugExplanations,
-    V.Required('garment'): {
-        V.Required('brand'): str,
-        V.Required('id'): int,
-        V.Required('name'): str
-    },
-    V.Required('weight'): V.Any(float, int)
-}, validated=False)
-
-
-SerializedBasicRecommendations = define_data_shape({
-    V.Required('basic'): {
-        V.Required('id'): int,
-        V.Required('name'): str,
-        V.Required('slug'): str
-    },
-    'facets': dict,
-    'garments': [SerializedGarmentRecommendation]
 }, validated=False)
 
 

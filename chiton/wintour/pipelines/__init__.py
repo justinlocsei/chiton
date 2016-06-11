@@ -1,10 +1,16 @@
 from itertools import chain
 from operator import itemgetter
 
-from chiton.closet.models import Garment
+from chiton.closet.models import Basic, Garment
 from chiton.core.queries import cache_query
 from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage
-from chiton.wintour.pipeline import BasicRecommendations, GarmentRecommendation
+from chiton.utils.numbers import price_to_integer
+from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, ItemImage, PurchaseOption, Recommendations
+
+
+# Field names for serializing affiliate items
+AFFILIATE_ITEM_IMAGE_FIELDS = ('image', 'thumbnail')
+AFFILIATE_ITEM_IMAGE_ATTRIBUTES = ('height', 'url', 'width')
 
 
 class BasePipeline:
@@ -96,11 +102,13 @@ class BasePipeline:
         garments = self._filter_garments(garments_qs, garment_filters)
         weightings = self._weight_garments(garments, weights)
         weighted_garments = self._coalesce_garment_weights(weightings)
-        garments_by_basic = self._convert_garment_weights_to_basic_weights(weighted_garments)
-        recommendations = self._finalize_recommendations(garments_by_basic, facets)
+        garments_by_basic = self._convert_weighted_garments_to_recommendations(weighted_garments)
+        basic_recommendations = self._package_garment_recommendations_as_basic_recommendations(garments_by_basic, facets)
         self._current_profile = None
 
-        return recommendations
+        return Recommendations({
+            'basics': basic_recommendations
+        })
 
     def _get_all_steps(self):
         """Get a list of all steps for the pipeline.
@@ -195,13 +203,13 @@ class BasePipeline:
         """Transform per-weight garment weightings into per-garment weightings.
 
         This takes the per-weight values for each garment and combines them in
-        a dict keyed by garment.
+        a dict keyed by garment slug.
 
         Args:
             weightings (dict[chiton.wintour.weights.BaseWeight, list[dict]]): Per-weight garment weightings
 
         Returns:
-            dict[chiton.closet.models.Garment, dict]: Per-garment weighting information
+            dict[str, dict]: Per-garment weighting information, keyed by slug
         """
         weighted_garments = {}
 
@@ -212,7 +220,8 @@ class BasePipeline:
 
             for weighted_garment in weight_data['garments']:
                 garment = weighted_garment['garment']
-                weighted_garments.setdefault(garment, {
+                garment_slug = garment.slug
+                weighted_garments.setdefault(garment_slug, {
                     'explanations': {
                         'normalization': [],
                         'weights': []
@@ -221,12 +230,12 @@ class BasePipeline:
                 })
 
                 normalized_weight = (weighted_garment['weight'] - min_weight) / weight_range
-                weighted_garments[garment]['weight'] += normalized_weight * weight.importance
+                weighted_garments[garment_slug]['weight'] += normalized_weight * weight.importance
 
                 # Add debug information on each logged weight application and
                 # on the results of combining the weights
                 if weight.debug:
-                    explanations = weighted_garments[garment]['explanations']
+                    explanations = weighted_garments[garment_slug]['explanations']
                     explanations['weights'].append({
                         'name': weight.name,
                         'reasons': weight.get_explanations(garment)
@@ -239,18 +248,18 @@ class BasePipeline:
 
         return weighted_garments
 
-    def _convert_garment_weights_to_basic_weights(self, weighted_garments):
-        """Normalize weighted garments.
+    def _convert_weighted_garments_to_recommendations(self, weighted_garments):
+        """Converted weighted garments to per-basic garments recommendations.
 
-        This transforms per-garment weight information into a dict keyed by
-        basics that exposes weight values that are normalized to the global max,
-        with each basic's garments sorted by weight.
+        This transforms per-garment weight information into a mapping between
+        basic slugs and a further mapping between garment slugs and
+        recommendations for the garment.
 
         Args:
-            dict[chiton.closet.models.Garment, dict]: Per-garment weighting information
+            weighted_garments (dict[str, dict]): Per-garment weighting information keyed by slug
 
         Returns:
-            dict[chiton.runway.models.Basic, dict[chiton.closet.models.Garment, chiton.wintour.pipeline.GarmentRecommendation]]: Per-basic garment recommendations
+            dict[str, dict]: Per-basic garment recommendations
         """
         by_basic = {}
         max_weight = 0
@@ -258,22 +267,45 @@ class BasePipeline:
         # Group garments by their basic type, exposing information on each
         # garment's associated affiliate items
         for affiliate_item in _get_deep_affiliate_items():
-            garment = affiliate_item.garment
+            garment_slug = affiliate_item['garment__slug']
             try:
-                garment_data = weighted_garments[garment]
+                garment_data = weighted_garments[garment_slug]
             except KeyError:
                 continue
 
+            basic_slug = affiliate_item['garment__basic__slug']
             max_weight = max(max_weight, garment_data['weight'])
 
-            by_basic.setdefault(garment.basic, {})
+            # Serialize affiliate items as purchase options
+            purchase_option = PurchaseOption({
+                'id': affiliate_item['id'],
+                'price': price_to_integer(affiliate_item['price']),
+                'network_name': affiliate_item['network__name'],
+                'url': affiliate_item['url']
+            })
+
+            # Add serialized image information to each purchase option
+            for image_field in AFFILIATE_ITEM_IMAGE_FIELDS:
+                image_data = {}
+                for image_attribute in AFFILIATE_ITEM_IMAGE_ATTRIBUTES:
+                    image_value = affiliate_item['%s__%s' % (image_field, image_attribute)]
+                    if image_value:
+                        image_data[image_attribute] = image_value
+                purchase_option[image_field] = ItemImage(image_data) if image_data else None
+
+            # Add each garment recommendation to its basic
+            by_basic.setdefault(basic_slug, {})
             try:
-                by_basic[garment.basic][garment]['affiliate_items'].append(affiliate_item)
+                by_basic[basic_slug][garment_slug]['purchase_options'].append(purchase_option)
             except KeyError:
-                by_basic[garment.basic][garment] = GarmentRecommendation({
-                    'affiliate_items': [affiliate_item],
+                by_basic[basic_slug][garment_slug] = GarmentRecommendation({
                     'explanations': garment_data['explanations'],
-                    'garment': garment,
+                    'garment': GarmentOverview({
+                        'brand': affiliate_item['garment__brand__name'],
+                        'id': affiliate_item['garment_id'],
+                        'name': affiliate_item['garment__name']
+                    }),
+                    'purchase_options': [purchase_option],
                     'weight': garment_data['weight']
                 })
 
@@ -286,34 +318,45 @@ class BasePipeline:
 
         return by_basic
 
-    def _finalize_recommendations(self, garments_by_basic, facets):
-        """Convert raw per-basic recommendations into annotated recommendations.
+    def _package_garment_recommendations_as_basic_recommendations(self, garments_by_basic, facets):
+        """Converted per-basic garments recommendations to basic recommendations.
+
+        This transforms a mapping of basics to garments into a series of basic
+        recommendations that expose the garments, ordered by weight.
 
         Args:
-            dict[chiton.runway.models.Basic, dict[chiton.closet.models.Garment, chiton.wintour.pipeline.GarmentRecommendation]]: Per-basic garment recommendations
-            facets (list[chiton.wintour.facets.BaseFacet]): Instances of facet classes
+            garments_by_basic (dict[str, dict]): Per-basic garment recommendations
+            facets (list[chiton.wintour.facets.BaseFacet]): The facets to apply to each basic's recommendations
 
         Returns:
-            dict[chiton.runway.models.Basic, chiton.wintour.pipeline.BasicRecommendations]: Per-basic annotated garment recommendations
+            list[chiton.wintour.pipeline.BasicRecommendations]: Per-basic garment recommendations
         """
-        basic_recommendations = {}
+        recommendations = []
+        basic_data = _build_basic_lookup_table()
 
-        # Build the initial recommendations by sorting each basic's garments by
-        # weight and adding a placeholder for facets
+        # Convert the basic and garment mappings into a list of basic
+        # recommendations, sorted alphabetically, with garment recommendations
+        # sorted by weight
         weight_fetcher = itemgetter('weight')
-        for basic, garments in garments_by_basic.items():
-            basic_recommendations[basic] = BasicRecommendations({
-                'facets': {},
-                'garments': sorted(garments.values(), key=weight_fetcher, reverse=True)
-            })
+        for basic_slug in sorted(garments_by_basic.keys()):
+            recommendations.append(BasicRecommendations({
+                'basic': BasicOverview(basic_data[basic_slug]),
+                'facets': [],
+                'garments': sorted(garments_by_basic[basic_slug].values(), key=weight_fetcher, reverse=True)
+            }))
 
-        # Apply all facets to each basic's garments
+        # Add facets to each basic's recommendations
         for facet in facets:
             with facet.apply_to_profile(self._current_profile) as apply_facet:
-                for basic, data in basic_recommendations.items():
-                    basic_recommendations[basic]['facets'][facet] = apply_facet(basic, data['garments'])
+                for basic in recommendations:
+                    groups = apply_facet(basic['basic'], basic['garments'])
+                    basic['facets'].append(Facet({
+                        'name': facet.name,
+                        'groups': [FacetGroup(group) for group in groups],
+                        'slug': facet.slug
+                    }))
 
-        return basic_recommendations
+        return recommendations
 
 
 @cache_query(AffiliateItem, AffiliateNetwork, Garment, ProductImage)
@@ -325,6 +368,29 @@ def _get_deep_affiliate_items():
     """
     return (
         AffiliateItem.objects.all()
-        .select_related('garment__basic', 'image', 'thumbnail', 'network__name')
+        .select_related('garment', 'garment__basic', 'garment__brand', 'image', 'network', 'thumbnail')
         .order_by('-price')
+        .values(
+            'garment_id', 'garment__name', 'garment__slug',
+            'garment__basic__slug', 'garment__brand__name',
+            'id', 'price', 'url',
+            'network__name',
+            'image__height', 'image__width', 'image__url',
+            'thumbnail__height', 'thumbnail__width', 'thumbnail__url'
+        )
     )
+
+
+@cache_query(Basic)
+def _build_basic_lookup_table():
+    """Create a lookup table that maps basic slugs to basic data.
+
+    Returns:
+        dict[str, dict]: A lookup for basic data
+    """
+    lookup = {}
+
+    for basic in Basic.objects.all().values('id', 'name', 'slug'):
+        lookup[basic['slug']] = basic
+
+    return lookup

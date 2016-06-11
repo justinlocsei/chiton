@@ -98,7 +98,7 @@ class TestBasePipeline:
         garments = pipeline.load_garments()
         assert garments.count() == 1
 
-    def test_make_recommendations(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
+    def test_make_recommendations(self, basic_factory, brand_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It produces per-basic garment recommendations for a wardrobe profile."""
         class QueryFilter(TestQueryFilter):
             def apply(self, garments):
@@ -113,23 +113,27 @@ class TestBasePipeline:
                 return int(garment.name)
 
         class Facet(TestFacet):
+            name = 'Facet'
             slug = 'test'
 
             def apply(self, basic, garments):
                 return [FacetGroup({
                     'count': len(garments),
-                    'garment_ids': [g['garment'].pk for g in garments],
+                    'garment_ids': [g['garment']['id'] for g in garments],
                     'slug': 'all'
                 })]
 
-        skirts = basic_factory()
-        shirts = basic_factory()
+        skirts = basic_factory(slug='skirts')
+        shirts = basic_factory(slug='shirts')
 
-        skirt_one = garment_factory(basic=skirts, name='1')
-        skirt_two = garment_factory(basic=skirts, name='2')
-        skirt_three = garment_factory(basic=skirts, name='3')
-        shirt_one = garment_factory(basic=shirts, name='1')
-        shirt_four = garment_factory(basic=shirts, name='4')
+        brand_one = brand_factory(name='Brand 1')
+        brand_two = brand_factory(name='Brand 2')
+
+        skirt_one = garment_factory(basic=skirts, brand=brand_one, name='1')
+        skirt_two = garment_factory(basic=skirts, brand=brand_one, name='2')
+        skirt_three = garment_factory(basic=skirts, brand=brand_one, name='3')
+        shirt_one = garment_factory(basic=shirts, brand=brand_two, name='1')
+        shirt_four = garment_factory(basic=shirts, brand=brand_two, name='4')
 
         affiliate_item_factory(garment=skirt_one)
         affiliate_item_factory(garment=skirt_two)
@@ -147,25 +151,45 @@ class TestBasePipeline:
         )
 
         recommendations = pipeline.make_recommendations(profile)
-        assert len(recommendations.keys()) == 2
+        assert len(recommendations.keys()) == 1
+        assert 'basics' in recommendations
 
-        skirt_recs = recommendations[skirts]
-        shirt_recs = recommendations[shirts]
+        assert len(recommendations['basics']) == 2
+        shirt_recs = recommendations['basics'][0]
+        skirt_recs = recommendations['basics'][1]
 
         assert [g['weight'] for g in skirt_recs['garments']] == [0.25]
-        assert [g['garment'] for g in skirt_recs['garments']] == [skirt_one]
+        skirt_one_rec = skirt_recs['garments'][0]['garment']
+        assert skirt_one_rec['id'] > 0
+        assert skirt_one_rec['name'] == '1'
+        assert skirt_one_rec['brand'] == 'Brand 1'
 
         assert [g['weight'] for g in shirt_recs['garments']] == [1.0, 0.25]
-        assert [g['garment'] for g in shirt_recs['garments']] == [shirt_four, shirt_one]
+        shirt_four_rec = shirt_recs['garments'][0]['garment']
+        shirt_one_rec = shirt_recs['garments'][1]['garment']
 
-        skirt_facets = skirt_recs['facets'][facet]
-        shirt_facets = shirt_recs['facets'][facet]
+        assert shirt_one_rec['id'] > 0
+        assert shirt_one_rec['name'] == '1'
+        assert shirt_one_rec['brand'] == 'Brand 2'
 
-        assert len(skirt_facets) == 1
-        assert skirt_facets[0]['garment_ids'] == [skirt_one.pk]
+        assert shirt_four_rec['id'] > 0
+        assert shirt_four_rec['name'] == '4'
+        assert shirt_four_rec['brand'] == 'Brand 2'
 
-        assert len(shirt_facets) == 1
-        assert set(shirt_facets[0]['garment_ids']) == set([shirt_four.pk, shirt_one.pk])
+        assert len(skirt_recs['facets']) == 1
+        assert len(shirt_recs['facets']) == 1
+        skirt_facets = skirt_recs['facets'][0]
+        shirt_facets = shirt_recs['facets'][0]
+
+        assert skirt_facets['name'] == 'Facet'
+        assert skirt_facets['slug'] == 'test'
+        assert len(skirt_facets['groups']) == 1
+        assert skirt_facets['groups'][0]['garment_ids'] == [skirt_one.pk]
+
+        assert shirt_facets['name'] == 'Facet'
+        assert shirt_facets['slug'] == 'test'
+        assert len(shirt_facets['groups']) == 1
+        assert set(shirt_facets['groups'][0]['garment_ids']) == set([shirt_four.pk, shirt_one.pk])
 
     def test_make_recommendations_affiliate_items(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It exposes information on each garment's available affiliate items, sorted by price."""
@@ -183,20 +207,64 @@ class TestBasePipeline:
 
         profile = pipeline_profile_factory()
         pipeline = pipeline_factory(weights=[Weight()])
-
         recommendations = pipeline.make_recommendations(profile)
-        garments = recommendations[basic]['garments']
+
+        assert len(recommendations['basics']) == 1
+        garments = recommendations['basics'][0]['garments']
 
         assert len(garments) == 2
-        assert [g['garment'] for g in garments] == [garment_multi, garment_single]
+        assert [g['garment']['name'] for g in garments] == ['2', '1']
 
-        garment_multi_items = garments[0]['affiliate_items']
+        garment_multi_items = garments[0]['purchase_options']
         assert len(garment_multi_items) == 2
-        assert garment_multi_items == [item_two_two, item_two_one]
+        assert [i['id'] for i in garment_multi_items] == [item_two_two.id, item_two_one.id]
 
-        garment_single_items = garments[1]['affiliate_items']
+        garment_single_items = garments[1]['purchase_options']
         assert len(garment_single_items) == 1
-        assert garment_single_items == [item_one_one]
+        assert garment_single_items[0]['id'] == item_one_one.id
+
+    def test_make_recommendations_affiliate_items_serialized(self, basic_factory, affiliate_item_factory, affiliate_network_factory, garment_factory, pipeline_factory, pipeline_profile_factory, product_image_factory):
+        """It serializes each affiliate item, with optional image data."""
+        basic = basic_factory()
+        garment = garment_factory(basic=basic)
+        network = affiliate_network_factory(name='Network')
+
+        image = product_image_factory(height=100, width=100, url='http://example.com/image')
+        thumbnail = product_image_factory(height=50, width=50, url='http://example.com/thumbnail')
+
+        affiliate_item_factory(network=network, garment=garment, url='http://example.com/with', image=image, thumbnail=thumbnail, price=Decimal(100))
+        affiliate_item_factory(network=network, garment=garment, url='http://example.com/without', price=Decimal(15.25))
+
+        profile = pipeline_profile_factory()
+        pipeline = pipeline_factory()
+
+        recommendations = pipeline.make_recommendations(profile)
+        items = recommendations['basics'][0]['garments'][0]['purchase_options']
+
+        with_data = items[0]
+        assert with_data['price'] == 10000
+        assert with_data['network_name'] == 'Network'
+        assert with_data['id'] > 0
+        assert with_data['url'] == 'http://example.com/with'
+
+        assert with_data['image'] == {
+            'height': 100,
+            'width': 100,
+            'url': 'http://example.com/image'
+        }
+        assert with_data['thumbnail'] == {
+            'height': 50,
+            'width': 50,
+            'url': 'http://example.com/thumbnail'
+        }
+
+        without_data = items[1]
+        assert without_data['price'] == 1525
+        assert without_data['network_name'] == 'Network'
+        assert without_data['id'] > 0
+        assert without_data['url'] == 'http://example.com/without'
+        assert without_data['image'] is None
+        assert without_data['thumbnail'] is None
 
     def test_make_recommendations_queryset_filters(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It combines all queryset filters."""
@@ -218,7 +286,7 @@ class TestBasePipeline:
 
         recommendations = pipeline.make_recommendations(profile)
 
-        assert len(recommendations[basic]['garments']) == 1
+        assert len(recommendations['basics'][0]['garments']) == 1
 
     def test_make_recommendations_garment_filters(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It combines all garment filters."""
@@ -244,7 +312,7 @@ class TestBasePipeline:
 
         recommendations = pipeline.make_recommendations(profile)
 
-        assert len(recommendations[basic]['garments']) == 1
+        assert len(recommendations['basics'][0]['garments']) == 1
 
     def test_make_recommendations_weights_normalization(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It normalizes a single weight's range of values as floating-point percentage sorted in descending order."""
@@ -266,16 +334,16 @@ class TestBasePipeline:
 
         recommendations = pipeline.make_recommendations(profile)
 
-        garments = recommendations[basic]['garments']
+        garments = recommendations['basics'][0]['garments']
         assert len(garments) == 3
 
         weights_by_garment = {}
         for garment in garments:
-            weights_by_garment[garment['garment']] = garment['weight']
+            weights_by_garment[garment['garment']['name']] = garment['weight']
 
-        assert weights_by_garment[positive_garment] == 1.0
-        assert weights_by_garment[negative_garment] == 0.0
-        assert weights_by_garment[zero_garment] == 0.5
+        assert weights_by_garment['100'] == 1.0
+        assert weights_by_garment['-100'] == 0.0
+        assert weights_by_garment['0'] == 0.5
 
         assert [g['weight'] for g in garments] == [1.0, 0.5, 0.0]
 
@@ -302,11 +370,11 @@ class TestBasePipeline:
         recommendations = pipeline.make_recommendations(profile)
 
         weights_by_garment = {}
-        for garment in recommendations[basic]['garments']:
-            weights_by_garment[garment['garment']] = garment['weight']
+        for garment in recommendations['basics'][0]['garments']:
+            weights_by_garment[garment['garment']['name']] = garment['weight']
 
-        assert weights_by_garment[positive_garment] == 1.0
-        assert weights_by_garment[negative_garment] == 0.75
+        assert weights_by_garment['1'] == 1.0
+        assert weights_by_garment['-1'] == 0.75
 
     def test_make_recommendations_weights_debug(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It adds debugging information for weights when requested."""
@@ -335,7 +403,7 @@ class TestBasePipeline:
         )
 
         recommendations = pipeline.make_recommendations(profile, debug=True)
-        garments = recommendations[basic]['garments']
+        garments = recommendations['basics'][0]['garments']
 
         assert len(garments) == 1
 
@@ -362,6 +430,7 @@ class TestBasePipeline:
     def test_make_recommendations_facets(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It creates facets for the final recommendations."""
         class NameFacet(TestWeight):
+            name = 'Name'
             slug = 'name'
 
             def apply(self, basic, garments):
@@ -369,12 +438,12 @@ class TestBasePipeline:
                 return [
                     FacetGroup({
                         'count': 1,
-                        'garment_ids': [g.pk for g in gs if g.name == 'Shirt'],
+                        'garment_ids': [g['id'] for g in gs if g['name'] == 'Shirt'],
                         'slug': 'low'
                     }),
                     FacetGroup({
                         'count': 1,
-                        'garment_ids': [g.pk for g in gs if g.name == 'Jeans'],
+                        'garment_ids': [g['id'] for g in gs if g['name'] == 'Jeans'],
                         'slug': 'high'
                     })
                 ]
@@ -391,10 +460,12 @@ class TestBasePipeline:
         pipeline = pipeline_factory(facets=[name_facet])
 
         recommendations = pipeline.make_recommendations(profile)
-        facets = recommendations[basic]['facets']
+        facets = recommendations['basics'][0]['facets']
 
-        assert name_facet in facets
-        name_facets = facets[name_facet]
+        assert len(facets) == 1
+        assert facets[0]['name'] == 'Name'
+        assert facets[0]['slug'] == 'name'
+        name_facets = facets[0]['groups']
 
         assert len(name_facets) == 2
         assert name_facets[0]['slug'] == 'low'
@@ -410,4 +481,6 @@ class TestBasePipeline:
         profile = pipeline_profile_factory()
         pipeline = BasePipeline()
 
-        assert pipeline.make_recommendations(profile) == {}
+        assert pipeline.make_recommendations(profile) == {
+            'basics': []
+        }
