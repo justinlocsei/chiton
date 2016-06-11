@@ -18,7 +18,7 @@ from chiton.rack.apps import Config as RackConfig
 from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
-from chiton.wintour.matching import make_recommendations, serialize_recommendations
+from chiton.wintour.matching import make_recommendations
 from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.pipelines.core import CorePipeline
 
@@ -88,8 +88,7 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         """Show an interactive visualizer for recommendations."""
         if request.GET:
             profile = self._convert_get_params_to_pipeline_profile(request.GET)
-            recs = make_recommendations(profile, CorePipeline(), debug=True)
-            recs_dict = serialize_recommendations(recs)
+            recs_dict = make_recommendations(profile, CorePipeline(), debug=True)
         else:
             profile = None
             recs_dict = {}
@@ -188,9 +187,8 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         """Return recalculate recommendations based on request data as JSON."""
         profile = self._convert_get_params_to_pipeline_profile(request.GET)
         recs_dict = make_recommendations(profile, CorePipeline(), debug=True)
-        serialized = serialize_recommendations(recs_dict)
 
-        return JsonResponse(self._add_admin_urls_to_recs(serialized))
+        return JsonResponse(self._add_admin_urls_to_recs(recs_dict))
 
     def _convert_get_params_to_pipeline_profile(self, get_data):
         """Use the values from GET data to create a new pipeline profile."""
@@ -214,27 +212,27 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         """Add admin-site URLs to each garment in a recommendations dict."""
         basics = recs.get('basics', {})
 
-        for basic, data in basics.items():
-            for garment in data['garments']:
+        for basic in basics:
+            for garment in basic['garments']:
                 garment['edit_url'] = reverse(
                     'admin:%s_garment_change' % ClosetConfig.label,
                     args=[garment['garment']['id']]
                 )
 
-                for affiliate_item in garment['affiliate_items']:
+                for purchase_option in garment['purchase_options']:
                     item_edit_url = reverse(
                         'admin:%s_affiliateitem_change' % RackConfig.label,
-                        args=[affiliate_item['id']]
+                        args=[purchase_option['id']]
                     )
                     item_api_url = reverse(
                         'admin:affiliate-item-api-details',
-                        args=[affiliate_item['id']]
+                        args=[purchase_option['id']]
                     )
                     affiliate_links = [
-                        {'name': '%s API' % affiliate_item['network_name'], 'url': item_api_url},
+                        {'name': '%s API' % purchase_option['network_name'], 'url': item_api_url},
                         {'name': 'Edit Item', 'url': item_edit_url}
                     ]
 
-                    affiliate_item['admin_links'] = affiliate_links
+                    purchase_option['admin_links'] = affiliate_links
 
         return recs

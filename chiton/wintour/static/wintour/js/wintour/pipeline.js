@@ -81,16 +81,13 @@ PipelineVisualizer.prototype = {
         var basics = [];
         var context = {};
         var basicRecs = recommendations.basics || {};
-        var basicSlugs = Object.keys(basicRecs);
-        var numBasics = basicSlugs.length;
+        var numBasics = basicRecs.length;
 
         // Build a context for rendering each basic and its garments, respecting
         // the current basic filters and the garment cutoff
         for (var i = 0; i < numBasics; i++) {
-            var basicSlug = basicSlugs[i];
-            var data = basicRecs[basicSlug];
-
-            if (!state.filters[basicSlug]) { continue; }
+            var data = basicRecs[i];
+            if (!state.filters[data.basic.slug]) { continue; }
 
             // Build a lookup table mapping garment records to IDs
             var garmentsByID = data.garments.reduce(function(previous, garment) {
@@ -99,7 +96,8 @@ PipelineVisualizer.prototype = {
             }, {});
 
             // Provide data on each price group that contains rendered garments
-            var priceGroups = data.facets.price.map(function(priceGroup) {
+            var priceFacet = _.find(data.facets, function(facet) { return facet.slug === 'price'; });
+            var priceGroups = priceFacet.groups.map(function(priceGroup) {
                 var garments = [];
                 var garmentIDs = priceGroup.garment_ids;
                 var numGarments = Math.min(data.garments.length, garmentIDs.length);
@@ -385,10 +383,12 @@ PipelineVisualizer.prototype = {
             // Get the recommendations data for the current garment from the
             // state, and create formatted objects to pass to the template
             var id = $garment.data('id');
-            var data = _.find(
-                that._state.recommendations.basics[basicSlug].garments,
-                function(garment) { return garment.garment.id === id; }
-            );
+            var basic = _.find(that._state.recommendations.basics, function(basic) {
+                return basic.basic.slug === basicSlug;
+            });
+            var data = _.find(basic.garments, function(garment) {
+                return garment.garment.id === id;
+            });
 
             var weights = data.explanations.weights.reduce(function(previous, weight) {
                 return previous.concat(weight.reasons.map(function(reason) {
@@ -420,22 +420,22 @@ PipelineVisualizer.prototype = {
             $priceGroup.addClass('is-focused');
             $priceGroups.addClass('is-active');
 
-            // Render the affiliate-item details for each affiliate item
-            _.forEach(data.affiliate_items, function(item) {
+            // Show all purchase options
+            _.forEach(data.purchase_options, function(option) {
                 var price;
-                if (item.price) {
-                    price = (item.price / 100).toFixed(2);
+                if (option.price) {
+                    price = (option.price / 100).toFixed(2);
                     price = price.replace(/\.0+$/, '');
                 }
 
                 var affiliates = renderTemplate('pipeline-template-garment-affiliate', {
-                    adminLinks: item.admin_links,
-                    image: item.image,
+                    adminLinks: option.admin_links,
+                    image: option.image,
                     name: data.garment.name,
-                    networkName: item.network_name,
+                    networkName: option.network_name,
                     price: price,
-                    thumbnail: item.thumbnail,
-                    url: item.url
+                    thumbnail: option.thumbnail,
+                    url: option.url
                 });
                 $affiliates.append(affiliates);
             });
