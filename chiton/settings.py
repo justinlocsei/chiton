@@ -95,8 +95,12 @@ DATABASES = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'chiton'
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'unix://%s?db=%d' % (config['redis_socket'], config['redis_db']),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'IGNORE_EXCEPTIONS': True
+        }
     }
 }
 
