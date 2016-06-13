@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
     'rest_framework',
 
+    'chiton.api.apps.Config',
     'chiton.core.apps.Config',
     'chiton.closet.apps.Config',
     'chiton.rack.apps.Config',
