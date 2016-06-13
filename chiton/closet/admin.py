@@ -1,13 +1,18 @@
 from adminsortable2.admin import SortableAdminMixin
 from django import db, forms
+from django.conf.urls import url
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+from django.template.response import TemplateResponse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet import models
+from chiton.closet.apps import Config as ClosetConfig
 from chiton.core.admin import site
 from chiton.rack.admin import AffiliateItemInline
+from chiton.rack.apps import Config as RackConfig
+from chiton.rack.models import AffiliateItem, StockRecord
 from chiton.rack.affiliates.data import update_affiliate_item_details
 
 
@@ -77,6 +82,59 @@ class GarmentAdmin(admin.ModelAdmin):
         super().save_related(request, form, formset, change)
         for affiliate_item in form.instance.affiliate_items.all():
             update_affiliate_item_details(affiliate_item)
+
+    def get_urls(self):
+        core = super().get_urls()
+        custom = [
+            url(r'^availability/$', self.admin_site.admin_view(self.availability), name='garment-availability')
+        ]
+        return custom + core
+
+    def availability(self, request):
+        item_records = {}
+        for record in StockRecord.objects.all().select_related('size'):
+            item_records.setdefault(record.item_id, {
+                'regular': 0,
+                'tall': 0,
+                'petite': 0,
+                'plus': 0
+            })
+            if not record.is_available:
+                continue
+
+            item_record = item_records[record.item_id]
+            if record.size.is_regular:
+                item_record['regular'] += 1
+            if record.size.is_tall:
+                item_record['tall'] += 1
+            if record.size.is_petite:
+                item_record['petite'] += 1
+            if record.size.is_plus_sized:
+                item_record['plus'] += 1
+
+        items = []
+        for item in AffiliateItem.objects.all().select_related('garment', 'network'):
+            if not item_records[item.pk]:
+                continue
+
+            change_url = reverse('admin:%s_affiliateitem_change' % RackConfig.label, args=[item.pk])
+            garment_change_url = reverse('admin:%s_garment_change' % ClosetConfig.label, args=[item.garment.pk])
+
+            item_record = item_records[item.pk]
+            items.append(dict(item_record,
+                change_url=change_url,
+                garment=item.garment.name,
+                garment_change_url=garment_change_url,
+                name=item.name,
+                network=item.network.name,
+                total=sum(item_record.values())
+            ))
+
+        return TemplateResponse(request, 'admin/chiton_closet/garment/availability.html', dict(
+            self.admin_site.each_context(request),
+            items=sorted(items, key=lambda i: i['total'], reverse=True),
+            title='Garment Availability'
+        ))
 
 
 @admin.register(models.StandardSize, site=site)
