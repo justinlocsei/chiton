@@ -118,6 +118,7 @@ def _update_stock_records(item, availability):
     """
     all_sizes = StandardSize.objects.all()
     existing_records = item.stock_records.all().select_related('size__canonical')
+    has_details = False
 
     # Default to marking all known sizes as out of stock
     available_sizes = {}
@@ -127,7 +128,11 @@ def _update_stock_records(item, availability):
     # If global or specific availability was provided, mark in-stock items
     if availability:
         garment = item.garment
-        has_records = not isinstance(availability, bool)
+        if isinstance(availability, bool):
+            has_records = False
+        else:
+            has_records = True
+            has_details = len(availability) > 0
 
         # Get a subset of sizes that map to the size types of the garments by
         # comparing the type signatures
@@ -188,3 +193,8 @@ def _update_stock_records(item, availability):
                 size=size,
                 is_available=available_sizes[size]
             )
+
+    # If the item's stock-detail state has changed, update it
+    if has_details is not item.has_detailed_stock:
+        item.has_detailed_stock = has_details
+        item.save()

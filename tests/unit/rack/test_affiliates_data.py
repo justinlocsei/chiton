@@ -255,6 +255,7 @@ class TestUpdateAffiliateItemDetails:
         assert availability_by_pk[size_8.pk]
         assert not availability_by_pk[size_10.pk]
         assert len(stock_records) == 2
+        assert affiliate_item.has_detailed_stock
 
     def test_network_data_stock_records_range(self, affiliate_item, standard_size_factory):
         """It maps numeric sizes to the range of standard sizes."""
@@ -355,6 +356,8 @@ class TestUpdateAffiliateItemDetails:
         assert size.is_petite
         assert not size.is_regular
 
+        assert affiliate_item.has_detailed_stock
+
     def test_network_data_stock_records_in_stock(self, affiliate_item, standard_size_factory):
         """It creates in-stock records for all known sizes if an affiliate signals that an item is globally available."""
         standard_size_factory(8)
@@ -367,6 +370,8 @@ class TestUpdateAffiliateItemDetails:
         records = affiliate_item.stock_records.all()
         assert len(records) == 2
         assert all([r.is_available for r in records])
+
+        assert not affiliate_item.has_detailed_stock
 
     def test_network_data_stock_records_in_stock_variants(self, affiliate_item, standard_size_factory):
         """It only creates in-stock records for sizes that match the item's garment's size types when global availability is specified."""
@@ -412,6 +417,8 @@ class TestUpdateAffiliateItemDetails:
         assert len(records) == 2
         assert not any([r.is_available for r in records])
 
+        assert not affiliate_item.has_detailed_stock
+
     def test_network_data_stock_records_out_of_stock_variants(self, affiliate_item, standard_size_factory):
         """It creates out-of-stock records for all sizes, even those outside a garment's size types, when global unavailability is specified."""
         standard_size_factory(6)
@@ -455,3 +462,34 @@ class TestUpdateAffiliateItemDetails:
         assert created_pk == updated_pk
 
         assert stock_record_8.is_available
+
+    def test_network_data_stock_records_details(self, affiliate_item, standard_size_factory):
+        """It updates the detailed-stock flag on an affiliate item based on whether stock records are provided."""
+        standard_size_factory(8)
+        standard_size_factory(10)
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = InStockAffiliate()
+            update_affiliate_item_details(affiliate_item)
+
+        assert not affiliate_item.has_detailed_stock
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.availability = [{'size': 8, 'is_regular': True}]
+
+            create_affiliate.return_value = affiliate
+            update_affiliate_item_details(affiliate_item)
+
+        assert affiliate_item.has_detailed_stock
+
+    def test_network_data_stock_records_details_empty(self, affiliate_item):
+        """It does not count an affiliate item as having detailed stock information when the list of records is empty."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.availability = []
+
+            create_affiliate.return_value = affiliate
+            update_affiliate_item_details(affiliate_item)
+
+        assert not affiliate_item.has_detailed_stock
