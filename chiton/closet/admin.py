@@ -14,6 +14,7 @@ from chiton.rack.admin import AffiliateItemInline
 from chiton.rack.apps import Config as RackConfig
 from chiton.rack.models import AffiliateItem, StockRecord
 from chiton.rack.affiliates.data import update_affiliate_item_details
+from chiton.runway.models import Basic
 
 
 @admin.register(models.Brand, site=site)
@@ -113,7 +114,7 @@ class GarmentAdmin(admin.ModelAdmin):
                 item_record['plus'] += 1
 
         items = []
-        for item in AffiliateItem.objects.all().select_related('garment', 'network'):
+        for item in AffiliateItem.objects.all().select_related('garment', 'garment__basic', 'network'):
             if not item_records[item.pk]:
                 continue
 
@@ -122,7 +123,9 @@ class GarmentAdmin(admin.ModelAdmin):
 
             item_record = item_records[item.pk]
             items.append(dict(item_record,
+                basic=item.garment.basic.name,
                 change_url=change_url,
+                detailed=item.has_detailed_stock,
                 garment=item.garment.name,
                 garment_change_url=garment_change_url,
                 name=item.name,
@@ -130,8 +133,11 @@ class GarmentAdmin(admin.ModelAdmin):
                 total=sum(item_record.values())
             ))
 
+        basics = Basic.objects.all().order_by('name').values_list('name', flat=True)
+
         return TemplateResponse(request, 'admin/chiton_closet/garment/availability.html', dict(
             self.admin_site.each_context(request),
+            basics=basics,
             items=sorted(items, key=lambda i: i['total'], reverse=True),
             title='Garment Availability'
         ))
