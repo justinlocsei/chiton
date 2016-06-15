@@ -1,9 +1,24 @@
-from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from chiton.api.serializers import WardrobeProfileSerializer
-from chiton.wintour.models import WardrobeProfile
+from chiton.core.exceptions import FormatError
+from chiton.wintour.matching import make_recommendations
+from chiton.wintour.pipeline import PipelineProfile
+from chiton.wintour.pipelines.core import CorePipeline
 
 
-class WardrobeProfileViewSet(viewsets.ModelViewSet):
-    queryset = WardrobeProfile.objects.all()
-    serializer_class = WardrobeProfileSerializer
+class Recommendations(APIView):
+    """Manage outfit recommendations."""
+
+    def post(self, request, format=None):
+        """Generate recommendations for a user."""
+        try:
+            profile = PipelineProfile(request.data, validate=True)
+        except FormatError as e:
+            return Response({
+                'errors': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        recommendations = make_recommendations(profile, CorePipeline())
+        return Response(recommendations)

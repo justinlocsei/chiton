@@ -1,12 +1,9 @@
-from django.conf.urls import include, url
-from rest_framework import routers
+from django.conf.urls import url
+from rest_framework.urlpatterns import format_suffix_patterns
 
 from chiton.api import views
 
 
-router = routers.DefaultRouter()
-router.register(r'wardrobe-profiles', views.WardrobeProfileViewSet)
-
-urlpatterns = [
-    url(r'^', include(router.urls))
-]
+urlpatterns = format_suffix_patterns([
+    url(r'^recommendations/$', views.Recommendations.as_view())
+])
