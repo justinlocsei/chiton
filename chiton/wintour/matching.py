@@ -5,11 +5,6 @@ from django.db import connection
 from chiton.wintour.pipeline import PipelineProfile
 
 
-# Field names for serializing garments
-GARMENT_IMAGE_FIELDS = ('image', 'thumbnail')
-GARMENT_IMAGE_ATTRIBUTES = ('height', 'url', 'width')
-
-
 def package_wardrobe_profile(profile):
     """Convert a wardrobe profile into a pipeline profile.
 
