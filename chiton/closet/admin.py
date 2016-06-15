@@ -113,7 +113,7 @@ class GarmentAdmin(admin.ModelAdmin):
                 item_record['plus'] += 1
 
         items = []
-        for item in AffiliateItem.objects.all().select_related('garment', 'network'):
+        for item in AffiliateItem.objects.all().select_related('garment', 'garment__basic', 'network'):
             if not item_records[item.pk]:
                 continue
 
@@ -122,6 +122,7 @@ class GarmentAdmin(admin.ModelAdmin):
 
             item_record = item_records[item.pk]
             items.append(dict(item_record,
+                basic=item.garment.basic.name,
                 change_url=change_url,
                 garment=item.garment.name,
                 garment_change_url=garment_change_url,

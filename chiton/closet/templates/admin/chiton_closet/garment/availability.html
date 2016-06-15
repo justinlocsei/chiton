@@ -47,6 +47,7 @@
     <table class="c--availability js-availability">
         <thead>
             <tr>
+                <th class="for-basic">Basic</th>
                 <th class="for-network">Network</th>
                 <th class="for-item">Item</th>
                 <th class="for-garment">Garment</th>
@@ -60,6 +61,7 @@
         <tbody>
             {% for item in items %}
                 <tr>
+                    <td class="for-basic">{{ item.basic }}</td>
                     <td class="for-network">{{ item.network }}</td>
                     <td class="for-item"><a href="{{ item.change_url }}">{{ item.name }}</a></td>
                     <td class="for-garment"><a href="{{ item.garment_change_url }}">{{ item.garment }}</a></td>
