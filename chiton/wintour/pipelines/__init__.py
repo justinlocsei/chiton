@@ -221,10 +221,6 @@ class BasePipeline:
                 garment = weighted_garment['garment']
                 garment_slug = garment.slug
                 weighted_garments.setdefault(garment_slug, {
-                    'explanations': {
-                        'normalization': [],
-                        'weights': []
-                    },
                     'weight': 0
                 })
 
@@ -234,6 +230,10 @@ class BasePipeline:
                 # Add debug information on each logged weight application and
                 # on the results of combining the weights
                 if weight.debug:
+                    weighted_garments[garment_slug].setdefault('explanations', {
+                        'normalization': [],
+                        'weights': []
+                    })
                     explanations = weighted_garments[garment_slug]['explanations']
                     explanations['weights'].append({
                         'name': weight.name,
@@ -293,7 +293,6 @@ class BasePipeline:
                 by_basic[basic_slug][garment_slug]['purchase_options'].append(purchase_option)
             except KeyError:
                 by_basic[basic_slug][garment_slug] = GarmentRecommendation({
-                    'explanations': garment_data['explanations'],
                     'garment': GarmentOverview({
                         'brand': affiliate_item['garment__brand__name'],
                         'id': affiliate_item['garment_id'],
@@ -302,6 +301,10 @@ class BasePipeline:
                     'purchase_options': [purchase_option],
                     'weight': garment_data['weight']
                 })
+
+                explanations = garment_data.get('explanations', None)
+                if explanations:
+                    by_basic[basic_slug][garment_slug]['explanations'] = explanations
 
         # Update all weights to use floating-point percentages calibrated
         # against the maximum total weight, and sort affiliate items by price
