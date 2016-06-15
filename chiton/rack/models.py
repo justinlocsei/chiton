@@ -44,6 +44,7 @@ class AffiliateItem(models.Model):
     price = PriceField(verbose_name=_('price'), null=True, blank=True, db_index=True)
     image = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('image'), null=True, blank=True, related_name='image_for')
     thumbnail = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('thumbnail'), null=True, blank=True, related_name='thumbnail_for')
+    has_detailed_stock = models.BooleanField(verbose_name=('has detailed stock'), default=False)
 
     class Meta:
         unique_together = ('guid', 'network')

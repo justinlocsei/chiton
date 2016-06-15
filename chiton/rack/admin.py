@@ -24,8 +24,8 @@ class AffiliateItemAdmin(admin.ModelAdmin):
 
     form = AffiliateItemURLForm
     inlines = [StockRecordInline]
-    list_display = ('name', 'network', 'item_link', 'api_link', 'price', 'garment')
-    list_filter = ('network',)
+    list_display = ('name', 'network', 'item_link', 'api_link', 'price', 'has_detailed_stock', 'garment')
+    list_filter = ('network', 'has_detailed_stock')
     ordering = ('name',)
     search_fields = ['name']
 
