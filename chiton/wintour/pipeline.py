@@ -37,19 +37,12 @@ DebugExplanations = define_data_shape({
 }, validated=False)
 
 
-ItemImage = define_data_shape({
-    V.Required('height'): int,
-    V.Required('url'): str,
-    V.Required('width'): int
-}, validated=False)
-
-
 PurchaseOption = define_data_shape({
     V.Required('id'): int,
-    V.Required('image'): V.Any(None, ItemImage),
+    V.Required('image'): V.Any(None, str),
     V.Required('price'): V.Any(None, int),
     V.Required('network_name'): str,
-    V.Required('thumbnail'): V.Any(None, ItemImage),
+    V.Required('thumbnail'): V.Any(None, str),
     V.Required('url'): str
 }, validated=False)
 

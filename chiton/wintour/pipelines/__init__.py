@@ -5,12 +5,11 @@ from chiton.closet.models import Basic, Garment
 from chiton.core.queries import cache_query
 from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage
 from chiton.utils.numbers import price_to_integer
-from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, ItemImage, PurchaseOption, Recommendations
+from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, PurchaseOption, Recommendations
 
 
 # Field names for serializing affiliate items
 AFFILIATE_ITEM_IMAGE_FIELDS = ('image', 'thumbnail')
-AFFILIATE_ITEM_IMAGE_ATTRIBUTES = ('height', 'url', 'width')
 
 
 class BasePipeline:
@@ -286,12 +285,7 @@ class BasePipeline:
 
             # Add serialized image information to each purchase option
             for image_field in AFFILIATE_ITEM_IMAGE_FIELDS:
-                image_data = {}
-                for image_attribute in AFFILIATE_ITEM_IMAGE_ATTRIBUTES:
-                    image_value = affiliate_item['%s__%s' % (image_field, image_attribute)]
-                    if image_value:
-                        image_data[image_attribute] = image_value
-                purchase_option[image_field] = ItemImage(image_data) if image_data else None
+                purchase_option[image_field] = affiliate_item.get('%s__url' % image_field, None)
 
             # Add each garment recommendation to its basic
             by_basic.setdefault(basic_slug, {})

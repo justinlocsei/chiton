@@ -247,16 +247,8 @@ class TestBasePipeline:
         assert with_data['id'] > 0
         assert with_data['url'] == 'http://example.com/with'
 
-        assert with_data['image'] == {
-            'height': 100,
-            'width': 100,
-            'url': 'http://example.com/image'
-        }
-        assert with_data['thumbnail'] == {
-            'height': 50,
-            'width': 50,
-            'url': 'http://example.com/thumbnail'
-        }
+        assert with_data['image'] == 'http://example.com/image'
+        assert with_data['thumbnail'] == 'http://example.com/thumbnail'
 
         without_data = items[1]
         assert without_data['price'] == 1525
