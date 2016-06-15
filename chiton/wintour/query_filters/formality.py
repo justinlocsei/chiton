@@ -46,9 +46,9 @@ class FormalityQueryFilter(BaseQueryFilter):
         # formality/basic weight and the frequency/formality weight, falls below
         # the provided cutoff value
         basic_exclusions = {}
-        for formality_slug, frequency in expectations.items():
-            frequency_weight = frequency_weights[frequency]
-            for basic_pk, basic_weight in formality_weights.get(formality_slug, {}).items():
+        for expectation in expectations:
+            frequency_weight = frequency_weights[expectation['frequency']]
+            for basic_pk, basic_weight in formality_weights.get(expectation['formality'], {}).items():
                 total_weight = basic_weight * frequency_weight
                 if total_weight < cutoff:
                     basic_exclusions.setdefault(basic_pk, 0)

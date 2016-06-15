@@ -23,14 +23,16 @@ def package_wardrobe_profile(profile):
         'age': profile.age,
         'avoid_care': [c.care for c in profile.unwanted_care_types.all()],
         'body_shape': profile.body_shape,
+        'expectations': [],
         'sizes': [size.slug for size in profile.sizes.all()],
         'styles': [style.slug for style in profile.styles.all()]
     }
 
-    expectations = {}
     for expectation in profile.expectations.all().select_related('formality'):
-        expectations[expectation.formality.slug] = expectation.frequency
-    data['expectations'] = expectations
+        data['expectations'].append({
+            'formality': expectation.formality.slug,
+            'frequency': expectation.frequency
+        })
 
     return PipelineProfile(data)
 

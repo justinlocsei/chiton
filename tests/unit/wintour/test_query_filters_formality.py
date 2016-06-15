@@ -46,18 +46,18 @@ class TestFormalityQueryFilter:
         Propriety.objects.create(basic=dress_basic, formality=executive, importance=PROPRIETY_IMPORTANCES['MILDLY'])
         Propriety.objects.create(basic=dress_basic, formality=casual, importance=PROPRIETY_IMPORTANCES['MILDLY'])
 
-        casual_profile = pipeline_profile_factory(expectations={
-            'casual': EXPECTATION_FREQUENCIES['ALWAYS'],
-            'executive': EXPECTATION_FREQUENCIES['NEVER']
-        })
-        executive_profile = pipeline_profile_factory(expectations={
-            'casual': EXPECTATION_FREQUENCIES['NEVER'],
-            'executive': EXPECTATION_FREQUENCIES['ALWAYS']
-        })
-        mixed_profile = pipeline_profile_factory(expectations={
-            'casual': EXPECTATION_FREQUENCIES['SOMETIMES'],
-            'executive': EXPECTATION_FREQUENCIES['SOMETIMES']
-        })
+        casual_profile = pipeline_profile_factory(expectations=[
+            {'formality': 'casual', 'frequency': EXPECTATION_FREQUENCIES['ALWAYS']},
+            {'formality': 'executive', 'frequency': EXPECTATION_FREQUENCIES['NEVER']}
+        ])
+        executive_profile = pipeline_profile_factory(expectations=[
+            {'formality': 'casual', 'frequency': EXPECTATION_FREQUENCIES['NEVER']},
+            {'formality': 'executive', 'frequency': EXPECTATION_FREQUENCIES['ALWAYS']}
+        ])
+        mixed_profile = pipeline_profile_factory(expectations=[
+            {'formality': 'casual', 'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']},
+            {'formality': 'executive', 'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']}
+        ])
 
         query_filter = FormalityQueryFilter()
 

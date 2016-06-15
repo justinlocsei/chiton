@@ -12,7 +12,10 @@ PipelineProfile = define_data_shape({
     V.Required('age'): int,
     V.Required('avoid_care'): list(CARE_TYPES.values()),
     V.Required('body_shape'): OneOf(BODY_SHAPES.values()),
-    V.Required('expectations'): dict,
+    V.Required('expectations'): [{
+        V.Required('formality'): str,
+        V.Required('frequency'): str
+    }],
     V.Required('sizes'): [str],
     V.Required('styles'): [str]
 })

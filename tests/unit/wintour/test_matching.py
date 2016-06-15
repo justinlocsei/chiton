@@ -72,8 +72,11 @@ class TestPackageWardrobeProfile:
         wardrobe_profile.expectations.create(formality=executive, frequency=EXPECTATION_FREQUENCIES['OFTEN'])
         pipeline_profile = package_wardrobe_profile(wardrobe_profile)
 
-        assert pipeline_profile['expectations']['casual'] == EXPECTATION_FREQUENCIES['SOMETIMES']
-        assert pipeline_profile['expectations']['executive'] == EXPECTATION_FREQUENCIES['OFTEN']
+        expectations = sorted(pipeline_profile['expectations'], key=lambda e: e['formality'])
+        assert len(expectations) == 2
+
+        assert expectations[0] == {'formality': 'casual', 'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']}
+        assert expectations[1] == {'formality': 'executive', 'frequency': EXPECTATION_FREQUENCIES['OFTEN']}
 
 
 @pytest.mark.django_db

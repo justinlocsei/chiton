@@ -106,12 +106,18 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 'slug': style.slug
             })
 
+        # Build a lookup table of expectations
+        expectations = {}
+        if profile:
+            for expectation in profile['expectations']:
+                expectations[expectation['formality']] = expectation['frequency']
+
         # Add information on the available and selected formality expectations
         formalities = []
         for formality in Formality.objects.all():
             frequency = None
             if profile:
-                frequency = profile['expectations'].get(formality.slug, None)
+                frequency = expectations.get(formality.slug, None)
 
             formalities.append({
                 'frequency': frequency,
@@ -192,12 +198,14 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
 
     def _convert_get_params_to_pipeline_profile(self, get_data):
         """Use the values from GET data to create a new pipeline profile."""
-        expectations = {}
+        expectations = []
         for param in get_data:
             formality_match = FORMALITY_PARAM_MATCH.match(param)
             if formality_match:
-                formality_slug = formality_match.group(1)
-                expectations[formality_slug] = get_data[param]
+                expectations.append({
+                    'formality': formality_match.group(1),
+                    'frequency': get_data[param]
+                })
 
         return PipelineProfile({
             'age': int(get_data['age']),

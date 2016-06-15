@@ -24,8 +24,8 @@ class FormalityWeight(BaseWeight):
         # Create a lookup exposing the importance of the user's formality
         # expectations as weights
         formality_weights = {}
-        for formality_slug, frequency in profile['expectations'].items():
-            formality_weights[formality_slug] = frequency_weights[frequency]
+        for expectation in profile['expectations']:
+            formality_weights[expectation['formality']] = frequency_weights[expectation['frequency']]
 
         return {
             'formality_names': formality_names,

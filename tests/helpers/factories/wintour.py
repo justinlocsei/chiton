@@ -17,9 +17,10 @@ def pipeline_profile_factory():
             styles = [fake.slug()]
 
         if not expectations:
-            expectations = {
-                fake.slug(): EXPECTATION_FREQUENCIES['SOMETIMES']
-            }
+            expectations = [{
+                'formality': fake.slug(),
+                'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']
+            }]
 
         data = {
             'age': age,
