@@ -8,15 +8,66 @@
 
     <style>
         .c--availability {
-            table-layout: fixed;
-            width: 100%;
+
         }
 
+        .c--availability__filter {
+            float: right;
+            padding-left: 2%;
+            width: 10%;
+        }
+
+        .c--availability__filter__title {
+            border-bottom: 1px solid #ddd;
+            margin: 0;
+            margin-bottom: 0.25em;
+            margin-top: 0.375em;
+            padding-bottom: 0.375em;
+            text-transform: uppercase;
+        }
+
+        .c--availability__filter__basics {
+            margin: 0;
+            padding: 0;
+        }
+
+        .c--availability__filter__basic {
+            list-style: none;
+            padding: 0 !important;
+        }
+
+        .c--availability__filter__basic.is-selected {
+            background: #79aec8;
+        }
+        .c--availability__filter__basic.is-selected .c--availability__filter__basic-name {
+            color: #fff;
+            padding-left: 0.5em;
+        }
+
+        .c--availability__filter__basic-name {
+            background: none;
+            border: 0;
+            outline: 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        .c--availability__filter__basic-name:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .c--availability__data {
+            table-layout: fixed;
+            width: 88%;
+        }
+
+        .c--availability .for-basic { width: 10%; }
         .c--availability .for-item { width: 20%; }
         .c--availability .for-network { width: 10%; }
         .c--availability .for-garment { width: 20%; }
-        .c--availability .for-size { width: 7%; }
-        .c--availability .for-total { width: 5%; }
+        .c--availability .for-size { width: 8%; }
+        .c--availability .for-total { width: 7%; }
 
         .c--availability .header {
             cursor: pointer;
@@ -38,40 +89,74 @@
 
     <script>
         $(document).ready(function() {
-            $('.js-availability').tablesorter();
+            $('.js-availability-data').tablesorter();
+
+            var $basics = $('.js-availability-basic');
+            var $data = $('.js-availability-datum');
+
+            $('.js-availability-basic-name').on('click', function(e) {
+                var $name = $(e.target);
+                var $basic = $name.parents('.js-availability-basic');
+
+                var basic = $name.data('basic');
+                var isActive = $basic.is('.is-selected');
+
+                $basics.removeClass('is-selected');
+                $data.show();
+
+                if (!isActive) {
+                    $data.hide();
+                    $data.filter('[data-basic="' + basic + '"]').show();
+                    $basic.addClass('is-selected');
+                }
+            });
         });
     </script>
 {% endblock %}
 
 {% block content %}
-    <table class="c--availability js-availability">
-        <thead>
-            <tr>
-                <th class="for-basic">Basic</th>
-                <th class="for-network">Network</th>
-                <th class="for-item">Item</th>
-                <th class="for-garment">Garment</th>
-                <th class="for-size">Regular</th>
-                <th class="for-size">Petite</th>
-                <th class="for-size">Tall</th>
-                <th class="for-size">Plus</th>
-                <th class="for-total">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
+    <div class="c--availability js-availability-data">
+
+        <div class="c--availability__filter">
+            <h4 class="c--availability__filter__title">Basics Filter</h4>
+            <ul class="c--availability__filter__basics">
+                {% for basic in basics %}
+                    <li class="c--availability__filter__basic js-availability-basic">
+                        <button class="c--availability__filter__basic-name js-availability-basic-name" data-basic="{{ basic }}">{{ basic }}</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <table class="c--availability__data js-availability-data">
+            <thead>
                 <tr>
-                    <td class="for-basic">{{ item.basic }}</td>
-                    <td class="for-network">{{ item.network }}</td>
-                    <td class="for-item"><a href="{{ item.change_url }}">{{ item.name }}</a></td>
-                    <td class="for-garment"><a href="{{ item.garment_change_url }}">{{ item.garment }}</a></td>
-                    <td class="for-size">{{ item.regular }}</td>
-                    <td class="for-size">{{ item.petite }}</td>
-                    <td class="for-size">{{ item.tall }}</td>
-                    <td class="for-size">{{ item.plus }}</td>
-                    <td class="for-total">{{ item.total }}</td>
+                    <th class="for-basic">Basic</th>
+                    <th class="for-network">Network</th>
+                    <th class="for-item">Item</th>
+                    <th class="for-garment">Garment</th>
+                    <th class="for-size">Regular</th>
+                    <th class="for-size">Petite</th>
+                    <th class="for-size">Tall</th>
+                    <th class="for-size">Plus</th>
+                    <th class="for-total">Total</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr data-basic="{{ item.basic }}" class="js-availability-datum">
+                        <td class="for-basic">{{ item.basic }}</td>
+                        <td class="for-network">{{ item.network }}</td>
+                        <td class="for-item"><a href="{{ item.change_url }}">{{ item.name }}</a></td>
+                        <td class="for-garment"><a href="{{ item.garment_change_url }}">{{ item.garment }}</a></td>
+                        <td class="for-size">{{ item.regular }}</td>
+                        <td class="for-size">{{ item.petite }}</td>
+                        <td class="for-size">{{ item.tall }}</td>
+                        <td class="for-size">{{ item.plus }}</td>
+                        <td class="for-total">{{ item.total }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
