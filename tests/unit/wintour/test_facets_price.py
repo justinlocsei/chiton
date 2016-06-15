@@ -37,10 +37,6 @@ class TestPriceFacet:
         assert [f['slug'] for f in facets] == ['low', 'medium', 'high']
         assert [FacetGroup(f, validate=True) for f in facets]
 
-        assert facets_by_slug['low']['count'] == 2
-        assert facets_by_slug['medium']['count'] == 3
-        assert facets_by_slug['high']['count'] == 2
-
         assert len([id for id in facets_by_slug['low']['garment_ids'] if garment_id_prices[id] < Decimal(15)]) == 2
         assert len([id for id in facets_by_slug['medium']['garment_ids'] if Decimal(15) < garment_id_prices[id] < Decimal(30)]) == 2
         assert len([id for id in facets_by_slug['high']['garment_ids'] if garment_id_prices[id] >= Decimal(30)]) == 2
@@ -68,9 +64,9 @@ class TestPriceFacet:
 
         assert len(facets) == 3
 
-        assert facets_by_slug['low']['count'] == 0
-        assert facets_by_slug['medium']['count'] == 1
-        assert facets_by_slug['high']['count'] == 0
+        assert len(facets_by_slug['low']['garment_ids']) == 0
+        assert len(facets_by_slug['medium']['garment_ids']) == 1
+        assert len(facets_by_slug['high']['garment_ids']) == 0
 
     def test_groups_price_empty(self, basic_factory, garment_factory, pipeline_profile_factory):
         """It omits garments that lack price information from the facets."""
@@ -89,4 +85,4 @@ class TestPriceFacet:
         with PriceFacet().apply_to_profile(profile) as facet_fn:
             facets = facet_fn({'id': basic.pk}, garments)
 
-        assert not len([f for f in facets if f['count']])
+        assert not len([f for f in facets if f['garment_ids']])

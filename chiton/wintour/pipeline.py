@@ -70,7 +70,6 @@ BasicOverview = define_data_shape({
 
 
 FacetGroup = define_data_shape({
-    V.Required('count'): int,
     V.Required('garment_ids'): [int],
     V.Required('slug'): str
 }, validated=False)

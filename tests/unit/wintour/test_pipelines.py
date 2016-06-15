@@ -118,7 +118,6 @@ class TestBasePipeline:
 
             def apply(self, basic, garments):
                 return [FacetGroup({
-                    'count': len(garments),
                     'garment_ids': [g['garment']['id'] for g in garments],
                     'slug': 'all'
                 })]
@@ -429,12 +428,10 @@ class TestBasePipeline:
                 gs = [g['garment'] for g in garments]
                 return [
                     FacetGroup({
-                        'count': 1,
                         'garment_ids': [g['id'] for g in gs if g['name'] == 'Shirt'],
                         'slug': 'low'
                     }),
                     FacetGroup({
-                        'count': 1,
                         'garment_ids': [g['id'] for g in gs if g['name'] == 'Jeans'],
                         'slug': 'high'
                     })
