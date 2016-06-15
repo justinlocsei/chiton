@@ -125,6 +125,7 @@ class GarmentAdmin(admin.ModelAdmin):
             items.append(dict(item_record,
                 basic=item.garment.basic.name,
                 change_url=change_url,
+                detailed=item.has_detailed_stock,
                 garment=item.garment.name,
                 garment_change_url=garment_change_url,
                 name=item.name,

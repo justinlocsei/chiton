@@ -68,6 +68,15 @@
         .c--availability .for-garment { width: 20%; }
         .c--availability .for-size { width: 8%; }
         .c--availability .for-total { width: 7%; }
+        .c--availability .for-detailed { width: 9%; }
+
+        .c--availability td.for-detailed {
+            color: #a00;
+        }
+        .c--availability td.for-detailed.is-detailed {
+            color: green;
+            font-weight: bold;
+        }
 
         .c--availability .header {
             cursor: pointer;
@@ -140,6 +149,7 @@
                     <th class="for-size">Tall</th>
                     <th class="for-size">Plus</th>
                     <th class="for-total">Total</th>
+                    <th class="for-detailed">Detailed?</th>
                 </tr>
             </thead>
             <tbody>
@@ -154,6 +164,7 @@
                         <td class="for-size">{{ item.tall }}</td>
                         <td class="for-size">{{ item.plus }}</td>
                         <td class="for-total">{{ item.total }}</td>
+                        <td class="for-detailed {% if item.detailed %}is-detailed{% endif %}">{% if item.detailed %}Yes{% else %}No{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
