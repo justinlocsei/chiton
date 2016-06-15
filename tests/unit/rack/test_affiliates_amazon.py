@@ -147,6 +147,14 @@ class TestAmazonAffiliate:
         assert '.jpg' in details['image']['url']
         assert '.jpg' in details['thumbnail']['url']
 
+    def test_request_details_image_missing(self, amazon_api_request):
+        """It falls back to variant items when the main item does not provide image data."""
+        with amazon_api_request():
+            details = Affiliate().request_details('B0116QTP20', colors=['Black'])
+
+        assert '.jpg' in details['image']['url']
+        assert '.jpg' in details['thumbnail']['url']
+
     def test_request_details_availability(self, amazon_api_request):
         """It marks every item as globally available."""
         with amazon_api_request():

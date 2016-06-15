@@ -157,7 +157,10 @@ class Affiliate(BaseAffiliate):
                 break
 
         if image is None:
-            image = variations[0][size_name]
+            for variation in variations:
+                if size_name in variation:
+                    image = variation[size_name]
+                    break
 
         return {
             'height': int(image['Height']['#text']),
