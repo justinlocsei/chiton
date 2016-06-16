@@ -19,8 +19,8 @@ from chiton.runway.models import Basic, Formality, Style
 from chiton.wintour import models
 from chiton.wintour.data import BODY_SHAPE_CHOICES, EXPECTATION_FREQUENCY_CHOICES
 from chiton.wintour.matching import make_recommendations
-from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.pipelines.core import CorePipeline
+from chiton.wintour.profiles import PipelineProfile
 
 
 # A regex for formality expectations as exposed via GET params

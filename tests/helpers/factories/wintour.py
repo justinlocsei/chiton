@@ -2,8 +2,9 @@ from faker import Faker
 
 from chiton.closet.data import CARE_TYPES
 from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
-from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.models import WardrobeProfile
+from chiton.wintour.profiles import PipelineProfile
+
 
 fake = Faker()
 

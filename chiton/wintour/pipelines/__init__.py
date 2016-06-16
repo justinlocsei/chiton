@@ -74,7 +74,7 @@ class BasePipeline:
         """Make recommendations for a wardrobe profile.
 
         Args:
-            profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
+            profile (chiton.wintour.profiles.PipelineProfile): A wardrobe profile
 
         Keyword Args:
             debug (bool): Whether to generate debug statistics

@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 
 from chiton.core.exceptions import FormatError
 from chiton.wintour.matching import make_recommendations
-from chiton.wintour.pipeline import PipelineProfile
 from chiton.wintour.pipelines.core import CorePipeline
+from chiton.wintour.profiles import PipelineProfile
 
 
 class Recommendations(APIView):
