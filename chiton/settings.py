@@ -176,13 +176,22 @@ SHOPSTYLE_UID = config['shopstyle_uid']
 # API
 # ==============================================================================
 
+CHITON_ALLOW_API_BROWSING = config['allow_api_browsing']
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     )
 }
 
-if not DEBUG:
+if CHITON_ALLOW_API_BROWSING:
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] += (
+        'rest_framework.authentication.SessionAuthentication',
+    )
+else:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
         'rest_framework.renderers.JSONRenderer',
     )
