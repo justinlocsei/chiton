@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'raven.contrib.django.raven_compat',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'chiton.api.apps.Config',
     'chiton.core.apps.Config',
@@ -163,7 +164,7 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 WSGI_APPLICATION = 'chiton.wsgi.application'
 
-# API Credentials
+# Third-Party API Credentials
 # ==============================================================================
 
 AMAZON_ASSOCIATES_TRACKING_ID = config['amazon_associates_tracking_id']
@@ -171,3 +172,12 @@ AMAZON_ASSOCIATES_AWS_ACCESS_KEY_ID = config['amazon_associates_aws_access_key_i
 AMAZON_ASSOCIATES_AWS_SECRET_ACCESS_KEY = config['amazon_associates_aws_secret_access_key']
 
 SHOPSTYLE_UID = config['shopstyle_uid']
+
+# API
+# ==============================================================================
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
