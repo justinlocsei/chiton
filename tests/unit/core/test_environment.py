@@ -29,6 +29,19 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'secret_key': None})
 
+    def test_allow_api_browsing(self):
+        """It expects the API-browsing setting to be a boolean."""
+        config = use_config({'allow_api_browsing': True})
+        assert config['allow_api_browsing'] is True
+
+        with pytest.raises(ConfigurationError):
+            use_config({'allow_api_browsing': 1})
+
+    def test_allow_api_browsing_default(self):
+        """It defaults to disallowing API browsing."""
+        config = use_config()
+        assert not config['allow_api_browsing']
+
     def test_allowed_hosts(self):
         """It expects hosts to be a list of strings."""
         config = use_config({'allowed_hosts': ['localhost']})
