@@ -1,5 +1,6 @@
 from autoslug import AutoSlugField
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -77,3 +78,15 @@ class WardrobeProfile(models.Model):
     class Meta:
         verbose_name = _('wardrobe profile')
         verbose_name_plural = _('wardrobe profiles')
+
+
+class Recommendation(models.Model):
+    """A set of wardrobe recommendations generated from a profile."""
+
+    profile = JSONField(verbose_name=_('The profile data'))
+    created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+        verbose_name = _('recommendation')
+        verbose_name_plural = _('recommendations')
