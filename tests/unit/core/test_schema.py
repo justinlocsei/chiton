@@ -135,6 +135,7 @@ class TestDefineDataShape:
 
         assert 'list.1' in error.value.fields
 
+
 class TestNumberInRange:
 
     def test_valid(self):
