@@ -264,7 +264,7 @@ class StandardSize(models.Model):
         )
 
 
-@cache_query(CanonicalSize, StandardSize)
+@cache_query(StandardSize)
 def _get_standard_size_slugs():
     """Return all StandardSize slugs."""
     return list(StandardSize.objects.all().order_by('slug').values_list('slug', flat=True))
