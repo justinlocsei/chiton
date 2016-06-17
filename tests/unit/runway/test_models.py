@@ -62,6 +62,14 @@ class TestFormality:
 
         assert Formality.objects.get_slugs() == ['alpha', 'beta', 'gamma']
 
+    def test_get_slugs_update(self, formality_factory):
+        """It updates the list of slugs when formalities change."""
+        formality_factory(slug='alpha')
+        assert Formality.objects.get_slugs() == ['alpha']
+
+        formality_factory(slug='beta')
+        assert Formality.objects.get_slugs() == ['alpha', 'beta']
+
 
 @pytest.mark.django_db
 class TestPropriety:
@@ -102,3 +110,11 @@ class TestStyle:
         style_factory(slug='gamma')
 
         assert Style.objects.get_slugs() == ['alpha', 'beta', 'gamma']
+
+    def test_get_slugs_update(self, style_factory):
+        """It updates the list of slugs when styles change."""
+        style_factory(slug='alpha')
+        assert Style.objects.get_slugs() == ['alpha']
+
+        style_factory(slug='beta')
+        assert Style.objects.get_slugs() == ['alpha', 'beta']

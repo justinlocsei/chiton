@@ -186,3 +186,11 @@ class TestStandardSize:
         standard_size_factory(slug='gamma')
 
         assert StandardSize.objects.get_slugs() == ['alpha', 'beta', 'gamma']
+
+    def test_get_slugs_update(self, standard_size_factory):
+        """It updates the list of slugs when standard sizes change."""
+        standard_size_factory(slug='alpha')
+        assert StandardSize.objects.get_slugs() == ['alpha']
+
+        standard_size_factory(slug='beta')
+        assert StandardSize.objects.get_slugs() == ['alpha', 'beta']
