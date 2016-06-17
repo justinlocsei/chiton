@@ -16,9 +16,7 @@ class Recommendations(APIView):
         try:
             profile = PipelineProfile(request.data, validate=True)
         except FormatError as e:
-            return Response({
-                'errors': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'errors': e.fields }, status=status.HTTP_400_BAD_REQUEST)
 
         recommendations = make_recommendations(profile, CorePipeline())
         return Response(recommendations)
