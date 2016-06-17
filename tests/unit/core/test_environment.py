@@ -4,7 +4,6 @@ from chiton.core.environment import use_config
 from chiton.core.exceptions import ConfigurationError
 
 
-@pytest.mark.current
 class TestUseConfig:
 
     def test_default(self):
