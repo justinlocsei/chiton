@@ -9,7 +9,7 @@ from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
 
 PipelineProfile = define_data_shape({
     V.Required('age'): NumberInRange(1, 100),
-    V.Required('avoid_care'): OneOf(CARE_TYPES.values(), multiple=True),
+    V.Required('avoid_care'): list(CARE_TYPES.values()),
     V.Required('body_shape'): OneOf(BODY_SHAPES.values()),
     V.Required('expectations'): [{
         V.Required('formality'): OneOf(Formality.objects.get_slugs),
