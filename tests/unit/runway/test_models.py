@@ -54,6 +54,14 @@ class TestFormality:
         formality = Formality.objects.create(name='Executive')
         assert str(formality) == 'Executive'
 
+    def test_get_slugs(self, formality_factory):
+        """It exposes an ordered list of all slugs."""
+        formality_factory(slug='beta')
+        formality_factory(slug='alpha')
+        formality_factory(slug='gamma')
+
+        assert Formality.objects.get_slugs() == ['alpha', 'beta', 'gamma']
+
 
 @pytest.mark.django_db
 class TestPropriety:
@@ -86,3 +94,11 @@ class TestStyle:
         """It uses its name for display."""
         style = Style.objects.create(name='Classy')
         assert str(style) == 'Classy'
+
+    def test_get_slugs(self, style_factory):
+        """It exposes an ordered list of all slugs."""
+        style_factory(slug='beta')
+        style_factory(slug='alpha')
+        style_factory(slug='gamma')
+
+        assert Style.objects.get_slugs() == ['alpha', 'beta', 'gamma']

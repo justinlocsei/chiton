@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet.model_fields import PriceField
+from chiton.core.queries import cache_query
 from chiton.runway import data
 
 
@@ -100,6 +101,14 @@ class StyleManager(models.Manager):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
+    def get_slugs(self):
+        """Return a list of all style slugs.
+
+        Returns:
+            list[str]: All style slugs
+        """
+        return _get_style_slugs()
+
 
 class Style(models.Model):
     """A style conveyed by a garment."""
@@ -127,6 +136,14 @@ class FormalityManager(models.Manager):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
+    def get_slugs(self):
+        """Return a list of all formality slugs.
+
+        Returns:
+            list[str]: All formality slugs
+        """
+        return _get_formality_slugs()
+
 
 class Formality(models.Model):
     """A level of formality."""
@@ -147,3 +164,15 @@ class Formality(models.Model):
 
     def natural_key(self):
         return (self.slug,)
+
+
+@cache_query(Formality)
+def _get_formality_slugs():
+    """Return all Formality slugs."""
+    return list(Formality.objects.all().order_by('slug').values_list('slug', flat=True))
+
+
+@cache_query(Style)
+def _get_style_slugs():
+    """Return all Style slugs."""
+    return list(Style.objects.all().order_by('slug').values_list('slug', flat=True))
