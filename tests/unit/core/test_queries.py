@@ -4,18 +4,23 @@ from chiton.closet.models import Brand, Color
 from chiton.core.queries import cache_query, prime_cached_queries, unbind_signal_handlers
 
 
+NAMESPACE = 'test_queries'
+NAMESPACE_TWO = 'test_queries_2'
+
+
 @pytest.mark.django_db
 class TestQueryCaching:
 
     def teardown_method(self, method):
-        unbind_signal_handlers()
+        unbind_signal_handlers(NAMESPACE)
+        unbind_signal_handlers(NAMESPACE_TWO)
 
 
 class TestCacheQuery(TestQueryCaching):
 
     def test_returns_query(self, color_factory):
         """It returns the wrapped function's query."""
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def count_colors():
             return Color.objects.count()
 
@@ -26,7 +31,7 @@ class TestCacheQuery(TestQueryCaching):
         """It only evaluates the query once."""
         call_count = 0
 
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def count_colors():
             nonlocal call_count
             call_count += 1
@@ -43,7 +48,7 @@ class TestCacheQuery(TestQueryCaching):
     def test_caches_query_duplicate_names(self, brand_factory, color_factory):
         """It uses separate cache locations for functions with identical names."""
         def make_cached_model_counter(model_class):
-            @cache_query(model_class)
+            @cache_query(model_class, namespace=NAMESPACE)
             def counter():
                 return model_class.objects.count()
 
@@ -58,11 +63,11 @@ class TestCacheQuery(TestQueryCaching):
 
     def test_caches_query_isolated(self, color_factory):
         """It uses separate cache locations for each cached query."""
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def count_colors():
             return Color.objects.count()
 
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def get_all_colors():
             return Color.objects.all()
 
@@ -74,7 +79,7 @@ class TestCacheQuery(TestQueryCaching):
 
     def test_refresh_create(self, color_factory):
         """It refreshes the query whenever a related model is created."""
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def count_colors():
             return Color.objects.count()
 
@@ -86,7 +91,7 @@ class TestCacheQuery(TestQueryCaching):
 
     def test_refresh_update(self, color_factory):
         """It refreshes the query whenever a related model is updated."""
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def get_color_names():
             return list(Color.objects.values_list('name', flat=True))
 
@@ -99,7 +104,7 @@ class TestCacheQuery(TestQueryCaching):
 
     def test_refresh_delete(self, color_factory):
         """It refreshes the query whenever a related model is deleted."""
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def count_colors():
             return Color.objects.count()
 
@@ -111,7 +116,7 @@ class TestCacheQuery(TestQueryCaching):
 
     def test_refresh_multiple_models(self, brand_factory, color_factory):
         """It refreshes the query whenever any related model is modified."""
-        @cache_query(Brand, Color)
+        @cache_query(Brand, Color, namespace=NAMESPACE)
         def counts():
             return (Brand.objects.count(), Color.objects.count())
 
@@ -132,7 +137,7 @@ class TestPrimeCachedQueries(TestQueryCaching):
         """It primes the cache for all known queries."""
         call_count = 0
 
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def count_calls():
             nonlocal call_count
             call_count += 1
@@ -147,14 +152,58 @@ class TestUnbindSignalHandlers(TestQueryCaching):
 
     def test_unbinds_handlers(self, color_factory):
         """It unbinds all model-change handlers."""
-        @cache_query(Color)
+        @cache_query(Color, namespace=NAMESPACE)
         def count_colors():
             return Color.objects.count()
 
         color_factory()
         assert count_colors() == 1
 
-        unbind_signal_handlers()
+        unbind_signal_handlers(NAMESPACE)
+
+        color_factory()
+        assert count_colors() == 1
+
+    def test_namespace(self, color_factory):
+        """It can selectively unbind namespaced queries."""
+        @cache_query(Color, namespace=NAMESPACE)
+        def count_colors():
+            return Color.objects.count()
+
+        @cache_query(Color, namespace=NAMESPACE_TWO)
+        def double_colors():
+            return Color.objects.count() * 2
+
+        assert count_colors() == 0
+        assert double_colors() == 0
+
+        color_factory()
+        assert count_colors() == 1
+        assert double_colors() == 2
+
+        unbind_signal_handlers(NAMESPACE)
+
+        color_factory()
+        assert count_colors() == 1
+        assert double_colors() == 4
+
+        unbind_signal_handlers(NAMESPACE_TWO)
+
+        color_factory()
+        assert count_colors() == 1
+        assert double_colors() == 4
+
+    def test_unbinds_idempotent(self, color_factory):
+        """It can accept multiple unbind calls."""
+        @cache_query(Color, namespace=NAMESPACE)
+        def count_colors():
+            return Color.objects.count()
+
+        color_factory()
+        assert count_colors() == 1
+
+        unbind_signal_handlers(NAMESPACE)
+        unbind_signal_handlers(NAMESPACE)
 
         color_factory()
         assert count_colors() == 1
