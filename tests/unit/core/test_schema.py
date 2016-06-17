@@ -80,6 +80,60 @@ class TestDefineDataShape:
         assert john['name'] == 'John'
         assert jane['name'] == 'Jane'
 
+    def test_errors_fields(self):
+        """It exposes per-field errors."""
+        def IsConstant(constant):
+            def validator(v):
+                if v != constant:
+                    raise V.Invalid('%s must equal %s' % (v, constant))
+            return validator
+
+        shape = define_data_shape({
+            'first_name': IsConstant('John'),
+            'last_name': IsConstant('Doe')
+        })
+
+        with pytest.raises(FormatError) as error:
+            shape({
+                'first_name': 'Jane',
+                'last_name': 'Dear'
+            })
+
+        assert 'must equal' in str(error)
+        assert error.value.fields['first_name'] == 'Jane must equal John'
+        assert error.value.fields['last_name'] == 'Dear must equal Doe'
+
+    def test_errors_fields_nested(self):
+        """It uses a dotted path for errors with nested fields."""
+        shape = define_data_shape({
+            'first': {
+                'second': {
+                    'value': int
+                }
+            }
+        })
+
+        with pytest.raises(FormatError) as error:
+            shape({
+                'first': {
+                    'second': {
+                        'value': 'str'
+                    }
+                }
+            })
+
+        assert 'first.second.value' in error.value.fields
+
+    def test_errors_fields_arrays(self):
+        """It uses indices for nested array errors."""
+        shape = define_data_shape({'list': [str]})
+
+        with pytest.raises(FormatError) as error:
+            shape({
+                'list': ['a', 1, 'b']
+            })
+
+        assert 'list.1' in error.value.fields
 
 class TestNumberInRange:
 

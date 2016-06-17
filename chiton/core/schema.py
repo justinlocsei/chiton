@@ -3,6 +3,15 @@ import voluptuous as V
 from chiton.core.exceptions import FormatError
 
 
+class DataShapeError(FormatError):
+    """A custom error used when validating data shapes."""
+
+    def __init__(self, *args, **kwargs):
+        """Allow per-field errors to be provided."""
+        self.fields = kwargs.pop('fields', {})
+        super().__init__(*args, **kwargs)
+
+
 def define_data_shape(schema, defaults=None, validated=True):
     """Create a function that validates a dict according to a schema.
 
@@ -31,7 +40,10 @@ def define_data_shape(schema, defaults=None, validated=True):
         try:
             V.Schema(schema)(data)
         except V.MultipleInvalid as e:
-            raise FormatError(str(e))
+            field_errors = {}
+            for error in e.errors:
+                field_errors['.'.join([str(p) for p in error.path])] = error.msg
+            raise DataShapeError(str(e), fields=field_errors)
         else:
             return data
 
