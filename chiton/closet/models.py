@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet import data
 from chiton.closet.model_fields import EmphasisField
+from chiton.core.queries import cache_query
 from chiton.core.validators import validate_range
 from chiton.runway.models import Basic, Formality, Style
 
@@ -185,6 +186,14 @@ class StandardSizeManager(models.Manager):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
+    def get_slugs(self):
+        """Return a list of all size slugs.
+
+        Returns:
+            list[str]: All size slugs
+        """
+        return _get_standard_size_slugs()
+
 
 class StandardSize(models.Model):
     """A standard size for an item."""
@@ -253,3 +262,9 @@ class StandardSize(models.Model):
             ' '.join(names),
             '-'.join([str(n) for n in numbers])
         )
+
+
+@cache_query(CanonicalSize, StandardSize)
+def _get_standard_size_slugs():
+    """Return all StandardSize slugs."""
+    return list(StandardSize.objects.all().order_by('slug').values_list('slug', flat=True))

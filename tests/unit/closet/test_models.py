@@ -178,3 +178,11 @@ class TestStandardSize:
         m_regular = StandardSize.objects.create(canonical=m)
 
         assert str(m_regular) == 'M (6-8)'
+
+    def test_get_slugs(self, standard_size_factory):
+        """It produces an ordered list of size slugs."""
+        standard_size_factory(slug='beta')
+        standard_size_factory(slug='alpha')
+        standard_size_factory(slug='gamma')
+
+        assert StandardSize.objects.get_slugs() == ['alpha', 'beta', 'gamma']
