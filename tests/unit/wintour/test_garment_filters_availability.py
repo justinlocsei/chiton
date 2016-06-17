@@ -15,6 +15,7 @@ class TestAvailabilityGarmentFilter:
         jeans_item = affiliate_item_factory(garment=jeans)
         blazer_item = affiliate_item_factory(garment=blazer)
 
+        small = standard_size_factory(slug='small')
         medium = standard_size_factory(slug='medium')
         large = standard_size_factory(slug='large')
 

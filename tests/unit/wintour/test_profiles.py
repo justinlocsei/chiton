@@ -1,8 +1,9 @@
 import pytest
 
 from chiton.closet.data import CARE_TYPES
+from chiton.core.exceptions import FormatError
 from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
-from chiton.wintour.profiles import package_wardrobe_profile
+from chiton.wintour.profiles import package_wardrobe_profile, PipelineProfile
 
 
 @pytest.mark.django_db
@@ -76,3 +77,74 @@ class TestPackageWardrobeProfile:
 
         assert expectations[0] == {'formality': 'casual', 'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']}
         assert expectations[1] == {'formality': 'executive', 'frequency': EXPECTATION_FREQUENCIES['OFTEN']}
+
+
+@pytest.mark.django_db
+class TestPipelineProfile:
+
+    @pytest.fixture
+    def valid_profile(self, formality_factory, standard_size_factory, style_factory):
+        formality_factory(slug='executive')
+        standard_size_factory(slug='m')
+        style_factory(slug='classy')
+
+        return {
+            'age': 30,
+            'avoid_care': ['dry_clean'],
+            'body_shape': 'apple',
+            'expectations': [
+                {'formality': 'executive', 'frequency': 'sometimes'}
+            ],
+            'sizes': ['m'],
+            'styles': ['classy']
+        }
+
+    def test_valid(self, valid_profile):
+        """It accepts data with a valid format."""
+        assert PipelineProfile(valid_profile)
+
+    def test_age_range(self, valid_profile):
+        """It requires a positive integer for the age."""
+        valid_profile['age'] = 0
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+        valid_profile['age'] = -1
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+    def test_avoid_care(self, valid_profile):
+        """It requires a known care type to avoid."""
+        valid_profile['avoid_care'] = ['stone_wash']
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+    def test_body_shape(self, valid_profile):
+        """It requires a known body shape."""
+        valid_profile['body_shape'] = 'mango'
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+    def test_expectations_formality(self, valid_profile):
+        """It requires known formality expectations."""
+        valid_profile['expectations'][0]['formality'] = 'casual'
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+    def test_expectations_frequency(self, valid_profile):
+        """It requires known frequency expectations."""
+        valid_profile['expectations'][0]['frequency'] = 'infrequently'
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+    def test_sizes(self, valid_profile):
+        """It requires known sizes slugs."""
+        valid_profile['sizes'].append('xl')
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+    def test_styles(self, valid_profile):
+        """It requires known style slugs."""
+        valid_profile['styles'].append('fancy')
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)

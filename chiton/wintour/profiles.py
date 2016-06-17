@@ -8,15 +8,15 @@ from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
 
 
 PipelineProfile = define_data_shape({
-    V.Required('age'): NumberInRange(0, 100),
+    V.Required('age'): NumberInRange(1, 100),
     V.Required('avoid_care'): list(CARE_TYPES.values()),
     V.Required('body_shape'): OneOf(BODY_SHAPES.values()),
     V.Required('expectations'): [{
-        V.Required('formality'): str,
+        V.Required('formality'): OneOf(Formality.objects.get_slugs),
         V.Required('frequency'): OneOf(EXPECTATION_FREQUENCIES.values())
     }],
-    V.Required('sizes'): [str],
-    V.Required('styles'): [str]
+    V.Required('sizes'): OneOf(StandardSize.objects.get_slugs, multiple=True),
+    V.Required('styles'): OneOf(Style.objects.get_slugs, multiple=True)
 })
 
 

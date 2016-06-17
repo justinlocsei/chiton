@@ -9,17 +9,17 @@ from chiton.wintour.profiles import PipelineProfile
 fake = Faker()
 
 
-def pipeline_profile_factory():
+def pipeline_profile_factory(formality_factory, standard_size_factory, style_factory):
     def create_pipeline_profile(age=50, avoid_care=None, body_shape=BODY_SHAPES['APPLE'], expectations=None, sizes=None, styles=None):
         if not sizes:
-            sizes = [fake.slug()]
+            sizes = [standard_size_factory().slug]
 
         if not styles:
-            styles = [fake.slug()]
+            styles = [style_factory().slug]
 
         if not expectations:
             expectations = [{
-                'formality': fake.slug(),
+                'formality': formality_factory().slug,
                 'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']
             }]
 
