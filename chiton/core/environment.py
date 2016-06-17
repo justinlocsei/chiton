@@ -1,7 +1,7 @@
 import os.path
 import re
 
-from voluptuous import All, Length, MultipleInvalid, Schema
+from voluptuous import All, Length, Invalid, MultipleInvalid, Schema
 
 from chiton.core.exceptions import ConfigurationError
 
@@ -101,7 +101,7 @@ def _AbsolutePath():
     """Ensure that a string is an absolute file path."""
     def validator(value):
         if not os.path.isabs(value):
-            raise ValueError('%s must be an absolute path' % value)
+            raise Invalid('%s must be an absolute path' % value)
     return validator
 
 
@@ -109,7 +109,7 @@ def _AmazonAssociatesTrackingID():
     """Ensure that a string is an Amazon Associates tracking ID."""
     def validator(value):
         if not re.search('-2\d$', value):
-            raise ValueError('%s must be an Amazon Associates tracking ID' % value)
+            raise Invalid('%s must be an Amazon Associates tracking ID' % value)
     return validator
 
 
@@ -117,7 +117,7 @@ def _LogLevel():
     """Ensure that a string is a known log level."""
     def validator(value):
         if value not in LOG_LEVELS:
-            raise ValueError('%s must be a log level (%s)' % (value, ', '.join(LOG_LEVELS)))
+            raise Invalid('%s must be a log level (%s)' % (value, ', '.join(LOG_LEVELS)))
     return validator
 
 
@@ -125,5 +125,5 @@ def _MediaUrl():
     """Ensure that a URL is a Django-style media URL ending in a slash."""
     def validator(value):
         if not value.endswith('/'):
-            raise ValueError('%s does not have a trailing slash' % value)
+            raise Invalid('%s does not have a trailing slash' % value)
     return validator

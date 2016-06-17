@@ -9,7 +9,7 @@ def _SizeNumber():
     """A validator that ensures that a size is a positive number."""
     def validator(v):
         if v < 0:
-            raise ValueError('Sizes cannot be negative')
+            raise V.Invalid('Sizes cannot be negative')
     return validator
 
 

@@ -62,9 +62,9 @@ def OneOf(choices, multiple=False):
         choice_values = ', '.join([str(c) for c in choice_list])
 
         if multiple and (not v or len(set(choice_list) & set(v)) < len(v)):
-            raise ValueError('Only the following values are allowed: %s' % choice_values)
+            raise V.Invalid('Only the following values are allowed: %s' % choice_values)
         elif not multiple and v not in choice_list:
-            raise ValueError('%s must be one of "%s"' % (v, choice_values))
+            raise V.Invalid('%s must be one of "%s"' % (v, choice_values))
 
     return validator
 
@@ -81,6 +81,6 @@ def NumberInRange(min_value, max_value):
     """
     def validator(v):
         if v < min_value or v > max_value:
-            raise ValueError('%d must be between %d and %d' % (v, min_value, max_value))
+            raise V.Invalid('%d must be between %d and %d' % (v, min_value, max_value))
 
     return validator
