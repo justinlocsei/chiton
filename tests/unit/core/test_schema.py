@@ -1,7 +1,7 @@
 import pytest
 import voluptuous as V
 
-from chiton.core.schema import define_data_shape, OneOf
+from chiton.core.schema import define_data_shape, NumberInRange, OneOf
 from chiton.core.exceptions import FormatError
 
 
@@ -79,6 +79,30 @@ class TestDefineDataShape:
 
         assert john['name'] == 'John'
         assert jane['name'] == 'Jane'
+
+
+class TestNumberInRange:
+
+    def test_valid(self):
+        """It accepts numbers in a given range."""
+        schema = V.Schema({'value': NumberInRange(10, 20)})
+
+        assert schema({'value': 15})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': 0})
+
+    def test_valid_inclusive(self):
+        """It is inclusive on both ends of the range."""
+        schema = V.Schema({'value': NumberInRange(10, 20)})
+
+        assert schema({'value': 10})
+        assert schema({'value': 20})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': 9})
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': 21})
 
 
 class TestOneOf:

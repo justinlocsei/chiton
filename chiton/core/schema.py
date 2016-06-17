@@ -67,3 +67,20 @@ def OneOf(choices, multiple=False):
             raise ValueError('%s must be one of "%s"' % (v, choice_values))
 
     return validator
+
+
+def NumberInRange(min_value, max_value):
+    """A Voluptuous validator that ensure that a number is within a given range.
+
+    Args:
+        min_value (int): The inclusive lower bound of the range
+        max_value (int): The inclusive upper bound of the range
+
+    Returns:
+        function: The validator function
+    """
+    def validator(v):
+        if v < min_value or v > max_value:
+            raise ValueError('%d must be between %d and %d' % (v, min_value, max_value))
+
+    return validator
