@@ -71,12 +71,12 @@ def OneOf(choices, multiple=False):
         else:
             choice_list = choices
 
-        choice_values = ', '.join([str(c) for c in choice_list])
+        choice_values = ', '.join(sorted([str(c) for c in choice_list]))
 
         if multiple and (not v or len(set(choice_list) & set(v)) < len(v)):
             raise V.Invalid('Only the following values are allowed: %s' % choice_values)
         elif not multiple and v not in choice_list:
-            raise V.Invalid('%s must be one of "%s"' % (v, choice_values))
+            raise V.Invalid('%s is not in the following list: %s' % (str(v), choice_values))
 
     return validator
 
