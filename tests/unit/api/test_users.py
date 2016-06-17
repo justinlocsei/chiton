@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group, User
 import pytest
 
-from chiton.api.permissions import bind_user_to_group, enforce_auth_token, grant_group_permission
+from chiton.api.users import bind_user_to_group, enforce_auth_token, grant_group_permission
 from chiton.closet.models import Color
 
 
