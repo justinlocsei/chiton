@@ -31,7 +31,7 @@ def define_data_shape(schema, defaults=None, validated=True):
         try:
             V.Schema(schema)(data)
         except V.MultipleInvalid as e:
-            raise FormatError('Invalid data format: %s' % e)
+            raise FormatError(str(e))
         else:
             return data
 
