@@ -65,15 +65,14 @@ def prime_cached_queries():
         query['refresh_fn']()
 
 
-def unbind_signal_handlers(namespace=None):
+def unbind_signal_handlers(namespace=''):
     """Unbind all connected signal handlers.
 
     Keyword Args:
         namespace (str): The namespace for which to unbind queries
     """
-    if namespace is None:
-        namespace_prefix = ''
-    else:
+    namespace_prefix = namespace
+    if namespace_prefix:
         namespace_prefix = '%s%s' % (namespace, NAMESPACE_SEPARATOR)
 
     for query in CACHED_QUERIES:
