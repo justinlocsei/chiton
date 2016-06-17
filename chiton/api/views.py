@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from chiton.api.permissions import IsRecommender
 from chiton.core.exceptions import FormatError
 from chiton.wintour.matching import make_recommendations
 from chiton.wintour.models import Recommendation
@@ -11,6 +12,8 @@ from chiton.wintour.profiles import PipelineProfile
 
 class Recommendations(APIView):
     """Manage outfit recommendations."""
+
+    permission_classes = (IsRecommender,)
 
     def post(self, request, format=None):
         """Generate recommendations for a user."""
