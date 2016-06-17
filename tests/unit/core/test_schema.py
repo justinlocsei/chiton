@@ -105,3 +105,51 @@ class TestOneOf:
 
         with pytest.raises(V.MultipleInvalid):
             schema({'value': ['a']})
+
+    def test_multiple(self):
+        """It can validate lists when operating in multiple mode."""
+        schema = V.Schema({'value': OneOf(['a', 'b'], multiple=True)})
+
+        assert schema({'value': ['a']})
+        assert schema({'value': ['a', 'b']})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': ['c']})
+
+    def test_multiple_invalid(self):
+        """It requires every value in a list to be valid in multiple mode."""
+        schema = V.Schema({'value': OneOf(['a', 'b'], multiple=True)})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': ['a', 'b', 'c']})
+
+    def test_multiple_empty(self):
+        """It counts empty lists as invalid in multiple mode."""
+        schema = V.Schema({'value': OneOf(['a'], multiple=True)})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': []})
+
+    def test_lazy(self):
+        """It accepts a function that lazily provides a list of choices."""
+        choice_list = []
+
+        def choices():
+            choice_list.append(len(choice_list) + 1)
+            return choice_list
+
+        schema = V.Schema({'value': OneOf(choices)})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': 2})
+
+        assert schema({'value': 2})
+
+    def test_lazy_multiple(self):
+        """It accepts lazy choice lists in multiple mode."""
+        schema = V.Schema({'value': OneOf(lambda: [1, 2], multiple=True)})
+
+        assert schema({'value': [1, 2]})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': [1, 2, 3]})
