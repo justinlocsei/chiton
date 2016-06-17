@@ -3,6 +3,7 @@ omit =
     */admin.py
     */management/*
     */migrations/*
+    chiton/api/urls.py
     chiton/settings.py
     chiton/urls.py
     chiton/wsgi.py
