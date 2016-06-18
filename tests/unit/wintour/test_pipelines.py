@@ -118,7 +118,6 @@ class TestBasePipeline:
 
             def apply(self, basic, garments):
                 return [FacetGroup({
-                    'count': len(garments),
                     'garment_ids': [g['garment']['id'] for g in garments],
                     'slug': 'all'
                 })]
@@ -247,16 +246,8 @@ class TestBasePipeline:
         assert with_data['id'] > 0
         assert with_data['url'] == 'http://example.com/with'
 
-        assert with_data['image'] == {
-            'height': 100,
-            'width': 100,
-            'url': 'http://example.com/image'
-        }
-        assert with_data['thumbnail'] == {
-            'height': 50,
-            'width': 50,
-            'url': 'http://example.com/thumbnail'
-        }
+        assert with_data['image'] == 'http://example.com/image'
+        assert with_data['thumbnail'] == 'http://example.com/thumbnail'
 
         without_data = items[1]
         assert without_data['price'] == 1525
@@ -437,12 +428,10 @@ class TestBasePipeline:
                 gs = [g['garment'] for g in garments]
                 return [
                     FacetGroup({
-                        'count': 1,
                         'garment_ids': [g['id'] for g in gs if g['name'] == 'Shirt'],
                         'slug': 'low'
                     }),
                     FacetGroup({
-                        'count': 1,
                         'garment_ids': [g['id'] for g in gs if g['name'] == 'Jeans'],
                         'slug': 'high'
                     })

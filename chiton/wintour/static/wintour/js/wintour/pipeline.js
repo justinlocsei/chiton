@@ -446,7 +446,6 @@ PipelineVisualizer.prototype = {
 
             var $image = $(this);
             var modal = renderTemplate('pipeline-template-affiliate-image', {
-                maxWidth: $image.data('full-width'),
                 name: $image.attr('title'),
                 url: $image.data('full')
             });

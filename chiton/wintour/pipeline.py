@@ -3,19 +3,7 @@ from functools import partial
 
 import voluptuous as V
 
-from chiton.closet.data import CARE_TYPES
-from chiton.core.schema import define_data_shape, OneOf
-from chiton.wintour.data import BODY_SHAPES
-
-
-PipelineProfile = define_data_shape({
-    V.Required('age'): int,
-    V.Required('avoid_care'): list(CARE_TYPES.values()),
-    V.Required('body_shape'): OneOf(BODY_SHAPES.values()),
-    V.Required('expectations'): dict,
-    V.Required('sizes'): [str],
-    V.Required('styles'): [str]
-})
+from chiton.core.schema import define_data_shape
 
 
 DebugExplanations = define_data_shape({
@@ -34,19 +22,12 @@ DebugExplanations = define_data_shape({
 }, validated=False)
 
 
-ItemImage = define_data_shape({
-    V.Required('height'): int,
-    V.Required('url'): str,
-    V.Required('width'): int
-}, validated=False)
-
-
 PurchaseOption = define_data_shape({
     V.Required('id'): int,
-    V.Required('image'): V.Any(None, ItemImage),
+    V.Required('image'): V.Any(None, str),
     V.Required('price'): V.Any(None, int),
     V.Required('network_name'): str,
-    V.Required('thumbnail'): V.Any(None, ItemImage),
+    V.Required('thumbnail'): V.Any(None, str),
     V.Required('url'): str
 }, validated=False)
 
@@ -74,7 +55,6 @@ BasicOverview = define_data_shape({
 
 
 FacetGroup = define_data_shape({
-    V.Required('count'): int,
     V.Required('garment_ids'): [int],
     V.Required('slug'): str
 }, validated=False)
@@ -159,7 +139,7 @@ class PipelineStep:
         keyword args to any `apply` calls in the profile's context.
 
         Args:
-            profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
+            profile (chiton.wintour.profiles.PipelineProfile): A wardrobe profile
 
         Returns:
             dict: Additional keyword args to pass to apply calls
@@ -189,7 +169,7 @@ class PipelineStep:
         the profile.
 
         Args:
-            profile (chiton.wintour.pipeline.PipelineProfile): A wardrobe profile
+            profile (chiton.wintour.profiles.PipelineProfile): A wardrobe profile
 
         Yields:
             function: A partially apply function that includes the profile data

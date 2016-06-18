@@ -13,9 +13,10 @@ class TestFormalityWeight:
         formality_factory(slug='executive')
 
         garment = garment_factory(formalities=[casual])
-        profile = pipeline_profile_factory(expectations={
-            'executive': EXPECTATION_FREQUENCIES['NEVER']
-        })
+        profile = pipeline_profile_factory(expectations=[{
+            'formality': 'executive',
+            'frequency': EXPECTATION_FREQUENCIES['NEVER']
+        }])
 
         weight = FormalityWeight()
         with weight.apply_to_profile(profile) as apply_fn:
@@ -32,9 +33,10 @@ class TestFormalityWeight:
 
         results = {}
         for frequency in frequency_order:
-            profile = pipeline_profile_factory(expectations={
-                'casual': EXPECTATION_FREQUENCIES[frequency]
-            })
+            profile = pipeline_profile_factory(expectations=[{
+                'formality': 'casual',
+                'frequency': EXPECTATION_FREQUENCIES[frequency]
+            }])
 
             with weight.apply_to_profile(profile) as apply_fn:
                 results[frequency] = apply_fn(garment)
@@ -51,10 +53,10 @@ class TestFormalityWeight:
         dress = garment_factory(formalities=[business])
         blazer = garment_factory(formalities=[business, executive])
 
-        profile = pipeline_profile_factory(expectations={
-            'business': EXPECTATION_FREQUENCIES['SOMETIMES'],
-            'executive': EXPECTATION_FREQUENCIES['SOMETIMES']
-        })
+        profile = pipeline_profile_factory(expectations=[
+            {'formality': 'business', 'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']},
+            {'formality': 'executive', 'frequency': EXPECTATION_FREQUENCIES['SOMETIMES']}
+        ])
 
         weight = FormalityWeight()
         with weight.apply_to_profile(profile) as apply_fn:
@@ -73,9 +75,10 @@ class TestFormalityWeight:
         garment_hit = garment_factory(formalities=[casual])
         garment_miss = garment_factory(formalities=[executive])
 
-        profile = pipeline_profile_factory(expectations={
-            'casual': EXPECTATION_FREQUENCIES['RARELY']
-        })
+        profile = pipeline_profile_factory(expectations=[{
+            'formality': 'casual',
+            'frequency': EXPECTATION_FREQUENCIES['RARELY']
+        }])
 
         weight = FormalityWeight()
         weight.debug = True
@@ -92,9 +95,10 @@ class TestFormalityWeight:
         casual = formality_factory(slug='casual')
         garment = garment_factory(formalities=[casual])
 
-        profile = pipeline_profile_factory(expectations={
-            'casual': EXPECTATION_FREQUENCIES['RARELY']
-        })
+        profile = pipeline_profile_factory(expectations=[{
+            'formality': 'casual',
+            'frequency': EXPECTATION_FREQUENCIES['RARELY']
+        }])
 
         weight = FormalityWeight()
         with weight.apply_to_profile(profile) as apply_fn:

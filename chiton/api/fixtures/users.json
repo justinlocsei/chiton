@@ -1,0 +1,28 @@
+[
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "!FVKHpyClYvGlVgfsVxxuhJaMQtdfF9YRVohmg5oz",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "himation",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-06-16T00:24:06.003Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authtoken.token",
+  "pk": "7a23f917e864b91d4280fd36a21a4f1063a996a2",
+  "fields": {
+    "user": 2,
+    "created": "2016-06-16T00:24:46.389Z"
+  }
+}
+]

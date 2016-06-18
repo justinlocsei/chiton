@@ -8,18 +8,24 @@ CACHED_QUERIES = []
 # All model signals that should trigger a cache refresh
 REFRESH_SIGNALS = (post_delete, post_save)
 
+# The separator used for namespaces
+NAMESPACE_SEPARATOR = ':'
 
-def cache_query(*model_classes):
+
+def cache_query(*model_classes, namespace='default'):
     """Cache a function that returns a query's value.
 
     Args:
         model_class (list[django.db.models.Model]): All model classes involved in the query
 
+    Keyword Args:
+        namespace (str): A namespace to use for the caching
+
     Returns:
         function: The query-producing function with cache logic added
     """
     def wrap_query(query_fn):
-        query_id = 'cache_query_%s' % query_fn.__name__
+        query_id = '%s%scache_query_%s' % (namespace, NAMESPACE_SEPARATOR, query_fn.__name__)
         other_queries = len([q for q in CACHED_QUERIES if q['id'] == query_id])
         query_guid = '%s--%d' % (query_id, other_queries)
 
@@ -59,9 +65,18 @@ def prime_cached_queries():
         query['refresh_fn']()
 
 
-def unbind_signal_handlers():
-    """Unbind all connected signal handlers."""
+def unbind_signal_handlers(namespace=''):
+    """Unbind all connected signal handlers.
+
+    Keyword Args:
+        namespace (str): The namespace for which to unbind queries
+    """
+    namespace_prefix = namespace
+    if namespace_prefix:
+        namespace_prefix = '%s%s' % (namespace, NAMESPACE_SEPARATOR)
+
     for query in CACHED_QUERIES:
         for model_class in query['model_classes']:
             for signal in REFRESH_SIGNALS:
-                signal.disconnect(None, sender=model_class, dispatch_uid=query['guid'])
+                if query['guid'].startswith(namespace_prefix):
+                    signal.disconnect(None, sender=model_class, dispatch_uid=query['guid'])

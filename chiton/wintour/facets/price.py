@@ -66,7 +66,6 @@ class PriceFacet(BaseFacet):
         for group_slug in PRICE_GROUP_ORDER:
             garment_ids = groups[group_slug]
             facets.append(FacetGroup({
-                'count': len(garment_ids),
                 'garment_ids': garment_ids,
                 'slug': group_slug
             }))

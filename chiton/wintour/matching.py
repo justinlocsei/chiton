@@ -2,44 +2,12 @@ from timeit import default_timer
 
 from django.db import connection
 
-from chiton.wintour.pipeline import PipelineProfile
-
-
-# Field names for serializing garments
-GARMENT_IMAGE_FIELDS = ('image', 'thumbnail')
-GARMENT_IMAGE_ATTRIBUTES = ('height', 'url', 'width')
-
-
-def package_wardrobe_profile(profile):
-    """Convert a wardrobe profile into a pipeline profile.
-
-    Args:
-        profile (chiton.wintour.models.WardrobeProfile): A wardrobe profile
-
-    Returns:
-        chiton.wintour.pipeline.PipelineProfile: The packaged profile
-    """
-    data = {
-        'age': profile.age,
-        'avoid_care': [c.care for c in profile.unwanted_care_types.all()],
-        'body_shape': profile.body_shape,
-        'sizes': [size.slug for size in profile.sizes.all()],
-        'styles': [style.slug for style in profile.styles.all()]
-    }
-
-    expectations = {}
-    for expectation in profile.expectations.all().select_related('formality'):
-        expectations[expectation.formality.slug] = expectation.frequency
-    data['expectations'] = expectations
-
-    return PipelineProfile(data)
-
 
 def make_recommendations(pipeline_profile, pipeline, debug=False):
     """Return garment recommendations for a wardrobe profile.
 
     Args:
-        pipeline_profile (chiton.wintour.pipeline.PipelineProfile): A profile for which to make recommendations
+        pipeline_profile (chiton.wintour.profiles.PipelineProfile): A profile for which to make recommendations
 
     Keyword Args:
         pipeline (chiton.wintour.pipelines.BasePipeline): An instance of a pipeline class

@@ -9,6 +9,7 @@ class TestStep(PipelineStep):
     slug = 'test'
 
 
+@pytest.mark.django_db
 class TestPipelineStep:
 
     def test_requires_name(self):

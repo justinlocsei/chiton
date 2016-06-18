@@ -151,9 +151,12 @@ class Benchmark(BaseBenchmark):
         self.log('\nCreating profile')
         frequencies = self.imports['EXPECTATION_FREQUENCY_CHOICES']
         frequency_cycle = len(frequencies) - 1
-        profile_expectations = {}
+        profile_expectations = []
         for i, formality in enumerate(formalities):
-            profile_expectations[formality.slug] = frequencies[i % frequency_cycle][0]
+            profile_expectations.append({
+                'formality': formality.slug,
+                'frequency': frequencies[i % frequency_cycle][0]
+            })
 
         # Create a profile from which to generate recommendations
         self._profile = fixtures['pipeline_profile_factory'](
