@@ -16,6 +16,11 @@ class Command(BaseCommand):
             file = fixture.find()
             if not os.path.isfile(file):
                 raise CommandError('The %s fixture could not be located' % fixture.label)
+
+            if not fixture.is_needed():
+                self.stdout.write('Skipping the %s fixture' % fixture.label)
+                continue
+
             resolved.append({
                 'file': file,
                 'label': fixture.label,
