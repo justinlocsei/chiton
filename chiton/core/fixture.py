@@ -10,7 +10,7 @@ from chiton.core.exceptions import FilesystemError
 class Fixture:
     """A representation of a fixture for a single application model."""
 
-    def __init__(self, model_class, queryset=None, initial=False, requires=[]):
+    def __init__(self, model_class, queryset=None, initial=False, requires=[], fields=None):
         """Create a new fixture.
 
         Args:
@@ -20,10 +20,12 @@ class Fixture:
         Keyword Args:
             initial (bool): Whether the fixture should only be run to initialize data
             requires (list[django.db.models.model]): All model classes required by the fixture
+            fields (list[str]): A list of field names to serialize
         """
         self.model_class = model_class
         self.initial = initial
         self.requires = requires
+        self.fields = fields
 
         if queryset is None:
             self.queryset = model_class.objects.all()
@@ -76,12 +78,15 @@ class Fixture:
         json_serializer = JSONSerializer()
 
         with open(destination, 'w') as fixture:
-            json_serializer.serialize(
-                self.queryset,
-                stream=fixture,
-                indent=4,
-                use_natural_foreign_keys=True,
-                use_natural_primary_keys=True
-            )
+            serialize_kwargs = {
+                'stream': fixture,
+                'indent': 4,
+                'use_natural_foreign_keys': True,
+                'use_natural_primary_keys': True
+            }
+            if self.fields:
+                serialize_kwargs['fields'] = self.fields
+
+            json_serializer.serialize(self.queryset, **serialize_kwargs)
 
         return destination

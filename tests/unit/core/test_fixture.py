@@ -70,6 +70,25 @@ class TestFixture:
             assert 'model' in image
             assert 'pk' in image
 
+    def test_export_fields(self):
+        """It can accept a subset of fields to serialize."""
+        ProductImage.objects.create(url='http://example.com', height=50, width=50)
+        fixture = Fixture(ProductImage, fields=['url', 'height'])
+
+        with tempfile.NamedTemporaryFile() as output:
+            fixture.find = mock.Mock(return_value=output.name)
+
+            exported = fixture.export()
+            assert exported == output.name
+
+            with open(exported) as fixture_file:
+                data = json.load(fixture_file)
+
+            fields = data[0]['fields']
+            assert 'height' in fields
+            assert 'url' in fields
+            assert 'width' not in fields
+
     def test_export_invalid_target(self, product_images_fixture):
         """It raises an error when the target directory does not exist."""
         product_images_fixture.find = mock.Mock(return_value='/abcdefghijklmnop/qrstuvwxyz.json')
