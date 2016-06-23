@@ -30,6 +30,28 @@ class TestFixture:
         path = product_images_fixture.find()
         assert path == '/tmp/rack/fixtures/product_image.json'
 
+    def test_is_needed(self, product_images_fixture):
+        """It reports fixtures as needed by defaut."""
+        assert product_images_fixture.is_needed()
+
+    def test_is_needed_initial(self, product_image_factory):
+        """It reports an initial fixture as unneeded if it has models."""
+        fixture = Fixture(ProductImage, ProductImage.objects.all(), initial=True)
+        assert fixture.is_needed()
+
+        product_image_factory()
+        assert not fixture.is_needed()
+
+    def test_is_needed_initial_queryset(self, product_image_factory):
+        """It reports an initial fixture as needed if its queryset does not exist."""
+        fixture = Fixture(ProductImage, ProductImage.objects.filter(height=100), initial=True)
+
+        product_image_factory(height=50)
+        assert fixture.is_needed()
+
+        product_image_factory(height=100)
+        assert not fixture.is_needed()
+
     def test_export(self, product_images_fixture):
         """It writes a queryset's models to a JSON file."""
         with tempfile.NamedTemporaryFile() as output:

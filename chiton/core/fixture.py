@@ -10,15 +10,19 @@ from chiton.core.exceptions import FilesystemError
 class Fixture:
     """A representation of a fixture for a single application model."""
 
-    def __init__(self, model_class, queryset):
+    def __init__(self, model_class, queryset, initial=False):
         """Create a new fixture.
 
         Args:
             model_class (django.db.models.Model): The model class for the fixture
             queryset (django.db.models.query.QuerySet): A queryset of models
+
+        Keyword Args:
+            initial (bool): Whether the fixture should only be run to initialize data
         """
         self.model_class = model_class
         self.queryset = queryset
+        self.initial = initial
 
         self.label = underscore(model_class.__name__)
 
@@ -33,6 +37,20 @@ class Fixture:
         app_dir = os.path.join(settings.CHITON_ROOT, *app_paths)
 
         return os.path.join(app_dir, 'fixtures', '%s.json' % self.label)
+
+    def is_needed(self):
+        """Determine whether the fixture is needed.
+
+        A fixture will only ever be unneeded if it is an initial fixture and
+        models of the fixture's type are present.
+
+        Returns:
+            bool: Whether the fixture is needed
+        """
+        if self.initial:
+            return not self.queryset.count()
+        else:
+            return True
 
     def export(self):
         """Write the fixture data to a file.
