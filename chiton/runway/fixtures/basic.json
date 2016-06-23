@@ -2,20 +2,6 @@
 {
     "model": "chiton_runway.basic",
     "fields": {
-        "name": "Black camisole",
-        "slug": "black-camisole",
-        "category": [
-            "shirts"
-        ],
-        "primary_color": [
-            "black"
-        ],
-        "secondary_colors": []
-    }
-},
-{
-    "model": "chiton_runway.basic",
-    "fields": {
         "name": "Black cardigan",
         "slug": "black-cardigan",
         "category": [
@@ -128,6 +114,24 @@
 {
     "model": "chiton_runway.basic",
     "fields": {
+        "name": "Camisole",
+        "slug": "black-camisole",
+        "category": [
+            "shirts"
+        ],
+        "primary_color": [
+            "black"
+        ],
+        "secondary_colors": [
+            [
+                "white"
+            ]
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
         "name": "Casual black blazer",
         "slug": "casual-black-blazer",
         "category": [
@@ -201,7 +205,9 @@
         "category": [
             "pants"
         ],
-        "primary_color": null,
+        "primary_color": [
+            "beige"
+        ],
         "secondary_colors": []
     }
 },
@@ -220,46 +226,8 @@
 {
     "model": "chiton_runway.basic",
     "fields": {
-        "name": "Skirt",
-        "slug": "skirt",
-        "category": [
-            "skirts"
-        ],
-        "primary_color": null,
-        "secondary_colors": []
-    }
-},
-{
-    "model": "chiton_runway.basic",
-    "fields": {
-        "name": "Tunic",
-        "slug": "tunic",
-        "category": [
-            "shirts"
-        ],
-        "primary_color": null,
-        "secondary_colors": []
-    }
-},
-{
-    "model": "chiton_runway.basic",
-    "fields": {
         "name": "White button-down",
         "slug": "white-button-down",
-        "category": [
-            "shirts"
-        ],
-        "primary_color": [
-            "white"
-        ],
-        "secondary_colors": []
-    }
-},
-{
-    "model": "chiton_runway.basic",
-    "fields": {
-        "name": "White camisole",
-        "slug": "white-camisole",
         "category": [
             "shirts"
         ],
