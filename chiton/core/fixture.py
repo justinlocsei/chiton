@@ -10,7 +10,7 @@ from chiton.core.exceptions import FilesystemError
 class Fixture:
     """A representation of a fixture for a single application model."""
 
-    def __init__(self, model_class, queryset, initial=False):
+    def __init__(self, model_class, queryset, initial=False, requires=[]):
         """Create a new fixture.
 
         Args:
@@ -19,10 +19,12 @@ class Fixture:
 
         Keyword Args:
             initial (bool): Whether the fixture should only be run to initialize data
+            requires (list[django.db.models.model]): All model classes required by the fixture
         """
         self.model_class = model_class
         self.queryset = queryset
         self.initial = initial
+        self.requires = requires
 
         self.label = underscore(model_class.__name__)
 
