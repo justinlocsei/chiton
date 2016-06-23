@@ -6,6 +6,7 @@ from chiton.closet.models import Brand, Color, Garment
 from chiton.runway.models import Style
 
 
+@pytest.mark.django_db
 class TestLoadFixtures:
 
     def test_flat_list(self):
@@ -24,18 +25,14 @@ class TestOrderFixturesByDependency:
 
     def test_no_dependencies(self):
         """It returns an unmodified list when no fixtures have dependencies."""
-        fixtures = [
-            Fixture(Brand, Brand.objects.all()),
-            Fixture(Color, Color.objects.all())
-        ]
-
+        fixtures = [Fixture(Brand), Fixture(Color)]
         assert self.order_with_labels(fixtures) == ['brand', 'color']
 
     def test_dependencies(self):
         """It ensures that dependencies come before their parent fixtures."""
         fixtures = [
-            Fixture(Garment, Garment.objects.all(), requires=[Color]),
-            Fixture(Color, Color.objects.all())
+            Fixture(Garment, requires=[Color]),
+            Fixture(Color)
         ]
 
         assert self.order_with_labels(fixtures) == ['color', 'garment']
@@ -43,10 +40,10 @@ class TestOrderFixturesByDependency:
     def test_dependencies_multiple(self):
         """It uses left-to-right ordering for multiple dependencies."""
         fixtures = [
-            Fixture(Garment, Garment.objects.all(), requires=[Brand, Style]),
-            Fixture(Color, Color.objects.all()),
-            Fixture(Brand, Brand.objects.all()),
-            Fixture(Style, Style.objects.all(), requires=[Color])
+            Fixture(Garment, requires=[Brand, Style]),
+            Fixture(Color),
+            Fixture(Brand),
+            Fixture(Style, requires=[Color])
         ]
 
         assert self.order_with_labels(fixtures) == ['brand', 'color', 'style', 'garment']
@@ -54,9 +51,9 @@ class TestOrderFixturesByDependency:
     def test_dependencies_nested(self):
         """It ensures a correct order for nested dependencies."""
         fixtures = [
-            Fixture(Garment, Garment.objects.all(), requires=[Color]),
-            Fixture(Color, Color.objects.all()),
-            Fixture(Brand, Brand.objects.all(), requires=[Garment])
+            Fixture(Garment, requires=[Color]),
+            Fixture(Color),
+            Fixture(Brand, requires=[Garment])
         ]
 
         assert self.order_with_labels(fixtures) == ['color', 'garment', 'brand']
@@ -64,9 +61,9 @@ class TestOrderFixturesByDependency:
     def test_dependencies_shared(self):
         """It respects the order of fixtures that share dependencies."""
         fixtures = [
-            Fixture(Garment, Garment.objects.all(), requires=[Color]),
-            Fixture(Color, Color.objects.all()),
-            Fixture(Brand, Brand.objects.all(), requires=[Color])
+            Fixture(Garment, requires=[Color]),
+            Fixture(Color),
+            Fixture(Brand, requires=[Color])
         ]
 
         assert self.order_with_labels(fixtures) == ['color', 'garment', 'brand']
@@ -74,10 +71,10 @@ class TestOrderFixturesByDependency:
     def test_dependencies_shared_nested(self):
         """It ensures a correct order for nested shared dependencies."""
         fixtures = [
-            Fixture(Garment, Garment.objects.all(), requires=[Brand, Style]),
-            Fixture(Color, Color.objects.all()),
-            Fixture(Brand, Brand.objects.all(), requires=[Color]),
-            Fixture(Style, Style.objects.all(), requires=[Brand])
+            Fixture(Garment, requires=[Brand, Style]),
+            Fixture(Color),
+            Fixture(Brand, requires=[Color]),
+            Fixture(Style, requires=[Brand])
         ]
 
         assert self.order_with_labels(fixtures) == ['color', 'brand', 'style', 'garment']
@@ -85,8 +82,8 @@ class TestOrderFixturesByDependency:
     def test_dependencies_missing(self):
         """It ignores required models that lack a fixture."""
         fixtures = [
-            Fixture(Garment, Garment.objects.all(), requires=[Brand]),
-            Fixture(Color, Color.objects.all()),
+            Fixture(Garment, requires=[Brand]),
+            Fixture(Color)
         ]
 
         assert self.order_with_labels(fixtures) == ['garment', 'color']
@@ -94,8 +91,8 @@ class TestOrderFixturesByDependency:
     def test_dependencies_circular(self):
         """It raises an error when circular dependencies are detected."""
         fixtures = [
-            Fixture(Garment, Garment.objects.all(), requires=[Color]),
-            Fixture(Color, Color.objects.all(), requires=[Garment])
+            Fixture(Garment, requires=[Color]),
+            Fixture(Color, requires=[Garment])
         ]
 
         with pytest.raises(CircularDependencyError):
@@ -103,7 +100,7 @@ class TestOrderFixturesByDependency:
 
     def test_dependencies_circular_self(self):
         """It raises an error when self-referential dependencies are detected."""
-        fixtures = [Fixture(Color, Color.objects.all(), requires=[Color])]
+        fixtures = [Fixture(Color, requires=[Color])]
 
         with pytest.raises(CircularDependencyError):
             order_fixtures_by_dependency(fixtures)

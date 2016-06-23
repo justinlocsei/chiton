@@ -36,7 +36,7 @@ class TestFixture:
 
     def test_is_needed_initial(self, product_image_factory):
         """It reports an initial fixture as unneeded if it has models."""
-        fixture = Fixture(ProductImage, ProductImage.objects.all(), initial=True)
+        fixture = Fixture(ProductImage, initial=True)
         assert fixture.is_needed()
 
         product_image_factory()
@@ -44,7 +44,7 @@ class TestFixture:
 
     def test_is_needed_initial_queryset(self, product_image_factory):
         """It reports an initial fixture as needed if its queryset does not exist."""
-        fixture = Fixture(ProductImage, ProductImage.objects.filter(height=100), initial=True)
+        fixture = Fixture(ProductImage, queryset=ProductImage.objects.filter(height=100), initial=True)
 
         product_image_factory(height=50)
         assert fixture.is_needed()
