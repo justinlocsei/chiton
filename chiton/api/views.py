@@ -20,7 +20,9 @@ class Recommendations(APIView):
         try:
             profile = PipelineProfile(request.data, validate=True)
         except DataShapeError as e:
-            return Response({'errors': e.fields}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'errors': {'fields': e.fields}}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'errors': {'server': str(e)}}, status=status.HTTP_400_BAD_REQUEST)
 
         Recommendation.objects.create(profile=profile)
 

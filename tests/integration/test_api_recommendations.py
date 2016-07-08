@@ -93,4 +93,29 @@ class TestRecommendations:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'errors' in response.data
-        assert 'age' in response.data['errors']
+        assert 'age' in response.data['errors']['fields']
+
+    def test_recommendations_errors_types(self, api_client):
+        """It returns errors when a request contains fields with unexpected types."""
+        response = api_client.post(self.ENDPOINT, {
+            'age': 'ten'
+        }, format='json')
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'errors' in response.data
+        assert 'age' in response.data['errors']['fields']
+
+    def test_recommendations_errors_structures(self, api_client):
+        """It returns errors when a request contains fields with unexpected structures."""
+        response = api_client.post(self.ENDPOINT, {
+            'age': ['10'],
+            'avoid_care': [{'value': 'dry_clean'}],
+            'body_shape': {'value': 'rectangle'},
+            'expectations': 'formal',
+            'sizes': 10,
+            'styles': {'type': 'classy'}
+        }, format='json')
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'errors' in response.data
+        assert 'fields' in response.data['errors']

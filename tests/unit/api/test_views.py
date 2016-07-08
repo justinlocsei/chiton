@@ -122,7 +122,22 @@ class TestRecommendations:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data == {
             'errors': {
-                'one': 'error',
-                'two': 'invalid'
+                'fields': {
+                    'one': 'error',
+                    'two': 'invalid'
+                }
+            }
+        }
+
+    def test_recommendations_errors_fatal(self, make_request):
+        """It returns general errors when a non-field error occurs."""
+        with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:
+            PipelineProfile.side_effect = ValueError('Invalid')
+            response = make_request({'request': 'body'})
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.data == {
+            'errors': {
+                'server': 'Invalid'
             }
         }
