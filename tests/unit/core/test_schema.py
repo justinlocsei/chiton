@@ -159,6 +159,17 @@ class TestNumberInRange:
         with pytest.raises(V.MultipleInvalid):
             schema({'value': 21})
 
+    def test_non_numeric(self):
+        """It rejects values that are not numbers."""
+        schema = V.Schema({'value': NumberInRange(10, 20)})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': '10'})
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': 'ten'})
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': None})
+
 
 class TestOneOf:
 

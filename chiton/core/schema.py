@@ -92,7 +92,12 @@ def NumberInRange(min_value, max_value):
         function: The validator function
     """
     def validator(v):
-        if v < min_value or v > max_value:
-            raise V.Invalid('%d must be between %d and %d' % (v, min_value, max_value))
+        try:
+            as_number = v / 1
+        except TypeError:
+            raise V.Invalid('%s must be a number' % v)
+
+        if as_number < min_value or as_number > max_value:
+            raise V.Invalid('%d must be between %d and %d' % (as_number, min_value, max_value))
 
     return validator
