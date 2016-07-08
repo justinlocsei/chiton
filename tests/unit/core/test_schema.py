@@ -220,6 +220,20 @@ class TestOneOf:
         with pytest.raises(V.MultipleInvalid):
             schema({'value': []})
 
+    def test_multiple_scalar(self):
+        """It rejects scalar values in multiple mode."""
+        schema = V.Schema({'value': OneOf(['a', 'b'], multiple=True)})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': 1})
+
+    def test_multiple_scalar_iterable(self):
+        """It rejects scalar values that can be treated as iterables in multiple mode."""
+        schema = V.Schema({'value': OneOf(['a', 'b'], multiple=True)})
+
+        with pytest.raises(V.MultipleInvalid):
+            schema({'value': 'a'})
+
     def test_lazy(self):
         """It accepts a function that lazily provides a list of choices."""
         choice_list = []

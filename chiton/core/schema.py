@@ -73,9 +73,12 @@ def OneOf(choices, multiple=False):
 
         choice_values = ', '.join(sorted([str(c) for c in choice_list]))
 
-        if multiple and (not v or len(set(choice_list) & set(v)) < len(v)):
-            raise V.Invalid('Only the following values are allowed: %s' % choice_values)
-        elif not multiple and v not in choice_list:
+        if multiple:
+            if not isinstance(v, (list, tuple)):
+                raise V.Invalid('%s must be a list or tuple' % v)
+            if not v or len(set(choice_list) & set(v)) < len(v):
+                raise V.Invalid('Only the following values are allowed: %s' % choice_values)
+        elif v not in choice_list:
             raise V.Invalid('%s is not in the following list: %s' % (str(v), choice_values))
 
     return validator
