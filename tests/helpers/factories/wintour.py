@@ -9,6 +9,7 @@ from chiton.wintour.profiles import PipelineProfile
 
 fake = Faker()
 
+
 def get_default_birth_year():
     return datetime.now().year
 
