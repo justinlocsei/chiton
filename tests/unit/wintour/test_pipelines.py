@@ -10,22 +10,22 @@ from chiton.wintour.query_filters import BaseQueryFilter
 from chiton.wintour.weights import BaseWeight
 
 
-class TestQueryFilter(BaseQueryFilter):
+class DummyQueryFilter(BaseQueryFilter):
     name = 'Test Query Filter'
     slug = 'test-query-filter'
 
 
-class TestGarmentFilter(BaseGarmentFilter):
+class DummyGarmentFilter(BaseGarmentFilter):
     name = 'Test Garment Filter'
     slug = 'test-garment-filter'
 
 
-class TestWeight(BaseWeight):
+class DummyWeight(BaseWeight):
     name = 'Test Weight'
     slug = 'test-weight'
 
 
-class TestFacet(BaseFacet):
+class DummyFacet(BaseFacet):
     name = 'Test Facet'
     slug = 'test-face'
 
@@ -42,7 +42,7 @@ def pipeline_factory():
                 return garment_filters
 
             def provide_weights(self):
-                return weights or [TestWeight()]
+                return weights or [DummyWeight()]
 
             def provide_facets(self):
                 return facets
@@ -69,19 +69,19 @@ class TestBasePipeline:
         def slice_garments(garments):
             return garments[:garments.count() - 1]
 
-        class QueryFilter(TestQueryFilter):
+        class QueryFilter(DummyQueryFilter):
             def prepare_garments(self, garments):
                 return slice_garments(garments)
 
-        class GarmentFilter(TestGarmentFilter):
+        class GarmentFilter(DummyGarmentFilter):
             def prepare_garments(self, garments):
                 return slice_garments(garments)
 
-        class Weight(TestWeight):
+        class Weight(DummyWeight):
             def prepare_garments(self, garments):
                 return slice_garments(garments)
 
-        class Facet(TestFacet):
+        class Facet(DummyFacet):
             def prepare_garments(self, garments):
                 return slice_garments(garments)
 
@@ -100,19 +100,19 @@ class TestBasePipeline:
 
     def test_make_recommendations(self, basic_factory, brand_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It produces per-basic garment recommendations for a wardrobe profile."""
-        class QueryFilter(TestQueryFilter):
+        class QueryFilter(DummyQueryFilter):
             def apply(self, garments):
                 return garments.exclude(name='3')
 
-        class GarmentFilter(TestGarmentFilter):
+        class GarmentFilter(DummyGarmentFilter):
             def apply(self, garment):
                 return garment.name == '2'
 
-        class Weight(TestWeight):
+        class Weight(DummyWeight):
             def apply(self, garment):
                 return int(garment.name)
 
-        class Facet(TestFacet):
+        class Facet(DummyFacet):
             name = 'Facet'
             slug = 'test'
 
@@ -192,7 +192,7 @@ class TestBasePipeline:
 
     def test_make_recommendations_affiliate_items(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It exposes information on each garment's available affiliate items, sorted by price."""
-        class Weight(TestWeight):
+        class Weight(DummyWeight):
             def apply(self, garment):
                 return int(garment.name)
 
@@ -259,11 +259,11 @@ class TestBasePipeline:
 
     def test_make_recommendations_queryset_filters(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It combines all queryset filters."""
-        class TallFilter(TestQueryFilter):
+        class TallFilter(DummyQueryFilter):
             def apply(self, garments):
                 return garments.filter(is_tall_sized=False)
 
-        class PetiteFilter(TestQueryFilter):
+        class PetiteFilter(DummyQueryFilter):
             def apply(self, garments):
                 return garments.filter(is_petite_sized=False)
 
@@ -281,15 +281,15 @@ class TestBasePipeline:
 
     def test_make_recommendations_garment_filters(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It combines all garment filters."""
-        class PantsFilter(TestGarmentFilter):
+        class PantsFilter(DummyGarmentFilter):
             def apply(self, garment):
                 return garment.name == 'Pants'
 
-        class ShirtFilter(TestGarmentFilter):
+        class ShirtFilter(DummyGarmentFilter):
             def apply(self, garment):
                 return garment.name == 'Shirt'
 
-        class CombinedFilter(TestGarmentFilter):
+        class CombinedFilter(DummyGarmentFilter):
             def apply(self, garment):
                 return garment.name in ['Pants', 'Shirt']
 
@@ -307,7 +307,7 @@ class TestBasePipeline:
 
     def test_make_recommendations_weights_normalization(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It normalizes a single weight's range of values as floating-point percentage sorted in descending order."""
-        class Weight(TestWeight):
+        class Weight(DummyWeight):
             def apply(self, garment):
                 return int(garment.name)
 
@@ -340,11 +340,11 @@ class TestBasePipeline:
 
     def test_make_recommendations_weights_coalesce(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It combines multiple weights for a garment into per-garment normalized weights."""
-        class ConstantWeight(TestWeight):
+        class ConstantWeight(DummyWeight):
             def apply(self, garment):
                 return int(garment.name)
 
-        class AbsoluteWeight(TestWeight):
+        class AbsoluteWeight(DummyWeight):
             def apply(self, garment):
                 return abs(int(garment.name))
 
@@ -369,7 +369,7 @@ class TestBasePipeline:
 
     def test_make_recommendations_weights_debug(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It adds debugging information for weights when requested."""
-        class Weight(TestWeight):
+        class Weight(DummyWeight):
             name = 'Custom Weight'
 
             def apply(self, garment):
@@ -380,9 +380,9 @@ class TestBasePipeline:
         basic = basic_factory()
         affiliate_item_factory(garment=garment_factory(basic=basic))
 
-        query_filter = TestQueryFilter()
-        garment_filter = TestGarmentFilter()
-        facet = TestFacet()
+        query_filter = DummyQueryFilter()
+        garment_filter = DummyGarmentFilter()
+        facet = DummyFacet()
         weight = Weight()
 
         profile = pipeline_profile_factory()
@@ -420,7 +420,7 @@ class TestBasePipeline:
 
     def test_make_recommendations_facets(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It creates facets for the final recommendations."""
-        class NameFacet(TestWeight):
+        class NameFacet(DummyWeight):
             name = 'Name'
             slug = 'name'
 

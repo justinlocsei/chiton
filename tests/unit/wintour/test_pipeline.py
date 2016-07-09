@@ -4,7 +4,7 @@ from chiton.closet.models import Garment
 from chiton.wintour.pipeline import PipelineStep
 
 
-class TestStep(PipelineStep):
+class DummyStep(PipelineStep):
     name = 'Test'
     slug = 'test'
 
@@ -32,7 +32,7 @@ class TestPipelineStep:
 
     def test_configure_kwargs(self):
         """It passes initialization kwargs to subclasses."""
-        class Step(TestStep):
+        class Step(DummyStep):
 
             def configure(self, key=None):
                 self.key = key
@@ -42,7 +42,7 @@ class TestPipelineStep:
 
     def test_logging(self):
         """It allows messages to be logged and retrieved."""
-        step = TestStep()
+        step = DummyStep()
 
         step.log('root', 'first')
         step.log('root', 'second')
@@ -51,7 +51,7 @@ class TestPipelineStep:
 
     def test_logging_deep(self):
         """It supports nested log levels."""
-        step = TestStep()
+        step = DummyStep()
 
         step.log('root', 'first')
         step.log('root.child', 'second')
@@ -61,7 +61,7 @@ class TestPipelineStep:
 
     def test_logging_empty(self):
         """It returns an empty list for undefined log keys."""
-        step = TestStep()
+        step = DummyStep()
 
         assert step.get_log_messages('undefined') == []
 
@@ -71,7 +71,7 @@ class TestPipelineStep:
         garment_factory()
         garment_factory()
 
-        step = TestStep()
+        step = DummyStep()
 
         garments = Garment.objects.all()
         prepared = step.prepare_garments(garments)
@@ -81,7 +81,7 @@ class TestPipelineStep:
 
     def test_apply_to_profile(self, pipeline_profile_factory):
         """It acts as a context manager that provides a function to apply the step to an object."""
-        class Step(TestStep):
+        class Step(DummyStep):
 
             def provide_profile_data(self, profile):
                 return {
@@ -102,7 +102,7 @@ class TestPipelineStep:
 
     def test_apply_to_profile_memoized(self, pipeline_profile_factory):
         """It memoizes the profile data within the application context."""
-        class Step(TestStep):
+        class Step(DummyStep):
 
             def configure(self):
                 self.counter = 0
@@ -134,7 +134,7 @@ class TestPipelineStep:
     def test_apply_to_profile_empty(self, pipeline_profile_factory):
         """It raises an error when a step does not define its application."""
         profile = pipeline_profile_factory()
-        step = TestStep()
+        step = DummyStep()
 
         with pytest.raises(NotImplementedError):
             with step.apply_to_profile(profile) as apply_fn:

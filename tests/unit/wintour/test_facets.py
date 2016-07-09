@@ -3,7 +3,7 @@ import pytest
 from chiton.wintour.facets import BaseFacet
 
 
-class TestFacet(BaseFacet):
+class DummyFacet(BaseFacet):
     name = 'Test'
     slug = 'test'
 
@@ -15,7 +15,7 @@ class TestBaseFacet:
         """It returns an empty list of facets by default."""
         basic = basic_factory()
 
-        facet = TestFacet()
+        facet = DummyFacet()
         result = facet.apply(basic, [])
 
         assert result == []

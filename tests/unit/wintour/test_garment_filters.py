@@ -3,7 +3,7 @@ import pytest
 from chiton.wintour.garment_filters import BaseGarmentFilter
 
 
-class TestFilter(BaseGarmentFilter):
+class DummyFilter(BaseGarmentFilter):
     name = 'Test'
     slug = 'test'
 
@@ -15,7 +15,7 @@ class TestBaseGarmentFilter:
         """It marks a garment as non-excluded by default."""
         garment = garment_factory()
 
-        garment_filter = TestFilter()
+        garment_filter = DummyFilter()
         result = garment_filter.apply(garment)
 
         assert result is False

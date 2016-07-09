@@ -3,7 +3,7 @@ import pytest
 from chiton.wintour.weights import BaseWeight
 
 
-class TestWeight(BaseWeight):
+class DummyWeight(BaseWeight):
     name = 'Test'
     slug = 'test'
 
@@ -12,12 +12,12 @@ class TestBaseWeight:
 
     def test_importance(self):
         """It can receive a per-instance importance."""
-        weight = TestWeight(importance=3)
+        weight = DummyWeight(importance=3)
         assert weight.importance == 3
 
     def test_importance_kwargs(self):
         """It does not pass its importance to a weight subclass's configuration method."""
-        class Weight(TestWeight):
+        class Weight(DummyWeight):
 
             def configure_weight(self, custom=None):
                 self.custom = custom
@@ -31,7 +31,7 @@ class TestBaseWeight:
         garment_one = garment_factory()
         garment_two = garment_factory()
 
-        weight = TestWeight()
+        weight = DummyWeight()
         weight.explain_weight(garment_one, 1.0, 'hit')
         weight.explain_weight(garment_two, 0.0, 'miss')
 
@@ -43,7 +43,7 @@ class TestBaseWeight:
         """It returns a default weight of zero for a given garment."""
         garment = garment_factory()
 
-        weight = TestWeight()
+        weight = DummyWeight()
         applied = weight.apply(garment)
 
         assert applied == 0

@@ -4,7 +4,7 @@ from chiton.closet.models import Garment
 from chiton.wintour.query_filters import BaseQueryFilter
 
 
-class TestFilter(BaseQueryFilter):
+class DummyFilter(BaseQueryFilter):
     name = 'Test'
     slug = 'test'
 
@@ -17,7 +17,7 @@ class TestBaseQueryFilter:
         garment_factory()
         garment_factory()
 
-        query_filter = TestFilter()
+        query_filter = DummyFilter()
         query = Garment.objects.all()
         result = query_filter.apply(query)
 
