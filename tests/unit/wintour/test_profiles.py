@@ -16,12 +16,12 @@ class TestPackageWardrobeProfile:
 
         assert isinstance(pipeline_profile, dict)
 
-    def test_age(self, wardrobe_profile_factory):
-        """It passes the profile's age through."""
-        wardrobe_profile = wardrobe_profile_factory(age=25)
+    def test_birth_year(self, wardrobe_profile_factory):
+        """It passes the profile's birth year through."""
+        wardrobe_profile = wardrobe_profile_factory(birth_year=1990)
         pipeline_profile = package_wardrobe_profile(wardrobe_profile)
 
-        assert pipeline_profile['age'] == 25
+        assert pipeline_profile['birth_year'] == 1990
 
     def test_body_shape(self, wardrobe_profile_factory):
         """It passes the profile's body shape through."""
@@ -89,8 +89,8 @@ class TestPipelineProfile:
         style_factory(slug='classy')
 
         return {
-            'age': 30,
             'avoid_care': ['dry_clean'],
+            'birth_year': 1980,
             'body_shape': 'apple',
             'expectations': [
                 {'formality': 'executive', 'frequency': 'sometimes'}
@@ -103,13 +103,17 @@ class TestPipelineProfile:
         """It accepts data with a valid format."""
         assert PipelineProfile(valid_profile)
 
-    def test_age_range(self, valid_profile):
-        """It requires a positive integer for the age."""
-        valid_profile['age'] = 0
+    def test_birth_year(self, valid_profile):
+        """It requires a recent, non-future year for the birth year."""
+        valid_profile['birth_year'] = 1200
         with pytest.raises(FormatError):
             PipelineProfile(valid_profile)
 
-        valid_profile['age'] = -1
+        valid_profile['birth_year'] = -1
+        with pytest.raises(FormatError):
+            PipelineProfile(valid_profile)
+
+        valid_profile['birth_year'] = 3000
         with pytest.raises(FormatError):
             PipelineProfile(valid_profile)
 

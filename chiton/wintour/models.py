@@ -69,7 +69,7 @@ class WardrobeProfile(models.Model):
     """Data used to generate wardrobe recommendations."""
 
     body_shape = models.CharField(max_length=25, choices=data.BODY_SHAPE_CHOICES, verbose_name=_('body shape'))
-    age = models.PositiveSmallIntegerField(verbose_name=_('age'))
+    birth_year = models.PositiveSmallIntegerField(verbose_name=_('birth year'))
     styles = models.ManyToManyField(Style, verbose_name=_('styles'))
     sizes = models.ManyToManyField(StandardSize, verbose_name=_('sizes'))
     created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)

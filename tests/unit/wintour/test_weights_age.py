@@ -1,3 +1,4 @@
+from datetime import datetime
 import pytest
 
 from chiton.closet.models import Garment
@@ -13,6 +14,9 @@ def garment_40_to_50(brand_factory, garment_factory):
 @pytest.mark.django_db
 class TestAgeWeight:
 
+    def birth_year_for_age(self, age):
+        return datetime.now().year - age
+
     def test_prepare_garments(self, garment_factory):
         """It processes the garments queryset."""
         garment_factory()
@@ -26,7 +30,7 @@ class TestAgeWeight:
 
     def test_outside_range(self, garment_40_to_50, pipeline_profile_factory):
         """It returns a null weight when a garment's brand's age range is well outside the user's age."""
-        profile = pipeline_profile_factory(age=30)
+        profile = pipeline_profile_factory(birth_year=self.birth_year_for_age(30))
         weight = AgeWeight(tail_years=5)
 
         with weight.apply_to_profile(profile) as apply_fn:
@@ -51,7 +55,7 @@ class TestAgeWeight:
 
         results = {}
         for label, age in ages.items():
-            profile = pipeline_profile_factory(age=age)
+            profile = pipeline_profile_factory(birth_year=self.birth_year_for_age(age))
             with weight.apply_to_profile(profile) as apply_fn:
                 results[label] = apply_fn(garment_40_to_50)
 
@@ -71,7 +75,7 @@ class TestAgeWeight:
         weight_long_tail = AgeWeight(tail_years=10)
         weight_short_tail = AgeWeight(tail_years=1)
 
-        profile = pipeline_profile_factory(age=35)
+        profile = pipeline_profile_factory(birth_year=self.birth_year_for_age(35))
 
         with weight_long_tail.apply_to_profile(profile) as apply_fn:
             result_long_tail = apply_fn(garment_40_to_50)
@@ -95,7 +99,7 @@ class TestAgeWeight:
         weight = AgeWeight(tail_years=10)
         weight.debug = True
 
-        profile = pipeline_profile_factory(age=25)
+        profile = pipeline_profile_factory(birth_year=self.birth_year_for_age(25))
 
         with weight.apply_to_profile(profile) as apply_fn:
             apply_fn(garment_young)
@@ -108,7 +112,7 @@ class TestAgeWeight:
 
     def test_debug_flag(self, garment_40_to_50, pipeline_profile_factory):
         """It does not log explanations when debug mode is not enabled."""
-        profile = pipeline_profile_factory(age=45)
+        profile = pipeline_profile_factory(birth_year=self.birth_year_for_age(45))
 
         weight = AgeWeight()
         with weight.apply_to_profile(profile) as apply_fn:

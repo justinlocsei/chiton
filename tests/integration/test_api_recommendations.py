@@ -72,8 +72,8 @@ class TestRecommendations:
         style_factory(slug='bold-powerful')
 
         response = api_client.post(self.ENDPOINT, {
-            'age': 30,
             'avoid_care': ['dry_clean'],
+            'birth_year': 1950,
             'body_shape': 'apple',
             'expectations': [
                 {'formality': 'casual', 'frequency': 'always'}
@@ -108,7 +108,7 @@ class TestRecommendations:
     def test_recommendations_errors_structures(self, api_client):
         """It returns errors when a request contains fields with unexpected structures."""
         response = api_client.post(self.ENDPOINT, {
-            'age': ['10'],
+            'age': ['1985'],
             'avoid_care': [{'value': 'dry_clean'}],
             'body_shape': {'value': 'rectangle'},
             'expectations': 'formal',

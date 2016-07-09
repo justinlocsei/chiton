@@ -1,5 +1,9 @@
+from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 
+
+BIRTH_YEAR_MAX = datetime.now().year
+BIRTH_YEAR_MIN = BIRTH_YEAR_MAX - 100
 
 BODY_SHAPES = {
     'APPLE': 'apple',

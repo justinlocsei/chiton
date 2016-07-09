@@ -85,20 +85,20 @@ class TestPipelineStep:
 
             def provide_profile_data(self, profile):
                 return {
-                    'age': profile['age'],
+                    'birth_year': profile['birth_year'],
                     'multiplier': 2
                 }
 
-            def apply(self, unit, age=None, multiplier=None):
-                return '%d %s' % (age * multiplier, unit)
+            def apply(self, unit, birth_year=None, multiplier=None):
+                return '%d %s' % (birth_year * multiplier, unit)
 
-        profile = pipeline_profile_factory(age=10)
+        profile = pipeline_profile_factory(birth_year=2000)
         step = Step()
 
         with step.apply_to_profile(profile) as apply_fn:
             result = apply_fn('years')
 
-            assert result == '20 years'
+            assert result == '4000 years'
 
     def test_apply_to_profile_memoized(self, pipeline_profile_factory):
         """It memoizes the profile data within the application context."""

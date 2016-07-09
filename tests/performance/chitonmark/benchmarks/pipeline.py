@@ -1,3 +1,4 @@
+from datetime import datetime
 import itertools
 
 from chitonmark.benchmark import BaseBenchmark
@@ -160,8 +161,8 @@ class Benchmark(BaseBenchmark):
 
         # Create a profile from which to generate recommendations
         self._profile = fixtures['pipeline_profile_factory'](
-            age=35,
             avoid_care=[self.imports['CARE_CHOICES'][-1][0]],
+            birth_year=datetime.now().year - 50,
             expectations=profile_expectations,
             sizes=[size.slug for i, size in enumerate(standard_sizes) if i % 3],
             styles=[style.slug for style in styles[-2:]]

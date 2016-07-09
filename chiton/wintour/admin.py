@@ -46,7 +46,7 @@ class PersonAdmin(admin.ModelAdmin):
 class WardrobeProfileAdmin(admin.ModelAdmin):
 
     inlines = [FormalityExpectationInline, UnwantedCareTypeInline]
-    list_display = ('pk', 'created_at', 'age', 'body_shape', 'recommendations')
+    list_display = ('pk', 'created_at', 'birth_year', 'body_shape', 'recommendations')
     list_display_links = ('pk', 'created_at')
     ordering = ('-created_at',)
 
@@ -70,8 +70,8 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
         profile = models.WardrobeProfile.objects.get(pk=pk)
 
         data = {
-            'age': profile.age,
             'avoid_care': [c.care for c in profile.unwanted_care_types.all()],
+            'birth_year': profile.birth_year,
             'body_shape': profile.body_shape,
             'size': [s.slug for s in profile.sizes.all()],
             'style': [s.slug for s in profile.styles.all()]
@@ -208,8 +208,8 @@ class WardrobeProfileAdmin(admin.ModelAdmin):
                 })
 
         return PipelineProfile({
-            'age': int(get_data['age']),
             'avoid_care': get_data.getlist('avoid_care'),
+            'birth_year': int(get_data['birth_year']),
             'body_shape': get_data['body_shape'],
             'expectations': expectations,
             'sizes': get_data.getlist('size'),

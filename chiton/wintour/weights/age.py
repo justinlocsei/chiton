@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from chiton.wintour.weights import BaseWeight
 
 
@@ -28,7 +30,7 @@ class AgeWeight(BaseWeight):
 
     def provide_profile_data(self, profile):
         return {
-            'age': profile['age']
+            'age': datetime.now().year - profile['birth_year']
         }
 
     def apply(self, garment, age=None):
