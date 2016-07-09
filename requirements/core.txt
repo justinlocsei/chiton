@@ -15,4 +15,4 @@ redis==2.10.5
 requests==2.10.0
 Unidecode==0.04.19
 voluptuous==0.8.11
-xmltodict==0.10.1
+xmltodict==0.10.2
