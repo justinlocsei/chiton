@@ -1,5 +1,5 @@
 bottlenose==0.6.4
-django==1.9.2
+django==1.9.7
 django-admin-sortable2==0.6.2
 django-autoslug==1.9.3
 django-filter==0.13.0
