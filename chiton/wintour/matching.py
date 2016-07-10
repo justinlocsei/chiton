@@ -8,9 +8,9 @@ def make_recommendations(pipeline_profile, pipeline, debug=False):
 
     Args:
         pipeline_profile (chiton.wintour.profiles.PipelineProfile): A profile for which to make recommendations
+        pipeline (chiton.wintour.pipelines.BasePipeline): An instance of a pipeline class
 
     Keyword Args:
-        pipeline (chiton.wintour.pipelines.BasePipeline): An instance of a pipeline class
         debug (bool): Whether to generate debug statistics
 
     Returns:
