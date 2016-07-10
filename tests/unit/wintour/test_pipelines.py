@@ -420,7 +420,7 @@ class TestBasePipeline:
 
     def test_make_recommendations_facets(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It creates facets for the final recommendations."""
-        class NameFacet(DummyWeight):
+        class NameFacet(DummyFacet):
             name = 'Name'
             slug = 'name'
 
