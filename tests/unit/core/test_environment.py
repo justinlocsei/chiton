@@ -206,6 +206,48 @@ class TestUseConfig:
         config = use_config()
         assert config['log_level'] == 'INFO'
 
+    def test_media_root(self):
+        """It expects a non-empty string for the media root."""
+        config = use_config({'media_root': '/tmp'})
+        assert config['media_root'] == '/tmp'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'media_root': ''})
+
+    def test_media_root_absolute(self):
+        """It expects an absolute path for the media root."""
+        config = use_config({'media_root': '/tmp/dir'})
+        assert config['media_root'] == '/tmp/dir'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'media_root': 'tmp/dir'})
+
+    def test_media_url(self):
+        """It expects a non-empty string for the media URL."""
+        config = use_config({'media_url': '/assets/'})
+        assert config['media_url'] == '/assets/'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'media_url': ''})
+
+    def test_media_url_trailing_slash(self):
+        """It expects the media URL to use a trailing slash."""
+        config = use_config({'media_url': '/assets/'})
+        assert config['media_url'] == '/assets/'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'media_url': '/assets'})
+
+    def test_media_url_root_path(self):
+        """It allows a media URL to be the root path."""
+        config = use_config({'media_url': '/'})
+        assert config['media_url'] == '/'
+
+    def test_media_url_absolute_url(self):
+        """It allows a media URL to be an absolute URL."""
+        config = use_config({'media_url': 'http://example.com/'})
+        assert config['media_url'] == 'http://example.com/'
+
     def test_redis_db(self):
         """It expects a Redis database number."""
         config = use_config({'redis_db': 1})
