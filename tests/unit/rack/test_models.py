@@ -1,6 +1,6 @@
 import pytest
 
-from chiton.rack.models import AffiliateNetwork, ProductImage
+from chiton.rack.models import AffiliateNetwork, ItemImage
 
 
 @pytest.mark.django_db
@@ -30,9 +30,9 @@ class TestAffiliateNetwork:
 
 
 @pytest.mark.django_db
-class TestProductImage:
+class TestItemImage:
 
     def test_str_dimensions(self):
         """It uses its dimensions for display."""
-        image = ProductImage.objects.create(height=20, width=10, url='http://example.com')
+        image = ItemImage.objects.create(height=20, width=10, url='http://example.com')
         assert str(image) == '10x20'

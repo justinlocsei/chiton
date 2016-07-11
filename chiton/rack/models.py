@@ -42,8 +42,6 @@ class AffiliateItem(models.Model):
     garment = models.ForeignKey(Garment, on_delete=models.CASCADE, verbose_name=_('garment'), related_name='affiliate_items')
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
     price = PriceField(verbose_name=_('price'), null=True, blank=True, db_index=True)
-    image = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('image'), null=True, blank=True, related_name='image_for')
-    thumbnail = models.OneToOneField('ProductImage', on_delete=models.SET_NULL, verbose_name=_('thumbnail'), null=True, blank=True, related_name='thumbnail_for')
     has_detailed_stock = models.BooleanField(verbose_name=('has detailed stock'), default=False)
 
     class Meta:
@@ -67,16 +65,17 @@ class StockRecord(models.Model):
         verbose_name_plural = _('stock records')
 
 
-class ProductImage(models.Model):
-    """A product image for an item."""
+class ItemImage(models.Model):
+    """An image for an item."""
 
+    item = models.ForeignKey(AffiliateItem, on_delete=models.CASCADE, verbose_name=_('affiliate item'), related_name='images')
+    file = models.ImageField(upload_to='products', verbose_name=_('file'), height_field='height', width_field='width', null=True, blank=True)
     height = models.PositiveIntegerField(verbose_name=_('height'))
     width = models.PositiveIntegerField(verbose_name=_('width'))
-    file = models.ImageField(upload_to='products', verbose_name=_('file'), height_field='height', width_field='width', null=True, blank=True)
 
     class Meta:
-        verbose_name = _('product image')
-        verbose_name_plural = _('product images')
+        verbose_name = _('item image')
+        verbose_name_plural = _('item images')
 
     def __str__(self):
         return '%dx%d' % (self.width, self.height)
