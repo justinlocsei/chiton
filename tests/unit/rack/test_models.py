@@ -32,7 +32,7 @@ class TestAffiliateNetwork:
 @pytest.mark.django_db
 class TestProductImage:
 
-    def test_str_url(self):
-        """It uses its URL for display."""
-        image = ProductImage.objects.create(height=10, width=10, url='http://example.com')
-        assert str(image) == 'http://example.com'
+    def test_str_dimensions(self):
+        """It uses its dimensions for display."""
+        image = ProductImage.objects.create(height=20, width=10, url='http://example.com')
+        assert str(image) == '10x20'

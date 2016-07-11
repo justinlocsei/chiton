@@ -79,4 +79,4 @@ class ProductImage(models.Model):
         verbose_name_plural = _('product images')
 
     def __str__(self):
-        return self.url
+        return '%dx%d' % (self.width, self.height)
