@@ -149,6 +149,9 @@ if config['track_errors']:
 # Assets
 # ==============================================================================
 
+MEDIA_ROOT = config['media_root']
+MEDIA_URL = config['media_url']
+
 STATIC_ROOT = config['static_root']
 STATIC_URL = config['static_url']
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
