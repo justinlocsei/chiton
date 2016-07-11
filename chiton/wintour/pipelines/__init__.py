@@ -287,7 +287,7 @@ class BasePipeline:
 
             # Add serialized image information to each purchase option
             for image_field in AFFILIATE_ITEM_IMAGE_FIELDS:
-                purchase_option[image_field] = affiliate_item.get('%s__url' % image_field, None)
+                purchase_option[image_field] = affiliate_item.get('%s__file' % image_field, None)
 
             # Add each garment recommendation to its basic
             by_basic.setdefault(basic_slug, {})
@@ -407,8 +407,8 @@ def _get_deep_affiliate_items():
             'garment__basic__slug', 'garment__brand__name',
             'id', 'price', 'url',
             'network__name',
-            'image__height', 'image__width', 'image__url',
-            'thumbnail__height', 'thumbnail__width', 'thumbnail__url'
+            'image__height', 'image__width', 'image__file',
+            'thumbnail__height', 'thumbnail__width', 'thumbnail__file'
         )
     )
 
