@@ -6,7 +6,7 @@ import pytest
 from chiton.closet.models import Color
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
 from chiton.rack.affiliates.base import Affiliate
-from chiton.rack.models import ProductImage
+from chiton.rack.models import ItemImage
 
 
 CREATE_AFFILIATE = 'chiton.rack.affiliates.data.create_affiliate'
@@ -230,7 +230,7 @@ class TestUpdateAffiliateItemDetails:
             update_affiliate_item_details(affiliate_item)
 
             assert not affiliate_item.thumbnail
-            assert not ProductImage.objects.filter(pk=thumbnail_pk).count()
+            assert not ItemImage.objects.filter(pk=thumbnail_pk).count()
 
     def test_network_data_stock_records(self, affiliate_item, standard_size_factory):
         """It creates stock records for all sizes that match a standard size's number."""

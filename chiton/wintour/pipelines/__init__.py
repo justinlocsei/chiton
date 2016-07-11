@@ -3,13 +3,9 @@ from operator import itemgetter
 
 from chiton.closet.models import Basic, Garment
 from chiton.core.queries import cache_query
-from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage
+from chiton.rack.models import AffiliateItem, AffiliateNetwork, ItemImage
 from chiton.utils.numbers import price_to_integer
 from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, PurchaseOption, Recommendations
-
-
-# Field names for serializing affiliate items
-AFFILIATE_ITEM_IMAGE_FIELDS = ('image', 'thumbnail')
 
 
 class BasePipeline:
@@ -285,10 +281,6 @@ class BasePipeline:
                 'url': affiliate_item['url']
             })
 
-            # Add serialized image information to each purchase option
-            for image_field in AFFILIATE_ITEM_IMAGE_FIELDS:
-                purchase_option[image_field] = affiliate_item.get('%s__file' % image_field, None)
-
             # Add each garment recommendation to its basic
             by_basic.setdefault(basic_slug, {})
             try:
@@ -391,7 +383,7 @@ class BasePipeline:
         return basic_recommendations
 
 
-@cache_query(AffiliateItem, AffiliateNetwork, Garment, ProductImage)
+@cache_query(AffiliateItem, AffiliateNetwork, Garment, ItemImage)
 def _get_deep_affiliate_items():
     """Get all affiliate items, with extended relations selected.
 
@@ -400,15 +392,13 @@ def _get_deep_affiliate_items():
     """
     return (
         AffiliateItem.objects.all()
-        .select_related('garment', 'garment__basic', 'garment__brand', 'image', 'network', 'thumbnail')
+        .select_related('garment', 'garment__basic', 'garment__brand', 'network')
         .order_by('-price')
         .values(
             'garment_id', 'garment__name', 'garment__slug',
             'garment__basic__slug', 'garment__brand__name',
             'id', 'price', 'url',
-            'network__name',
-            'image__height', 'image__width', 'image__file',
-            'thumbnail__height', 'thumbnail__width', 'thumbnail__file'
+            'network__name'
         )
     )
 

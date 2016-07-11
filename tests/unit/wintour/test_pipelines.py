@@ -222,14 +222,14 @@ class TestBasePipeline:
         assert len(garment_single_items) == 1
         assert garment_single_items[0]['id'] == item_one_one.id
 
-    def test_make_recommendations_affiliate_items_serialized(self, basic_factory, affiliate_item_factory, affiliate_network_factory, garment_factory, pipeline_factory, pipeline_profile_factory, product_image_factory):
+    def test_make_recommendations_affiliate_items_serialized(self, basic_factory, affiliate_item_factory, affiliate_network_factory, garment_factory, pipeline_factory, pipeline_profile_factory, item_image_factory):
         """It serializes each affiliate item, with optional image data."""
         basic = basic_factory()
         garment = garment_factory(basic=basic)
         network = affiliate_network_factory(name='Network')
 
-        image = product_image_factory(height=100, width=100, url='http://example.com/image')
-        thumbnail = product_image_factory(height=50, width=50, url='http://example.com/thumbnail')
+        image = item_image_factory(height=100, width=100)
+        thumbnail = item_image_factory(height=50, width=50)
 
         affiliate_item_factory(network=network, garment=garment, url='http://example.com/with', image=image, thumbnail=thumbnail, price=Decimal(100))
         affiliate_item_factory(network=network, garment=garment, url='http://example.com/without', price=Decimal(15.25))

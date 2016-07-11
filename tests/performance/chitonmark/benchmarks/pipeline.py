@@ -15,9 +15,8 @@ class Benchmark(BaseBenchmark):
         'color_factory',
         'formality_factory',
         'garment_factory',
+        'item_image_factory',
         'pipeline_profile_factory',
-        'product_image_factory',
-        'propriety_factory',
         'standard_size_factory',
         'stock_record_factory',
         'style_factory'
@@ -136,9 +135,7 @@ class Benchmark(BaseBenchmark):
                 affiliate_item = fixtures['affiliate_item_factory'](
                     network=network,
                     garment=garment,
-                    price=price,
-                    image=fixtures['product_image_factory'](),
-                    thumbnail=fixtures['product_image_factory']()
+                    price=price
                 )
 
                 for standard_size in standard_sizes:

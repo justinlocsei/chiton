@@ -3,7 +3,7 @@ from factory.django import DjangoModelFactory, ImageField
 from faker import Faker
 
 from .closet import GarmentFactory, StandardSizeFactory
-from chiton.rack.models import AffiliateItem, AffiliateNetwork, ProductImage, StockRecord
+from chiton.rack.models import AffiliateItem, AffiliateNetwork, ItemImage, StockRecord
 
 fake = Faker()
 
@@ -29,14 +29,15 @@ class AffiliateItemFactory(DjangoModelFactory):
         model = AffiliateItem
 
 
-class ProductImageFactory(DjangoModelFactory):
+class ItemImageFactory(DjangoModelFactory):
 
+    item = factory.SubFactory(AffiliateItemFactory)
     file = ImageField(width=100, height=100)
     height = 100
     width = 100
 
     class Meta:
-        model = ProductImage
+        model = ItemImage
 
 
 class StockRecordFactory(DjangoModelFactory):

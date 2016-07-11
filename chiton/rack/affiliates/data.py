@@ -1,6 +1,6 @@
 from chiton.closet.models import StandardSize
 from chiton.rack.affiliates import create_affiliate
-from chiton.rack.models import ProductImage, StockRecord
+from chiton.rack.models import ItemImage, StockRecord
 
 
 def update_affiliate_item_metadata(item):
@@ -84,7 +84,7 @@ def _update_item_image(item, image_field, data):
         setattr(item, image_field, None)
         image.delete()
     elif data:
-        image = ProductImage.objects.create(
+        image = ItemImage.objects.create(
             height=data['height'],
             width=data['width'],
             url=data['url']
