@@ -73,23 +73,18 @@ class TestBaseAffiliate:
                 color = colors[0] if colors else None
                 return {
                     'availability': True,
-                    'image': {
+                    'images': [{
                         'height': 100,
-                        'url': 'http://%s%s.com' % (guid, color),
+                        'url': 'http://%s-%s.com' % (guid, color),
                         'width': 100
-                    },
+                    }],
                     'name': 'Item Name',
-                    'price': Decimal('12.99'),
-                    'thumbnail': {
-                        'height': 50,
-                        'url': 'http://%s%s.net' % (guid, color),
-                        'width': 50
-                    }
+                    'price': Decimal('12.99')
                 }
 
         affiliate = Child()
-        without_color = affiliate.request_details('guid')
-        with_color = affiliate.request_details('guid', colors=['Black'])
+        without_color = affiliate.request_details('nocolor')
+        with_color = affiliate.request_details('color', colors=['Black'])
 
         assert without_color['price'] == Decimal('12.99')
         assert with_color['price'] == Decimal('12.99')
@@ -98,16 +93,13 @@ class TestBaseAffiliate:
         assert without_color['availability']
         assert with_color['availability']
 
-        assert without_color['image']['height'] == 100
-        assert without_color['image']['width'] == 100
-        assert without_color['thumbnail']['height'] == 50
-        assert without_color['thumbnail']['width'] == 50
+        assert without_color['images'][0]['height'] == 100
+        assert without_color['images'][0]['width'] == 100
+        assert with_color['images'][0]['height'] == 100
+        assert with_color['images'][0]['width'] == 100
 
-        assert without_color['image']['url'] == 'http://guidNone.com'
-        assert without_color['thumbnail']['url'] == 'http://guidNone.net'
-
-        assert with_color['image']['url'] == 'http://guidBlack.com'
-        assert with_color['thumbnail']['url'] == 'http://guidBlack.net'
+        assert without_color['images'][0]['url'] == 'http://nocolor-None.com'
+        assert with_color['images'][0]['url'] == 'http://color-Black.com'
 
     def test_request_details_error(self):
         """It raises an error when the details have an invalid format."""
