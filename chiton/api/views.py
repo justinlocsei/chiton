@@ -17,6 +17,8 @@ class Recommendations(APIView):
 
     def post(self, request, format=None):
         """Generate recommendations for a user."""
+        max_garments_per_group = request.data.pop('max_garments_per_group', None)
+
         try:
             profile = PipelineProfile(request.data, validate=True)
         except DataShapeError as e:
@@ -26,5 +28,5 @@ class Recommendations(APIView):
 
         Recommendation.objects.create(profile=profile)
 
-        recommendations = make_recommendations(profile, CorePipeline())
+        recommendations = make_recommendations(profile, CorePipeline(), max_garments_per_group=max_garments_per_group)
         return Response(recommendations)

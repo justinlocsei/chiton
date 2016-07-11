@@ -109,6 +109,26 @@ class TestRecommendations:
         assert response.status_code == status.HTTP_200_OK
         assert response.data == {'recommendation': 'data'}
 
+    def test_recommendations_limit(self, make_request):
+        """It returns a subset of recommendations when limiting the maximum number of garments per facet group."""
+        with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:
+            PipelineProfile.return_value = {'pipeline': 'data'}
+
+            with mock.patch(MAKE_RECOMMENDATIONS_PATH) as make_recommendations:
+                make_recommendations.return_value = {'recommendation': 'data'}
+                response = make_request({
+                    'max_garments_per_group': 2,
+                    'request': 'body'
+                })
+
+                PipelineProfile.assert_called_with({'request': 'body'}, validate=True)
+                assert make_recommendations.call_args[0][0] == {'pipeline': 'data'}
+                assert isinstance(make_recommendations.call_args[0][1], CorePipeline)
+                assert make_recommendations.call_args[1]['max_garments_per_group'] == 2
+
+
+        assert response.status_code == status.HTTP_200_OK
+
     def test_recommendations_errors(self, make_request):
         """It returns field errors if the request is invalid."""
         with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:

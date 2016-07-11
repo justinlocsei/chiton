@@ -85,6 +85,27 @@ class TestRecommendations:
         assert response.status_code == status.HTTP_200_OK
         assert 'basics' in response.data
 
+    def test_recommendations_limit(self, api_client, formality_factory, standard_size_factory, style_factory):
+        """It allows the number of garments per facet group to be limited."""
+        formality_factory(slug='casual')
+        standard_size_factory(slug='m')
+        style_factory(slug='bold-powerful')
+
+        response = api_client.post(self.ENDPOINT, {
+            'avoid_care': ['dry_clean'],
+            'birth_year': 1950,
+            'body_shape': 'apple',
+            'expectations': [
+                {'formality': 'casual', 'frequency': 'always'}
+            ],
+            'max_garments_per_group': 2,
+            'sizes': ['m'],
+            'styles': ['bold-powerful']
+        }, format='json')
+
+        assert response.status_code == status.HTTP_200_OK
+        assert 'basics' in response.data
+
     def test_recommendations_errors(self, api_client):
         """It returns errors when given an invalid request."""
         response = api_client.post(self.ENDPOINT, {
