@@ -16,7 +16,7 @@ class TestMakeRecommendations:
         profile = pipeline_profile_factory()
         recommendations = make_recommendations(profile, pipeline)
 
-        pipeline.make_recommendations.assert_called_with(profile, debug=False)
+        pipeline.make_recommendations.assert_called_with(profile, debug=False, max_garments_per_group=None)
 
         assert recommendations == {}
 
@@ -27,10 +27,23 @@ class TestMakeRecommendations:
         pipeline.make_recommendations.return_value = {}
 
         profile = pipeline_profile_factory()
-        recommendations = make_recommendations(profile, pipeline, debug=True)
+        recommendations = make_recommendations(profile, pipeline, debug=True, max_garments_per_group=None)
 
-        pipeline.make_recommendations.assert_called_with(profile, debug=True)
+        pipeline.make_recommendations.assert_called_with(profile, debug=True, max_garments_per_group=None)
 
         assert 'debug' in recommendations
         assert isinstance(recommendations['debug']['queries'], list)
         assert recommendations['debug']['time'] > 0
+
+    def test_max_garments_per_group(self, pipeline_profile_factory):
+        """It passes an optional garment cap to the pipeline."""
+        pipeline = mock.Mock()
+        pipeline.make_recommendations = mock.MagicMock()
+        pipeline.make_recommendations.return_value = {}
+
+        profile = pipeline_profile_factory()
+        recommendations = make_recommendations(profile, pipeline, max_garments_per_group=5)
+
+        pipeline.make_recommendations.assert_called_with(profile, debug=False, max_garments_per_group=5)
+
+        assert recommendations == {}
