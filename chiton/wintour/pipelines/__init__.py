@@ -70,7 +70,7 @@ class BasePipeline:
         """
         return []
 
-    def make_recommendations(self, profile, debug=False):
+    def make_recommendations(self, profile, debug=False, max_garments_per_group=None):
         """Make recommendations for a wardrobe profile.
 
         Args:
@@ -78,6 +78,7 @@ class BasePipeline:
 
         Keyword Args:
             debug (bool): Whether to generate debug statistics
+            max_garments_per_group (int): The maximum number of garments to return per facet group
 
         Returns:
             dict[chiton.runway.models.Basic, chiton.wintour.pipeline.BasicRecommendations]: The per-basic garment recommendations
@@ -103,10 +104,11 @@ class BasePipeline:
         weighted_garments = self._coalesce_garment_weights(weightings)
         garments_by_basic = self._convert_weighted_garments_to_recommendations(weighted_garments)
         basic_recommendations = self._package_garment_recommendations_as_basic_recommendations(garments_by_basic, facets)
+        pruned_recommendations = self._prune_basic_recommendations(basic_recommendations, max_garments_per_group)
         self._current_profile = None
 
         return Recommendations({
-            'basics': basic_recommendations
+            'basics': pruned_recommendations
         })
 
     def _get_all_steps(self):
@@ -354,6 +356,39 @@ class BasePipeline:
                     }))
 
         return recommendations
+
+    def _prune_basic_recommendations(self, basic_recommendations, max_garments_per_group):
+        """Remove garments that exceed the maximum number per facet group.
+
+        This ensure that each facet group has at most the given number of
+        garments, then removes all garment entries that are not in those groups.
+
+        Args:
+            basic_recommendations (list[chiton.wintour.pipeline.BasicRecommendations]): Basic recommendations
+            max_garments_per_group (int): The maximum number of garments per facet group
+
+        Returns:
+            list[chiton.wintour.pipeline.BasicRecommendations]: The pruned basic recommendations
+        """
+        if max_garments_per_group is None:
+            return basic_recommendations
+
+        for basic_recommendation in basic_recommendations:
+            include_ids = []
+
+            for facet in basic_recommendation['facets']:
+                for i, group in enumerate(facet['groups']):
+                    subset_ids = group['garment_ids'][0:max_garments_per_group]
+                    facet['groups'][i]['garment_ids'] = subset_ids
+                    include_ids += subset_ids
+
+            include_ids = set(include_ids)
+            basic_recommendation['garments'] = [
+                garment for garment in basic_recommendation['garments']
+                if garment['garment']['id'] in include_ids
+            ]
+
+        return basic_recommendations
 
 
 @cache_query(AffiliateItem, AffiliateNetwork, Garment, ProductImage)
