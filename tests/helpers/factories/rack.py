@@ -1,5 +1,5 @@
 import factory
-from factory.django import DjangoModelFactory
+from factory.django import DjangoModelFactory, ImageField
 from faker import Faker
 
 from .closet import GarmentFactory, StandardSizeFactory
@@ -31,7 +31,7 @@ class AffiliateItemFactory(DjangoModelFactory):
 
 class ProductImageFactory(DjangoModelFactory):
 
-    url = factory.LazyAttribute(lambda m: fake.url())
+    file = ImageField(width=100, height=100)
     height = 100
     width = 100
 
