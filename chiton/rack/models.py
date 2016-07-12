@@ -69,7 +69,7 @@ class ItemImage(models.Model):
     """An image for an item."""
 
     item = models.ForeignKey(AffiliateItem, on_delete=models.CASCADE, verbose_name=_('affiliate item'), related_name='images')
-    file = models.ImageField(upload_to='products', verbose_name=_('file'), height_field='height', width_field='width', null=True, blank=True)
+    file = models.ImageField(upload_to='products', verbose_name=_('file'), height_field='height', width_field='width')
     height = models.PositiveIntegerField(verbose_name=_('height'))
     width = models.PositiveIntegerField(verbose_name=_('width'))
     source_url = models.URLField(verbose_name=_('source URL'))
