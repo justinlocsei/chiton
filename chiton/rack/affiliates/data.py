@@ -1,3 +1,8 @@
+import os
+
+from django.core.files.base import ContentFile
+import requests
+
 from chiton.closet.models import StandardSize
 from chiton.rack.affiliates import create_affiliate
 from chiton.rack.models import ItemImage, StockRecord
@@ -57,39 +62,52 @@ def update_affiliate_item_details(item):
 
     item.name = details['name']
     item.price = details['price']
-    _update_item_image(item, 'image', details['image'])
-    _update_item_image(item, 'thumbnail', details['thumbnail'])
+    _update_item_images(item, details['images'])
     _update_stock_records(item, details['availability'])
 
     item.save()
     return item
 
 
-def _update_item_image(item, image_field, data):
+def _update_item_images(item, images):
     """Update the image associated with an affiliate item.
 
     Args:
         item (chiton.rack.models.AffiliateItem): An affiliate item
-        image_field (str): The name of the image field on the item
-        data (dict): The API response describing the image
+        images (list[dict]): The API response describing the item images
     """
-    image = getattr(item, image_field)
+    existing_images = item.images.all()
 
-    if image and data:
-        image.height = data['height']
-        image.width = data['width']
-        image.url = data['url']
-        image.save()
-    elif image:
-        setattr(item, image_field, None)
+    for image in images:
+        existing_matches = [ei for ei in existing_images if ei.source_url == image['url']]
+        if not existing_matches:
+            item_image = ItemImage(item=item, source_url=image['url'])
+
+            image_path = os.path.join(str(item.pk), image['url'].split('/')[-1])
+            item_image.file.save(image_path, _download_image(image['url']))
+
+            item_image.save()
+
+    current_urls = [image['url'] for image in images]
+    prune_images = [image for image in existing_images if image.source_url not in current_urls]
+    for image in prune_images:
         image.delete()
-    elif data:
-        image = ItemImage.objects.create(
-            height=data['height'],
-            width=data['width'],
-            url=data['url']
-        )
-        setattr(item, image_field, image)
+
+
+def _download_image(url):
+    """Download an item image.
+
+    This saves to the image to the media directory, then returns a file
+    reference to it that can be associated with an ItemImage model.
+
+    Args:
+        url (str): The URL of the image
+
+    Returns:
+        django.core.files.ContentFile: The image's contents
+    """
+    request = requests.get(url)
+    return ContentFile(request.content)
 
 
 def _update_stock_records(item, availability):

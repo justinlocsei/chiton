@@ -1,5 +1,7 @@
 from decimal import Decimal
+import os
 
+from django.conf import settings
 import mock
 import pytest
 
@@ -16,6 +18,7 @@ class FullAffiliate(Affiliate):
     """An affiliate that returns full API information."""
 
     availability = []
+    images = []
 
     def provide_overview(self, url):
         return {
@@ -24,25 +27,13 @@ class FullAffiliate(Affiliate):
         }
 
     def provide_details(self, guid, colors=[]):
-        if hasattr(self, 'custom_thumbnail'):
-            thumbnail = self.custom_thumbnail
-        else:
-            thumbnail = {
-                'height': 50,
-                'url': 'http://example.net/%s' % guid,
-                'width': 50
-            }
+        self.called_with_colors = colors
 
         return {
             'availability': self.availability,
-            'image': {
-                'height': 100,
-                'url': 'http://example.com/%s' % '/'.join(colors),
-                'width': 100
-            },
-            'name': 'Details',
-            'price': Decimal('9.99'),
-            'thumbnail': thumbnail
+            'images': self.images,
+            'name': 'Details-%s' % guid,
+            'price': Decimal('9.99')
         }
 
 
@@ -52,18 +43,9 @@ class OutOfStockAffiliate(Affiliate):
     def provide_details(self, guid, colors=[]):
         return {
             'availability': False,
-            'image': {
-                'height': 100,
-                'url': 'http://example.com/image',
-                'width': 100
-            },
+            'images': [],
             'name': 'Item',
-            'price': Decimal('9.99'),
-            'thumbnail': {
-                'height': 50,
-                'url': 'http://example.com/thumbnail',
-                'width': 50
-            }
+            'price': Decimal('9.99')
         }
 
 
@@ -135,27 +117,23 @@ class TestUpdateAffiliateItemDetails:
     def test_network_data(self, affiliate_item):
         """It adds detailed data to an affiliate item from the affiliate network's API."""
         assert affiliate_item.price is None
-        assert affiliate_item.image is None
-        assert affiliate_item.thumbnail is None
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
             update_affiliate_item_details(affiliate_item)
 
         assert affiliate_item.price == Decimal('9.99')
-        assert affiliate_item.image.height == 100
-        assert affiliate_item.thumbnail.height == 50
 
-    def test_network_data_name(self, affiliate_item):
+    def test_network_data_name(self, affiliate_item_factory):
         """It updates the item's name if it differs from the stored name."""
-        affiliate_item.name = 'Previous'
-        affiliate_item.save()
+        affiliate_item = affiliate_item_factory(guid='1234', name='Previous')
+        assert affiliate_item.name == 'Previous'
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             create_affiliate.return_value = FullAffiliate()
             update_affiliate_item_details(affiliate_item)
 
-        assert affiliate_item.name == 'Details'
+        assert affiliate_item.name == 'Details-1234'
 
     def test_network_data_guid(self, affiliate_item_factory):
         """It uses the item's GUID to perform the API lookup."""
@@ -165,72 +143,123 @@ class TestUpdateAffiliateItemDetails:
             create_affiliate.return_value = FullAffiliate()
             update_affiliate_item_details(affiliate_item)
 
-        assert affiliate_item.thumbnail.url == 'http://example.net/4321'
+        assert affiliate_item.name == 'Details-4321'
 
     def test_network_data_colors(self, affiliate_item):
         """It fetches details using the basic's primary and secondary colors, ordered by name."""
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = FullAffiliate()
+            affiliate = FullAffiliate()
+            create_affiliate.return_value = affiliate
             update_affiliate_item_details(affiliate_item)
 
-        assert affiliate_item.image.url == 'http://example.com/White/Blue/Gray'
+        assert affiliate.called_with_colors == ['White', 'Blue', 'Gray']
 
     def test_network_data_colors_empty(self, affiliate_item_factory):
         """It fetches details when no colors are associated with the basic."""
         affiliate_item = affiliate_item_factory()
 
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = FullAffiliate()
-            update_affiliate_item_details(affiliate_item)
-
-        assert affiliate_item.image.url == 'http://example.com/'
-
-    def test_network_data_images_idempotent(self, affiliate_item):
-        """It creates or updates images for the colors."""
-        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = FullAffiliate()
-
-            update_affiliate_item_details(affiliate_item)
-            first_image_pk = affiliate_item.image.pk
-            first_thumbnail_pk = affiliate_item.thumbnail.pk
-
-            affiliate_item.image.height = 200
-            affiliate_item.image.save()
-
-            affiliate_item.thumbnail.height = 100
-            affiliate_item.thumbnail.save()
-
-            update_affiliate_item_details(affiliate_item)
-            second_image_pk = affiliate_item.image.pk
-            second_thumbnail_pk = affiliate_item.thumbnail.pk
-
-        assert first_image_pk is not None
-        assert first_thumbnail_pk is not None
-
-        assert first_image_pk == second_image_pk
-        assert first_thumbnail_pk == second_thumbnail_pk
-
-        assert affiliate_item.image.height == 100
-        assert affiliate_item.thumbnail.height == 50
-
-    def test_network_data_images_clearing(self, affiliate_item):
-        """It removes existing images if a subsequent details request defines no image."""
-        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
-            create_affiliate.return_value = FullAffiliate()
-            update_affiliate_item_details(affiliate_item)
-
-            assert affiliate_item.thumbnail
-            thumbnail_pk = affiliate_item.thumbnail.pk
-
-        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             affiliate = FullAffiliate()
-            affiliate.custom_thumbnail = None
-
             create_affiliate.return_value = affiliate
             update_affiliate_item_details(affiliate_item)
 
-            assert not affiliate_item.thumbnail
-            assert not ItemImage.objects.filter(pk=thumbnail_pk).count()
+        assert affiliate.called_with_colors == []
+
+    def test_network_data_images(self, affiliate_item, record_request):
+        """It downloads item images and uses their actual dimensions."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.images = [{
+                'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
+                'height': 100,
+                'width': 100
+            }]
+
+            create_affiliate.return_value = affiliate
+            with record_request():
+                update_affiliate_item_details(affiliate_item)
+
+        images = affiliate_item.images.all()
+        assert len(images) == 1
+        image = images[0]
+
+        assert settings.MEDIA_ROOT in image.file.path
+        assert os.path.basename(image.file.path) == 'image-32x32.jpg'
+
+        assert image.height == 32
+        assert image.width == 32
+
+    def test_network_data_images_idempotent_source_url(self, affiliate_item, record_request):
+        """It creates or updates images for the colors, using the source URL as a key."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            with record_request():
+                affiliate = FullAffiliate()
+                affiliate.images = [{
+                    'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
+                    'height': 100,
+                    'width': 100
+                }]
+
+                create_affiliate.return_value = affiliate
+                update_affiliate_item_details(affiliate_item)
+
+                assert affiliate_item.images.count() == 1
+                original_image = affiliate_item.images.all()[0]
+
+                affiliate.images[0]['height'] = 200
+                affiliate.images[0]['width'] = 200
+                update_affiliate_item_details(affiliate_item)
+
+                assert affiliate_item.images.count() == 1
+                original_second_image = affiliate_item.images.all()[0]
+
+                affiliate.images.append({
+                    'url': 'https://s3.amazonaws.com/chiton-test-assets/image-64x64.jpg',
+                    'height': 100,
+                    'width': 100
+                })
+                update_affiliate_item_details(affiliate_item)
+
+                assert affiliate_item.images.count() == 2
+                new_image = affiliate_item.images.all().order_by('pk')[1]
+
+        assert original_image.height == 32
+        assert original_image.width == 32
+
+        assert original_image.pk == original_second_image.pk
+        assert original_image.source_url == original_second_image.source_url
+        assert original_second_image.height == 32
+        assert original_second_image.width == 32
+
+        assert new_image.height == 64
+        assert new_image.width == 64
+        assert new_image.pk != original_image.pk
+
+    def test_network_data_images_clearing(self, affiliate_item, record_request):
+        """It removes an existing image if a subsequent details request lacks that image."""
+        with record_request():
+            with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+                affiliate = FullAffiliate()
+                affiliate.images = [{
+                    'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
+                    'height': 100,
+                    'width': 100
+                }]
+
+                create_affiliate.return_value = affiliate
+                update_affiliate_item_details(affiliate_item)
+
+                assert affiliate_item.images.count() == 1
+
+            with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+                affiliate = FullAffiliate()
+                affiliate.images = []
+
+                create_affiliate.return_value = affiliate
+                update_affiliate_item_details(affiliate_item)
+
+                assert not affiliate_item.images.count()
+                assert not ItemImage.objects.filter(item=affiliate_item).count()
 
     def test_network_data_stock_records(self, affiliate_item, standard_size_factory):
         """It creates stock records for all sizes that match a standard size's number."""
