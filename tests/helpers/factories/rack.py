@@ -41,7 +41,7 @@ class ItemImageFactory(DjangoModelFactory):
 
 
 def item_image_factory(affiliate_item_factory):
-    def create_item_image(item=None, file=None, height=100, width=100):
+    def create_item_image(item=None, file=None, height=100, width=100, file_name=None):
         factory_kwargs = {
             'height': height,
             'width': width,
@@ -53,6 +53,8 @@ def item_image_factory(affiliate_item_factory):
         if file is None:
             factory_kwargs['file__height'] = height
             factory_kwargs['file__width'] = width
+            if file_name:
+                factory_kwargs['file__filename'] = file_name
         else:
             factory_kwargs['file'] = file
 
