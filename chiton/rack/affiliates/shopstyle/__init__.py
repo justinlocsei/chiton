@@ -19,6 +19,9 @@ SIZE_TALL = 'Tall'
 SIZE_PETITE = 'Petite'
 SIZE_PLUS = 'Plus'
 
+# Desired image sizes
+IMAGE_SIZES = ('Medium', 'XLarge')
+
 
 class Affiliate(BaseAffiliate):
     """An affiliate for Shopstyle."""
@@ -43,8 +46,9 @@ class Affiliate(BaseAffiliate):
         parsed = self._validate_response(response, product_id)
 
         price = Money(str(parsed.get('salePrice', parsed['price'])), USD)
-        image = self._find_image(parsed, 'XLarge', color_names)
-        thumbnail = self._find_image(parsed, 'Medium', color_names)
+
+        image_searches = [self._find_image(parsed, size, color_names) for size in IMAGE_SIZES]
+        images = [image for image in image_searches if image]
 
         found_sizes = self._check_stock(parsed, color_names)
         if found_sizes:
@@ -54,10 +58,9 @@ class Affiliate(BaseAffiliate):
 
         return {
             'availability': availability,
-            'image': image,
+            'images': images,
             'name': parsed['brandedName'],
-            'price': price.amount,
-            'thumbnail': thumbnail
+            'price': price.amount
         }
 
     def provide_raw(self, product_id):

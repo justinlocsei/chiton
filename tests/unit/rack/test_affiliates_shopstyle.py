@@ -53,11 +53,13 @@ class TestShopstyleAffiliate:
         with shopstyle_api_request():
             details = Affiliate().request_details('471281504')
 
-        assert '.jpg' in details['image']['url']
-        assert '.jpg' in details['thumbnail']['url']
+        assert '.jpg' in details['images'][0]['url']
+        assert '.jpg' in details['images'][1]['url']
 
-        assert details['image']['width'] > details['thumbnail']['width']
-        assert details['image']['height'] > details['thumbnail']['height']
+        by_size = sorted(details['images'], key=lambda i: i['height'])
+
+        assert by_size[0]['width'] < by_size[1]['width']
+        assert by_size[0]['height'] < by_size[1]['height']
 
     def test_request_details_image_color(self, shopstyle_api_request):
         """It returns color-specific images when possible."""
@@ -69,18 +71,18 @@ class TestShopstyleAffiliate:
             purple = affiliate.request_details('470750142', colors=['Purple'])
             missing = affiliate.request_details('470750142', colors=['Orange Green'])
 
-        assert '.jpg' in default['image']['url']
-        assert '.jpg' in default['thumbnail']['url']
-        assert '.jpg' in red['image']['url']
-        assert '.jpg' in red['image']['url']
-        assert '.jpg' in purple['image']['url']
-        assert '.jpg' in purple['image']['url']
+        assert '.jpg' in default['images'][0]['url']
+        assert '.jpg' in default['images'][1]['url']
+        assert '.jpg' in red['images'][0]['url']
+        assert '.jpg' in red['images'][0]['url']
+        assert '.jpg' in purple['images'][0]['url']
+        assert '.jpg' in purple['images'][0]['url']
 
-        assert default['image']['url'] != red['image']['url'] and default['image']['url'] != purple['image']['url']
-        assert default['thumbnail']['url'] != red['thumbnail']['url'] and default['thumbnail']['url'] != purple['thumbnail']['url']
+        assert default['images'][0]['url'] != red['images'][0]['url'] and default['images'][0]['url'] != purple['images'][0]['url']
+        assert default['images'][1]['url'] != red['images'][1]['url'] and default['images'][1]['url'] != purple['images'][1]['url']
 
-        assert default['image']['url'] == missing['image']['url']
-        assert default['thumbnail']['url'] == missing['thumbnail']['url']
+        assert default['images'][0]['url'] == missing['images'][0]['url']
+        assert default['images'][1]['url'] == missing['images'][1]['url']
 
     def test_request_details_image_color_missing(self, shopstyle_api_request):
         """It returns the default image if no color-specific image is present."""
@@ -90,10 +92,10 @@ class TestShopstyleAffiliate:
             details = affiliate.request_details('521400855')
             with_color = affiliate.request_details('521400855', colors=['Black'])
 
-        assert '.jpg' in details['image']['url']
-        assert '.jpg' in details['thumbnail']['url']
-        assert '.jpg' in with_color['image']['url']
-        assert '.jpg' in with_color['thumbnail']['url']
+        assert '.jpg' in details['images'][0]['url']
+        assert '.jpg' in details['images'][1]['url']
+        assert '.jpg' in with_color['images'][0]['url']
+        assert '.jpg' in with_color['images'][1]['url']
 
     def test_request_details_image_color_preference(self, shopstyle_api_request):
         """It returns the image of the first color when multiple colors are provided."""
@@ -105,13 +107,13 @@ class TestShopstyleAffiliate:
             purple_first = affiliate.request_details('470750142', colors=['Purple', 'Red'])
             red_first = affiliate.request_details('470750142', colors=['Red', 'Purple'])
 
-        assert red['image']['url'] != purple['image']['url']
-        assert red['thumbnail']['url'] != purple['thumbnail']['url']
+        assert red['images'][0]['url'] != purple['images'][0]['url']
+        assert red['images'][1]['url'] != purple['images'][1]['url']
 
-        assert purple_first['image']['url'] == purple['image']['url']
-        assert purple_first['thumbnail']['url'] == purple['thumbnail']['url']
-        assert red_first['image']['url'] == red['image']['url']
-        assert red_first['thumbnail']['url'] == red['thumbnail']['url']
+        assert purple_first['images'][0]['url'] == purple['images'][0]['url']
+        assert purple_first['images'][1]['url'] == purple['images'][1]['url']
+        assert red_first['images'][0]['url'] == red['images'][0]['url']
+        assert red_first['images'][1]['url'] == red['images'][1]['url']
 
     def test_request_details_availability(self, shopstyle_api_request):
         """It returns unique availability information based off of the canonical sizes."""
