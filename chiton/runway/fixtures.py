@@ -17,6 +17,6 @@ def load_fixtures():
         Fixture(Basic, initial=True, requires=[Category, Color], fields=BASIC_FIELDS),
         Fixture(Category),
         Fixture(Formality),
-        Fixture(Propriety, queryset=Propriety.objects.for_export(), requires=[Basic, Formality]),
+        Fixture(Propriety, initial=True, queryset=Propriety.objects.for_export(), requires=[Basic, Formality]),
         Fixture(Style)
     ]
