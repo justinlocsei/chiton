@@ -11,6 +11,10 @@ from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
 
 
+# The desired image sizes to use from a response
+IMAGE_SIZES = ('MediumImage', 'LargeImage')
+
+
 @contextmanager
 def raise_throttling_exception():
     """Re-raise throttling HTTP errors as throttling errors.
@@ -59,15 +63,15 @@ class Affiliate(BaseAffiliate):
             raise LookupError('Details may not be provided for a child ASIN')
 
         price = self._calculate_price(item['Variations']['Item'])
-        image = self._find_image(item, 'LargeImage', colors)
-        thumbnail = self._find_image(item, 'MediumImage', colors)
+
+        image_searches = [self._find_image(item, size, colors) for size in IMAGE_SIZES]
+        images = [image for image in image_searches if image]
 
         return {
             'availability': True,
-            'image': image,
+            'images': images,
             'name': item['ItemAttributes']['Title'],
-            'price': price,
-            'thumbnail': thumbnail
+            'price': price
         }
 
     def provide_raw(self, asin):
