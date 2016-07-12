@@ -72,6 +72,7 @@ class ItemImage(models.Model):
     file = models.ImageField(upload_to='products', verbose_name=_('file'), height_field='height', width_field='width', null=True, blank=True)
     height = models.PositiveIntegerField(verbose_name=_('height'))
     width = models.PositiveIntegerField(verbose_name=_('width'))
+    source_url = models.URLField(verbose_name=_('source URL'))
 
     class Meta:
         verbose_name = _('item image')
