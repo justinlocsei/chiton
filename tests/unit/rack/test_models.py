@@ -1,6 +1,6 @@
 import pytest
 
-from chiton.rack.models import AffiliateNetwork, ItemImage
+from chiton.rack.models import AffiliateNetwork
 
 
 @pytest.mark.django_db

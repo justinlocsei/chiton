@@ -126,7 +126,6 @@ class TestRecommendations:
                 assert isinstance(make_recommendations.call_args[0][1], CorePipeline)
                 assert make_recommendations.call_args[1]['max_garments_per_group'] == 2
 
-
         assert response.status_code == status.HTTP_200_OK
 
     def test_recommendations_errors(self, make_request):
