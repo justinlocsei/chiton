@@ -39,10 +39,9 @@ class TestItemDetails:
     def valid_details(self):
         return {
             'availability': True,
-            'image': None,
+            'images': [],
             'name': 'Details',
             'price': Decimal('10.99'),
-            'thumbnail': None
         }
 
     def test_valid(self, valid_details):
@@ -50,10 +49,9 @@ class TestItemDetails:
         details = ItemDetails(valid_details)
 
         assert details['availability']
-        assert details['image'] is None
+        assert details['images'] == []
         assert details['name'] == 'Details'
         assert details['price'] == Decimal('10.99')
-        assert details['thumbnail'] is None
 
     def test_valid_availability(self, valid_details):
         """It can accept item-availability records."""
@@ -70,13 +68,10 @@ class TestItemDetails:
             'width': 100
         }
 
-        valid_details['image'] = image_data
-        valid_details['thumbnail'] = image_data
+        valid_details['images'] = [image_data]
 
         details = ItemDetails(valid_details)
-
-        assert details['image'] == image_data
-        assert details['thumbnail'] == image_data
+        assert details['images'] == [image_data]
 
     def test_invalid_name(self, valid_details):
         """It requires a non-empty string for the name."""
