@@ -18,16 +18,12 @@ def request_to_cassette_path(request):
 
 
 def amazon_api_request(request):
-    vcr = VCR()
-
-    return partial(vcr.use_cassette,
+    return partial(VCR().use_cassette,
         request_to_cassette_path(request),
         filter_query_parameters=['AssociateTag', 'AWSAccessKeyId', 'Signature', 'Timestamp'])
 
 
 def shopstyle_api_request(request):
-    vcr = VCR()
-
-    return partial(vcr.use_cassette,
+    return partial(VCR().use_cassette,
         request_to_cassette_path(request),
         filter_query_parameters=['pid'])
