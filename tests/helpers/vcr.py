@@ -23,6 +23,10 @@ def amazon_api_request(request):
         filter_query_parameters=['AssociateTag', 'AWSAccessKeyId', 'Signature', 'Timestamp'])
 
 
+def record_request(request):
+    return partial(VCR().use_cassette, request_to_cassette_path(request))
+
+
 def shopstyle_api_request(request):
     return partial(VCR().use_cassette,
         request_to_cassette_path(request),

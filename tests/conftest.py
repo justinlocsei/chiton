@@ -6,11 +6,12 @@ from .helpers.factories.closet import BrandFactory, CanonicalSizeFactory, ColorF
 from .helpers.factories.rack import AffiliateItemFactory, AffiliateNetworkFactory, item_image_factory, StockRecordFactory
 from .helpers.factories.runway import BasicFactory, CategoryFactory, FormalityFactory, ProprietyFactory, StyleFactory
 from .helpers.factories.wintour import pipeline_profile_factory, wardrobe_profile_factory
-from .helpers.vcr import amazon_api_request, shopstyle_api_request
+from .helpers.vcr import amazon_api_request, record_request, shopstyle_api_request
 
 pytest.fixture()(amazon_api_request)
 pytest.fixture()(item_image_factory)
 pytest.fixture()(pipeline_profile_factory)
+pytest.fixture()(record_request)
 pytest.fixture()(shopstyle_api_request)
 pytest.fixture()(standard_size_factory)
 pytest.fixture()(wardrobe_profile_factory)
