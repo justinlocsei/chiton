@@ -17,6 +17,7 @@ class Benchmark(BaseBenchmark):
         'garment_factory',
         'item_image_factory',
         'pipeline_profile_factory',
+        'propriety_factory',
         'standard_size_factory',
         'stock_record_factory',
         'style_factory'
