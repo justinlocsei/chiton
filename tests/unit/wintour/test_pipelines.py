@@ -228,11 +228,11 @@ class TestBasePipeline:
         garment = garment_factory(basic=basic)
         network = affiliate_network_factory(name='Network')
 
-        image = item_image_factory(height=100, width=100)
-        thumbnail = item_image_factory(height=50, width=50)
-
-        affiliate_item_factory(network=network, garment=garment, url='http://example.com/with', image=image, thumbnail=thumbnail, price=Decimal(100))
+        with_images = affiliate_item_factory(network=network, garment=garment, url='http://example.com/with', price=Decimal(100))
         affiliate_item_factory(network=network, garment=garment, url='http://example.com/without', price=Decimal(15.25))
+
+        item_image_factory(item=with_images, height=100, width=100, file_name='image.jpg')
+        item_image_factory(item=with_images, height=50, width=50, file_name='thumbnail.jpg')
 
         profile = pipeline_profile_factory()
         pipeline = pipeline_factory()
@@ -245,17 +245,24 @@ class TestBasePipeline:
         assert with_data['network_name'] == 'Network'
         assert with_data['id'] > 0
         assert with_data['url'] == 'http://example.com/with'
+        assert len(with_data['images']) == 2
 
-        assert with_data['image'] == 'http://example.com/image'
-        assert with_data['thumbnail'] == 'http://example.com/thumbnail'
+        image_data = with_data['images'][0]
+        assert image_data['height'] == 100
+        assert image_data['width'] == 100
+        assert image_data['relative_url'].endswith('/image.jpg')
+
+        thumbnail_data = with_data['images'][1]
+        assert thumbnail_data['height'] == 50
+        assert thumbnail_data['width'] == 50
+        assert thumbnail_data['relative_url'].endswith('/thumbnail.jpg')
 
         without_data = items[1]
         assert without_data['price'] == 1525
         assert without_data['network_name'] == 'Network'
         assert without_data['id'] > 0
         assert without_data['url'] == 'http://example.com/without'
-        assert without_data['image'] is None
-        assert without_data['thumbnail'] is None
+        assert not len(without_data['images'])
 
     def test_make_recommendations_queryset_filters(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It combines all queryset filters."""

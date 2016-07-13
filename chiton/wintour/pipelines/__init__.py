@@ -5,7 +5,7 @@ from chiton.closet.models import Basic, Garment
 from chiton.core.queries import cache_query
 from chiton.rack.models import AffiliateItem, AffiliateNetwork, ItemImage
 from chiton.utils.numbers import price_to_integer
-from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, PurchaseOption, Recommendations
+from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, ProductImage, PurchaseOption, Recommendations
 
 
 class BasePipeline:
@@ -258,6 +258,7 @@ class BasePipeline:
         Returns:
             dict[str, dict]: Per-basic garment recommendations
         """
+        images_lookup = _build_item_image_lookup_table()
         by_basic = {}
         max_weight = 0
 
@@ -276,10 +277,19 @@ class BasePipeline:
             # Serialize affiliate items as purchase options
             purchase_option = PurchaseOption({
                 'id': affiliate_item['id'],
+                'images': [],
                 'price': price_to_integer(affiliate_item['price']),
                 'network_name': affiliate_item['network__name'],
                 'url': affiliate_item['url']
             })
+
+            # Serialize the purchase option's images
+            for image in images_lookup.get(affiliate_item['id'], []):
+                purchase_option['images'].append(ProductImage({
+                    'height': image['height'],
+                    'relative_url': image['relative_path'],
+                    'width': image['width']
+                }))
 
             # Add each garment recommendation to its basic
             by_basic.setdefault(basic_slug, {})
@@ -401,6 +411,26 @@ def _get_deep_affiliate_items():
             'network__name'
         )
     )
+
+
+@cache_query(ItemImage)
+def _build_item_image_lookup_table():
+    """Create a lookup table that maps affiliate-item IDs to their images.
+
+    Returns:
+        dict[int, dict]: A lookup for item images
+    """
+    lookup = {}
+
+    for image in ItemImage.objects.all().values('file', 'height', 'item_id', 'width'):
+        lookup.setdefault(image['item_id'], [])
+        lookup[image['item_id']].append({
+            'height': image['height'],
+            'relative_path': image['file'],
+            'width': image['width']
+        })
+
+    return lookup
 
 
 @cache_query(Basic)
