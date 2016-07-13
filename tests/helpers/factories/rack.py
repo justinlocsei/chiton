@@ -24,6 +24,7 @@ class AffiliateItemFactory(DjangoModelFactory):
     name = factory.LazyAttribute(lambda m: fake.sentence())
     guid = factory.Sequence(lambda m: fake.uuid4())
     garment = factory.SubFactory(GarmentFactory)
+    retailer = factory.LazyAttribute(lambda m: fake.company())
 
     class Meta:
         model = AffiliateItem
