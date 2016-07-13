@@ -283,6 +283,7 @@ class BasePipeline:
                 'images': [],
                 'network_name': affiliate_item['network__name'],
                 'price': price_to_integer(affiliate_item['price']),
+                'retailer': affiliate_item['retailer'],
                 'url': affiliate_item['url']
             })
 
@@ -410,7 +411,7 @@ def _get_deep_affiliate_items():
         .values(
             'garment_id', 'garment__name', 'garment__slug',
             'garment__basic__slug', 'garment__brand__name',
-            'id', 'price', 'url',
+            'id', 'price', 'retailer', 'url',
             'network__name'
         )
     )
