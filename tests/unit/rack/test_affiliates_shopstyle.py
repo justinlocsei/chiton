@@ -34,6 +34,13 @@ class TestShopstyleAffiliate:
 
         assert details['name'] == 'J.Crew Double-breasted blazer'
 
+    def test_request_details_retailer(self, shopstyle_api_request):
+        """It returns the item's retailer in its details."""
+        with shopstyle_api_request():
+            details = Affiliate().request_details('471281504')
+
+        assert details['retailer'] == 'J.Crew'
+
     def test_request_details_price(self, shopstyle_api_request):
         """It returns the item's listed price in its details."""
         with shopstyle_api_request():
