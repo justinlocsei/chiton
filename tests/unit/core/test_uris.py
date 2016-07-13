@@ -1,5 +1,3 @@
-import pytest
-
 from chiton.core.uris import file_path_to_relative_url, join_url
 
 
