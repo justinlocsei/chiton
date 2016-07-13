@@ -71,7 +71,8 @@ class Affiliate(BaseAffiliate):
             'availability': True,
             'images': images,
             'name': item['ItemAttributes']['Title'],
-            'price': price
+            'price': price,
+            'retailer': 'Amazon'
         }
 
     def provide_raw(self, asin):

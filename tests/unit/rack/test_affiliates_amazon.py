@@ -73,6 +73,13 @@ class TestAmazonAffiliate:
 
         assert details['name'] == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red'
 
+    def test_request_details_retailer(self, amazon_api_request):
+        """It uses a fixed retailer."""
+        with amazon_api_request():
+            details = Affiliate().request_details('B00ZGRB7S6')
+
+        assert details['retailer'] == 'Amazon'
+
     def test_request_details_price(self, amazon_api_request):
         """It returns the average price of all item offers."""
         affiliate = Affiliate()
