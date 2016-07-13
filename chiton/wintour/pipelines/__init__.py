@@ -1,10 +1,12 @@
 from itertools import chain
 from operator import itemgetter
 
+from django.conf import settings
+
 from chiton.closet.models import Basic, Garment
 from chiton.core.queries import cache_query
 from chiton.core.numbers import price_to_integer
-from chiton.core.uris import file_path_to_relative_url
+from chiton.core.uris import file_path_to_relative_url, join_url
 from chiton.rack.models import AffiliateItem, AffiliateNetwork, ItemImage
 from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, ProductImage, PurchaseOption, Recommendations
 
@@ -288,7 +290,7 @@ class BasePipeline:
             for image in images_lookup.get(affiliate_item['id'], []):
                 purchase_option['images'].append(ProductImage({
                     'height': image['height'],
-                    'relative_url': file_path_to_relative_url(image['relative_path']),
+                    'url': join_url(settings.MEDIA_URL, image['relative_url']),
                     'width': image['width']
                 }))
 
@@ -427,7 +429,7 @@ def _build_item_image_lookup_table():
         lookup.setdefault(image['item_id'], [])
         lookup[image['item_id']].append({
             'height': image['height'],
-            'relative_path': image['file'],
+            'relative_url': file_path_to_relative_url(image['file']),
             'width': image['width']
         })
 
