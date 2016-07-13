@@ -428,13 +428,17 @@ PipelineVisualizer.prototype = {
                     price = price.replace(/\.0+$/, '');
                 }
 
+                var images = _.sortBy(option.images, function(image) {
+                    return image.height + image.width;
+                });
+
                 var affiliates = renderTemplate('pipeline-template-garment-affiliate', {
                     adminLinks: option.admin_links,
-                    image: option.image,
+                    image: images[images.length - 1].url,
                     name: data.garment.name,
                     networkName: option.network_name,
                     price: price,
-                    thumbnail: option.thumbnail,
+                    thumbnail: images[0].url,
                     url: option.url
                 });
                 $affiliates.append(affiliates);
