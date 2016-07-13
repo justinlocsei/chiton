@@ -33,6 +33,8 @@ represented as JavaScript that maps directly to JSON:
     "file_logging": false,    // Whether to log to a file
     "log_file": null,         // The absolute path to the log file
     "log_level": "INFO",      // The log level to use
+    "media_root": null,       // The root directory for media files
+    "media_url": "/media/",   // The root URL for media files
     "redis_db": null,         // The Redis database number
     "redis_socket": null,     // The absolute path to the Redis socket
     "secret_key": null,       // The Django secret key to use
