@@ -33,7 +33,8 @@ class FullAffiliate(Affiliate):
             'availability': self.availability,
             'images': self.images,
             'name': 'Details-%s' % guid,
-            'price': Decimal('9.99')
+            'price': Decimal('9.99'),
+            'retailer': 'Amazon'
         }
 
 
@@ -45,7 +46,8 @@ class OutOfStockAffiliate(Affiliate):
             'availability': False,
             'images': [],
             'name': 'Item',
-            'price': Decimal('9.99')
+            'price': Decimal('9.99'),
+            'retailer': 'Amazon'
         }
 
 
@@ -134,6 +136,17 @@ class TestUpdateAffiliateItemDetails:
             update_affiliate_item_details(affiliate_item)
 
         assert affiliate_item.name == 'Details-1234'
+
+    def test_network_data_retailer(self, affiliate_item_factory):
+        """It updates the item's retailer if it differs from the stored retailer."""
+        affiliate_item = affiliate_item_factory(guid='1234', retailer='Nordstrom')
+        assert affiliate_item.retailer == 'Nordstrom'
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = FullAffiliate()
+            update_affiliate_item_details(affiliate_item)
+
+        assert affiliate_item.retailer == 'Amazon'
 
     def test_network_data_guid(self, affiliate_item_factory):
         """It uses the item's GUID to perform the API lookup."""

@@ -62,6 +62,7 @@ def update_affiliate_item_details(item):
 
     item.name = details['name']
     item.price = details['price']
+    item.retailer = details['retailer']
     _update_item_images(item, details['images'])
     _update_stock_records(item, details['availability'])
 
