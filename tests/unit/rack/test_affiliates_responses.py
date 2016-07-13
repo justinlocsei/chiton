@@ -42,6 +42,7 @@ class TestItemDetails:
             'images': [],
             'name': 'Details',
             'price': Decimal('10.99'),
+            'retailer': 'Amazon'
         }
 
     def test_valid(self, valid_details):
@@ -52,6 +53,7 @@ class TestItemDetails:
         assert details['images'] == []
         assert details['name'] == 'Details'
         assert details['price'] == Decimal('10.99')
+        assert details['retailer'] == 'Amazon'
 
     def test_valid_availability(self, valid_details):
         """It can accept item-availability records."""

@@ -48,5 +48,6 @@ ItemDetails = define_data_shape({
     V.Required('availability'): V.Any([ItemAvailability], bool),
     V.Required('images'): [ItemImage],
     V.Required('name'): V.All(str, V.Length(min=1)),
-    V.Required('price'): Decimal
+    V.Required('price'): Decimal,
+    V.Required('retailer'): str
 })
