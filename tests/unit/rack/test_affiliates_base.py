@@ -79,7 +79,8 @@ class TestBaseAffiliate:
                         'width': 100
                     }],
                     'name': 'Item Name',
-                    'price': Decimal('12.99')
+                    'price': Decimal('12.99'),
+                    'retailer': 'Amazon'
                 }
 
         affiliate = Child()
@@ -90,6 +91,8 @@ class TestBaseAffiliate:
         assert with_color['price'] == Decimal('12.99')
         assert without_color['name'] == 'Item Name'
         assert with_color['name'] == 'Item Name'
+        assert without_color['retailer'] == 'Amazon'
+        assert with_color['retailer'] == 'Amazon'
         assert without_color['availability']
         assert with_color['availability']
 
