@@ -250,12 +250,12 @@ class TestBasePipeline:
         image_data = with_data['images'][0]
         assert image_data['height'] == 100
         assert image_data['width'] == 100
-        assert image_data['relative_url'].endswith('/image.jpg')
+        assert image_data['url'].endswith('/image.jpg')
 
         thumbnail_data = with_data['images'][1]
         assert thumbnail_data['height'] == 50
         assert thumbnail_data['width'] == 50
-        assert thumbnail_data['relative_url'].endswith('/thumbnail.jpg')
+        assert thumbnail_data['url'].endswith('/thumbnail.jpg')
 
         without_data = items[1]
         assert without_data['price'] == 1525
