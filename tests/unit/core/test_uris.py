@@ -3,7 +3,6 @@ import pytest
 from chiton.core.uris import file_path_to_relative_url
 
 
-@pytest.mark.current
 class TestFilePathToRelativeUrl:
 
     def test_flat(self):
