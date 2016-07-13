@@ -32,8 +32,8 @@ ProductImage = define_data_shape({
 PurchaseOption = define_data_shape({
     V.Required('id'): int,
     V.Required('images'): [ProductImage],
-    V.Required('price'): V.Any(None, int),
     V.Required('network_name'): str,
+    V.Required('price'): V.Any(None, int),
     V.Required('url'): str
 }, validated=False)
 

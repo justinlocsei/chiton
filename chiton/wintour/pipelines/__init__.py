@@ -281,8 +281,8 @@ class BasePipeline:
             purchase_option = PurchaseOption({
                 'id': affiliate_item['id'],
                 'images': [],
-                'price': price_to_integer(affiliate_item['price']),
                 'network_name': affiliate_item['network__name'],
+                'price': price_to_integer(affiliate_item['price']),
                 'url': affiliate_item['url']
             })
 
