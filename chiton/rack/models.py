@@ -45,6 +45,7 @@ class AffiliateItem(models.Model):
     last_modified = models.DateTimeField(verbose_name=_('last modified'), auto_now=True, db_index=True)
     price = PriceField(verbose_name=_('price'), null=True, blank=True, db_index=True)
     has_detailed_stock = models.BooleanField(verbose_name=('has detailed stock'), default=False)
+    retailer = models.CharField(max_length=255, verbose_name=_('retailer'), db_index=True)
 
     class Meta:
         unique_together = ('guid', 'network')
