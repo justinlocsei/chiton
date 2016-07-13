@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -65,11 +67,16 @@ class StockRecord(models.Model):
         verbose_name_plural = _('stock records')
 
 
+def _upload_path_for_item_image(item_image, filename):
+    """Upload item images to subdirectories based on their item."""
+    return os.path.join('products', str(item_image.item.pk), os.path.basename(filename))
+
+
 class ItemImage(models.Model):
     """An image for an item."""
 
     item = models.ForeignKey(AffiliateItem, on_delete=models.CASCADE, verbose_name=_('affiliate item'), related_name='images')
-    file = models.ImageField(upload_to='products', verbose_name=_('file'), height_field='height', width_field='width')
+    file = models.ImageField(upload_to=_upload_path_for_item_image, verbose_name=_('file'), height_field='height', width_field='width')
     height = models.PositiveIntegerField(verbose_name=_('height'))
     width = models.PositiveIntegerField(verbose_name=_('width'))
     source_url = models.URLField(verbose_name=_('source URL'))
