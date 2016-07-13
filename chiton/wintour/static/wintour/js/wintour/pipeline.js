@@ -436,8 +436,8 @@ PipelineVisualizer.prototype = {
                     adminLinks: option.admin_links,
                     image: images[images.length - 1].url,
                     name: data.garment.name,
-                    networkName: option.network_name,
                     price: price,
+                    retailer: option.retailer,
                     thumbnail: images[0].url,
                     url: option.url
                 });
