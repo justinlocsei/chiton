@@ -154,5 +154,5 @@ def bulk_update_affiliate_item_details(items, workers=DEFAULT_WORKERS, max_retri
     Returns:
         chiton.rack.affiliates.bulk.BatchJob: A batch job describing the updates
     """
-    items = items.select_related('garment__basic', 'image', 'thumbnail', 'network')
+    items = items.select_related('garment__basic', 'network')
     return BatchJob(items, update_affiliate_item_details, workers=workers, max_retries=max_retries)
