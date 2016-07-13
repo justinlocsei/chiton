@@ -1,6 +1,6 @@
 import pytest
 
-from chiton.core.uris import file_path_to_relative_url
+from chiton.core.uris import file_path_to_relative_url, join_url
 
 
 class TestFilePathToRelativeUrl:
@@ -18,3 +18,44 @@ class TestFilePathToRelativeUrl:
         """It returns Windows-style paths as URLs."""
         assert file_path_to_relative_url(r'\absolute\file.txt') == '/absolute/file.txt'
         assert file_path_to_relative_url(r'relative\file.txt') == 'relative/file.txt'
+
+
+class TestJoinUrl:
+
+    def test_single(self):
+        """It returns a flat path without modifications."""
+        assert join_url('file.txt') == 'file.txt'
+
+    def test_relative(self):
+        """It joins components with a URL path separator."""
+        assert join_url('relative', 'file.txt') == 'relative/file.txt'
+
+    def test_relative_nested(self):
+        """It respects existing separators."""
+        assert join_url('relative/path', 'to/file.txt') == 'relative/path/to/file.txt'
+
+    def test_relative_root(self):
+        """It respects a rooted relative path."""
+        assert join_url('/absolute', 'file.txt') == '/absolute/file.txt'
+
+    def test_trim(self):
+        """It trims excess slashes."""
+        assert join_url('one/', '/two/', '/three//', 'four.txt') == 'one/two/three/four.txt'
+
+    def test_trailing_slash(self):
+        """It respects trailing slashes."""
+        assert join_url('dir', 'path') == 'dir/path'
+        assert join_url('dir', 'path/') == 'dir/path/'
+        assert join_url('dir', 'path//') == 'dir/path/'
+
+    def test_absolute(self):
+        """It respects absolute URLs."""
+        assert join_url('http://example.com', 'one', 'two') == 'http://example.com/one/two'
+
+    def test_absolute_slashes(self):
+        """It applies normal slash-trimming rules to absolute URLs."""
+        assert join_url('http://example.com/', '/file.txt') == 'http://example.com/file.txt'
+
+    def test_root_relative(self):
+        """It does not trim root-relative URLs."""
+        assert join_url('//example.com', 'file.txt') == '//example.com/file.txt'
