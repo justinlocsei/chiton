@@ -1,5 +1,5 @@
+from chiton.core.numbers import price_to_integer
 from chiton.runway.models import Basic
-from chiton.utils.numbers import price_to_integer
 from chiton.wintour.facets import BaseFacet
 from chiton.wintour.pipeline import FacetGroup
 

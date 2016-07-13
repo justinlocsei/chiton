@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from chiton.utils.numbers import format_float, price_to_integer
+from chiton.core.numbers import format_float, price_to_integer
 
 
 class TestFormatFloat:

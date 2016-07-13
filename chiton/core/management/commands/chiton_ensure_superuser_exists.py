@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from chiton.utils.users import ensure_superuser_exists
+from chiton.core.users import ensure_superuser_exists
 
 
 class Command(BaseCommand):

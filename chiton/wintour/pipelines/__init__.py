@@ -3,8 +3,8 @@ from operator import itemgetter
 
 from chiton.closet.models import Basic, Garment
 from chiton.core.queries import cache_query
+from chiton.core.numbers import price_to_integer
 from chiton.rack.models import AffiliateItem, AffiliateNetwork, ItemImage
-from chiton.utils.numbers import price_to_integer
 from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, ProductImage, PurchaseOption, Recommendations
 
 

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import pytest
 
-from chiton.utils import users
+from chiton.core import users
 
 
 @pytest.mark.django_db
