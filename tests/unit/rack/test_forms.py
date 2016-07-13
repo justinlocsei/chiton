@@ -33,7 +33,8 @@ class TestAffiliateItemURLForm:
         form = AffiliateItemURLForm({
             'garment': garment.pk,
             'network': network.pk,
-            'url': 'http://example.com'
+            'url': 'http://example.com',
+            'retailer': 'Amazon'
         })
 
         with mock.patch('chiton.rack.forms.create_affiliate') as create_affiliate:
