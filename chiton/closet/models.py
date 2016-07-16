@@ -63,6 +63,19 @@ class Garment(models.Model):
         if not any([getattr(self, s) for s in self.SIZE_FIELDS]):
             raise ValidationError(_('At least one size-availability field must be true'))
 
+    @property
+    def branded_name(self):
+        """Get a name of the garment that includes its brand.
+
+        Returns:
+            str: The branded garment name
+        """
+        brand_name = self.brand.name
+        if self.name.lower().startswith('%s ' % brand_name.lower()):
+            return self.name
+        else:
+            return '%s %s' % (brand_name, self.name)
+
 
 class BrandManager(models.Manager):
     """A custom manager for brands."""

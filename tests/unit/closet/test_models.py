@@ -84,6 +84,26 @@ class TestGarment:
         garment = Garment(name='Blazer', brand=brand_factory(), basic=basic_factory())
         assert str(garment) == 'Blazer'
 
+    def test_branded_name(self, brand_factory, garment_factory):
+        """It prepends the brand's name to the garment's name."""
+        garment = garment_factory(name='Blazer', brand=brand_factory(name='Express'))
+        assert garment.branded_name == 'Express Blazer'
+
+    def test_branded_name_dedupe(self, brand_factory, garment_factory):
+        """It does not duplicate the brand name."""
+        garment = garment_factory(name='Shimera Camisole', brand=brand_factory(name='Shimera'))
+        assert garment.branded_name == 'Shimera Camisole'
+
+    def test_branded_name_dedupe_case_insensitive(self, brand_factory, garment_factory):
+        """It ignores case when performing a de-dupe check for the branded name."""
+        garment = garment_factory(name='A.N.A Cammy', brand=brand_factory(name='a.n.a'))
+        assert garment.branded_name == 'A.N.A Cammy'
+
+    def test_branded_name_dedupe_words(self, brand_factory, garment_factory):
+        """It operates on words when de-depuing brand names."""
+        garment = garment_factory(name='Expressive Cammy', brand=brand_factory(name='Express'))
+        assert garment.branded_name == 'Express Expressive Cammy'
+
 
 @pytest.mark.django_db
 class TestCanonicalSize:
