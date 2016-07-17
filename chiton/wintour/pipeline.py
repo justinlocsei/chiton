@@ -42,6 +42,7 @@ PurchaseOption = define_data_shape({
 GarmentOverview = define_data_shape({
     V.Required('brand'): str,
     V.Required('branded_name'): str,
+    V.Required('care'): V.Any(None, str),
     V.Required('id'): int,
     V.Required('name'): str
 }, validated=False)

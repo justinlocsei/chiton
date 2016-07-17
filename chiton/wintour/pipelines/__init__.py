@@ -3,6 +3,7 @@ from operator import itemgetter
 
 from django.conf import settings
 
+from chiton.closet.data import CARE_CHOICES
 from chiton.closet.models import Basic, Garment, make_branded_garment_name
 from chiton.core.queries import cache_query
 from chiton.core.numbers import price_to_integer
@@ -300,10 +301,17 @@ class BasePipeline:
             try:
                 by_basic[basic_slug][garment_slug]['purchase_options'].append(purchase_option)
             except KeyError:
+                garment_care = affiliate_item['garment__care']
+                if garment_care:
+                    care_type = [str(c[1]) for c in CARE_CHOICES if c[0] == garment_care][0]
+                else:
+                    care_type = None
+
                 by_basic[basic_slug][garment_slug] = GarmentRecommendation({
                     'garment': GarmentOverview({
                         'brand': affiliate_item['garment__brand__name'],
                         'branded_name': make_branded_garment_name(affiliate_item['garment__name'], affiliate_item['garment__brand__name']),
+                        'care': care_type,
                         'id': affiliate_item['garment_id'],
                         'name': affiliate_item['garment__name']
                     }),
@@ -410,7 +418,7 @@ def _get_deep_affiliate_items():
         .select_related('garment', 'garment__basic', 'garment__brand', 'network')
         .order_by('-price')
         .values(
-            'garment_id', 'garment__name', 'garment__slug',
+            'garment_id', 'garment__name', 'garment__slug', 'garment__care',
             'garment__basic__slug', 'garment__brand__name',
             'id', 'price', 'retailer', 'url',
             'network__name'

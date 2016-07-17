@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import pytest
 
+from chiton.closet.data import CARE_TYPES
 from chiton.wintour.facets import BaseFacet
 from chiton.wintour.garment_filters import BaseGarmentFilter
 from chiton.wintour.pipeline import FacetGroup
@@ -128,7 +129,7 @@ class TestBasePipeline:
         brand_one = brand_factory(name='Brand 1')
         brand_two = brand_factory(name='Brand 2')
 
-        skirt_one = garment_factory(basic=skirts, brand=brand_one, name='1')
+        skirt_one = garment_factory(basic=skirts, brand=brand_one, name='1', care=CARE_TYPES['DRY_CLEAN'])
         skirt_two = garment_factory(basic=skirts, brand=brand_one, name='2')
         skirt_three = garment_factory(basic=skirts, brand=brand_one, name='3')
         shirt_one = garment_factory(basic=shirts, brand=brand_two, name='1')
@@ -170,6 +171,7 @@ class TestBasePipeline:
         assert skirt_one_rec['id'] > 0
         assert skirt_one_rec['name'] == '1'
         assert skirt_one_rec['brand'] == 'Brand 1'
+        assert skirt_one_rec['care'] == 'Dry clean'
 
         assert [g['weight'] for g in shirt_recs['garments']] == [1.0, 0.25]
         shirt_four_rec = shirt_recs['garments'][0]['garment']
@@ -179,6 +181,7 @@ class TestBasePipeline:
         assert shirt_one_rec['name'] == '1'
         assert shirt_one_rec['brand'] == 'Brand 2'
         assert shirt_one_rec['branded_name'] == 'Brand 2 1'
+        assert shirt_one_rec['care'] is None
 
         assert shirt_four_rec['id'] > 0
         assert shirt_four_rec['name'] == '4'
