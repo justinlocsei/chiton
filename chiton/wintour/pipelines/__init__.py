@@ -447,7 +447,12 @@ def _build_basic_lookup_table():
     """
     lookup = {}
 
-    for basic in Basic.objects.all().values('id', 'name', 'slug'):
-        lookup[basic['slug']] = basic
+    for basic in Basic.objects.all().values('category__name', 'id', 'name', 'slug'):
+        lookup[basic['slug']] = {
+            'category': basic['category__name'],
+            'id': basic['id'],
+            'name': basic['name'],
+            'slug': basic['slug']
+        }
 
     return lookup

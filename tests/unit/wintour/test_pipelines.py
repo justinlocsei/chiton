@@ -98,7 +98,7 @@ class TestBasePipeline:
         garments = pipeline.load_garments()
         assert garments.count() == 1
 
-    def test_make_recommendations(self, basic_factory, brand_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
+    def test_make_recommendations(self, basic_factory, brand_factory, category_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It produces per-basic garment recommendations for a wardrobe profile."""
         class QueryFilter(DummyQueryFilter):
             def apply(self, garments):
@@ -122,8 +122,8 @@ class TestBasePipeline:
                     'slug': 'all'
                 })]
 
-        skirts = basic_factory(slug='skirts')
-        shirts = basic_factory(slug='shirts')
+        skirts = basic_factory(slug='skirts', name='Skirts', category=category_factory(name='Lower Torso'))
+        shirts = basic_factory(slug='shirts', name='Shirts', category=category_factory(name='Upper Torso'))
 
         brand_one = brand_factory(name='Brand 1')
         brand_two = brand_factory(name='Brand 2')
@@ -156,6 +156,14 @@ class TestBasePipeline:
         assert len(recommendations['basics']) == 2
         shirt_recs = recommendations['basics'][0]
         skirt_recs = recommendations['basics'][1]
+
+        assert skirt_recs['basic']['name'] == 'Skirts'
+        assert skirt_recs['basic']['slug'] == 'skirts'
+        assert skirt_recs['basic']['category'] == 'Lower Torso'
+
+        assert shirt_recs['basic']['name'] == 'Shirts'
+        assert shirt_recs['basic']['slug'] == 'shirts'
+        assert shirt_recs['basic']['category'] == 'Upper Torso'
 
         assert [g['weight'] for g in skirt_recs['garments']] == [0.25]
         skirt_one_rec = skirt_recs['garments'][0]['garment']
