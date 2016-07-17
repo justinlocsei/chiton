@@ -1,3 +1,5 @@
+import re
+
 from autoslug import AutoSlugField
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -20,8 +22,9 @@ def make_branded_garment_name(garment_name, brand_name):
     Returns:
         str: The branded garment name
     """
-    if garment_name.lower().startswith('%s ' % brand_name.lower()):
-        return garment_name
+    brand_match = re.compile('^%s\s' % re.escape(brand_name), re.IGNORECASE)
+    if re.match(brand_match, garment_name):
+        return re.sub(brand_match, '%s ' % brand_name, garment_name)
     else:
         return '%s %s' % (brand_name, garment_name)
 

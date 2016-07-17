@@ -64,7 +64,7 @@ class TestMakeBrandedGarmentName:
 
     def test_name_dedupe_case_insensitive(self, brand_factory, garment_factory):
         """It ignores case when performing a de-dupe check for the branded name."""
-        assert make_branded_garment_name('A.N.A Cammy', 'a.n.a') == 'A.N.A Cammy'
+        assert make_branded_garment_name('A.N.A Cammy', 'a.n.a') == 'a.n.a Cammy'
 
     def test_name_dedupe_words(self, brand_factory, garment_factory):
         """It operates on words when de-depuing brand names."""
