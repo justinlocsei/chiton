@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from django.conf import settings
 
-from chiton.closet.models import Basic, Garment
+from chiton.closet.models import Basic, Garment, make_branded_garment_name
 from chiton.core.queries import cache_query
 from chiton.core.numbers import price_to_integer
 from chiton.core.uris import file_path_to_relative_url, join_url
@@ -303,6 +303,7 @@ class BasePipeline:
                 by_basic[basic_slug][garment_slug] = GarmentRecommendation({
                     'garment': GarmentOverview({
                         'brand': affiliate_item['garment__brand__name'],
+                        'branded_name': make_branded_garment_name(affiliate_item['garment__name'], affiliate_item['garment__brand__name']),
                         'id': affiliate_item['garment_id'],
                         'name': affiliate_item['garment__name']
                     }),

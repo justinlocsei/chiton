@@ -170,10 +170,12 @@ class TestBasePipeline:
         assert shirt_one_rec['id'] > 0
         assert shirt_one_rec['name'] == '1'
         assert shirt_one_rec['brand'] == 'Brand 2'
+        assert shirt_one_rec['branded_name'] == 'Brand 2 1'
 
         assert shirt_four_rec['id'] > 0
         assert shirt_four_rec['name'] == '4'
         assert shirt_four_rec['brand'] == 'Brand 2'
+        assert shirt_four_rec['branded_name'] == 'Brand 2 4'
 
         assert len(skirt_recs['facets']) == 1
         assert len(shirt_recs['facets']) == 1
