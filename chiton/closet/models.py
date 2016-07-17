@@ -10,6 +10,22 @@ from chiton.core.validators import validate_range
 from chiton.runway.models import Basic, Formality, Style
 
 
+def make_branded_garment_name(garment_name, brand_name):
+    """Produce the branded name for a garment.
+
+    Args:
+        garment_name (str): The name of a garment
+        brand_name (str): The name of a brand
+
+    Returns:
+        str: The branded garment name
+    """
+    if garment_name.lower().startswith('%s ' % brand_name.lower()):
+        return garment_name
+    else:
+        return '%s %s' % (brand_name, garment_name)
+
+
 class GarmentManager(models.Manager):
     """A custom manager for garments."""
 
@@ -70,11 +86,7 @@ class Garment(models.Model):
         Returns:
             str: The branded garment name
         """
-        brand_name = self.brand.name
-        if self.name.lower().startswith('%s ' % brand_name.lower()):
-            return self.name
-        else:
-            return '%s %s' % (brand_name, self.name)
+        return make_branded_garment_name(self.name, self.brand.name)
 
 
 class BrandManager(models.Manager):

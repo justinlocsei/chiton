@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
+import mock
 import pytest
 
-from chiton.closet.models import Brand, CanonicalSize, Color, Garment, StandardSize
+from chiton.closet.models import Brand, CanonicalSize, Color, Garment, make_branded_garment_name, StandardSize
 
 
 @pytest.mark.django_db
@@ -51,6 +52,30 @@ class TestColor:
 
 
 @pytest.mark.django_db
+class TestMakeBrandedGarmentName:
+
+    def test_name(self, brand_factory, garment_factory):
+        """It prepends the brand's name to the garment's name."""
+        assert make_branded_garment_name('Blazer', 'Express') == 'Express Blazer'
+
+    def test_name_dedupe(self, brand_factory, garment_factory):
+        """It does not duplicate the brand name."""
+        assert make_branded_garment_name('Shimera Camisole', 'Shimera') == 'Shimera Camisole'
+
+    def test_name_dedupe_case_insensitive(self, brand_factory, garment_factory):
+        """It ignores case when performing a de-dupe check for the branded name."""
+        assert make_branded_garment_name('A.N.A Cammy', 'a.n.a') == 'A.N.A Cammy'
+
+    def test_name_dedupe_words(self, brand_factory, garment_factory):
+        """It operates on words when de-depuing brand names."""
+        with mock.patch('chiton.closet.models.make_branded_garment_name') as make_name:
+            garment = garment_factory(name='Blazer', brand=brand_factory(name='Express'))
+
+            assert garment.branded_name
+            make_name.assert_called_with('Blazer', 'Express')
+
+
+@pytest.mark.django_db
 class TestGarment:
 
     def test_natural_key(self, basic_factory, brand_factory):
@@ -85,24 +110,9 @@ class TestGarment:
         assert str(garment) == 'Blazer'
 
     def test_branded_name(self, brand_factory, garment_factory):
-        """It prepends the brand's name to the garment's name."""
+        """It produces the branded name of the garment."""
         garment = garment_factory(name='Blazer', brand=brand_factory(name='Express'))
         assert garment.branded_name == 'Express Blazer'
-
-    def test_branded_name_dedupe(self, brand_factory, garment_factory):
-        """It does not duplicate the brand name."""
-        garment = garment_factory(name='Shimera Camisole', brand=brand_factory(name='Shimera'))
-        assert garment.branded_name == 'Shimera Camisole'
-
-    def test_branded_name_dedupe_case_insensitive(self, brand_factory, garment_factory):
-        """It ignores case when performing a de-dupe check for the branded name."""
-        garment = garment_factory(name='A.N.A Cammy', brand=brand_factory(name='a.n.a'))
-        assert garment.branded_name == 'A.N.A Cammy'
-
-    def test_branded_name_dedupe_words(self, brand_factory, garment_factory):
-        """It operates on words when de-depuing brand names."""
-        garment = garment_factory(name='Expressive Cammy', brand=brand_factory(name='Express'))
-        assert garment.branded_name == 'Express Expressive Cammy'
 
 
 @pytest.mark.django_db
