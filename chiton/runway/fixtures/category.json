@@ -2,7 +2,14 @@
 {
     "model": "chiton_runway.category",
     "fields": {
-        "name": "Dresses",
+        "name": "Blazers",
+        "slug": "overshirts"
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Dresses & Skirts",
         "slug": "dresses"
     }
 },
@@ -11,13 +18,6 @@
     "fields": {
         "name": "Hosiery",
         "slug": "hosiery"
-    }
-},
-{
-    "model": "chiton_runway.category",
-    "fields": {
-        "name": "Overshirts",
-        "slug": "overshirts"
     }
 },
 {
@@ -37,8 +37,8 @@
 {
     "model": "chiton_runway.category",
     "fields": {
-        "name": "Skirts",
-        "slug": "skirts"
+        "name": "Sweaters",
+        "slug": "sweaters"
     }
 }
 ]
