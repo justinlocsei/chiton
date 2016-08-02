@@ -62,7 +62,7 @@ class BasicAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Category, site=site)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
 
     list_display = ('name',)
 
