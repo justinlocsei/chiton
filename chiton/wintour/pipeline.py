@@ -87,6 +87,7 @@ BasicRecommendations = define_data_shape({
 
 Recommendations = define_data_shape({
     V.Required('basics'): [BasicRecommendations],
+    V.Required('categories'): [str],
     'debug': {
         V.Required('queries'): [{
             V.Required('time'): float,

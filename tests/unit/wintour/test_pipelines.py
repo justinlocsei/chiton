@@ -151,8 +151,7 @@ class TestBasePipeline:
         )
 
         recommendations = pipeline.make_recommendations(profile)
-        assert len(recommendations.keys()) == 1
-        assert 'basics' in recommendations
+        assert set(recommendations.keys()) == set(['basics', 'categories'])
 
         assert len(recommendations['basics']) == 2
         shirt_recs = recommendations['basics'][0]
@@ -204,6 +203,18 @@ class TestBasePipeline:
         assert shirt_facets['slug'] == 'test'
         assert len(shirt_facets['groups']) == 1
         assert set(shirt_facets['groups'][0]['garment_ids']) == set([shirt_four.pk, shirt_one.pk])
+
+    @pytest.mark.current
+    def test_make_recommendations_categories(self, category_factory, pipeline_factory, pipeline_profile_factory):
+        """It exposes the ordered categories."""
+        category_factory(name='Pants', position=2)
+        category_factory(name='Skirts', position=1)
+
+        profile = pipeline_profile_factory()
+        pipeline = pipeline_factory()
+        recommendations = pipeline.make_recommendations(profile)
+
+        assert recommendations['categories'] == ['Skirts', 'Pants']
 
     def test_make_recommendations_affiliate_items(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
         """It exposes information on each garment's available affiliate items, sorted by price."""
@@ -538,13 +549,12 @@ class TestBasePipeline:
 
         assert set([g['garment']['id'] for g in for_basic['garments']]) == set([sneakers.pk, sweater.pk, jeans.pk])
 
-    def test_make_recommendations_empty(self, garment_factory, pipeline_profile_factory):
+    def test_make_recommendations_empty(self, pipeline_profile_factory):
         """It returns empty recommendations for a default pipeline."""
-        garment_factory()
-
         profile = pipeline_profile_factory()
         pipeline = BasePipeline()
 
         assert pipeline.make_recommendations(profile) == {
-            'basics': []
+            'basics': [],
+            'categories': []
         }

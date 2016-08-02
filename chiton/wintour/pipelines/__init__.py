@@ -9,6 +9,7 @@ from chiton.core.queries import cache_query
 from chiton.core.numbers import price_to_integer
 from chiton.core.uris import file_path_to_relative_url, join_url
 from chiton.rack.models import AffiliateItem, AffiliateNetwork, ItemImage
+from chiton.runway.models import Category
 from chiton.wintour.pipeline import BasicRecommendations, BasicOverview, Facet, FacetGroup, GarmentOverview, GarmentRecommendation, ProductImage, PurchaseOption, Recommendations
 
 
@@ -108,7 +109,8 @@ class BasePipeline:
         self._current_profile = None
 
         return Recommendations({
-            'basics': pruned_recommendations
+            'basics': pruned_recommendations,
+            'categories': _get_ordered_categories()
         })
 
     def _get_all_steps(self):
@@ -405,6 +407,19 @@ class BasePipeline:
 
         return basic_recommendations
 
+
+@cache_query(Category)
+def _get_ordered_categories():
+    """Get all categories in order.
+
+    Returns:
+        dict[int, dict]: A lookup for item images
+    """
+    return list(
+        Category.objects.all()
+        .order_by('position')
+        .values_list('name', flat=True)
+    )
 
 @cache_query(AffiliateItem, AffiliateNetwork, Garment, ItemImage)
 def _get_deep_affiliate_items():
