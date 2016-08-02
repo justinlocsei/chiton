@@ -71,8 +71,8 @@ FacetGroup = define_data_shape({
 
 
 Facet = define_data_shape({
-    V.Required('name'): str,
     V.Required('groups'): [FacetGroup],
+    V.Required('name'): str,
     V.Required('slug'): str
 }, validated=False)
 
