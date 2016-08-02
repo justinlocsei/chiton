@@ -123,8 +123,8 @@ class TestBasePipeline:
                     'slug': 'all'
                 })]
 
-        skirts = basic_factory(slug='skirts', name='Skirts', category=category_factory(name='Lower Torso'))
-        shirts = basic_factory(slug='shirts', name='Shirts', category=category_factory(name='Upper Torso'))
+        skirts = basic_factory(slug='skirt', name='Skirt', plural_name='Skirts', category=category_factory(name='Lower Torso'))
+        shirts = basic_factory(slug='shirt', name='Shirt', plural_name='Shirts', category=category_factory(name='Upper Torso'))
 
         brand_one = brand_factory(name='Brand 1')
         brand_two = brand_factory(name='Brand 2')
@@ -158,12 +158,14 @@ class TestBasePipeline:
         shirt_recs = recommendations['basics'][0]
         skirt_recs = recommendations['basics'][1]
 
-        assert skirt_recs['basic']['name'] == 'Skirts'
-        assert skirt_recs['basic']['slug'] == 'skirts'
+        assert skirt_recs['basic']['name'] == 'Skirt'
+        assert skirt_recs['basic']['plural_name'] == 'Skirts'
+        assert skirt_recs['basic']['slug'] == 'skirt'
         assert skirt_recs['basic']['category'] == 'Lower Torso'
 
-        assert shirt_recs['basic']['name'] == 'Shirts'
-        assert shirt_recs['basic']['slug'] == 'shirts'
+        assert shirt_recs['basic']['name'] == 'Shirt'
+        assert shirt_recs['basic']['plural_name'] == 'Shirts'
+        assert shirt_recs['basic']['slug'] == 'shirt'
         assert shirt_recs['basic']['category'] == 'Upper Torso'
 
         assert [g['weight'] for g in skirt_recs['garments']] == [0.25]

@@ -60,6 +60,7 @@ BasicOverview = define_data_shape({
     V.Required('category'): str,
     V.Required('id'): int,
     V.Required('name'): str,
+    V.Required('plural_name'): str,
     V.Required('slug'): str
 }, validated=False)
 
