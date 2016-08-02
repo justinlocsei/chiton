@@ -54,9 +54,10 @@ class Category(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_('name'), unique=True)
     slug = AutoSlugField(max_length=255, populate_from='name', verbose_name=_('slug'), unique=True)
+    position = models.PositiveSmallIntegerField(verbose_name=_('position'), default=0)
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('position',)
         verbose_name = _('category')
         verbose_name_plural = _('categories')
 
