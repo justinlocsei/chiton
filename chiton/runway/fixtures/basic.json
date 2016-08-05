@@ -44,20 +44,6 @@
 {
     "model": "chiton_runway.basic",
     "fields": {
-        "name": "Black shell",
-        "slug": "black-shell",
-        "category": [
-            "shirts"
-        ],
-        "primary_color": [
-            "black"
-        ],
-        "secondary_colors": []
-    }
-},
-{
-    "model": "chiton_runway.basic",
-    "fields": {
         "name": "Black skirt",
         "slug": "black-skirt",
         "category": [
@@ -76,20 +62,6 @@
         "slug": "black-sweater",
         "category": [
             "sweaters"
-        ],
-        "primary_color": [
-            "black"
-        ],
-        "secondary_colors": []
-    }
-},
-{
-    "model": "chiton_runway.basic",
-    "fields": {
-        "name": "Black tights",
-        "slug": "black-tights",
-        "category": [
-            "hosiery"
         ],
         "primary_color": [
             "black"
@@ -214,12 +186,32 @@
 {
     "model": "chiton_runway.basic",
     "fields": {
-        "name": "Nude pantyhose",
-        "slug": "nude-pantyhose",
+        "name": "Shell",
+        "slug": "white-shell",
+        "category": [
+            "shirts"
+        ],
+        "primary_color": [
+            "white"
+        ],
+        "secondary_colors": [
+            [
+                "black"
+            ]
+        ]
+    }
+},
+{
+    "model": "chiton_runway.basic",
+    "fields": {
+        "name": "Tights & hose",
+        "slug": "black-tights",
         "category": [
             "hosiery"
         ],
-        "primary_color": null,
+        "primary_color": [
+            "black"
+        ],
         "secondary_colors": []
     }
 },
@@ -228,20 +220,6 @@
     "fields": {
         "name": "White button-down",
         "slug": "white-button-down",
-        "category": [
-            "shirts"
-        ],
-        "primary_color": [
-            "white"
-        ],
-        "secondary_colors": []
-    }
-},
-{
-    "model": "chiton_runway.basic",
-    "fields": {
-        "name": "White shell",
-        "slug": "white-shell",
         "category": [
             "shirts"
         ],
