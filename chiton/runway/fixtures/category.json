@@ -3,42 +3,48 @@
     "model": "chiton_runway.category",
     "fields": {
         "name": "Blazers",
-        "slug": "overshirts"
-    }
-},
-{
-    "model": "chiton_runway.category",
-    "fields": {
-        "name": "Dresses & Skirts",
-        "slug": "dresses"
-    }
-},
-{
-    "model": "chiton_runway.category",
-    "fields": {
-        "name": "Hosiery",
-        "slug": "hosiery"
-    }
-},
-{
-    "model": "chiton_runway.category",
-    "fields": {
-        "name": "Pants",
-        "slug": "pants"
+        "slug": "overshirts",
+        "position": 1
     }
 },
 {
     "model": "chiton_runway.category",
     "fields": {
         "name": "Shirts",
-        "slug": "shirts"
+        "slug": "shirts",
+        "position": 2
     }
 },
 {
     "model": "chiton_runway.category",
     "fields": {
         "name": "Sweaters",
-        "slug": "sweaters"
+        "slug": "sweaters",
+        "position": 3
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Dresses & Skirts",
+        "slug": "dresses",
+        "position": 4
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Pants",
+        "slug": "pants",
+        "position": 5
+    }
+},
+{
+    "model": "chiton_runway.category",
+    "fields": {
+        "name": "Hosiery",
+        "slug": "hosiery",
+        "position": 6
     }
 }
 ]
