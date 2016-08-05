@@ -421,6 +421,7 @@ def _get_ordered_categories():
         .values_list('name', flat=True)
     )
 
+
 @cache_query(AffiliateItem, AffiliateNetwork, Garment, ItemImage)
 def _get_deep_affiliate_items():
     """Get all affiliate items, with extended relations selected.
