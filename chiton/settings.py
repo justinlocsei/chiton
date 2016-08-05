@@ -156,6 +156,10 @@ STATIC_ROOT = config['static_root']
 STATIC_URL = config['static_url']
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
+CDN_ASSET_DIR = config['cdn_asset_dir']
+CDN_ENABLED = config['use_cdn']
+CDN_SYNC_SCRIPT = config['cdn_sync_script']
+
 # Serving
 # ==============================================================================
 
