@@ -65,5 +65,6 @@ The following management commands are available:
 * `chiton_refresh_affiliate_items`: Update the local cache of items from the affiliate APIs
 * `chiton_refresh_cache`: Clear the cache and prime it
 * `chiton_save_snapshot`: Export a snapshot of all current app data.
+* `chiton_sync_media`: Sync local media with the CDN
 * `chiton_update_basic_price_points`: Recalculate the price points for all basics
 * `chiton_update_stock`: Refresh affiliate items and update price points
