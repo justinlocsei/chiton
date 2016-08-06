@@ -204,7 +204,6 @@ class TestBasePipeline:
         assert len(shirt_facets['groups']) == 1
         assert set(shirt_facets['groups'][0]['garment_ids']) == set([shirt_four.pk, shirt_one.pk])
 
-    @pytest.mark.current
     def test_make_recommendations_categories(self, category_factory, pipeline_factory, pipeline_profile_factory):
         """It exposes the ordered categories."""
         category_factory(name='Pants', position=2)
