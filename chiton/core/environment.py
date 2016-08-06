@@ -44,8 +44,6 @@ def _default_config():
         'amazon_associates_aws_access_key_id': None,
         'amazon_associates_aws_secret_access_key': None,
         'amazon_associates_tracking_id': None,
-        'cdn_asset_dir': None,
-        'cdn_sync_script': None,
         'database': {},
         'debug': False,
         'default_email': None,
@@ -63,8 +61,7 @@ def _default_config():
         'shopstyle_uid': None,
         'static_root': None,
         'static_url': '/static/',
-        'track_errors': False,
-        'use_cdn': False
+        'track_errors': False
     }
 
 
@@ -76,8 +73,6 @@ def _validate_config(config):
         'amazon_associates_aws_access_key_id': All(str, Length(min=1)),
         'amazon_associates_aws_secret_access_key': All(str, Length(min=1)),
         'amazon_associates_tracking_id': All(str, Length(min=1), _AmazonAssociatesTrackingID()),
-        'cdn_asset_dir': All(str, Length(min=1)),
-        'cdn_sync_script': All(str, Length(min=1), _AbsolutePath()),
         'database': Schema({
             'engine': All(str, Length(min=1)),
             'host': All(str, Length(min=1)),
@@ -102,8 +97,7 @@ def _validate_config(config):
         'shopstyle_uid': All(str, Length(min=1)),
         'static_root': All(str, Length(min=1), _AbsolutePath()),
         'static_url': All(str, Length(min=1), _MediaUrl()),
-        'track_errors': bool,
-        'use_cdn': bool
+        'track_errors': bool
     })(config)
 
 

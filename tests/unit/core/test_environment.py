@@ -78,30 +78,6 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'amazon_associates_tracking_id': 'tracking-id'})
 
-    def test_cdn_asset_dir(self):
-        """It expects a non-empty string for the CDN asset directory."""
-        config = use_config({'cdn_asset_dir': 'assets'})
-        assert config['cdn_asset_dir'] == 'assets'
-
-        with pytest.raises(ConfigurationError):
-            use_config({'cdn_asset_dir': ''})
-
-    def test_cdn_sync_script(self):
-        """It expects a non-empty string for the CDN sync script."""
-        config = use_config({'cdn_sync_script': '/tmp/sync.sh'})
-        assert config['cdn_sync_script'] == '/tmp/sync.sh'
-
-        with pytest.raises(ConfigurationError):
-            use_config({'cdn_sync_script': ''})
-
-    def test_cdn_sync_script_absolute(self):
-        """It expects an absolute path for the CDN sync script."""
-        config = use_config({'cdn_sync_script': '/tmp/dir/sync.sh'})
-        assert config['cdn_sync_script'] == '/tmp/dir/sync.sh'
-
-        with pytest.raises(ConfigurationError):
-            use_config({'cdn_sync_script': 'sync.sh'})
-
     def test_debug(self):
         """It expects a boolean value for the debug state."""
         config = use_config({'debug': True})
@@ -387,11 +363,3 @@ class TestUseConfig:
         """It defaults to not tracking errors."""
         config = use_config()
         assert not config['track_errors']
-
-    def test_use_cdn(self):
-        """It expects a boolean value for the CDN's enabled state."""
-        config = use_config({'use_cdn': True})
-        assert config['use_cdn']
-
-        with pytest.raises(ConfigurationError):
-            use_config({'use_cdn': 1})

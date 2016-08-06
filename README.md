@@ -20,8 +20,6 @@ represented as JavaScript that maps directly to JSON:
     "amazon_associates_aws_access_key_id": null,     // The access key ID for the Amazon Associates AWS user
     "amazon_associates_tracking_id": null,           // The Amazon Associates tracking ID
     "amazon_associates_aws_secret_access_key": null, // The secret access key for the Amazon Associates AWS user
-    "cdn_asset_dir": null,   // The name of the directory in which to place CDN assets
-    "cdn_sync_script": null, // The absolute path to the external CDN sync script
     "database": {
         "engine": null,   // The Django database adapter to use
         "host": null,     // The host for the database
@@ -45,8 +43,7 @@ represented as JavaScript that maps directly to JSON:
     "shopstyle_uid": null,    // The Shopstyle API UID
     "static_root": null,      // The root directory for static files
     "static_url": "/static/", // The root URL for static files
-    "track_errors": false,    // Whether to track errors through Sentry
-    "use_cdn": false          // Whether to use a CDN for serving static assets
+    "track_errors": false     // Whether to track errors through Sentry
 }
 ```
 
@@ -65,6 +62,5 @@ The following management commands are available:
 * `chiton_refresh_affiliate_items`: Update the local cache of items from the affiliate APIs
 * `chiton_refresh_cache`: Clear the cache and prime it
 * `chiton_save_snapshot`: Export a snapshot of all current app data.
-* `chiton_sync_media`: Sync local media with the CDN
 * `chiton_update_basic_price_points`: Recalculate the price points for all basics
 * `chiton_update_stock`: Refresh affiliate items and update price points
