@@ -1,4 +1,4 @@
-bottlenose==0.6.4
+bottlenose==1.0.1
 contextlib2==0.5.4
 django==1.9.7
 django-admin-sortable2==0.6.4
