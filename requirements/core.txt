@@ -1,5 +1,5 @@
 bottlenose==0.6.4
-contextlib2==0.5.3
+contextlib2==0.5.4
 django==1.9.7
 django-admin-sortable2==0.6.4
 django-autoslug==1.9.3
