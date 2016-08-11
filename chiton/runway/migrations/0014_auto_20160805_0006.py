@@ -8,11 +8,12 @@ from django.db import migrations
 def merge_shells(apps, schema_editor):
     """Merge black and white shells into one basic."""
     Basic = apps.get_model('chiton_runway', 'Basic')
+    Garment = apps.get_model('chiton_closet', 'Garment')
 
     white_shell = Basic.objects.get(slug='white-shell')
     black_shell = Basic.objects.get(slug='black-shell')
 
-    for garment in Basic.objects.filter(slug='black-shell'):
+    for garment in Garment.objects.filter(basic=black_shell):
         garment.basic = white_shell
         garment.save()
 
