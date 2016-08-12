@@ -146,7 +146,7 @@ class TestShopstyleAffiliate:
         assert 4 in size_numbers
         assert 6 not in size_numbers
 
-    def test_request_details_availability_size_nameless(self, shopstyle_api_request):
+    def test_request_details_availability_size_name_number(self, shopstyle_api_request):
         """It returns a size number when a canonical size's name is only a number."""
         with shopstyle_api_request():
             trouser_jeans = Affiliate().request_details('457098007')
