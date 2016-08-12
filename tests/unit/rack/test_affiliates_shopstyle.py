@@ -155,6 +155,13 @@ class TestShopstyleAffiliate:
 
         assert sorted(size_numbers) == [22, 24]
 
+    def test_request_details_availability_size_name_missing(self, shopstyle_api_request):
+        """It returns a boolean availability when a garment's stock records lack sizes."""
+        with shopstyle_api_request():
+            sheath_dress = Affiliate().request_details('489786162')
+
+        assert sheath_dress['availability'] is True
+
     def test_request_details_availability_variants(self, shopstyle_api_request):
         """It maps Shopstyle's canonical sizes to known size variants."""
         with shopstyle_api_request():

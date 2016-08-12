@@ -147,7 +147,7 @@ class Affiliate(BaseAffiliate):
         for stock in parsed.get('stock', []):
             if 'size' in stock and ('color' in stock or not has_colors):
                 color_match = not stock_colors or stock['color']['name'] in stock_colors
-                canonical = stock_sizes.get(stock['size']['name'], None)
+                canonical = stock_sizes.get(stock['size'].get('name', None), None)
                 if color_match and canonical and canonical['name'] not in found_sizes:
                     sizes.append(canonical)
                     found_sizes.add(canonical['name'])
