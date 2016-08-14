@@ -1,0 +1,90 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.10.0]
+    method: GET
+    uri: https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg
+  response:
+    body:
+      string: !!binary |
+        /9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABQAAD/4QMxaHR0cDov
+        L25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENl
+        aGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4
+        OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzA2NyA3OS4xNTc3NDcsIDIwMTUvMDMvMzAtMjM6
+        NDA6NDIgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5
+        OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHht
+        bG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6
+        Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUu
+        Y29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBo
+        b3Rvc2hvcCBDQyAyMDE1IChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkU4
+        RkVFMkVGM0ZGMzExRTY4QUZGQkU1RkFBREE3OUI1IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlk
+        OkU4RkVFMkYwM0ZGMzExRTY4QUZGQkU1RkFBREE3OUI1Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0
+        UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RThGRUUyRUQzRkYzMTFFNjhBRkZCRTVGQUFEQTc5QjUi
+        IHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RThGRUUyRUUzRkYzMTFFNjhBRkZCRTVGQUFEQTc5
+        QjUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tl
+        dCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAACAgICAgICAgICAwICAgMEAwICAwQFBAQE
+        BAQFBgUFBQUFBQYGBwcIBwcGCQkKCgkJDAwMDAwMDAwMDAwMDAwMAQMDAwUEBQkGBgkNCwkLDQ8O
+        Dg4ODw8MDAwMDA8PDAwMDAwMDwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAAgACAD
+        AREAAhEBAxEB/8QASwABAQAAAAAAAAAAAAAAAAAAAAoBAQAAAAAAAAAAAAAAAAAAAAAQAQAAAAAA
+        AAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJ/wAAAAAAAAAAAAAAAf
+        /9k=
+    headers:
+      Accept-Ranges: [bytes]
+      Content-Length: ['1142']
+      Content-Type: [image/jpeg]
+      Date: ['Sun, 14 Aug 2016 17:47:28 GMT']
+      ETag: ['"90f8f375b37759c6bd925bddf33ab445"']
+      Last-Modified: ['Tue, 12 Jul 2016 01:26:44 GMT']
+      Server: [AmazonS3]
+      x-amz-id-2: [Mh2TJW824s+zlKnt2v349rEdIj1K8vh0++KNbIWxD72utiRTqS4/x+Ipl1j2dn2l]
+      x-amz-request-id: [94C6C9579C4A38AA]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.10.0]
+    method: GET
+    uri: https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg
+  response:
+    body:
+      string: !!binary |
+        /9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABQAAD/4QMxaHR0cDov
+        L25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENl
+        aGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4
+        OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzA2NyA3OS4xNTc3NDcsIDIwMTUvMDMvMzAtMjM6
+        NDA6NDIgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5
+        OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHht
+        bG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6
+        Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUu
+        Y29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBo
+        b3Rvc2hvcCBDQyAyMDE1IChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkU4
+        RkVFMkVGM0ZGMzExRTY4QUZGQkU1RkFBREE3OUI1IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlk
+        OkU4RkVFMkYwM0ZGMzExRTY4QUZGQkU1RkFBREE3OUI1Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0
+        UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RThGRUUyRUQzRkYzMTFFNjhBRkZCRTVGQUFEQTc5QjUi
+        IHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RThGRUUyRUUzRkYzMTFFNjhBRkZCRTVGQUFEQTc5
+        QjUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tl
+        dCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAACAgICAgICAgICAwICAgMEAwICAwQFBAQE
+        BAQFBgUFBQUFBQYGBwcIBwcGCQkKCgkJDAwMDAwMDAwMDAwMDAwMAQMDAwUEBQkGBgkNCwkLDQ8O
+        Dg4ODw8MDAwMDA8PDAwMDAwMDwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAAgACAD
+        AREAAhEBAxEB/8QASwABAQAAAAAAAAAAAAAAAAAAAAoBAQAAAAAAAAAAAAAAAAAAAAAQAQAAAAAA
+        AAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJ/wAAAAAAAAAAAAAAAf
+        /9k=
+    headers:
+      Accept-Ranges: [bytes]
+      Content-Length: ['1142']
+      Content-Type: [image/jpeg]
+      Date: ['Sun, 14 Aug 2016 17:47:29 GMT']
+      ETag: ['"90f8f375b37759c6bd925bddf33ab445"']
+      Last-Modified: ['Tue, 12 Jul 2016 01:26:44 GMT']
+      Server: [AmazonS3]
+      x-amz-id-2: [Q0DCw7+2l3KyR25MmLAGBiiijIOk7nU5/xNICHbu3D68osrawPD0gnAPBbx0yIin]
+      x-amz-request-id: [4832B3C355972A01]
+    status: {code: 200, message: OK}
+version: 1

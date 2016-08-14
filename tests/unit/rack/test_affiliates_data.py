@@ -274,6 +274,31 @@ class TestUpdateAffiliateItemDetails:
                 assert not affiliate_item.images.count()
                 assert not ItemImage.objects.filter(item=affiliate_item).count()
 
+    def test_network_data_images_missing_file(self, affiliate_item, record_request):
+        """It re-downloads item images that lack a local image file."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.images = [{
+                'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
+                'height': 100,
+                'width': 100
+            }]
+
+            create_affiliate.return_value = affiliate
+            with record_request():
+                update_affiliate_item_details(affiliate_item)
+                before_image = affiliate_item.images.all()[0]
+
+                assert os.path.isfile(before_image.file.path)
+                os.remove(before_image.file.path)
+                assert not os.path.isfile(before_image.file.path)
+
+                update_affiliate_item_details(affiliate_item)
+                after_image = affiliate_item.images.all()[0]
+
+                assert os.path.isfile(before_image.file.path)
+                assert os.path.isfile(after_image.file.path)
+
     def test_network_data_stock_records(self, affiliate_item, standard_size_factory):
         """It creates stock records for all sizes that match a standard size's number."""
         size_8 = standard_size_factory(8)
