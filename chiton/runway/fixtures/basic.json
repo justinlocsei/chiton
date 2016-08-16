@@ -5,7 +5,7 @@
         "name": "Black cardigan",
         "slug": "black-cardigan",
         "category": [
-            "sweaters"
+            "shirts"
         ],
         "primary_color": [
             "black"
@@ -19,7 +19,7 @@
         "name": "Black leggings",
         "slug": "black-leggings",
         "category": [
-            "hosiery"
+            "pants"
         ],
         "primary_color": [
             "black"
@@ -61,7 +61,7 @@
         "name": "Black sweater",
         "slug": "black-sweater",
         "category": [
-            "sweaters"
+            "shirts"
         ],
         "primary_color": [
             "black"
