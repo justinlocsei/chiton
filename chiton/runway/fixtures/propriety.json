@@ -164,7 +164,7 @@
         "formality": [
             "casual"
         ],
-        "importance": "not"
+        "importance": "mildly"
     }
 },
 {
@@ -236,7 +236,7 @@
         "formality": [
             "casual"
         ],
-        "importance": "not"
+        "importance": "mildly"
     }
 },
 {
@@ -368,7 +368,7 @@
         "formality": [
             "business-casual"
         ],
-        "importance": "very"
+        "importance": "always"
     }
 },
 {
@@ -392,7 +392,7 @@
         "formality": [
             "dressy-business-casual"
         ],
-        "importance": "somewhat"
+        "importance": "always"
     }
 },
 {
@@ -416,7 +416,7 @@
         "formality": [
             "executive"
         ],
-        "importance": "not"
+        "importance": "somewhat"
     }
 },
 {
@@ -428,7 +428,7 @@
         "formality": [
             "executive-casual"
         ],
-        "importance": "not"
+        "importance": "very"
     }
 },
 {
@@ -572,7 +572,7 @@
         "formality": [
             "executive-casual"
         ],
-        "importance": "not"
+        "importance": "mildly"
     }
 },
 {
@@ -596,7 +596,7 @@
         "formality": [
             "casual"
         ],
-        "importance": "not"
+        "importance": "somewhat"
     }
 },
 {
@@ -620,7 +620,7 @@
         "formality": [
             "dressy-business-casual"
         ],
-        "importance": "not"
+        "importance": "mildly"
     }
 },
 {
@@ -896,7 +896,7 @@
         "formality": [
             "casual"
         ],
-        "importance": "not"
+        "importance": "very"
     }
 },
 {
@@ -1040,7 +1040,7 @@
         "formality": [
             "casual"
         ],
-        "importance": "not"
+        "importance": "mildly"
     }
 },
 {
