@@ -18,14 +18,6 @@
 {
     "model": "chiton_runway.category",
     "fields": {
-        "name": "Sweaters",
-        "slug": "sweaters",
-        "position": 3
-    }
-},
-{
-    "model": "chiton_runway.category",
-    "fields": {
         "name": "Dresses & Skirts",
         "slug": "dresses",
         "position": 4
