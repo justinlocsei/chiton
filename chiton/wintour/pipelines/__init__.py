@@ -1,5 +1,4 @@
 from itertools import chain
-from operator import itemgetter
 
 from django.conf import settings
 
@@ -351,14 +350,18 @@ class BasePipeline:
         basic_data = _build_basic_lookup_table()
 
         # Convert the basic and garment mappings into a list of basic
-        # recommendations, sorted alphabetically, with garment recommendations
-        # sorted by weight
-        weight_fetcher = itemgetter('weight')
+        # recommendations sorted ascending by basic name, each of which has a
+        # list of garment recommendations sorted descending by weight and
+        # secondarily ascending by the garment's branded name
         for basic_slug in sorted(garments_by_basic.keys()):
+            sorted_garments = list(garments_by_basic[basic_slug].values())
+            sorted_garments.sort(key=lambda g: g['garment']['branded_name'])
+            sorted_garments.sort(key=lambda g: g['weight'], reverse=True)
+
             recommendations.append(BasicRecommendations({
                 'basic': BasicOverview(basic_data[basic_slug]),
                 'facets': [],
-                'garments': sorted(garments_by_basic[basic_slug].values(), key=weight_fetcher, reverse=True)
+                'garments': sorted_garments
             }))
 
         # Add facets to each basic's recommendations

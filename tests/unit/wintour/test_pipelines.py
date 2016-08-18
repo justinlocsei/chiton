@@ -497,8 +497,8 @@ class TestBasePipeline:
         assert name_facets[0]['garment_ids'] == [shirt.pk]
         assert name_facets[1]['garment_ids'] == [jeans.pk]
 
-    def test_make_recommendations_max_garments_per_group(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory):
-        """It allows a maximum number of garments to be set per facet group."""
+    def test_make_recommendations_max_garments_per_group(self, basic_factory, affiliate_item_factory, garment_factory, pipeline_factory, pipeline_profile_factory, brand_factory):
+        """It allows a maximum number of garments to be set per facet group, sorting by weight and name."""
         class LengthWeight(DummyWeight):
             def apply(self, garment):
                 return len(garment.name)
@@ -521,13 +521,17 @@ class TestBasePipeline:
                 ]
 
         basic = basic_factory()
-        shirt = garment_factory(basic=basic, name='Shirt')
-        sweater = garment_factory(basic=basic, name='Sweater')
-        sneakers = garment_factory(basic=basic, name='Sneakers')
-        jeans = garment_factory(basic=basic, name='Jeans')
+        brand = brand_factory()
+
+        shirt = garment_factory(basic=basic, name='Shirt', brand=brand)
+        sweater = garment_factory(basic=basic, name='Sweater', brand=brand)
+        swatter = garment_factory(basic=basic, name='Swatter', brand=brand)
+        sneakers = garment_factory(basic=basic, name='Sneakers', brand=brand)
+        jeans = garment_factory(basic=basic, name='Jeans', brand=brand)
 
         affiliate_item_factory(garment=shirt)
         affiliate_item_factory(garment=sweater)
+        affiliate_item_factory(garment=swatter)
         affiliate_item_factory(garment=sneakers)
         affiliate_item_factory(garment=jeans)
 
@@ -543,10 +547,10 @@ class TestBasePipeline:
         assert name_facets[0]['slug'] == 's'
         assert name_facets[1]['slug'] == 'j'
 
-        assert name_facets[0]['garment_ids'] == [sneakers.pk, sweater.pk]
+        assert name_facets[0]['garment_ids'] == [sneakers.pk, swatter.pk]
         assert name_facets[1]['garment_ids'] == [jeans.pk]
 
-        assert set([g['garment']['id'] for g in for_basic['garments']]) == set([sneakers.pk, sweater.pk, jeans.pk])
+        assert set([g['garment']['id'] for g in for_basic['garments']]) == set([sneakers.pk, swatter.pk, jeans.pk])
 
     def test_make_recommendations_empty(self, pipeline_profile_factory):
         """It returns empty recommendations for a default pipeline."""
