@@ -76,8 +76,9 @@ def bind_signal_handlers(namespace=''):
 
                 # Bind M2M-changed signals on the model's M2M fields
                 for field in model_class._meta.get_fields():
-                    if getattr(field, 'many_to_many', False) and hasattr(field, 'related'):
-                        m2m_changed.connect(query['refresh_fn'], sender=field.related.through, dispatch_uid=query['guid'])
+                    related = getattr(field, 'remote_field')
+                    if getattr(field, 'many_to_many', False) and hasattr(related, 'through'):
+                        m2m_changed.connect(query['refresh_fn'], sender=field.remote_field.through, dispatch_uid=query['guid'])
 
 
 def prime_cached_queries():
