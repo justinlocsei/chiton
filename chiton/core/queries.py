@@ -44,7 +44,7 @@ def cache_query(*model_classes, namespace='default'):
             cache.set(query_guid, query_fn(), None)
         for model_class in model_classes:
             for signal in REFRESH_SIGNALS:
-                signal.connect(refresh_query, sender=model_class, dispatch_uid=query_guid)
+                signal.connect(refresh_query, sender=model_class, dispatch_uid=query_guid, weak=False)
 
         # Add the query to the master list
         CACHED_QUERIES.append({
