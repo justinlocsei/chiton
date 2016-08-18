@@ -294,10 +294,14 @@ class TestUpdateAffiliateItemDetails:
                 assert not os.path.isfile(before_image.file.path)
 
                 update_affiliate_item_details(affiliate_item)
-                after_image = affiliate_item.images.all()[0]
+                after_images = affiliate_item.images.all()
+                assert after_images.count() == 1
 
+                after_image = after_images[0]
                 assert os.path.isfile(before_image.file.path)
                 assert os.path.isfile(after_image.file.path)
+
+                assert before_image.pk != after_image.pk
 
     def test_network_data_stock_records(self, affiliate_item, standard_size_factory):
         """It creates stock records for all sizes that match a standard size's number."""

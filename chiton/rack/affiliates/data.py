@@ -77,10 +77,9 @@ def _update_item_images(item, images):
         item (chiton.rack.models.AffiliateItem): An affiliate item
         images (list[dict]): The API response describing the item images
     """
-    existing_images = [
-        image for image in item.images.all()
-        if os.path.isfile(image.file.path)
-    ]
+    all_images = [image for image in item.images.all()]
+    missing_images = [image for image in all_images if not os.path.isfile(image.file.path)]
+    existing_images = [image for image in all_images if image not in missing_images]
 
     for image in images:
         existing_matches = [ei for ei in existing_images if ei.source_url == image['url']]
@@ -94,7 +93,7 @@ def _update_item_images(item, images):
 
     current_urls = [image['url'] for image in images]
     prune_images = [image for image in existing_images if image.source_url not in current_urls]
-    for image in prune_images:
+    for image in prune_images + missing_images:
         image.delete()
 
 
