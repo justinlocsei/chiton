@@ -4,7 +4,7 @@ from operator import itemgetter
 from django.conf import settings
 
 from chiton.closet.data import CARE_CHOICES
-from chiton.closet.models import Basic, Garment, make_branded_garment_name
+from chiton.closet.models import Basic, Brand, Garment, make_branded_garment_name
 from chiton.core.queries import cache_query
 from chiton.core.numbers import price_to_integer
 from chiton.core.uris import file_path_to_relative_url, join_url
@@ -422,7 +422,7 @@ def _get_ordered_categories():
     )
 
 
-@cache_query(AffiliateItem, AffiliateNetwork, Garment, ItemImage)
+@cache_query(AffiliateItem, AffiliateNetwork, Basic, Brand, Garment, ItemImage)
 def _get_deep_affiliate_items():
     """Get all affiliate items, with extended relations selected.
 
@@ -462,7 +462,7 @@ def _build_item_image_lookup_table():
     return lookup
 
 
-@cache_query(Basic)
+@cache_query(Basic, Category)
 def _build_basic_lookup_table():
     """Create a lookup table that maps basic slugs to basic data.
 
