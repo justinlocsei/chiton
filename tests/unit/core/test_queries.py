@@ -159,6 +159,12 @@ class TestCacheQuery(TestQueryCaching):
         garment.formalities.add(casual)
         assert count() == 1
 
+        garment.formalities.add(executive)
+        assert count() == 2
+
+        garment.formalities.remove(executive)
+        assert count() == 1
+
 
 class TestPrimeCachedQueries(TestQueryCaching):
 
