@@ -35,8 +35,11 @@ represented as JavaScript that maps directly to JSON:
     "log_level": "INFO",      // The log level to use
     "media_root": null,       // The root directory for media files
     "media_url": "/media/",   // The root URL for media files
-    "redis_db": null,         // The Redis database number
-    "redis_socket": null,     // The absolute path to the Redis socket
+    "redis": {
+        "db": null,   // The Redis database number
+        "host": null, // The Redis host
+        "port": null  // The Redis port
+    },
     "secret_key": null,       // The Django secret key to use
     "sentry_dsn": null,       // The DSN to use for tracking errors through Sentry
     "server_email": null,     // The email address from which server messages are sent

@@ -53,8 +53,7 @@ def _default_config():
         'log_level': 'INFO',
         'media_root': None,
         'media_url': '/media/',
-        'redis_db': None,
-        'redis_socket': None,
+        'redis': {},
         'secret_key': None,
         'sentry_dsn': None,
         'server_email': None,
@@ -89,8 +88,11 @@ def _validate_config(config):
         'log_level': All(str, Length(min=1), _LogLevel()),
         'media_root': All(str, Length(min=1), _AbsolutePath()),
         'media_url': All(str, Length(min=1), _MediaUrl()),
-        'redis_db': int,
-        'redis_socket': All(str, Length(min=1), _AbsolutePath()),
+        'redis': Schema({
+            'db': int,
+            'host': All(str, Length(min=1)),
+            'port': int
+        }),
         'secret_key': All(str, Length(min=1)),
         'sentry_dsn': All(str, Length(min=1)),
         'server_email': All(str, Length(min=1)),

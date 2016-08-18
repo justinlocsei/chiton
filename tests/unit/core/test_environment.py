@@ -248,29 +248,43 @@ class TestUseConfig:
         config = use_config({'media_url': 'http://example.com/'})
         assert config['media_url'] == 'http://example.com/'
 
-    def test_redis_db(self):
-        """It expects a Redis database number."""
-        config = use_config({'redis_db': 1})
-        assert config['redis_db'] == 1
+    def test_redis(self):
+        """It expects a Redis hash."""
+        config = use_config({
+            'redis': {
+                'db': 1,
+                'host': 'localhost',
+                'port': 6379
+            }
+        })
+        assert config['redis']['db'] == 1
 
         with pytest.raises(ConfigurationError):
-            use_config({'redis_db': '1'})
+            use_config({'redis': None})
 
-    def test_redis_socket(self):
-        """It expects a non-empty string for the redis socket's path."""
-        config = use_config({'redis_socket': '/tmp/redis.sock'})
-        assert config['redis_socket'] == '/tmp/redis.sock'
+    def test_redis_numeric(self):
+        """It expects numeric values for the database and port."""
+        for param in ['db', 'port']:
+            config = use_config({'redis': {param: 1}})
+            assert config['redis'][param] == 1
+
+            with pytest.raises(ConfigurationError):
+                use_config({'redis': {param: '1'}})
+
+    def test_redis_host(self):
+        """It expects a non-empty string for the Redis host."""
+        redis = {
+            'db': 1,
+            'host': '127.0.0.1',
+            'port': 6379
+        }
+
+        config = use_config({'redis': redis})
+        assert config['redis']['host'] == '127.0.0.1'
 
         with pytest.raises(ConfigurationError):
-            use_config({'redis_socket': ''})
-
-    def test_redis_socket_absolute(self):
-        """It expects an absolute path for the redis socket's path."""
-        config = use_config({'redis_socket': '/tmp/dir/redis.sock'})
-        assert config['redis_socket'] == '/tmp/dir/redis.sock'
-
-        with pytest.raises(ConfigurationError):
-            use_config({'redis_socket': 'redis.sock'})
+            redis['host'] = 127
+            use_config({'redis': redis})
 
     def test_secret_key(self):
         """It expects a non-empty string for the secret key."""
