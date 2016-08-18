@@ -1,5 +1,5 @@
 from django.core.cache import cache
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import m2m_changed, post_delete, post_save
 
 
 # A list of all cached queries
@@ -69,8 +69,15 @@ def bind_signal_handlers(namespace=''):
     for query in CACHED_QUERIES:
         if query['guid'].startswith(namespace_prefix):
             for model_class in query['model_classes']:
+
+                # Bind model signals on the model itself
                 for signal in MODEL_SIGNALS:
                     signal.connect(query['refresh_fn'], sender=model_class, dispatch_uid=query['guid'])
+
+                # Bind M2M-changed signals on the model's M2M fields
+                for field in model_class._meta.get_fields():
+                    if getattr(field, 'many_to_many', False) and hasattr(field, 'related'):
+                        m2m_changed.connect(query['refresh_fn'], sender=field.related.through, dispatch_uid=query['guid'])
 
 
 def prime_cached_queries():

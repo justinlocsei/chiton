@@ -138,6 +138,27 @@ class TestCacheQuery(TestQueryCaching):
         color_factory()
         assert counts() == (1, 2)
 
+    def test_refresh_m2m_updated(self, garment_factory, formality_factory):
+        """It refreshes the query whenever a many-to-many model is updated."""
+        @cache_query(Garment, namespace=NAMESPACE)
+        def count():
+            garments = Garment.objects.all().order_by('pk')
+            if garments.count():
+                return garments[0].formalities.count()
+            else:
+                return 0
+
+        bind_signal_handlers(NAMESPACE)
+
+        casual = formality_factory()
+        executive = formality_factory()
+
+        garment = garment_factory()
+        assert count() == 0
+
+        garment.formalities.add(casual)
+        assert count() == 1
+
 
 class TestPrimeCachedQueries(TestQueryCaching):
 
