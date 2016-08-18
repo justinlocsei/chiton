@@ -6,7 +6,7 @@ from django.db.models.signals import post_delete, post_save
 CACHED_QUERIES = []
 
 # All model signals that should trigger a cache refresh
-REFRESH_SIGNALS = (post_delete, post_save)
+MODEL_SIGNALS = (post_delete, post_save)
 
 # The separator used for namespaces
 NAMESPACE_SEPARATOR = ':'
@@ -29,6 +29,7 @@ def cache_query(*model_classes, namespace='default'):
         other_queries = len([q for q in CACHED_QUERIES if q['id'] == query_id])
         query_guid = '%s--%d' % (query_id, other_queries)
 
+        # Wrap the query in a get-or-set cache call
         def run_query():
             result = cache.get(query_guid)
             if result is None:
@@ -37,14 +38,10 @@ def cache_query(*model_classes, namespace='default'):
 
             return result
 
-        # Register a signal handler that refreshes the cached value when an
-        # involved model is changed
+        # Define a signal handler that refreshes the cached value
         def refresh_query(*args, **kwargs):
             cache.delete(query_guid)
             cache.set(query_guid, query_fn(), None)
-        for model_class in model_classes:
-            for signal in REFRESH_SIGNALS:
-                signal.connect(refresh_query, sender=model_class, dispatch_uid=query_guid, weak=False)
 
         # Add the query to the master list
         CACHED_QUERIES.append({
@@ -57,6 +54,23 @@ def cache_query(*model_classes, namespace='default'):
         return run_query
 
     return wrap_query
+
+
+def bind_signal_handlers(namespace=''):
+    """Register the signal handlers for all query models.
+
+    Keyword Args:
+        namespace (str): The namespace for which to register handlers
+    """
+    namespace_prefix = namespace
+    if namespace_prefix:
+        namespace_prefix = '%s%s' % (namespace, NAMESPACE_SEPARATOR)
+
+    for query in CACHED_QUERIES:
+        if query['guid'].startswith(namespace_prefix):
+            for model_class in query['model_classes']:
+                for signal in MODEL_SIGNALS:
+                    signal.connect(query['refresh_fn'], sender=model_class, dispatch_uid=query['guid'])
 
 
 def prime_cached_queries():
@@ -77,6 +91,6 @@ def unbind_signal_handlers(namespace=''):
 
     for query in CACHED_QUERIES:
         for model_class in query['model_classes']:
-            for signal in REFRESH_SIGNALS:
+            for signal in MODEL_SIGNALS:
                 if query['guid'].startswith(namespace_prefix):
                     signal.disconnect(None, sender=model_class, dispatch_uid=query['guid'])

@@ -1,7 +1,7 @@
 import pytest
 
-from chiton.closet.models import Brand, Color
-from chiton.core.queries import cache_query, prime_cached_queries, unbind_signal_handlers
+from chiton.closet.models import Brand, Color, Garment
+from chiton.core.queries import bind_signal_handlers, cache_query, prime_cached_queries, unbind_signal_handlers
 
 
 NAMESPACE = 'test_queries'
@@ -83,6 +83,8 @@ class TestCacheQuery(TestQueryCaching):
         def count_colors():
             return Color.objects.count()
 
+        bind_signal_handlers(NAMESPACE)
+
         color_factory()
         assert count_colors() == 1
 
@@ -94,6 +96,8 @@ class TestCacheQuery(TestQueryCaching):
         @cache_query(Color, namespace=NAMESPACE)
         def get_color_names():
             return list(Color.objects.values_list('name', flat=True))
+
+        bind_signal_handlers(NAMESPACE)
 
         color = color_factory(name='Blue')
         assert get_color_names() == ['Blue']
@@ -108,6 +112,8 @@ class TestCacheQuery(TestQueryCaching):
         def count_colors():
             return Color.objects.count()
 
+        bind_signal_handlers(NAMESPACE)
+
         color = color_factory()
         assert count_colors() == 1
 
@@ -119,6 +125,8 @@ class TestCacheQuery(TestQueryCaching):
         @cache_query(Brand, Color, namespace=NAMESPACE)
         def counts():
             return (Brand.objects.count(), Color.objects.count())
+
+        bind_signal_handlers(NAMESPACE)
 
         color_factory()
         assert counts() == (0, 1)
@@ -143,9 +151,76 @@ class TestPrimeCachedQueries(TestQueryCaching):
             call_count += 1
             return call_count
 
+        bind_signal_handlers(NAMESPACE)
+
         assert call_count == 0
         prime_cached_queries()
         assert call_count == 1
+
+
+class TestBindSignalHandlers(TestQueryCaching):
+
+    def test_binds_handlers(self, color_factory):
+        """It binds all model-change handlers."""
+        @cache_query(Color, namespace=NAMESPACE)
+        def count_colors():
+            return Color.objects.count()
+
+        color_factory()
+        assert count_colors() == 1
+
+        color_factory()
+        assert count_colors() == 1
+
+        bind_signal_handlers(NAMESPACE)
+        assert count_colors() == 1
+
+        color_factory()
+        assert count_colors() == 3
+
+    def test_namespace(self, color_factory):
+        """It can selectively bind namespaced queries."""
+        @cache_query(Color, namespace=NAMESPACE)
+        def count_colors():
+            return Color.objects.count()
+
+        @cache_query(Color, namespace=NAMESPACE_TWO)
+        def double_colors():
+            return Color.objects.count() * 2
+
+        assert count_colors() == 0
+        assert double_colors() == 0
+
+        color_factory()
+        assert count_colors() == 0
+        assert double_colors() == 0
+
+        bind_signal_handlers(NAMESPACE)
+
+        color_factory()
+        assert count_colors() == 2
+        assert double_colors() == 0
+
+        bind_signal_handlers(NAMESPACE_TWO)
+
+        color_factory()
+        assert count_colors() == 3
+        assert double_colors() == 6
+
+    def test_binds_idempotent(self, color_factory):
+        """It can accept multiple bind calls."""
+        @cache_query(Color, namespace=NAMESPACE)
+        def count_colors():
+            return Color.objects.count()
+
+        color_factory()
+        assert count_colors() == 1
+
+        bind_signal_handlers(NAMESPACE)
+        bind_signal_handlers(NAMESPACE)
+
+        color_factory()
+        assert count_colors() == 2
 
 
 class TestUnbindSignalHandlers(TestQueryCaching):
@@ -173,6 +248,9 @@ class TestUnbindSignalHandlers(TestQueryCaching):
         @cache_query(Color, namespace=NAMESPACE_TWO)
         def double_colors():
             return Color.objects.count() * 2
+
+        bind_signal_handlers(NAMESPACE)
+        bind_signal_handlers(NAMESPACE_TWO)
 
         assert count_colors() == 0
         assert double_colors() == 0
