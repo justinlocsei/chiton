@@ -10,8 +10,11 @@ def merge_shells(apps, schema_editor):
     Basic = apps.get_model('chiton_runway', 'Basic')
     Garment = apps.get_model('chiton_closet', 'Garment')
 
-    white_shell = Basic.objects.get(slug='white-shell')
-    black_shell = Basic.objects.get(slug='black-shell')
+    try:
+        white_shell = Basic.objects.get(slug='white-shell')
+        black_shell = Basic.objects.get(slug='black-shell')
+    except Basic.DoesNotExist:
+        return
 
     for garment in Garment.objects.filter(basic=black_shell):
         garment.basic = white_shell
