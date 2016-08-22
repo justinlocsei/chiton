@@ -28,25 +28,25 @@ represented as JavaScript that maps directly to JSON:
         "port": null,     // The port for the database
         "user": null      // The database user
     },
-    "debug": false,           // Whether to run in debug mode
-    "environment": null,      // The name of the current environment
-    "file_logging": false,    // Whether to log to a file
-    "log_file": null,         // The absolute path to the log file
-    "log_level": "INFO",      // The log level to use
-    "media_root": null,       // The root directory for media files
-    "media_url": "/media/",   // The root URL for media files
+    "debug": false,         // Whether to run in debug mode
+    "environment": null,    // The name of the current environment
+    "file_logging": false,  // Whether to log to a file
+    "log_file": null,       // The absolute path to the log file
+    "log_level": "INFO",    // The log level to use
+    "media_root": null,     // The root directory for media files
+    "media_url": "/media/", // The root URL for media files
     "redis": {
         "db": null,   // The Redis database number
         "host": null, // The Redis host
         "port": null  // The Redis port
     },
-    "secret_key": null,       // The Django secret key to use
-    "sentry_dsn": null,       // The DSN to use for tracking errors through Sentry
-    "server_email": null,     // The email address from which server messages are sent
-    "shopstyle_uid": null,    // The Shopstyle API UID
-    "static_root": null,      // The root directory for static files
-    "static_url": "/static/", // The root URL for static files
-    "track_errors": false,    // Whether to track errors through Sentry
+    "secret_key": null,                // The Django secret key to use
+    "sentry_dsn": null,                // The DSN to use for tracking errors through Sentry
+    "server_email": null,              // The email address from which server messages are sent
+    "shopstyle_uid": null,             // The Shopstyle API UID
+    "static_root": null,               // The root directory for static files
+    "static_url": "/static/",          // The root URL for static files
+    "track_errors": false,             // Whether to track errors through Sentry
     "trusted_proxy_ips": ["127.0.0.1"] // The IPs of all trusted proxies
 }
 ```
