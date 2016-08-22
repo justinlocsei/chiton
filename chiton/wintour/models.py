@@ -84,6 +84,7 @@ class Recommendation(models.Model):
     """A set of wardrobe recommendations generated from a profile."""
 
     profile = JSONField(verbose_name=_('The profile data'))
+    ip_address = models.GenericIPAddressField(verbose_name=_('IP address'), null=True, blank=True)
     created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
 
     class Meta:
