@@ -167,6 +167,8 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 WSGI_APPLICATION = 'chiton.wsgi.application'
 
+IPWARE_TRUSTED_PROXY_LIST = config['trusted_proxy_ips']
+
 # Third-Party API Credentials
 # ==============================================================================
 
