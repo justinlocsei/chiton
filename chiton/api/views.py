@@ -1,3 +1,5 @@
+from django.conf import settings
+from ipware.ip import get_ip
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,6 +19,7 @@ class Recommendations(APIView):
 
     def post(self, request, format=None):
         """Generate recommendations for a user."""
+        custom_ip = request.data.pop('client_ip_address', None)
         max_garments_per_group = request.data.pop('max_garments_per_group', None)
 
         try:
@@ -26,7 +29,8 @@ class Recommendations(APIView):
         except Exception as e:
             return Response({'errors': {'server': str(e)}}, status=status.HTTP_400_BAD_REQUEST)
 
-        Recommendation.objects.create(profile=profile)
+        ip_address = get_ip(request) if settings.CHITON_API_IS_PUBLIC else custom_ip
+        Recommendation.objects.create(profile=profile, ip_address=ip_address)
 
         recommendations = make_recommendations(profile, CorePipeline(), max_garments_per_group=max_garments_per_group)
         return Response(recommendations)

@@ -128,6 +128,76 @@ class TestRecommendations:
 
         assert response.status_code == status.HTTP_200_OK
 
+    def test_recommendations_ip_address_public(self, make_request, settings):
+        """It uses the client IP address for the stored recommendations when the API is public."""
+        settings.CHITON_API_IS_PUBLIC = True
+
+        with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:
+            PipelineProfile.return_value = {'pipeline': 'data'}
+
+            with mock.patch(MAKE_RECOMMENDATIONS_PATH) as make_recommendations:
+                make_recommendations.return_value = {'recommendation': 'data'}
+                make_request({
+                    'max_garments_per_group': 2,
+                    'request': 'body'
+                })
+
+                recommendations = Recommendation.objects.all()
+                assert len(recommendations) == 1
+
+                recommendation = recommendations[0]
+                assert recommendation.ip_address == '127.0.0.1'
+
+    def test_recommendations_ip_address_public_ignore_custom(self, make_request, settings):
+        """It ignores the custom IP address when the API is public."""
+        settings.CHITON_API_IS_PUBLIC = True
+
+        with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:
+            PipelineProfile.return_value = {'pipeline': 'data'}
+
+            with mock.patch(MAKE_RECOMMENDATIONS_PATH) as make_recommendations:
+                make_recommendations.return_value = {'recommendation': 'data'}
+                make_request({
+                    'client_ip_address': '1.2.3.4',
+                    'max_garments_per_group': 2,
+                    'request': 'body'
+                })
+
+                assert Recommendation.objects.all()[0].ip_address == '127.0.0.1'
+
+    def test_recommendations_ip_address_private(self, make_request, settings):
+        """It uses the custom IP address for the stored recommendations when the API is public."""
+        settings.CHITON_API_IS_PUBLIC = False
+
+        with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:
+            PipelineProfile.return_value = {'pipeline': 'data'}
+
+            with mock.patch(MAKE_RECOMMENDATIONS_PATH) as make_recommendations:
+                make_recommendations.return_value = {'recommendation': 'data'}
+                make_request({
+                    'client_ip_address': '1.2.3.4',
+                    'max_garments_per_group': 2,
+                    'request': 'body'
+                })
+
+                assert Recommendation.objects.all()[0].ip_address == '1.2.3.4'
+
+    def test_recommendations_ip_address_private_empty(self, make_request, settings):
+        """It uses a blank IP address when the API is private and no custom IP is found."""
+        settings.CHITON_API_IS_PUBLIC = False
+
+        with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:
+            PipelineProfile.return_value = {'pipeline': 'data'}
+
+            with mock.patch(MAKE_RECOMMENDATIONS_PATH) as make_recommendations:
+                make_recommendations.return_value = {'recommendation': 'data'}
+                make_request({
+                    'max_garments_per_group': 2,
+                    'request': 'body'
+                })
+
+                assert Recommendation.objects.all()[0].ip_address is None
+
     def test_recommendations_errors(self, make_request):
         """It returns field errors if the request is invalid."""
         with mock.patch(PIPELINE_PROFILE_PATH) as PipelineProfile:
