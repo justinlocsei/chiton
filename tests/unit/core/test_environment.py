@@ -377,3 +377,16 @@ class TestUseConfig:
         """It defaults to not tracking errors."""
         config = use_config()
         assert not config['track_errors']
+
+    def test_trusted_proxy_ips(self):
+        """It expects an array of strings for the trusted-proxy IPs."""
+        config = use_config({'trusted_proxy_ips': ['10.10.10.10']})
+        assert config['trusted_proxy_ips'] == ['10.10.10.10']
+
+        with pytest.raises(ConfigurationError):
+            use_config({'trusted_proxy_ips': '10.10.10.10'})
+
+    def test_trusted_proxy_ips_default(self):
+        """It defaults to trusting localhost."""
+        config = use_config()
+        assert config['trusted_proxy_ips'] == ['127.0.0.1']

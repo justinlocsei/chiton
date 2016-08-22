@@ -46,7 +46,8 @@ represented as JavaScript that maps directly to JSON:
     "shopstyle_uid": null,    // The Shopstyle API UID
     "static_root": null,      // The root directory for static files
     "static_url": "/static/", // The root URL for static files
-    "track_errors": false     // Whether to track errors through Sentry
+    "track_errors": false,    // Whether to track errors through Sentry
+    "trusted_proxy_ips": ["127.0.0.1"] // The IPs of all trusted proxies
 }
 ```
 

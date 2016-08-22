@@ -60,7 +60,8 @@ def _default_config():
         'shopstyle_uid': None,
         'static_root': None,
         'static_url': '/static/',
-        'track_errors': False
+        'track_errors': False,
+        'trusted_proxy_ips': ['127.0.0.1']
     }
 
 
@@ -99,7 +100,8 @@ def _validate_config(config):
         'shopstyle_uid': All(str, Length(min=1)),
         'static_root': All(str, Length(min=1), _AbsolutePath()),
         'static_url': All(str, Length(min=1), _MediaUrl()),
-        'track_errors': bool
+        'track_errors': bool,
+        'trusted_proxy_ips': [str]
     })(config)
 
 
