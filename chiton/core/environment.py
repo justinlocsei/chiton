@@ -53,6 +53,7 @@ def _default_config():
         'log_level': 'INFO',
         'media_root': None,
         'media_url': '/media/',
+        'public_api': False,
         'redis': {},
         'secret_key': None,
         'sentry_dsn': None,
@@ -89,6 +90,7 @@ def _validate_config(config):
         'log_level': All(str, Length(min=1), _LogLevel()),
         'media_root': All(str, Length(min=1), _AbsolutePath()),
         'media_url': All(str, Length(min=1), _MediaUrl()),
+        'public_api': bool,
         'redis': Schema({
             'db': int,
             'host': All(str, Length(min=1)),

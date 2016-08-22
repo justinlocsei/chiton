@@ -248,6 +248,19 @@ class TestUseConfig:
         config = use_config({'media_url': 'http://example.com/'})
         assert config['media_url'] == 'http://example.com/'
 
+    def test_public_api(self):
+        """It expects a boolean value for the API's public state."""
+        config = use_config({'public_api': True})
+        assert config['public_api']
+
+        with pytest.raises(ConfigurationError):
+            use_config({'public_api': 1})
+
+    def test_public_api_default(self):
+        """It defaults to a private API."""
+        config = use_config()
+        assert not config['public_api']
+
     def test_redis(self):
         """It expects a Redis hash."""
         config = use_config({

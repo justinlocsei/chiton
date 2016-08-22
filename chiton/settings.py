@@ -182,6 +182,7 @@ SHOPSTYLE_UID = config['shopstyle_uid']
 # ==============================================================================
 
 CHITON_ALLOW_API_BROWSING = config['allow_api_browsing']
+CHITON_API_IS_PUBLIC = config['public_api']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

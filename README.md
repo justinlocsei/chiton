@@ -35,6 +35,7 @@ represented as JavaScript that maps directly to JSON:
     "log_level": "INFO",    // The log level to use
     "media_root": null,     // The root directory for media files
     "media_url": "/media/", // The root URL for media files
+    "public_api": false,    // Whether the API is exposed to the public internet
     "redis": {
         "db": null,   // The Redis database number
         "host": null, // The Redis host
