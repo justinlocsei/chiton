@@ -1,11 +1,7 @@
 from chiton.rack.models import AffiliateItem
 
 
-# The percentage for the upper and lower price groups
-EXTREME_CUTOFF = 0.25
-
-
-def update_basic_price_points(basic):
+def update_basic_price_points(basic, cutoff=0.25):
     """Update the price points for a basic using the price of its offerings.
 
     This sets the budget and luxury points by examining the lower and upper
@@ -13,6 +9,9 @@ def update_basic_price_points(basic):
 
     Args:
         basic (chiton.runway.models.Basic): A basic
+
+    Keyword Args:
+        cutoff (float): The cutoff for the lower and upper price groups
 
     Returns:
         tuple: A two-tuple defining the budget start point and the luxury end point
@@ -26,7 +25,7 @@ def update_basic_price_points(basic):
     if not price_count:
         return (None, None)
 
-    cutoff_index = max(int(price_count * EXTREME_CUTOFF) - 1, 0)
+    cutoff_index = max(int(price_count * cutoff) - 1, 0)
     budget_end = prices[max(cutoff_index, 0)]
     luxury_start = prices[max(price_count - 1 - cutoff_index, 0)]
 

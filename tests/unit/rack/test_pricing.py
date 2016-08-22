@@ -9,7 +9,7 @@ from chiton.rack.pricing import update_basic_price_points
 class TestUpdateBasicPricePoints:
 
     def test_price_point_distribution(self, basic_factory, garment_factory, affiliate_item_factory):
-        """It sets the new budget and luxury points on the lower and upper quarter of garments."""
+        """It sets the new budget and luxury points on the lower and upper extremes of garments."""
         basic = basic_factory()
         garment = garment_factory(basic=basic)
         affiliate_item_factory(garment=garment, price=Decimal(10))
@@ -24,6 +24,21 @@ class TestUpdateBasicPricePoints:
 
         assert basic.budget_end == Decimal(10)
         assert basic.luxury_start == Decimal(1000)
+
+    def test_price_point_distribution_cutoff(self, basic_factory, garment_factory, affiliate_item_factory):
+        """It accepts a custom cutoff for the price extremes."""
+        basic = basic_factory()
+        garment = garment_factory(basic=basic)
+        for inc in range(10, 120, 10):
+            affiliate_item_factory(garment=garment, price=Decimal(inc))
+
+        update_basic_price_points(basic, cutoff=0.1)
+        assert basic.budget_end == Decimal(10)
+        assert basic.luxury_start == Decimal(110)
+
+        update_basic_price_points(basic, cutoff=0.2)
+        assert basic.budget_end == Decimal(20)
+        assert basic.luxury_start == Decimal(100)
 
     def test_price_return(self, basic_factory, garment_factory, affiliate_item_factory):
         """It returns the new price points as a two-tuple of the budget and luxury price."""
