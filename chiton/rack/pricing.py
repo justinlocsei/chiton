@@ -1,7 +1,7 @@
 from chiton.rack.models import AffiliateItem
 
 
-def update_basic_price_points(basic, cutoff=0.25):
+def update_basic_price_points(basic, cutoff=0.33):
     """Update the price points for a basic using the price of its offerings.
 
     This sets the budget and luxury points by examining the lower and upper
