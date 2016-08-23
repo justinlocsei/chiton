@@ -83,6 +83,7 @@ TEMPLATES = [
 
 DATABASES = {
     'default': {
+        'CONN_MAX_AGE': config['conn_max_age'],
         'ENGINE': 'django.db.backends.%s' % config['database']['engine'],
         'HOST': config['database'].get('host'),
         'NAME': config['database']['name'],
