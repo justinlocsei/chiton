@@ -78,6 +78,19 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'amazon_associates_tracking_id': 'tracking-id'})
 
+    def test_conn_max_age(self):
+        """It expects a boolean value for the age of DB connections."""
+        config = use_config({'conn_max_age': 20})
+        assert config['conn_max_age']
+
+        with pytest.raises(ConfigurationError):
+            use_config({'conn_max_age': '20'})
+
+    def test_conn_max_age_default(self):
+        """It defaults to zero seconds for the max connection age."""
+        config = use_config()
+        assert config['conn_max_age'] == 0
+
     def test_debug(self):
         """It expects a boolean value for the debug state."""
         config = use_config({'debug': True})

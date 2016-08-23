@@ -20,6 +20,7 @@ represented as JavaScript that maps directly to JSON:
     "amazon_associates_aws_access_key_id": null,     // The access key ID for the Amazon Associates AWS user
     "amazon_associates_tracking_id": null,           // The Amazon Associates tracking ID
     "amazon_associates_aws_secret_access_key": null, // The secret access key for the Amazon Associates AWS user
+    "conn_max_age": 0, // The maximum age of database connections
     "database": {
         "engine": null,   // The Django database adapter to use
         "host": null,     // The host for the database
