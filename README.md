@@ -64,6 +64,7 @@ The following management commands are available:
 * `chiton_dump_fixtures`: Create or update fixture files for core data.
 * `chiton_ensure_recommender_exists`: Ensure that an API user exists that can generate recommendations
 * `chiton_ensure_superuser_exists`: Ensure that a superuser exists with an email, username, and password provided as arguments.
+* `chiton_export_favicon`: Export the favicon to a file
 * `chiton_load_fixtures`: Load all fixtures for core data.
 * `chiton_refresh_affiliate_items`: Update the local cache of items from the affiliate APIs
 * `chiton_refresh_cache`: Clear the cache and prime it
