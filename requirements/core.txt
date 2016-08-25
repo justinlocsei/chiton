@@ -3,10 +3,10 @@ contextlib2==0.5.4
 Django==1.9.9
 django-admin-sortable2==0.6.4
 django-autoslug==1.9.3
-django-filter==0.13.0
+django-filter==0.14.0
 django-ipware==1.1.5
 django-redis==4.4.4
-djangorestframework==3.4.3
+djangorestframework==3.4.6
 inflection==0.3.1
 Pillow==3.3.1
 psycopg2==2.6.2
