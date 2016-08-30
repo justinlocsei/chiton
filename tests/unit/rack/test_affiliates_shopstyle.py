@@ -34,6 +34,16 @@ class TestShopstyleAffiliate:
 
         assert details['name'] == 'J.Crew Double-breasted blazer'
 
+    def test_request_details_url(self, shopstyle_api_request, settings):
+        """It returns the item's click URL in the details."""
+        settings.SHOPSTYLE_UID = 'uid3600-33034440-48'
+
+        with shopstyle_api_request():
+            details = Affiliate().request_details('471281504')
+
+        assert details['url'].startswith('https://api.shopstyle.com')
+        assert 'pid=uid3600-33034440-48' in details['url']
+
     def test_request_details_retailer(self, shopstyle_api_request):
         """It returns the item's retailer in its details."""
         with shopstyle_api_request():

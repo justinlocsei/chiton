@@ -61,7 +61,8 @@ class Affiliate(BaseAffiliate):
             'images': images,
             'name': parsed['brandedName'],
             'price': price.amount,
-            'retailer': parsed['retailer'].get('name', 'Shopstyle')
+            'retailer': parsed['retailer'].get('name', 'Shopstyle'),
+            'url': parsed['clickUrl']
         }
 
     def provide_raw(self, product_id):
