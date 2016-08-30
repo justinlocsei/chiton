@@ -34,7 +34,8 @@ class FullAffiliate(Affiliate):
             'images': self.images,
             'name': 'Details-%s' % guid,
             'price': Decimal('9.99'),
-            'retailer': 'Amazon'
+            'retailer': 'Amazon',
+            'url': 'http://example.com'
         }
 
 
@@ -47,7 +48,8 @@ class OutOfStockAffiliate(Affiliate):
             'images': [],
             'name': 'Item',
             'price': Decimal('9.99'),
-            'retailer': 'Amazon'
+            'retailer': 'Amazon',
+            'url': 'http://example.com'
         }
 
 
@@ -157,6 +159,17 @@ class TestUpdateAffiliateItemDetails:
             update_affiliate_item_details(affiliate_item)
 
         assert affiliate_item.name == 'Details-4321'
+
+    def test_network_data_url(self, affiliate_item_factory):
+        """It updates the item's URL if it differs from the stored one."""
+        affiliate_item = affiliate_item_factory(guid='1234', affiliate_url='http://example.org')
+        assert affiliate_item.affiliate_url == 'http://example.org'
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = FullAffiliate()
+            update_affiliate_item_details(affiliate_item)
+
+        assert affiliate_item.affiliate_url == 'http://example.com'
 
     def test_network_data_colors(self, affiliate_item):
         """It fetches details using the basic's primary and secondary colors, ordered by name."""
