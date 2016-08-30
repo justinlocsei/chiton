@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import urllib
 from urllib.error import HTTPError
 
 import bottlenose
@@ -72,7 +73,8 @@ class Affiliate(BaseAffiliate):
             'images': images,
             'name': item['ItemAttributes']['Title'],
             'price': price,
-            'retailer': 'Amazon'
+            'retailer': 'Amazon',
+            'url': urllib.parse.unquote(item['DetailPageURL'])
         }
 
     def provide_raw(self, asin):

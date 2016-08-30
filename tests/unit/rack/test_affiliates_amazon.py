@@ -73,6 +73,16 @@ class TestAmazonAffiliate:
 
         assert details['name'] == 'Tahari by ASL Baron Short Sleeve A-Line Dress, Red'
 
+    def test_request_details_url(self, amazon_api_request, settings):
+        """It returns a URL that contains the tracking ID."""
+        settings.AMAZON_ASSOCIATES_TRACKING_ID = 'coveryourbasics-test-20'
+
+        with amazon_api_request():
+            details = Affiliate().request_details('B00ZGRB7S6')
+
+        assert details['url'].startswith('http://www.amazon.com')
+        assert 'tag=coveryourbasics-test-20' in details['url']
+
     def test_request_details_retailer(self, amazon_api_request):
         """It uses a fixed retailer."""
         with amazon_api_request():
