@@ -46,6 +46,7 @@ class AffiliateItem(models.Model):
     price = PriceField(verbose_name=_('price'), null=True, blank=True, db_index=True)
     has_detailed_stock = models.BooleanField(verbose_name=('has detailed stock'), default=False)
     retailer = models.CharField(max_length=255, verbose_name=_('retailer'), db_index=True)
+    affiliate_url = models.TextField(verbose_name=_('affiliate URL'))
 
     class Meta:
         unique_together = ('guid', 'network')
