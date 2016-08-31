@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -14,7 +13,6 @@ class Person(models.Model):
 
     first_name = models.CharField(max_length=255, verbose_name=_('first name'))
     last_name = models.CharField(max_length=255, verbose_name=_('last name'))
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('user'))
 
     class Meta:
         ordering = ('last_name', 'first_name')
