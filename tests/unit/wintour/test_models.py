@@ -16,11 +16,6 @@ class TestPerson:
         person = Person.objects.create(first_name='John', last_name='Doe', user=john_doe)
         assert person.full_name == 'John Doe'
 
-    def test_slug(self, john_doe):
-        """It uses the person's full name as the slug."""
-        person = Person.objects.create(first_name='John', last_name='Doe', user=john_doe)
-        assert person.slug == 'john-doe'
-
     def test_str_full_name(self, john_doe):
         """It uses the person's full name for display."""
         person = Person.objects.create(first_name='John', last_name='Doe', user=john_doe)

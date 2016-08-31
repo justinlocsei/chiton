@@ -1,4 +1,3 @@
-from autoslug import AutoSlugField
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -10,17 +9,11 @@ from chiton.runway.models import Formality, Style
 from chiton.wintour import data
 
 
-def _slug_for_person(person):
-    """Create a slug for a Person model using the full name."""
-    return person.full_name
-
-
 class Person(models.Model):
     """A person who can receive recommendations."""
 
     first_name = models.CharField(max_length=255, verbose_name=_('first name'))
     last_name = models.CharField(max_length=255, verbose_name=_('last name'))
-    slug = AutoSlugField(max_length=255, populate_from=_slug_for_person, verbose_name=_('slug'), unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('user'))
 
     class Meta:
