@@ -1,3 +1,5 @@
+import sys
+
 from django.core.management.base import BaseCommand
 
 from chiton.rack.affiliates.bulk import bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
@@ -66,3 +68,6 @@ class Command(BaseCommand):
                 self.stderr.write(self.style.ERROR('* %s' % failed_update))
         else:
             self.stdout.write(self.style.SUCCESS('\nUpdated all %d items' % (total_count)))
+
+        if error_count:
+            sys.exit(1)
