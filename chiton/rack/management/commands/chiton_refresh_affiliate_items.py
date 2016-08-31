@@ -53,16 +53,16 @@ class Command(BaseCommand):
             label = item_labels[result.item_id]
             if result.is_error:
                 error_count += 1
-                self.stdout.write(self.style.ERROR('\n[!] %d/%d (%s)' % (index + 1, total_count, label)))
-                self.stdout.write(self.style.ERROR('--\n%s\n--\n' % result.details))
+                self.stderr.write(self.style.ERROR('\n[!] %d/%d (%s)' % (index + 1, total_count, label)))
+                self.stderr.write(self.style.ERROR('--\n%s\n--\n' % result.details))
                 failed_updates.append(label)
             else:
                 self.stdout.write('%d/%d (%s)' % (index + 1, total_count, label))
 
         if error_count:
-            self.stdout.write(self.style.ERROR('\nUpdated %d/%d items' % (total_count - error_count, total_count)))
-            self.stdout.write(self.style.ERROR('%d items could not be updated' % error_count))
+            self.stderr.write(self.style.ERROR('\nUpdated %d/%d items' % (total_count - error_count, total_count)))
+            self.stderr.write(self.style.ERROR('%d items could not be updated' % error_count))
             for failed_update in failed_updates:
-                self.stdout.write(self.style.ERROR('* %s' % failed_update))
+                self.stderr.write(self.style.ERROR('* %s' % failed_update))
         else:
             self.stdout.write(self.style.SUCCESS('\nUpdated all %d items' % (total_count)))
