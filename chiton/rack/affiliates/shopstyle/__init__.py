@@ -81,7 +81,7 @@ class Affiliate(BaseAffiliate):
             color_names (list): The names of the colors to search for
 
         Returns:
-            dict: Information on the image in the details image format
+            str: The URL for the image
         """
         image = None
         color_images = {}
@@ -104,11 +104,7 @@ class Affiliate(BaseAffiliate):
         if image is None:
             image = parsed['image']['sizes'][size_name]
 
-        return {
-            'height': image['actualHeight'],
-            'url': image['url'],
-            'width': image['actualWidth']
-        }
+        return image['url']
 
     def _check_stock(self, parsed, color_names):
         """Return the unique names of all available sizes.
