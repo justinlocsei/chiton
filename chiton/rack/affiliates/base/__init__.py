@@ -60,6 +60,28 @@ class Affiliate:
 
         return details
 
+    def request_thumbnails(self, guid):
+        """Request all thumbnails for an item.
+
+        Args:
+            guid (str): The item's unique ID
+
+        Returns:
+            list: The URLs of all thumbnails
+        """
+        return self.provide_thumbnails(guid)
+
+    def request_images(self, guid):
+        """Request all full-size images for an item.
+
+        Args:
+            guid (str): The item's unique ID
+
+        Returns:
+            list: The URLs of all images
+        """
+        return self.provide_images(guid)
+
     def request_raw(self, guid):
         """Request the raw API response for an item.
 
@@ -99,6 +121,28 @@ class Affiliate:
 
         Returns:
             chiton.rack.affiliates.responses.ItemDetails: Information on the item's overview
+        """
+        raise NotImplementedError()
+
+    def provide_thumbnails(self, guid):
+        """Allow a child affiliate to return an item's thumbnails.
+
+        Args:
+            guid (str): The item's GUID
+
+        Returns:
+            list: The URLs for all thumbnails
+        """
+        raise NotImplementedError()
+
+    def provide_images(self, guid):
+        """Allow a child affiliate to return an item's images.
+
+        Args:
+            guid (str): The item's GUID
+
+        Returns:
+            list: The URLs for all images
         """
         raise NotImplementedError()
 

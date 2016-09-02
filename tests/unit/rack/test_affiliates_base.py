@@ -124,6 +124,32 @@ class TestBaseAffiliate:
         with pytest.raises(NotImplementedError):
             DefaultAffiliate().request_details('guid')
 
+    def test_request_thumbnails(self):
+        """It returns a child affiliate's thumbnail URLs."""
+        class Child(Affiliate):
+            def provide_thumbnails(self, guid):
+                return ['http://example.com']
+
+        assert Child().request_thumbnails('guid') == ['http://example.com']
+
+    def test_request_thumbnails_empty(self):
+        """It raises an error when an affiliate does not provide thumbnails."""
+        with pytest.raises(NotImplementedError):
+            DefaultAffiliate().request_thumbnails('guid')
+
+    def test_request_images(self):
+        """It returns a child affiliate's image URLs."""
+        class Child(Affiliate):
+            def provide_images(self, guid):
+                return ['http://example.com']
+
+        assert Child().request_images('guid') == ['http://example.com']
+
+    def test_request_images_empty(self):
+        """It raises an error when an affiliate does not provide images."""
+        with pytest.raises(NotImplementedError):
+            DefaultAffiliate().request_images('guid')
+
     def test_request_raw(self):
         """It returns a child affiliate's raw API response."""
         class Child(Affiliate):
