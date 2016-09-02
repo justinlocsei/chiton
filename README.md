@@ -29,16 +29,16 @@ represented as JavaScript that maps directly to JSON:
         "port": null,     // The port for the database
         "user": null      // The database user
     },
-    "debug": false,         // Whether to run in debug mode
-    "encryption_key": null, // The base-64 encoded encryption key
-    "environment": null,    // The name of the current environment
-    "file_logging": false,  // Whether to log to a file
-    "log_file": null,       // The absolute path to the log file
-    "log_level": "INFO",    // The log level to use
-    "media_root": null,     // The root directory for media files
-    "media_url": "/media/", // The root URL for media files
+    "debug": false,                  // Whether to run in debug mode
+    "encryption_key": null,          // The base-64 encoded encryption key
+    "environment": null,             // The name of the current environment
+    "file_logging": false,           // Whether to log to a file
+    "log_file": null,                // The absolute path to the log file
+    "log_level": "INFO",             // The log level to use
+    "media_root": null,              // The root directory for media files
+    "media_url": "/media/",          // The root URL for media files
     "previous_encryption_key": null, // The base-64 encoded optional previous encryption key
-    "public_api": false,    // Whether the API is exposed to the public internet
+    "public_api": false,             // Whether the API is exposed to the public internet
     "redis": {
         "db": null,   // The Redis database number
         "host": null, // The Redis host
