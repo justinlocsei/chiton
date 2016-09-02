@@ -142,7 +142,7 @@ class Affiliate(BaseAffiliate):
             color_names (list): The names of the colors to search for
 
         Returns:
-            dict: Information on the image in the details image format
+            str: The URL of the image
         """
         image = None
         variations = parsed['Variations']['Item']
@@ -169,11 +169,7 @@ class Affiliate(BaseAffiliate):
                     image = variation[size_name]
                     break
 
-        return {
-            'height': int(image['Height']['#text']),
-            'url': image['URL'],
-            'width': int(image['Width']['#text'])
-        }
+        return image['URL']
 
     def _validate_response(self, response, asin):
         """Raise a lookup error if a response is invalid.

@@ -112,14 +112,8 @@ class TestAmazonAffiliate:
         with amazon_api_request():
             details = Affiliate().request_details('B00YJJ4SNS')
 
-        image_urls = [image['url'] for image in details['images']]
-        valid_urls = [url for url in image_urls if '.jpg' in url]
+        valid_urls = [url for url in details['images'] if '.jpg' in url]
         assert len(set(valid_urls)) == 2
-
-        by_size = sorted(details['images'], key=lambda i: i['height'])
-
-        assert by_size[0]['width'] < by_size[1]['width']
-        assert by_size[0]['height'] < by_size[1]['height']
 
     def test_request_details_image_color(self, amazon_api_request):
         """It returns color-specific images when possible."""
@@ -130,16 +124,16 @@ class TestAmazonAffiliate:
             green = affiliate.request_details('B00YJJ4SNS', colors=['Green'])
             missing = affiliate.request_details('B00YJJ4SNS', colors=['Orange Green'])
 
-        assert '.jpg' in default['images'][0]['url']
-        assert '.jpg' in default['images'][1]['url']
-        assert '.jpg' in green['images'][0]['url']
-        assert '.jpg' in green['images'][1]['url']
+        assert '.jpg' in default['images'][0]
+        assert '.jpg' in default['images'][1]
+        assert '.jpg' in green['images'][0]
+        assert '.jpg' in green['images'][1]
 
-        assert default['images'][0]['url'] != green['images'][0]['url']
-        assert default['images'][1]['url'] != green['images'][1]['url']
+        assert default['images'][0] != green['images'][0]
+        assert default['images'][1] != green['images'][1]
 
-        assert default['images'][0]['url'] == missing['images'][0]['url']
-        assert default['images'][1]['url'] == missing['images'][1]['url']
+        assert default['images'][0] == missing['images'][0]
+        assert default['images'][1] == missing['images'][1]
 
     def test_request_details_image_color_preference(self, amazon_api_request):
         """It gets the image for the first color in the list."""
@@ -151,29 +145,29 @@ class TestAmazonAffiliate:
             black_first = affiliate.request_details('B00YJJ4SNS', colors=['Black', 'Green'])
             green_first = affiliate.request_details('B00YJJ4SNS', colors=['Green', 'Black'])
 
-        assert black['images'][0]['url'] != green['images'][0]['url']
-        assert black['images'][1]['url'] != green['images'][1]['url']
+        assert black['images'][0] != green['images'][0]
+        assert black['images'][1] != green['images'][1]
 
-        assert green_first['images'][0]['url'] == green['images'][0]['url']
-        assert green_first['images'][1]['url'] == green['images'][1]['url']
-        assert black_first['images'][0]['url'] == black['images'][0]['url']
-        assert black_first['images'][1]['url'] == black['images'][1]['url']
+        assert green_first['images'][0] == green['images'][0]
+        assert green_first['images'][1] == green['images'][1]
+        assert black_first['images'][0] == black['images'][0]
+        assert black_first['images'][1] == black['images'][1]
 
     def test_request_details_image_incomplete(self, amazon_api_request):
         """It handles item variations that lack full image sets for a requested color."""
         with amazon_api_request():
             details = Affiliate().request_details('B00NZJJM1Q', colors=['Black'])
 
-        assert '.jpg' in details['images'][0]['url']
-        assert '.jpg' in details['images'][1]['url']
+        assert '.jpg' in details['images'][0]
+        assert '.jpg' in details['images'][1]
 
     def test_request_details_image_missing(self, amazon_api_request):
         """It falls back to variant items when the main item does not provide image data."""
         with amazon_api_request():
             details = Affiliate().request_details('B0116QTP20', colors=['Black'])
 
-        assert '.jpg' in details['images'][0]['url']
-        assert '.jpg' in details['images'][1]['url']
+        assert '.jpg' in details['images'][0]
+        assert '.jpg' in details['images'][1]
 
     def test_request_details_availability(self, amazon_api_request):
         """It marks every item as globally available."""
