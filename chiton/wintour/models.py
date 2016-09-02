@@ -15,6 +15,7 @@ class Person(models.Model):
     first_name = models.CharField(max_length=255, verbose_name=_('first name'), null=True, blank=True)
     last_name = models.CharField(max_length=255, verbose_name=_('last name'), null=True, blank=True)
     encrypted_email = models.TextField(verbose_name=_('encrypted email'))
+    joined = models.DateTimeField(verbose_name=_('joined'), auto_now_add=True)
 
     class Meta:
         ordering = ('last_name', 'first_name')
