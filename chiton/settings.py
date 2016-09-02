@@ -1,3 +1,4 @@
+from base64 import b64decode
 import json
 import os
 
@@ -206,5 +207,9 @@ else:
 # Encryption
 # ==============================================================================
 
-CHITON_ENCRYPTION_KEY = config['encryption_key']
-CHITON_PREVIOUS_ENCRYPTION_KEY = config['previous_encryption_key']
+CHITON_ENCRYPTION_KEY = b64decode(config['encryption_key'])
+
+if config['previous_encryption_key']:
+    CHITON_PREVIOUS_ENCRYPTION_KEY = b64decode(config['previous_encryption_key'])
+else:
+    CHITON_PREVIOUS_ENCRYPTION_KEY = None
