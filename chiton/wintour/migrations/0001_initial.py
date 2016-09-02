@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import autoslug.fields
-import chiton.wintour.models
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
