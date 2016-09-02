@@ -46,9 +46,7 @@ class Affiliate(BaseAffiliate):
         parsed = self._validate_response(response, product_id)
 
         price = Money(str(parsed.get('salePrice', parsed['price'])), USD)
-
-        image_searches = [self._find_image(parsed, size, color_names) for size in IMAGE_SIZES]
-        images = [image for image in image_searches if image]
+        images = [self._find_color_image(parsed, size, color_names) for size in IMAGE_SIZES]
 
         found_sizes = self._check_stock(parsed, color_names)
         if found_sizes:
@@ -69,7 +67,7 @@ class Affiliate(BaseAffiliate):
         response = self._request_product(product_id)
         return self._validate_response(response, product_id)
 
-    def _find_image(self, parsed, size_name, color_names):
+    def _find_color_image(self, parsed, size_name, color_names):
         """Find an image of a given size for an item of a given color.
 
         If no explicit image of the item in the given color can be found, this
