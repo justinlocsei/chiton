@@ -71,29 +71,28 @@ def update_affiliate_item_details(item):
     return item
 
 
-def _update_item_images(item, images):
+def _update_item_images(item, image_urls):
     """Update the image associated with an affiliate item.
 
     Args:
         item (chiton.rack.models.AffiliateItem): An affiliate item
-        images (list[dict]): The API response describing the item images
+        image_urls (list[str]): The URLs of all item images
     """
     all_images = [image for image in item.images.all()]
     missing_images = [image for image in all_images if not os.path.isfile(image.file.path)]
     existing_images = [image for image in all_images if image not in missing_images]
 
-    for image in images:
-        existing_matches = [ei for ei in existing_images if ei.source_url == image['url']]
+    for image_url in image_urls:
+        existing_matches = [ei for ei in existing_images if ei.source_url == image_url]
         if not existing_matches:
-            item_image = ItemImage(item=item, source_url=image['url'])
+            item_image = ItemImage(item=item, source_url=image_url)
 
-            image_path = os.path.join(str(item.pk), image['url'].split('/')[-1])
-            item_image.file.save(image_path, _download_image(image['url']))
+            image_path = os.path.join(str(item.pk), image_url.split('/')[-1])
+            item_image.file.save(image_path, _download_image(image_url))
 
             item_image.save()
 
-    current_urls = [image['url'] for image in images]
-    prune_images = [image for image in existing_images if image.source_url not in current_urls]
+    prune_images = [image for image in existing_images if image.source_url not in image_urls]
     for image in prune_images + missing_images:
         image.delete()
 

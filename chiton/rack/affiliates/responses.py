@@ -13,14 +13,6 @@ def _SizeNumber():
     return validator
 
 
-# The dimensions and URL for an item's image
-ItemImage = define_data_shape({
-    V.Required('height'): int,
-    V.Required('url'): V.All(str, V.Length(min=1)),
-    V.Required('width'): int
-})
-
-
 # Details of an item's availability in a particular size
 ItemAvailability = define_data_shape({
     'is_petite': bool,
@@ -46,7 +38,7 @@ ItemOverview = define_data_shape({
 # Details of an affiliate item returned by its API
 ItemDetails = define_data_shape({
     V.Required('availability'): V.Any([ItemAvailability], bool),
-    V.Required('images'): [ItemImage],
+    V.Required('images'): [str],
     V.Required('name'): V.All(str, V.Length(min=1)),
     V.Required('price'): Decimal,
     V.Required('retailer'): str,

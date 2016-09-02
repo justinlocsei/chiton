@@ -3,7 +3,7 @@ from decimal import Decimal
 import pytest
 
 from chiton.core.exceptions import FormatError
-from chiton.rack.affiliates.responses import ItemAvailability, ItemDetails, ItemImage, ItemOverview
+from chiton.rack.affiliates.responses import ItemAvailability, ItemDetails, ItemOverview
 
 
 class TestItemAvailability:
@@ -65,17 +65,11 @@ class TestItemDetails:
         assert details['availability'][0]['size'] == 8
 
     def test_valid_image(self, valid_details):
-        """It can accept image records."""
-        image_data = {
-            'height': 100,
-            'url': 'http://example.com',
-            'width': 100
-        }
-
-        valid_details['images'] = [image_data]
+        """It can accept image URLs."""
+        valid_details['images'] = ['http://example.com']
 
         details = ItemDetails(valid_details)
-        assert details['images'] == [image_data]
+        assert details['images'] == ['http://example.com']
 
     def test_invalid_name(self, valid_details):
         """It requires a non-empty string for the name."""
@@ -111,28 +105,4 @@ class TestItemOverview:
             ItemOverview({
                 'guid': '1234',
                 'name': ''
-            })
-
-
-class TestItemImage:
-
-    def test_valid(self):
-        """It accepts a valid image."""
-        image = ItemImage({
-            'height': 100,
-            'url': 'http://example.com',
-            'width': 100
-        })
-
-        assert image['height'] == 100
-        assert image['url'] == 'http://example.com'
-        assert image['width'] == 100
-
-    def test_invalid_url(self):
-        """It requires a non-empty string for the URL."""
-        with pytest.raises(FormatError):
-            ItemImage({
-                'height': 100,
-                'url': '',
-                'width': 100
             })

@@ -195,11 +195,7 @@ class TestUpdateAffiliateItemDetails:
         """It downloads item images and uses their actual dimensions."""
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             affiliate = FullAffiliate()
-            affiliate.images = [{
-                'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
-                'height': 100,
-                'width': 100
-            }]
+            affiliate.images = ['https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg']
 
             create_affiliate.return_value = affiliate
             with record_request():
@@ -220,11 +216,7 @@ class TestUpdateAffiliateItemDetails:
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             with record_request():
                 affiliate = FullAffiliate()
-                affiliate.images = [{
-                    'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
-                    'height': 100,
-                    'width': 100
-                }]
+                affiliate.images = ['https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg']
 
                 create_affiliate.return_value = affiliate
                 update_affiliate_item_details(affiliate_item)
@@ -232,18 +224,12 @@ class TestUpdateAffiliateItemDetails:
                 assert affiliate_item.images.count() == 1
                 original_image = affiliate_item.images.all()[0]
 
-                affiliate.images[0]['height'] = 200
-                affiliate.images[0]['width'] = 200
                 update_affiliate_item_details(affiliate_item)
 
                 assert affiliate_item.images.count() == 1
                 original_second_image = affiliate_item.images.all()[0]
 
-                affiliate.images.append({
-                    'url': 'https://s3.amazonaws.com/chiton-test-assets/image-64x64.jpg',
-                    'height': 100,
-                    'width': 100
-                })
+                affiliate.images.append('https://s3.amazonaws.com/chiton-test-assets/image-64x64.jpg')
                 update_affiliate_item_details(affiliate_item)
 
                 assert affiliate_item.images.count() == 2
@@ -266,11 +252,7 @@ class TestUpdateAffiliateItemDetails:
         with record_request():
             with mock.patch(CREATE_AFFILIATE) as create_affiliate:
                 affiliate = FullAffiliate()
-                affiliate.images = [{
-                    'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
-                    'height': 100,
-                    'width': 100
-                }]
+                affiliate.images = ['https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg']
 
                 create_affiliate.return_value = affiliate
                 update_affiliate_item_details(affiliate_item)
@@ -291,11 +273,7 @@ class TestUpdateAffiliateItemDetails:
         """It re-downloads item images that lack a local image file."""
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:
             affiliate = FullAffiliate()
-            affiliate.images = [{
-                'url': 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg',
-                'height': 100,
-                'width': 100
-            }]
+            affiliate.images = ['https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg']
 
             create_affiliate.return_value = affiliate
             with record_request():

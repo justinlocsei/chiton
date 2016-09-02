@@ -73,11 +73,7 @@ class TestBaseAffiliate:
                 color = colors[0] if colors else None
                 return {
                     'availability': True,
-                    'images': [{
-                        'height': 100,
-                        'url': 'http://%s-%s.com' % (guid, color),
-                        'width': 100
-                    }],
+                    'images': ['http://%s-%s.com' % (guid, color)],
                     'name': 'Item Name',
                     'price': Decimal('12.99'),
                     'retailer': 'Amazon',
@@ -99,13 +95,8 @@ class TestBaseAffiliate:
         assert without_color['availability']
         assert with_color['availability']
 
-        assert without_color['images'][0]['height'] == 100
-        assert without_color['images'][0]['width'] == 100
-        assert with_color['images'][0]['height'] == 100
-        assert with_color['images'][0]['width'] == 100
-
-        assert without_color['images'][0]['url'] == 'http://nocolor-None.com'
-        assert with_color['images'][0]['url'] == 'http://color-Black.com'
+        assert without_color['images'][0] == 'http://nocolor-None.com'
+        assert with_color['images'][0] == 'http://color-Black.com'
 
     def test_request_details_error(self):
         """It raises an error when the details have an invalid format."""
