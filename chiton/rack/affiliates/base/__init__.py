@@ -68,6 +68,9 @@ class Affiliate:
 
         Returns:
             list: The URLs of all images
+
+        Raises:
+            chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
         """
         return self.provide_images(guid)
 
