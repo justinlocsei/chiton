@@ -161,6 +161,14 @@ class TestUseConfig:
         with pytest.raises(ConfigurationError):
             use_config({'default_email': ''})
 
+    def test_encryption_key(self):
+        """It expects a non-empty string for the encryption key."""
+        config = use_config({'encryption_key': 'abcd1234'})
+        assert config['encryption_key'] == 'abcd1234'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'encryption_key': ''})
+
     def test_environment(self):
         """It expects a non-empty string for the environment name."""
         config = use_config({'environment': 'staging'})
@@ -260,6 +268,17 @@ class TestUseConfig:
         """It allows a media URL to be an absolute URL."""
         config = use_config({'media_url': 'http://example.com/'})
         assert config['media_url'] == 'http://example.com/'
+
+    def test_previous_encryption_key(self):
+        """It expects a non-empty string for the optional previous encryption key."""
+        config = use_config()
+        assert config['previous_encryption_key'] is None
+
+        config = use_config({'previous_encryption_key': 'abcd1234'})
+        assert config['previous_encryption_key'] == 'abcd1234'
+
+        with pytest.raises(ConfigurationError):
+            use_config({'previous_encryption_key': ''})
 
     def test_public_api(self):
         """It expects a boolean value for the API's public state."""

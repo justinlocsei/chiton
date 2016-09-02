@@ -202,3 +202,9 @@ else:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
         'rest_framework.renderers.JSONRenderer',
     )
+
+# Encryption
+# ==============================================================================
+
+CHITON_ENCRYPTION_KEY = config['encryption_key']
+CHITON_PREVIOUS_ENCRYPTION_KEY = config['previous_encryption_key']
