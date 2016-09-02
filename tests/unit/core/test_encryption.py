@@ -121,3 +121,16 @@ class TestRekey():
 
         with pytest.raises(EncryptionError):
             rekey(encrypted, old_key=old_key, new_key=b'1' * 31)
+
+    def test_rekey_defaults(self, settings):
+        """It uses the settings for the default old and new key."""
+        old_key = b'0' * 32
+        new_key = b'1' * 32
+
+        settings.CHITON_ENCRYPTION_KEY = new_key
+        settings.CHITON_PREVIOUS_ENCRYPTION_KEY = old_key
+
+        encrypted = encrypt('message', key=old_key)
+        rekeyed = rekey(encrypted)
+
+        assert decrypt(rekeyed) == 'message'

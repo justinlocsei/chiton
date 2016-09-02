@@ -81,8 +81,8 @@ def rekey(encrypted, old_key=None, new_key=None):
     Raises:
         chiton.core.encryption.EncryptionError: If the re-encryption fails
     """
-    decrypted_string = decrypt(encrypted, key=old_key)
-    return encrypt(decrypted_string, key=new_key)
+    decrypted_string = decrypt(encrypted, key=old_key or settings.CHITON_PREVIOUS_ENCRYPTION_KEY)
+    return encrypt(decrypted_string, key=new_key or settings.CHITON_ENCRYPTION_KEY)
 
 
 def _create_secret_box(key=None):
