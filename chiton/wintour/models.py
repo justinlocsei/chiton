@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from chiton.core.encryption import decrypt, encrypt
 from chiton.closet.data import CARE_CHOICES
 from chiton.closet.models import StandardSize
 from chiton.runway.models import Formality, Style
@@ -32,6 +33,24 @@ class Person(models.Model):
         """
         parts = [self.first_name, self.last_name]
         return ' '.join([p or '' for p in parts if p])
+
+    @property
+    def email(self):
+        """The user's email address.
+
+        Returns:
+            str: A decrypted email address
+        """
+        return decrypt(self.encrypted_email)
+
+    @email.setter
+    def email(self, value):
+        """Encrypt the user's email address.
+
+        Args:
+            value (str): A non-encrypted email address
+        """
+        self.encrypted_email = encrypt(value)
 
 
 class FormalityExpectation(models.Model):
