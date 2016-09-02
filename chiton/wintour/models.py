@@ -11,8 +11,8 @@ from chiton.wintour import data
 class Person(models.Model):
     """A person who can receive recommendations."""
 
-    first_name = models.CharField(max_length=255, verbose_name=_('first name'))
-    last_name = models.CharField(max_length=255, verbose_name=_('last name'))
+    first_name = models.CharField(max_length=255, verbose_name=_('first name'), null=True, blank=True)
+    last_name = models.CharField(max_length=255, verbose_name=_('last name'), null=True, blank=True)
 
     class Meta:
         ordering = ('last_name', 'first_name')
@@ -30,7 +30,7 @@ class Person(models.Model):
             str: The person's full name
         """
         parts = [self.first_name, self.last_name]
-        return ' '.join([p for p in parts if p])
+        return ' '.join([p or '' for p in parts if p])
 
 
 class FormalityExpectation(models.Model):
