@@ -1,0 +1,59 @@
+.c--image-changer {
+
+}
+
+.c--image-changer__choices {
+
+}
+
+.c--image-changer__choice {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.c--image-changer__choice + .c--image-changer__choice {
+    margin-left: 0.5em;
+}
+
+.c--image-changer__input {
+    clip: rect(1px, 1px, 1px, 1px);
+    display: block;
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+}
+
+.c--image-changer__select {
+    border: 3px solid transparent;
+    cursor: pointer;
+    display: block;
+}
+
+.c--image-changer__select:hover {
+    border-color: #eee;
+}
+
+.c--image-changer__image {
+    display: block;
+    max-width: 100%;
+}
+
+.c--image-changer__buttons {
+    float: right;
+    margin-left: 3em;
+}
+
+.c--image-changer__submit {
+    background: #417690;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.5em;
+    padding: 1em 2em;
+}
+
+.c--image-changer__input:checked + .c--image-changer__select {
+    border-color: #79aec8;
+}

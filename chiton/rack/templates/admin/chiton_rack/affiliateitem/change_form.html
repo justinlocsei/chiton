@@ -13,4 +13,9 @@
             {% trans "API information" %}
         </a>
     </li>
+    <li>
+        <a href="{% url 'admin:affiliate-item-customize-images' original.pk|admin_urlquote %}" target="_blank">
+            {% trans "Customize Images" %}
+        </a>
+    </li>
 {% endblock %}

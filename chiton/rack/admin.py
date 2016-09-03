@@ -12,6 +12,7 @@ from pygments.formatters import HtmlFormatter
 from chiton.core.admin import site
 from chiton.rack import models
 from chiton.rack.affiliates import create_affiliate
+from chiton.rack.affiliates.data import update_affiliate_item_details
 from chiton.rack.forms import AffiliateItemURLForm
 
 
@@ -32,7 +33,8 @@ class AffiliateItemAdmin(admin.ModelAdmin):
     def get_urls(self):
         core = super().get_urls()
         custom = [
-            url(r'^(?P<pk>\d+)/api/$', self.admin_site.admin_view(self.api_details), name='affiliate-item-api-details')
+            url(r'^(?P<pk>\d+)/api/$', self.admin_site.admin_view(self.api_details), name='affiliate-item-api-details'),
+            url(r'^(?P<pk>\d+)/images/$', self.admin_site.admin_view(self.customize_images), name='affiliate-item-customize-images')
         ]
         return custom + core
 
@@ -50,6 +52,25 @@ class AffiliateItemAdmin(admin.ModelAdmin):
             self.admin_site.each_context(request),
             api_response_json=api_json,
             api_response_styles=api_styles,
+            item=item,
+            title=item.name
+        ))
+
+    def customize_images(self, request, pk):
+        item = models.AffiliateItem.objects.get(pk=pk)
+        affiliate = create_affiliate(slug=item.network.slug)
+
+        if request.POST:
+            update_affiliate_item_details(item, images=request.POST.getlist('images'))
+            item.refresh_from_db()
+
+        images = affiliate.request_images(item.guid)
+        current_urls = item.images.all().values_list('source_url', flat=True)
+
+        return TemplateResponse(request, 'admin/chiton_rack/affiliateitem/customize_images.html', dict(
+            self.admin_site.each_context(request),
+            current_images=current_urls,
+            images=images,
             item=item,
             title=item.name
         ))

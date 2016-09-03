@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+
+{% load admin_static %}
+{% load admin_urls i18n %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'rack/css/images.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <form class="c--image-changer" method="POST" action="{% url 'admin:affiliate-item-customize-images' item.pk|admin_urlquote %}">
+        {% csrf_token %}
+
+        <div class="c--image-changer__buttons">
+            <button type="submit" class="c--image-changer__submit">{% trans "Customize Images" %}</button>
+        </div>
+
+        <ul class="c--image-changer__choices">
+            {% for image in images %}
+                <li class="c--image-changer__choice">
+                    <input type="checkbox" class="c--image-changer__input" id="image-{{ forloop.counter }}" name="images" value="{{ image }}" {% if image in current_images %}checked{% endif %}>
+                    <label class="c--image-changer__select" for="image-{{ forloop.counter }}">
+                        <img class="c--image-changer__image" src="{{ image }}" />
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
+{% endblock %}
