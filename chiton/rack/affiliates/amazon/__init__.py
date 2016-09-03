@@ -64,9 +64,7 @@ class Affiliate(BaseAffiliate):
             raise LookupError('Details may not be provided for a child ASIN')
 
         price = self._calculate_price(item['Variations']['Item'])
-
-        image_searches = [self._find_image(item, size, colors) for size in IMAGE_SIZES]
-        images = [image for image in image_searches if image]
+        images = [self._find_color_image(item, size, colors) for size in IMAGE_SIZES]
 
         return {
             'availability': True,
@@ -130,7 +128,7 @@ class Affiliate(BaseAffiliate):
         avg_price = total_price / len(variations)
         return Decimal('%.02f' % (avg_price / 100))
 
-    def _find_image(self, parsed, size_name, color_names):
+    def _find_color_image(self, parsed, size_name, color_names):
         """Find an image of a given size for an item of a given color.
 
         If no explicit image of the item in the given color can be found, this
