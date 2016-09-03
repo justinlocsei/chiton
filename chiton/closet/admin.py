@@ -123,6 +123,7 @@ class GarmentAdmin(admin.ModelAdmin):
 
             item_record = item_records[item.pk]
             items.append(dict(item_record,
+                affiliate_url=item.affiliate_url,
                 basic=item.garment.basic.name,
                 change_url=change_url,
                 detailed=item.has_detailed_stock,
@@ -130,6 +131,7 @@ class GarmentAdmin(admin.ModelAdmin):
                 garment_change_url=garment_change_url,
                 name=item.name,
                 network=item.network.name,
+                retailer=item.retailer,
                 total=sum(item_record.values())
             ))
 

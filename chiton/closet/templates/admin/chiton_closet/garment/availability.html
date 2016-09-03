@@ -141,8 +141,7 @@
             <thead>
                 <tr>
                     <th class="for-basic">Basic</th>
-                    <th class="for-network">Network</th>
-                    <th class="for-item">Item</th>
+                    <th class="for-retailer">Retailer</th>
                     <th class="for-garment">Garment</th>
                     <th class="for-size">Regular</th>
                     <th class="for-size">Petite</th>
@@ -150,14 +149,14 @@
                     <th class="for-size">Plus</th>
                     <th class="for-total">Total</th>
                     <th class="for-detailed">Detailed?</th>
+                    <th class="for-network">View On</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                     <tr data-basic="{{ item.basic }}" class="js-availability-datum">
                         <td class="for-basic">{{ item.basic }}</td>
-                        <td class="for-network">{{ item.network }}</td>
-                        <td class="for-item"><a href="{{ item.change_url }}">{{ item.name }}</a></td>
+                        <td class="for-retailer">{{ item.retailer }}</td>
                         <td class="for-garment"><a href="{{ item.garment_change_url }}">{{ item.garment }}</a></td>
                         <td class="for-size">{{ item.regular }}</td>
                         <td class="for-size">{{ item.petite }}</td>
@@ -165,6 +164,7 @@
                         <td class="for-size">{{ item.plus }}</td>
                         <td class="for-total">{{ item.total }}</td>
                         <td class="for-detailed {% if item.detailed %}is-detailed{% endif %}">{% if item.detailed %}Yes{% else %}No{% endif %}</td>
+                        <td class="for-network"><a href="{{ item.affiliate_url }}" target="_blank">{{ item.network }}</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
