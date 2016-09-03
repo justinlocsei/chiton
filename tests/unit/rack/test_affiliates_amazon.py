@@ -206,6 +206,28 @@ class TestAmazonAffiliate:
 
         assert http_error.value.code == 400
 
+    def test_request_images(self, amazon_api_request):
+        """It returns a list of image URLs."""
+        with amazon_api_request():
+            images = Affiliate().request_images('B00GOT8YQI')
+            assert len(images) > 1
+
+            valid_images = [i for i in images if '.jpg' in i]
+            assert len(valid_images) == len(images)
+
+    def test_request_images_unique(self, amazon_api_request):
+        """It returns a list of unique image URLs."""
+        with amazon_api_request():
+            images = Affiliate().request_images('B00GOT8YQI')
+
+            assert len(images) == len(set(images))
+
+    def test_request_images_invalid_product_id(self, amazon_api_request):
+        """It raises an error when requesting images for an invalid product ID."""
+        with amazon_api_request():
+            with pytest.raises(LookupError):
+                Affiliate().request_images('0000000000')
+
     def test_request_raw(self, amazon_api_request):
         """It returns the full API response."""
         with amazon_api_request():

@@ -75,6 +75,10 @@ class Affiliate(BaseAffiliate):
             'url': urllib.parse.unquote(item['DetailPageURL'])
         }
 
+    def provide_images(self, asin):
+        data = self._request_combined_data(asin)['Items']['Item']
+        return sorted(set(self._find_images(data, IMAGE_SIZES)))
+
     def provide_raw(self, asin):
         data = self._request_combined_data(asin)
         return data['Items']
@@ -127,6 +131,25 @@ class Affiliate(BaseAffiliate):
 
         avg_price = total_price / len(variations)
         return Decimal('%.02f' % (avg_price / 100))
+
+    def _find_images(self, parsed, size_names):
+        """Find all images for an item matching a list of sizes.
+
+        Args:
+            parsed (dict): A parsed API response
+            size_names (list): A list of all valid size names
+
+        Returns:
+            list: The URLs of all images
+        """
+        images = []
+
+        for variation in parsed['Variations']['Item']:
+            for size_name in size_names:
+                if size_name in variation:
+                    images.append(variation[size_name])
+
+        return [image['URL'] for image in images]
 
     def _find_color_image(self, parsed, size_name, color_names):
         """Find an image of a given size for an item of a given color.
