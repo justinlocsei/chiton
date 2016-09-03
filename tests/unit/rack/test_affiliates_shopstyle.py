@@ -237,6 +237,28 @@ class TestShopstyleAffiliate:
             with pytest.raises(LookupError):
                 Affiliate().request_details('0000000000')
 
+    def test_request_images(self, shopstyle_api_request):
+        """It returns a list of image URLs."""
+        with shopstyle_api_request():
+            images = Affiliate().request_images('424816609')
+            assert len(images) > 1
+
+            valid_images = [i for i in images if '.jpg' in i]
+            assert len(valid_images) == len(images)
+
+    def test_request_images_unique(self, shopstyle_api_request):
+        """It returns a list of unique image URLs."""
+        with shopstyle_api_request():
+            images = Affiliate().request_images('424816609')
+
+            assert len(images) == len(set(images))
+
+    def test_request_images_invalid_product_id(self, shopstyle_api_request):
+        """It raises an error when requesting images for an invalid product ID."""
+        with shopstyle_api_request():
+            with pytest.raises(LookupError):
+                Affiliate().request_images('0000000000')
+
     def test_request_raw(self, shopstyle_api_request):
         """It returns the full API response."""
         with shopstyle_api_request():

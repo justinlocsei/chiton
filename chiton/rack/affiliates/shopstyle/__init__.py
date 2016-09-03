@@ -1,3 +1,4 @@
+from itertools import chain
 import json
 import re
 
@@ -63,9 +64,38 @@ class Affiliate(BaseAffiliate):
             'url': parsed['clickUrl']
         }
 
+    def provide_images(self, product_id):
+        response = self._request_product(product_id)
+        parsed = self._validate_response(response, product_id)
+
+        images = [self._find_image(parsed, size) for size in IMAGE_SIZES]
+        return sorted(set(chain.from_iterable(images)))
+
     def provide_raw(self, product_id):
         response = self._request_product(product_id)
         return self._validate_response(response, product_id)
+
+    def _find_image(self, parsed, size_name):
+        """Find an image of a given size.
+
+        Args:
+            parsed (dict): A parsed API response
+            size_name (str): The name of the image size to use
+
+        Returns:
+            str: The URLs for the image
+        """
+        images = [parsed['image']['sizes'][size_name]]
+
+        for color in parsed['colors']:
+            if 'image' not in color:
+                continue
+            images.append(color['image']['sizes'][size_name])
+
+        for alt in parsed.get('alternateImages', []):
+            images.append(alt['sizes'][size_name])
+
+        return [image['url'] for image in images]
 
     def _find_color_image(self, parsed, size_name, color_names):
         """Find an image of a given size for an item of a given color.
