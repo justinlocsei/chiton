@@ -11,10 +11,18 @@
 
         }
 
-        .c--availability__filter {
+        .c--availability__filters {
             float: right;
             padding-left: 2%;
             width: 10%;
+        }
+
+        .c--availability__filter {
+
+        }
+
+        .c--availability__filter + .c--availability__filter {
+            margin-top: 2em;
         }
 
         .c--availability__filter__title {
@@ -26,35 +34,36 @@
             text-transform: uppercase;
         }
 
-        .c--availability__filter__basics {
+        .c--availability__filter__choices {
             margin: 0;
             padding: 0;
         }
 
-        .c--availability__filter__basic {
+        .c--availability__filter__choice {
+            cursor: pointer;
             list-style: none;
             padding: 0 !important;
         }
 
-        .c--availability__filter__basic.is-selected {
+        .c--availability__filter__choice:hover .c--availability__filter__choice-name {
+            text-decoration: underline;
+        }
+
+        .c--availability__filter__choice.is-selected {
             background: #79aec8;
         }
-        .c--availability__filter__basic.is-selected .c--availability__filter__basic-name {
+        .c--availability__filter__choice.is-selected .c--availability__filter__choice-name {
             color: #fff;
             padding-left: 0.5em;
         }
 
-        .c--availability__filter__basic-name {
+        .c--availability__filter__choice-name {
             background: none;
             border: 0;
+            cursor: pointer;
             outline: 0;
             padding: 0;
             text-align: left;
-        }
-
-        .c--availability__filter__basic-name:hover {
-            cursor: pointer;
-            text-decoration: underline;
         }
 
         .c--availability__data {
@@ -63,12 +72,13 @@
         }
 
         .c--availability .for-basic { width: 10%; }
+        .c--availability .for-retailer { width: 10%; }
         .c--availability .for-item { width: 20%; }
-        .c--availability .for-network { width: 10%; }
         .c--availability .for-garment { width: 20%; }
         .c--availability .for-size { width: 8%; }
         .c--availability .for-total { width: 7%; }
         .c--availability .for-detailed { width: 9%; }
+        .c--availability .for-network { width: 9%; }
 
         .c--availability td.for-detailed {
             color: #a00;
@@ -100,24 +110,49 @@
         $(document).ready(function() {
             $('.js-availability-data').tablesorter();
 
-            var $basics = $('.js-availability-basic');
+            var filters = {};
+
             var $data = $('.js-availability-datum');
+            var $current = $('.js-availability-count-current');
+            var $total = $('.js-availability-count-total');
 
-            $('.js-availability-basic-name').on('click', function(e) {
-                var $name = $(e.target);
-                var $basic = $name.parents('.js-availability-basic');
+            $current.text($data.length);
+            $total.text($data.length);
 
-                var basic = $name.data('basic');
-                var isActive = $basic.is('.is-selected');
+            $('.js-availability-choice').on('click', function(e) {
+                var $choice = $(this);
+                var $name = $choice.find('.js-availability-choice-name');
+                var $filter = $choice.parents('.js-availability-filter');
 
-                $basics.removeClass('is-selected');
+                var field = $choice.data('field');
+                var value = $name.data('value');
+                var isActive = $choice.is('.is-selected');
+
+                $filter.find('.js-availability-choice').removeClass('is-selected');
+                filters[field] = isActive ? null : value;
+
+                if (isActive) {
+                    $choice.removeClass('is-selected');
+                } else {
+                    $choice.addClass('is-selected');
+                }
+
                 $data.show();
 
-                if (!isActive) {
+                var applied = Object.keys(filters).reduce(function(previous, filterName) {
+                    var value = filters[filterName];
+                    if (value) {
+                        previous.push('[data-' + filterName + '="' + value + '"]');
+                    }
+                    return previous;
+                }, []);
+
+                if (applied.length) {
                     $data.hide();
-                    $data.filter('[data-basic="' + basic + '"]').show();
-                    $basic.addClass('is-selected');
+                    $data.filter(applied.join('')).show();
                 }
+
+                $current.text($data.filter(':visible').length);
             });
         });
     </script>
@@ -126,15 +161,48 @@
 {% block content %}
     <div class="c--availability js-availability-data">
 
-        <div class="c--availability__filter">
-            <h4 class="c--availability__filter__title">Basics Filter</h4>
-            <ul class="c--availability__filter__basics">
-                {% for basic in basics %}
-                    <li class="c--availability__filter__basic js-availability-basic">
-                        <button class="c--availability__filter__basic-name js-availability-basic-name" data-basic="{{ basic }}">{{ basic }}</button>
+        <div class="c--availability__filters">
+
+            <p class="c--availability__count">
+                <span class="js-availability-count-current"></span>
+                /
+                <span class="js-availability-count-total"></span>
+            </p>
+
+            <div class="c--availability__filter js-availability-filter">
+                <h4 class="c--availability__filter__title">Basics</h4>
+                <ul class="c--availability__filter__choices">
+                    {% for basic in basics %}
+                        <li class="c--availability__filter__choice js-availability-choice" data-field="basic">
+                            <button class="c--availability__filter__choice-name js-availability-choice-name" data-value="{{ basic }}">{{ basic }}</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="c--availability__filter js-availability-filter">
+                <h4 class="c--availability__filter__title">Detailed Stock</h4>
+                <ul class="c--availability__filter__choices">
+                    <li class="c--availability__filter__choice js-availability-choice" data-field="detailed">
+                        <button class="c--availability__filter__choice-name js-availability-choice-name" data-value="yes">Yes</button>
                     </li>
-                {% endfor %}
-            </ul>
+                    <li class="c--availability__filter__choice js-availability-choice" data-field="detailed">
+                        <button class="c--availability__filter__choice-name js-availability-choice-name" data-value="no">No</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="c--availability__filter js-availability-filter">
+                <h4 class="c--availability__filter__title">Retailer</h4>
+                <ul class="c--availability__filter__choices">
+                    {% for retailer in retailers %}
+                        <li class="c--availability__filter__choice js-availability-choice" data-field="retailer">
+                            <button class="c--availability__filter__choice-name js-availability-choice-name" data-value="{{ retailer }}">{{ retailer }}</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
         </div>
 
         <table class="c--availability__data js-availability-data">
@@ -154,7 +222,7 @@
             </thead>
             <tbody>
                 {% for item in items %}
-                    <tr data-basic="{{ item.basic }}" class="js-availability-datum">
+                    <tr data-basic="{{ item.basic }}" data-detailed="{% if item.detailed %}yes{% else %}no{% endif %}" data-retailer="{{ item.retailer }}" class="js-availability-datum">
                         <td class="for-basic">{{ item.basic }}</td>
                         <td class="for-retailer">{{ item.retailer }}</td>
                         <td class="for-garment"><a href="{{ item.garment_change_url }}">{{ item.garment }}</a></td>

@@ -114,9 +114,12 @@ class GarmentAdmin(admin.ModelAdmin):
                 item_record['plus'] += 1
 
         items = []
+        retailers = []
         for item in AffiliateItem.objects.all().select_related('garment', 'garment__basic', 'network'):
             if not item_records[item.pk]:
                 continue
+
+            retailers.append(item.retailer)
 
             change_url = reverse('admin:%s_affiliateitem_change' % RackConfig.label, args=[item.pk])
             garment_change_url = reverse('admin:%s_garment_change' % ClosetConfig.label, args=[item.garment.pk])
@@ -141,6 +144,7 @@ class GarmentAdmin(admin.ModelAdmin):
             self.admin_site.each_context(request),
             basics=basics,
             items=sorted(items, key=lambda i: i['total'], reverse=True),
+            retailers=sorted(set(retailers)),
             title='Garment Availability'
         ))
 
