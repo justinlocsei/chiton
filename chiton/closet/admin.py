@@ -2,9 +2,11 @@ from adminsortable2.admin import SortableAdminMixin
 from django import db, forms
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.closet import models
@@ -66,6 +68,16 @@ class GarmentAdmin(admin.ModelAdmin):
     formfield_overrides = {
         db.models.TextField: {'widget': forms.Textarea(attrs={'cols': 60, 'rows': 2})}
     }
+
+    def save_model(self, request, obj, form, change):
+        affiliate_items = obj.affiliate_items.all().order_by('pk')
+
+        if len(affiliate_items):
+            images_url = reverse('admin:affiliate-item-customize-images', args=[affiliate_items[0].pk])
+            message = mark_safe('<a href="%s" target="_blank">View the images</a> for "%s"' % (images_url, obj))
+            messages.add_message(request, messages.INFO, message)
+
+        super().save_model(request, obj, form, change)
 
     def affiliate_view_links(self, garment):
         links = []
