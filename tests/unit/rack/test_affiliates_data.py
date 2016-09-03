@@ -211,6 +211,29 @@ class TestUpdateAffiliateItemDetails:
         assert image.height == 32
         assert image.width == 32
 
+    def test_network_data_images_custom(self, affiliate_item, record_request):
+        """It allows custom image URLs to be used."""
+        small_image = 'https://s3.amazonaws.com/chiton-test-assets/image-32x32.jpg'
+        large_image = 'https://s3.amazonaws.com/chiton-test-assets/image-64x64.jpg'
+
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.images = [small_image]
+
+            create_affiliate.return_value = affiliate
+            with record_request():
+                update_affiliate_item_details(affiliate_item, images=[large_image])
+
+        images = affiliate_item.images.all()
+        assert len(images) == 1
+        image = images[0]
+
+        assert settings.MEDIA_ROOT in image.file.path
+        assert os.path.basename(image.file.path) == 'image-64x64.jpg'
+
+        assert image.height == 64
+        assert image.width == 64
+
     def test_network_data_images_idempotent_source_url(self, affiliate_item, record_request):
         """It creates or updates images for the colors, using the source URL as a key."""
         with mock.patch(CREATE_AFFILIATE) as create_affiliate:

@@ -1,0 +1,46 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.11.1]
+    method: GET
+    uri: https://s3.amazonaws.com/chiton-test-assets/image-64x64.jpg
+  response:
+    body:
+      string: !!binary |
+        /9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABQAAD/4QMxaHR0cDov
+        L25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENl
+        aGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4
+        OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzA2NyA3OS4xNTc3NDcsIDIwMTUvMDMvMzAtMjM6
+        NDA6NDIgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5
+        OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHht
+        bG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0i
+        aHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1w
+        PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlk
+        OkRCOTcyN0YwM0ZGNjExRTZCRkRBQUMzN0QyRDVEQzkzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAu
+        aWlkOkRCOTcyN0VGM0ZGNjExRTZCRkRBQUMzN0QyRDVEQzkzIiB4bXA6Q3JlYXRvclRvb2w9IkFk
+        b2JlIFBob3Rvc2hvcCBDQyAyMDE1IChNYWNpbnRvc2gpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0
+        UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RThGRUUyRUYzRkYzMTFFNjhBRkZCRTVGQUFEQTc5QjUi
+        IHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RThGRUUyRjAzRkYzMTFFNjhBRkZCRTVGQUFEQTc5
+        QjUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tl
+        dCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAACAgICAgICAgICAwICAgMEAwICAwQFBAQE
+        BAQFBgUFBQUFBQYGBwcIBwcGCQkKCgkJDAwMDAwMDAwMDAwMDAwMAQMDAwUEBQkGBgkNCwkLDQ8O
+        Dg4ODw8MDAwMDA8PDAwMDAwMDwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABAAEAD
+        AREAAhEBAxEB/8QASwABAQAAAAAAAAAAAAAAAAAAAAoBAQAAAAAAAAAAAAAAAAAAAAAQAQAAAAAA
+        AAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJ/wAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/9k=
+    headers:
+      Accept-Ranges: [bytes]
+      Content-Length: ['1178']
+      Content-Type: [image/jpeg]
+      Date: ['Sat, 03 Sep 2016 01:13:21 GMT']
+      ETag: ['"4c98da92241111aff065c3ddae921830"']
+      Last-Modified: ['Tue, 12 Jul 2016 01:47:30 GMT']
+      Server: [AmazonS3]
+      x-amz-id-2: [tkS0DOU8rNwH0ECe8JfmHyvC0j7bwVpRhQrfrNdlQZEL49AHSwgHTivMNeYgZ1GKJX5mkTu+ltQ=]
+      x-amz-request-id: [371C5FFD36822678]
+    status: {code: 200, message: OK}
+version: 1

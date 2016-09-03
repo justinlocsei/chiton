@@ -30,7 +30,7 @@ def update_affiliate_item_metadata(item):
     return item
 
 
-def update_affiliate_item_details(item):
+def update_affiliate_item_details(item, images=[]):
     """Update the details for an affiliate item from its network's API.
 
     This sends a details query to the API of the item's affiliate network, and
@@ -40,6 +40,9 @@ def update_affiliate_item_details(item):
 
     Args:
         item (chiton.rack.models.AffiliateItem): An affiliate item
+
+    Keyword Args:
+        images (list): Custom image URLs to use
 
     Returns:
         chiton.rack.models.AffiliateItem: The updated affiliate item
@@ -64,7 +67,7 @@ def update_affiliate_item_details(item):
     item.price = details['price']
     item.retailer = details['retailer']
     item.affiliate_url = details['url']
-    _update_item_images(item, details['images'])
+    _update_item_images(item, images or details['images'])
     _update_stock_records(item, details['availability'])
 
     item.save()
