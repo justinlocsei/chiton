@@ -42,7 +42,10 @@ class Person(models.Model):
         Returns:
             str: A decrypted email address
         """
-        return decrypt(self.encrypted_email)
+        if self.encrypted_email:
+            return decrypt(self.encrypted_email)
+        else:
+            return None
 
     @email.setter
     def email(self, value):

@@ -33,6 +33,11 @@ class TestPerson:
         person = Person.objects.get(pk=person.pk)
         assert person.email == 'user@example.org'
 
+    def test_email_blank(self):
+        """It does not raise an error when the email address is blank."""
+        person = Person.objects.create(first_name='John')
+        assert person.email is None
+
     def test_str_full_name(self):
         """It uses the person's full name for display."""
         person = Person.objects.create(first_name='John', last_name='Doe', email='test@example.com')
