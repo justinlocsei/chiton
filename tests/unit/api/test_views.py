@@ -107,7 +107,8 @@ class TestRecommendations:
                 assert isinstance(make_recommendations.call_args[0][1], CorePipeline)
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data == {'recommendation': 'data'}
+        assert response.data['recommendation'] == 'data'
+        assert response.data['recommendation_id'] > 0
 
     def test_recommendations_limit(self, make_request):
         """It returns a subset of recommendations when limiting the maximum number of garments per facet group."""

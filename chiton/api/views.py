@@ -30,7 +30,8 @@ class Recommendations(APIView):
             return Response({'errors': {'server': str(e)}}, status=status.HTTP_400_BAD_REQUEST)
 
         ip_address = get_ip(request) if settings.CHITON_API_IS_PUBLIC else custom_ip
-        Recommendation.objects.create(profile=profile, ip_address=ip_address)
+        recommendation = Recommendation.objects.create(profile=profile, ip_address=ip_address)
 
         recommendations = make_recommendations(profile, CorePipeline(), max_garments_per_group=max_garments_per_group)
+        recommendations['recommendation_id'] = recommendation.pk
         return Response(recommendations)
