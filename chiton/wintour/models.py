@@ -86,6 +86,7 @@ class WardrobeProfile(models.Model):
     sizes = models.ManyToManyField(StandardSize, verbose_name=_('sizes'))
     created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name=_('person'), null=True, blank=True)
+    recommendation = models.ForeignKey('Recommendation', on_delete=models.SET_NULL, verbose_name=_('recommendation'), null=True, blank=True)
 
     class Meta:
         verbose_name = _('wardrobe profile')
