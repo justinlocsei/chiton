@@ -16,6 +16,16 @@ def get_default_birth_year():
     return datetime.now().year
 
 
+class PersonFactory(DjangoModelFactory):
+
+    first_name = factory.LazyAttribute(lambda p: fake.first_name())
+    last_name = factory.LazyAttribute(lambda p: fake.last_name())
+    email = factory.LazyAttribute(lambda p: fake.email())
+
+    class Meta:
+        model = Person
+
+
 def pipeline_profile_factory(formality_factory, standard_size_factory, style_factory):
     def create_pipeline_profile(avoid_care=None, birth_year=None, body_shape=BODY_SHAPES['APPLE'], expectations=None, sizes=None, styles=None):
         if not birth_year:
@@ -47,6 +57,14 @@ def pipeline_profile_factory(formality_factory, standard_size_factory, style_fac
     return create_pipeline_profile
 
 
+class RecommendationFactory(DjangoModelFactory):
+
+    profile = factory.LazyAttribute(lambda r: wardrobe_profile_factory())
+
+    class Meta:
+        model = Recommendation
+
+
 def wardrobe_profile_factory(standard_size_factory, style_factory):
     def create_wardrobe_profile(birth_year=None, body_shape=BODY_SHAPES['APPLE'], styles=None, sizes=None):
         if birth_year is None:
@@ -67,21 +85,3 @@ def wardrobe_profile_factory(standard_size_factory, style_factory):
         return profile
 
     return create_wardrobe_profile
-
-
-class PersonFactory(DjangoModelFactory):
-
-    first_name = factory.LazyAttribute(lambda p: fake.first_name())
-    last_name = factory.LazyAttribute(lambda p: fake.last_name())
-    email = factory.LazyAttribute(lambda p: fake.email())
-
-    class Meta:
-        model = Person
-
-
-class RecommendationFactory(DjangoModelFactory):
-
-    profile = factory.LazyAttribute(lambda r: wardrobe_profile_factory())
-
-    class Meta:
-        model = Recommendation
