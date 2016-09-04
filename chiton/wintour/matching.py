@@ -57,8 +57,8 @@ def convert_recommendation_to_wardrobe_profile(recommendation, person=None):
     style_lookup = _get_style_pks_by_slug()
 
     profile = WardrobeProfile.objects.create(
-        body_shape=data['body_shape'],
         birth_year=data['birth_year'],
+        body_shape=data['body_shape'],
         person=person
     )
 
