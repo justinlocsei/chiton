@@ -51,7 +51,7 @@ def define_data_shape(schema, defaults=None, validated=True):
 
 
 def OneOf(choices, multiple=False):
-    """A Voluptuous validator that ensure that a value is in a list of choices.
+    """A Voluptuous validator that ensures that a value is in a list of choices.
 
     This can be called with an iterable or a function that produces an iterable.
     In the latter case, the list will be recreated during each validation.
@@ -85,7 +85,7 @@ def OneOf(choices, multiple=False):
 
 
 def NumberInRange(min_value, max_value):
-    """A Voluptuous validator that ensure that a number is within a given range.
+    """A Voluptuous validator that ensures that a number is within a given range.
 
     Args:
         min_value (int): The inclusive lower bound of the range
