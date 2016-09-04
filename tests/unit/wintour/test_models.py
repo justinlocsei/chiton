@@ -8,14 +8,14 @@ class TestPerson:
 
     def test_full_name(self):
         """It builds the person's full name from their first and last name."""
-        person = Person.objects.create(first_name='John', last_name='Doe')
+        person = Person.objects.create(first_name='John', last_name='Doe', email='test@example.com')
         assert person.full_name == 'John Doe'
 
     def test_full_name_partial(self):
         """It treats the first and last name as optional when making a full name."""
-        first_only = Person.objects.create(first_name='John')
-        last_only = Person.objects.create(last_name='Doe')
-        anonymous = Person.objects.create()
+        first_only = Person.objects.create(first_name='John', email='test@example.com')
+        last_only = Person.objects.create(last_name='Doe', email='test@example.com')
+        anonymous = Person.objects.create(email='test@example.com')
 
         assert first_only.full_name == 'John'
         assert last_only.full_name == 'Doe'
@@ -35,5 +35,5 @@ class TestPerson:
 
     def test_str_full_name(self):
         """It uses the person's full name for display."""
-        person = Person.objects.create(first_name='John', last_name='Doe')
+        person = Person.objects.create(first_name='John', last_name='Doe', email='test@example.com')
         assert str(person) == 'John Doe'
