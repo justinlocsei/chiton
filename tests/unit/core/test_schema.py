@@ -1,7 +1,7 @@
 import pytest
 import voluptuous as V
 
-from chiton.core.schema import define_data_shape, NumberInRange, OneOf
+from chiton.core.schema import define_data_shape, Email, NumberInRange, OneOf
 from chiton.core.exceptions import FormatError
 
 
@@ -134,6 +134,21 @@ class TestDefineDataShape:
             })
 
         assert 'list.1' in error.value.fields
+
+
+class TestEmail:
+
+    def test_valid(self):
+        """It accepts email addresses."""
+        schema = V.Schema({'email': Email()})
+        assert schema({'email': 'test@example.com'})
+
+    def test_invalid(self):
+        """It rejects invalid email addresses."""
+        schema = V.Schema({'email': Email()})
+
+        with pytest.raises(V.MultipleInvalid):
+            assert schema({'email': 'example.com'})
 
 
 class TestNumberInRange:

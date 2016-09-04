@@ -1,3 +1,4 @@
+from email_validator import validate_email, EmailNotValidError
 import voluptuous as V
 
 from chiton.core.exceptions import FormatError
@@ -48,6 +49,21 @@ def define_data_shape(schema, defaults=None, validated=True):
             return data
 
     return validate_data
+
+
+def Email():
+    """A Voluptuous validator that ensures that a value is an email.
+
+    Returns:
+        function: The validator function
+    """
+    def validator(v):
+        try:
+            validate_email(v, check_deliverability=False)
+        except EmailNotValidError:
+            raise V.Invalid('%s is not a valid email address' % v)
+
+    return validator
 
 
 def OneOf(choices, multiple=False):
