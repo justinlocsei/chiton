@@ -2,6 +2,11 @@ from timeit import default_timer
 
 from django.db import connection
 
+from chiton.closet.models import StandardSize
+from chiton.core.queries import cache_query
+from chiton.runway.models import Formality, Style
+from chiton.wintour.models import WardrobeProfile
+
 
 def make_recommendations(pipeline_profile, pipeline, debug=False, max_garments_per_group=None):
     """Return garment recommendations for a wardrobe profile.
@@ -31,3 +36,75 @@ def make_recommendations(pipeline_profile, pipeline, debug=False, max_garments_p
         }
 
     return recs
+
+
+def convert_recommendation_to_wardrobe_profile(recommendation, person=None):
+    """Convert a recommendation to a wardrobe profile.
+
+    Args:
+        recommendation (chiton.wintour.models.Recommendation): A recommendation
+
+    Keyword Args:
+        person (chiton.wintour.models.Person): A person to associate with the profile
+
+    Returns:
+        chiton.wintour.models.WardrobeProfile: The created profile
+    """
+    data = recommendation.profile
+
+    formality_lookup = _get_formality_pks_by_slug()
+    size_lookup = _get_size_pks_by_slug()
+    style_lookup = _get_style_pks_by_slug()
+
+    profile = WardrobeProfile.objects.create(
+        body_shape=data['body_shape'],
+        birth_year=data['birth_year'],
+        person=person
+    )
+
+    profile.styles = [style_lookup[slug] for slug in data['styles']]
+    profile.sizes = [size_lookup[slug] for slug in data['sizes']]
+
+    for care_type in data.get('avoid_care', []):
+        profile.unwanted_care_types.create(care=care_type)
+
+    for expectation in data['expectations']:
+        profile.expectations.create(
+            formality_id=formality_lookup[expectation['formality']],
+            frequency=expectation['frequency']
+        )
+
+    return profile
+
+
+@cache_query(Formality)
+def _get_formality_pks_by_slug():
+    """Return a map of slugs to Formality primary keys."""
+    by_slug = {}
+
+    for formality in Formality.objects.all().values_list('pk', 'slug'):
+        by_slug[formality[1]] = formality[0]
+
+    return by_slug
+
+
+@cache_query(StandardSize)
+def _get_size_pks_by_slug():
+    """Return a map of slugs to StandardSize primary keys."""
+    by_slug = {}
+
+    for style in StandardSize.objects.all().values_list('pk', 'slug'):
+        by_slug[style[1]] = style[0]
+
+    return by_slug
+
+
+@cache_query(Style)
+def _get_style_pks_by_slug():
+    """Return a map of slugs to Style primary keys."""
+    by_slug = {}
+
+    for style in Style.objects.all().values_list('pk', 'slug'):
+        by_slug[style[1]] = style[0]
+
+    return by_slug
