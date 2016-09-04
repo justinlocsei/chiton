@@ -1,9 +1,11 @@
 from datetime import datetime
+import factory
+from factory.django import DjangoModelFactory
 from faker import Faker
 
 from chiton.closet.data import CARE_TYPES
 from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
-from chiton.wintour.models import WardrobeProfile
+from chiton.wintour.models import Recommendation, WardrobeProfile
 from chiton.wintour.profiles import PipelineProfile
 
 
@@ -65,3 +67,11 @@ def wardrobe_profile_factory(standard_size_factory, style_factory):
         return profile
 
     return create_wardrobe_profile
+
+
+class RecommendationFactory(DjangoModelFactory):
+
+    profile = factory.LazyAttribute(lambda r: wardrobe_profile_factory())
+
+    class Meta:
+        model = Recommendation
