@@ -105,6 +105,14 @@ class TestConvertRecommendationToWardrobeProfile:
         assert not no_person.person
         assert with_person.person == person
 
+    def test_binds_recommendation(self, pipeline_profile_factory, recommendation_factory):
+        """It can associate a person with the recommendation."""
+        profile = pipeline_profile_factory()
+        recommendation = recommendation_factory(profile=profile)
+
+        converted = convert_recommendation_to_wardrobe_profile(recommendation)
+        assert converted.recommendation == recommendation
+
 
 @pytest.mark.django_db
 class TestMakeRecommendations:
