@@ -1,11 +1,19 @@
 from timeit import default_timer
 
 from django.db import connection
+import voluptuous as V
 
 from chiton.closet.models import StandardSize
 from chiton.core.queries import cache_query
+from chiton.core.schema import define_data_shape, Email
 from chiton.runway.models import Formality, Style
 from chiton.wintour.models import WardrobeProfile
+
+
+PersonRecommendation = define_data_shape({
+    V.Required('email'): Email(),
+    V.Required('recommendation_id'): int
+})
 
 
 def make_recommendations(pipeline_profile, pipeline, debug=False, max_garments_per_group=None):

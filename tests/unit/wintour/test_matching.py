@@ -1,7 +1,8 @@
 import mock
 import pytest
 
-from chiton.wintour.matching import convert_recommendation_to_wardrobe_profile, make_recommendations
+from chiton.core.exceptions import FormatError
+from chiton.wintour.matching import convert_recommendation_to_wardrobe_profile, make_recommendations, PersonRecommendation
 
 
 @pytest.mark.django_db
@@ -156,3 +157,30 @@ class TestMakeRecommendations:
         pipeline.make_recommendations.assert_called_with(profile, debug=False, max_garments_per_group=5)
 
         assert recommendations == {}
+
+
+@pytest.mark.django_db
+class TestPersonRecommendation:
+
+    @pytest.fixture
+    def valid_recommendation(self):
+        return {
+            'email': 'test@example.com',
+            'recommendation_id': 1
+        }
+
+    def test_valid(self, valid_recommendation):
+        """It accepts data with a valid format."""
+        assert PersonRecommendation(valid_recommendation)
+
+    def test_email(self, valid_recommendation):
+        """It requires a valid email address."""
+        valid_recommendation['email'] = 'example.com'
+        with pytest.raises(FormatError):
+            PersonRecommendation(valid_recommendation)
+
+    def test_recommendation_id(self, valid_recommendation):
+        """It requires a number."""
+        valid_recommendation['recommendation_id'] = '1'
+        with pytest.raises(FormatError):
+            PersonRecommendation(valid_recommendation)
