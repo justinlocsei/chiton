@@ -5,7 +5,7 @@ from faker import Faker
 
 from chiton.closet.data import CARE_TYPES
 from chiton.wintour.data import BODY_SHAPES, EXPECTATION_FREQUENCIES
-from chiton.wintour.models import Recommendation, WardrobeProfile
+from chiton.wintour.models import Person, Recommendation, WardrobeProfile
 from chiton.wintour.profiles import PipelineProfile
 
 
@@ -67,6 +67,16 @@ def wardrobe_profile_factory(standard_size_factory, style_factory):
         return profile
 
     return create_wardrobe_profile
+
+
+class PersonFactory(DjangoModelFactory):
+
+    first_name = factory.LazyAttribute(lambda p: fake.first_name())
+    last_name = factory.LazyAttribute(lambda p: fake.last_name())
+    email = factory.LazyAttribute(lambda p: fake.email())
+
+    class Meta:
+        model = Person
 
 
 class RecommendationFactory(DjangoModelFactory):
