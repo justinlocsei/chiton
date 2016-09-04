@@ -4,7 +4,6 @@ import pytest
 from chiton.wintour.matching import convert_recommendation_to_wardrobe_profile, make_recommendations
 
 
-@pytest.mark.current
 @pytest.mark.django_db
 class TestConvertRecommendationToWardrobeProfile:
 
