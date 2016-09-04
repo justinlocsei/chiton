@@ -32,7 +32,7 @@ def pipeline_profile_factory(formality_factory, standard_size_factory, style_fac
             }]
 
         data = {
-            'avoid_care': avoid_care or [CARE_TYPES['HAND_WASH']],
+            'avoid_care': [CARE_TYPES['HAND_WASH']] if avoid_care is None else avoid_care,
             'birth_year': birth_year,
             'body_shape': body_shape,
             'expectations': expectations,
