@@ -62,3 +62,10 @@ class TestPerson:
         assert person.pk == ensured.pk
         assert person.email == 'test@example.com'
         assert ensured.email == 'test@example.com'
+
+    def test_ensure_exists_with_email_normalized(self):
+        """It uses the normalized form of the email address."""
+        person = Person.objects.ensure_exists_with_email('test@MyExample.com')
+
+        assert person.pk
+        assert person.email == 'test@myexample.com'

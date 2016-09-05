@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from email_validator import EmailNotValidError, validate_email
 
 from chiton.core.encryption import decrypt, encrypt
 from chiton.core.queries import cache_query
@@ -22,13 +23,18 @@ class PersonManager(models.Manager):
         Returns:
             chiton.wintour.models.Person: The new or existing person
         """
+        try:
+            normalized = validate_email(email, check_deliverability=False)['email']
+        except EmailNotValidError:
+            normalized = email
+
         email_lookup = _get_person_email_map()
-        person_id = email_lookup.get(email, None)
+        person_id = email_lookup.get(normalized, None)
 
         if person_id:
             return self.get(pk=person_id)
         else:
-            return self.create(email=email)
+            return self.create(email=normalized)
 
 
 class Person(models.Model):
