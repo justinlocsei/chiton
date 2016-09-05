@@ -73,6 +73,7 @@ class TestBaseAffiliate:
                 color = colors[0] if colors else None
                 return {
                     'availability': True,
+                    'colors': ['black'],
                     'images': ['http://%s-%s.com' % (guid, color)],
                     'name': 'Item Name',
                     'price': Decimal('12.99'),
@@ -94,6 +95,8 @@ class TestBaseAffiliate:
         assert with_color['retailer'] == 'Amazon'
         assert without_color['availability']
         assert with_color['availability']
+        assert without_color['colors'] == ['black']
+        assert with_color['colors'] == ['black']
 
         assert without_color['images'][0] == 'http://nocolor-None.com'
         assert with_color['images'][0] == 'http://color-Black.com'

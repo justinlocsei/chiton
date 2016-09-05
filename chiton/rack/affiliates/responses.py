@@ -38,6 +38,7 @@ ItemOverview = define_data_shape({
 # Details of an affiliate item returned by its API
 ItemDetails = define_data_shape({
     V.Required('availability'): V.Any([ItemAvailability], bool),
+    V.Required('colors'): [str],
     V.Required('images'): [str],
     V.Required('name'): V.All(str, V.Length(min=1)),
     V.Required('price'): Decimal,
