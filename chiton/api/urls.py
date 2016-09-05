@@ -6,7 +6,8 @@ from chiton.api import views
 
 
 patterns = [
-    url(r'^recommendations/$', views.Recommendations.as_view())
+    url(r'^recommendations/$', views.Recommendations.as_view()),
+    url(r'^wardrobe-profiles/$', views.WardrobeProfiles.as_view())
 ]
 
 if settings.CHITON_ALLOW_API_BROWSING:
