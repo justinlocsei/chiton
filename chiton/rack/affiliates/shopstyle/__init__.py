@@ -83,7 +83,7 @@ class Affiliate(BaseAffiliate):
             size_name (str): The name of the image size to use
 
         Returns:
-            str: The URLs for the image
+            list: The URLs for the image
         """
         images = [parsed['image']['sizes'][size_name]]
 
