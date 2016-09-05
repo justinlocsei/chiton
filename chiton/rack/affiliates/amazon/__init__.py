@@ -117,7 +117,7 @@ class Affiliate(BaseAffiliate):
         """Calculate the average price for the item based on all offers.
 
         Args:
-            variations (dict): A list of all item variations
+            variations (list): A list of all item variations
 
         Returns:
             decimal.Decimal: The average price
