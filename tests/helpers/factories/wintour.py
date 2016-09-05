@@ -57,12 +57,11 @@ def pipeline_profile_factory(formality_factory, standard_size_factory, style_fac
     return create_pipeline_profile
 
 
-class RecommendationFactory(DjangoModelFactory):
+def recommendation_factory(pipeline_profile_factory):
+    def create_recommendation(profile=None):
+        return Recommendation.objects.create(profile=profile or pipeline_profile_factory())
 
-    profile = factory.LazyAttribute(lambda r: wardrobe_profile_factory())
-
-    class Meta:
-        model = Recommendation
+    return create_recommendation
 
 
 def wardrobe_profile_factory(standard_size_factory, style_factory):

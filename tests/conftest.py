@@ -5,12 +5,13 @@ from .helpers.environment import isolate_cache_tests
 from .helpers.factories.closet import BrandFactory, CanonicalSizeFactory, ColorFactory, GarmentFactory, standard_size_factory
 from .helpers.factories.rack import AffiliateItemFactory, AffiliateNetworkFactory, item_image_factory, StockRecordFactory
 from .helpers.factories.runway import BasicFactory, CategoryFactory, FormalityFactory, ProprietyFactory, StyleFactory
-from .helpers.factories.wintour import PersonFactory, pipeline_profile_factory, RecommendationFactory, wardrobe_profile_factory
+from .helpers.factories.wintour import PersonFactory, pipeline_profile_factory, recommendation_factory, wardrobe_profile_factory
 from .helpers.vcr import amazon_api_request, record_request, shopstyle_api_request
 
 pytest.fixture()(amazon_api_request)
 pytest.fixture()(item_image_factory)
 pytest.fixture()(pipeline_profile_factory)
+pytest.fixture()(recommendation_factory)
 pytest.fixture()(record_request)
 pytest.fixture()(shopstyle_api_request)
 pytest.fixture()(standard_size_factory)
@@ -27,7 +28,6 @@ register_factory(FormalityFactory)
 register_factory(GarmentFactory)
 register_factory(PersonFactory)
 register_factory(ProprietyFactory)
-register_factory(RecommendationFactory)
 register_factory(StockRecordFactory)
 register_factory(StyleFactory)
 
