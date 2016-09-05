@@ -42,3 +42,23 @@ class TestPerson:
         """It uses the person's full name for display."""
         person = Person.objects.create(first_name='John', last_name='Doe', email='test@example.com')
         assert str(person) == 'John Doe'
+
+    def test_ensure_exists_with_email_new(self):
+        """It creates a person for a new email."""
+        previous_emails = [p.email for p in Person.objects.all()]
+        assert 'test@example.com' not in previous_emails
+
+        person = Person.objects.ensure_exists_with_email('test@example.com')
+        assert person.full_clean() is None
+
+        assert person.email == 'test@example.com'
+        assert person.pk
+
+    def test_ensure_exists_with_email_existing(self):
+        """It uses an existing person for an existing email."""
+        person = Person.objects.create(email='test@example.com')
+        ensured = Person.objects.ensure_exists_with_email('test@example.com')
+
+        assert person.pk == ensured.pk
+        assert person.email == 'test@example.com'
+        assert ensured.email == 'test@example.com'

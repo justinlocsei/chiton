@@ -3,14 +3,38 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from chiton.core.encryption import decrypt, encrypt
+from chiton.core.queries import cache_query
 from chiton.closet.data import CARE_CHOICES
 from chiton.closet.models import StandardSize
 from chiton.runway.models import Formality, Style
 from chiton.wintour import data
 
 
+class PersonManager(models.Manager):
+    """A custom manager for people."""
+
+    def ensure_exists_with_email(self, email):
+        """Ensure that a person exists with a given email address.
+
+        Args:
+            email (str): An email address
+
+        Returns:
+            chiton.wintour.models.Person: The new or existing person
+        """
+        email_lookup = _get_person_email_map()
+        person_id = email_lookup.get(email, None)
+
+        if person_id:
+            return self.get(pk=person_id)
+        else:
+            return self.create(email=email)
+
+
 class Person(models.Model):
     """A person who can receive recommendations."""
+
+    objects = PersonManager()
 
     first_name = models.CharField(max_length=255, verbose_name=_('first name'), null=True, blank=True)
     last_name = models.CharField(max_length=255, verbose_name=_('last name'), null=True, blank=True)
@@ -107,3 +131,14 @@ class Recommendation(models.Model):
         ordering = ('-created_at',)
         verbose_name = _('recommendation')
         verbose_name_plural = _('recommendations')
+
+
+@cache_query(Person)
+def _get_person_email_map():
+    """Return a map of email addresses to Person IDs."""
+    lookup = {}
+
+    for person in Person.objects.all():
+        lookup[person.email] = person.pk
+
+    return lookup
