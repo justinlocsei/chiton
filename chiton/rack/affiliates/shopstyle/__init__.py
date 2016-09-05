@@ -57,6 +57,7 @@ class Affiliate(BaseAffiliate):
 
         return {
             'availability': availability,
+            'colors': self._find_colors(parsed),
             'images': images,
             'name': parsed['brandedName'],
             'price': price.amount,
@@ -74,6 +75,25 @@ class Affiliate(BaseAffiliate):
     def provide_raw(self, product_id):
         response = self._request_product(product_id)
         return self._validate_response(response, product_id)
+
+    def _find_colors(self, parsed):
+        """Find all colors in which an item is available.
+
+        Args:
+            parsed (dict): A parsed API response
+
+        Returns:
+            list: The item's colors
+        """
+        colors = set()
+
+        for record in parsed.get('stock', []):
+            if 'color' in record:
+                color = record['color'].get('name', None)
+                if color:
+                    colors.add(color)
+
+        return sorted(colors)
 
     def _find_image(self, parsed, size_name):
         """Find an image of a given size.

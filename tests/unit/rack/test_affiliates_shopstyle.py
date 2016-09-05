@@ -51,6 +51,13 @@ class TestShopstyleAffiliate:
 
         assert details['retailer'] == 'J.Crew'
 
+    def test_request_details_colors(self, shopstyle_api_request):
+        """It returns the item's colors."""
+        with shopstyle_api_request():
+            details = Affiliate().request_details('299445191')
+
+        assert details['colors'] == ['Black', 'White']
+
     def test_request_details_price(self, shopstyle_api_request):
         """It returns the item's listed price in its details."""
         with shopstyle_api_request():
