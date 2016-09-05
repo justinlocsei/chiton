@@ -90,6 +90,13 @@ class TestAmazonAffiliate:
 
         assert details['retailer'] == 'Amazon'
 
+    def test_request_details_colors(self, amazon_api_request):
+        """It returns a list of item colors."""
+        with amazon_api_request():
+            details = Affiliate().request_details('B01D8N0PU0')
+
+        assert details['colors'] == ['Black', 'Blue', 'Rose', 'Yellow']
+
     def test_request_details_price(self, amazon_api_request):
         """It returns the average price of all item offers."""
         affiliate = Affiliate()

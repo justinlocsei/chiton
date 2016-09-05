@@ -63,11 +63,13 @@ class Affiliate(BaseAffiliate):
         if 'Variations' not in item:
             raise LookupError('Details may not be provided for a child ASIN')
 
-        price = self._calculate_price(item['Variations']['Item'])
+        variations = item['Variations']['Item']
+        price = self._calculate_price(variations)
         images = [self._find_color_image(item, size, colors) for size in IMAGE_SIZES]
 
         return {
             'availability': True,
+            'colors': self._find_colors(variations),
             'images': images,
             'name': item['ItemAttributes']['Title'],
             'price': price,
@@ -131,6 +133,25 @@ class Affiliate(BaseAffiliate):
 
         avg_price = total_price / len(variations)
         return Decimal('%.02f' % (avg_price / 100))
+
+    def _find_colors(self, variations):
+        """Find the names of all colors in which the item is available.
+
+        Args:
+            variations (list): A list of all item variations
+
+        Returns:
+            list: The names of all colors
+        """
+        colors = set()
+
+        for variation in variations:
+            if 'ItemAttributes' in variation:
+                color = variation['ItemAttributes'].get('Color', None)
+                if color:
+                    colors.add(color)
+
+        return sorted(colors)
 
     def _find_images(self, parsed, size_names):
         """Find all images for an item matching a list of sizes.
