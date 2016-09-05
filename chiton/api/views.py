@@ -26,8 +26,6 @@ class Recommendations(APIView):
             profile = PipelineProfile(request.data, validate=True)
         except DataShapeError as e:
             return Response({'errors': {'fields': e.fields}}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'errors': {'server': str(e)}}, status=status.HTTP_400_BAD_REQUEST)
 
         ip_address = get_ip(request) if settings.CHITON_API_IS_PUBLIC else custom_ip
         recommendation = Recommendation.objects.create(profile=profile, ip_address=ip_address)
