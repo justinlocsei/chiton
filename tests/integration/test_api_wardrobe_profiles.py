@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from chiton.wintour.models import Person, Recommendation, WardrobeProfile
+from chiton.wintour.models import Person, WardrobeProfile
 
 
 @pytest.mark.integration
@@ -88,7 +88,7 @@ class TestRecommendations:
             'email': 'test@example.com',
             'recommendation_id': recommendation_two.pk
         }, format='json')
-        assert response_one.status_code == status.HTTP_200_OK
+        assert response_two.status_code == status.HTTP_200_OK
 
         with_email = [p for p in Person.objects.all() if p.email == 'test@example.com']
         assert len(with_email) == 1
@@ -105,7 +105,6 @@ class TestRecommendations:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'errors' in response.data
         assert 'email' in response.data['errors']['fields']
-
 
     def test_profile_errors_types(self, api_client):
         """It returns errors when a request contains fields with unexpected types."""
