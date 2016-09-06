@@ -47,6 +47,7 @@ class AffiliateItem(models.Model):
     has_detailed_stock = models.BooleanField(verbose_name=('has detailed stock'), default=False)
     retailer = models.CharField(max_length=255, verbose_name=_('retailer'), db_index=True)
     affiliate_url = models.TextField(verbose_name=_('affiliate URL'))
+    has_multiple_colors = models.BooleanField(verbose_name=_('has multiple colors'), default=False)
 
     class Meta:
         unique_together = ('guid', 'network')
