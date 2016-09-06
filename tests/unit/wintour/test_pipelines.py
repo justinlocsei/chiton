@@ -253,8 +253,8 @@ class TestBasePipeline:
         garment = garment_factory(basic=basic)
         network = affiliate_network_factory(name='Network')
 
-        with_images = affiliate_item_factory(network=network, garment=garment, affiliate_url='http://example.com/with', price=Decimal(100), retailer='Amazon')
-        affiliate_item_factory(network=network, garment=garment, affiliate_url='http://example.com/without', price=Decimal(15.25), retailer='Nordstrom')
+        with_images = affiliate_item_factory(network=network, garment=garment, affiliate_url='http://example.com/with', price=Decimal(100), retailer='Amazon', has_multiple_colors=False)
+        affiliate_item_factory(network=network, garment=garment, affiliate_url='http://example.com/without', price=Decimal(15.25), retailer='Nordstrom', has_multiple_colors=True)
 
         item_image_factory(item=with_images, height=100, width=100, file_name='image.jpg')
         item_image_factory(item=with_images, height=50, width=50, file_name='thumbnail.jpg')
@@ -270,6 +270,7 @@ class TestBasePipeline:
         assert with_data['network_name'] == 'Network'
         assert with_data['retailer'] == 'Amazon'
         assert with_data['id'] > 0
+        assert not with_data['has_multiple_colors']
         assert with_data['url'] == 'http://example.com/with'
         assert len(with_data['images']) == 2
 
@@ -288,6 +289,7 @@ class TestBasePipeline:
         assert without_data['network_name'] == 'Network'
         assert without_data['retailer'] == 'Nordstrom'
         assert without_data['id'] > 0
+        assert without_data['has_multiple_colors']
         assert without_data['url'] == 'http://example.com/without'
         assert not len(without_data['images'])
 

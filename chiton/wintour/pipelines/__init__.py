@@ -281,6 +281,7 @@ class BasePipeline:
 
             # Serialize affiliate items as purchase options
             purchase_option = PurchaseOption({
+                'has_multiple_colors': affiliate_item['has_multiple_colors'],
                 'id': affiliate_item['id'],
                 'images': [],
                 'network_name': affiliate_item['network__name'],
@@ -440,7 +441,8 @@ def _get_deep_affiliate_items():
             'garment_id', 'garment__name', 'garment__slug', 'garment__care',
             'garment__basic__slug', 'garment__brand__name',
             'id', 'price', 'retailer', 'affiliate_url',
-            'network__name'
+            'network__name',
+            'has_multiple_colors'
         )
     )
 

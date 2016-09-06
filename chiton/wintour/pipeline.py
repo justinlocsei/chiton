@@ -30,6 +30,7 @@ ProductImage = define_data_shape({
 
 
 PurchaseOption = define_data_shape({
+    V.Required('has_multiple_colors'): bool,
     V.Required('id'): int,
     V.Required('images'): [ProductImage],
     V.Required('network_name'): str,
