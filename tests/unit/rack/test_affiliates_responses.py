@@ -39,6 +39,7 @@ class TestItemDetails:
     def valid_details(self):
         return {
             'availability': True,
+            'colors': [],
             'images': [],
             'name': 'Details',
             'price': Decimal('10.99'),
@@ -51,6 +52,7 @@ class TestItemDetails:
         details = ItemDetails(valid_details)
 
         assert details['availability']
+        assert details['colors'] == []
         assert details['images'] == []
         assert details['name'] == 'Details'
         assert details['price'] == Decimal('10.99')
