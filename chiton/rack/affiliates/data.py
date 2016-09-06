@@ -67,6 +67,7 @@ def update_affiliate_item_details(item, images=[]):
     item.price = details['price']
     item.retailer = details['retailer']
     item.affiliate_url = details['url']
+    item.has_multiple_colors = len(details['colors']) > 1
     _update_item_images(item, images or details['images'])
     _update_stock_records(item, details['availability'])
 

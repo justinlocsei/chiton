@@ -18,6 +18,7 @@ class FullAffiliate(Affiliate):
     """An affiliate that returns full API information."""
 
     availability = []
+    colors = []
     images = []
 
     def provide_overview(self, url):
@@ -31,6 +32,7 @@ class FullAffiliate(Affiliate):
 
         return {
             'availability': self.availability,
+            'colors': self.colors,
             'images': self.images,
             'name': 'Details-%s' % guid,
             'price': Decimal('9.99'),
@@ -45,6 +47,7 @@ class OutOfStockAffiliate(Affiliate):
     def provide_details(self, guid, colors=[]):
         return {
             'availability': False,
+            'colors': [],
             'images': [],
             'name': 'Item',
             'price': Decimal('9.99'),
@@ -190,6 +193,34 @@ class TestUpdateAffiliateItemDetails:
             update_affiliate_item_details(affiliate_item)
 
         assert affiliate.called_with_colors == []
+
+    def test_network_data_has_multiple_colors_empty(self, affiliate_item):
+        """It marks an item as lacking multiple colors when no colors are reported."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            create_affiliate.return_value = FullAffiliate()
+            update_affiliate_item_details(affiliate_item)
+
+        assert not affiliate_item.has_multiple_colors
+
+    def test_network_data_has_multiple_colors_single(self, affiliate_item):
+        """It marks an item as lacking multiple colors when a single color is reported."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.colors = ['Black']
+            create_affiliate.return_value = affiliate
+            update_affiliate_item_details(affiliate_item)
+
+        assert not affiliate_item.has_multiple_colors
+
+    def test_network_data_has_multiple_colors_multiple(self, affiliate_item):
+        """It marks an item as having multiple colors when multiple colors are reported."""
+        with mock.patch(CREATE_AFFILIATE) as create_affiliate:
+            affiliate = FullAffiliate()
+            affiliate.colors = ['Black', 'White']
+            create_affiliate.return_value = affiliate
+            update_affiliate_item_details(affiliate_item)
+
+        assert affiliate_item.has_multiple_colors
 
     def test_network_data_images(self, affiliate_item, record_request):
         """It downloads item images and uses their actual dimensions."""
