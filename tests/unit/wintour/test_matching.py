@@ -106,7 +106,7 @@ class TestConvertRecommendationToWardrobeProfile:
         assert with_person.person == person
 
     def test_binds_recommendation(self, pipeline_profile_factory, recommendation_factory):
-        """It can associate a person with the recommendation."""
+        """It binds the recommendation to the created wardrobe profile."""
         profile = pipeline_profile_factory()
         recommendation = recommendation_factory(profile=profile)
 
