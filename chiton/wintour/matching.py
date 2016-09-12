@@ -58,6 +58,13 @@ def convert_recommendation_to_wardrobe_profile(recommendation, person=None):
     Returns:
         chiton.wintour.models.WardrobeProfile: The created profile
     """
+    try:
+        existing_profile = WardrobeProfile.objects.get(person=person, recommendation=recommendation)
+    except WardrobeProfile.DoesNotExist:
+        pass
+    else:
+        return existing_profile
+
     data = recommendation.profile
 
     formality_lookup = _get_formality_pks_by_slug()

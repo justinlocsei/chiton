@@ -113,6 +113,32 @@ class TestConvertRecommendationToWardrobeProfile:
         converted = convert_recommendation_to_wardrobe_profile(recommendation)
         assert converted.recommendation == recommendation
 
+    def test_uses_existing(self, pipeline_profile_factory, recommendation_factory):
+        """It uses an existing wardrobe profile if one exists for the recommendation."""
+        profile = pipeline_profile_factory()
+        recommendation = recommendation_factory(profile=profile)
+
+        created = convert_recommendation_to_wardrobe_profile(recommendation)
+        deduped = convert_recommendation_to_wardrobe_profile(recommendation)
+
+        assert created.pk == deduped.pk
+
+    def test_uses_existing_with_person(self, pipeline_profile_factory, recommendation_factory, person_factory):
+        """It uses an existing wardrobe profile if one exists for a person's recommendation."""
+        person_one = person_factory()
+        person_two = person_factory()
+
+        profile = pipeline_profile_factory()
+        recommendation = recommendation_factory(profile=profile)
+
+        created_one = convert_recommendation_to_wardrobe_profile(recommendation, person=person_one)
+        deduped_one = convert_recommendation_to_wardrobe_profile(recommendation, person=person_one)
+        created_two = convert_recommendation_to_wardrobe_profile(recommendation, person=person_two)
+        deduped_two = convert_recommendation_to_wardrobe_profile(recommendation, person=person_two)
+
+        assert created_one.pk == deduped_one.pk
+        assert created_two.pk == deduped_two.pk
+
 
 @pytest.mark.django_db
 class TestMakeRecommendations:
