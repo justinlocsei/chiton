@@ -4,7 +4,7 @@ import pytest
 from chiton.rack.models import AffiliateItem
 from chiton.rack.affiliates.bulk import BatchJob, bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
-from chiton.rack.affiliates.exceptions import ThrottlingError
+from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
 
 
 @pytest.fixture
@@ -138,6 +138,27 @@ class TestBatchJob:
 
             assert len(delay_timings) > 1
             assert len(delay_timings) <= delay_function.call_count
+
+    @pytest.mark.django_db(transaction=True)
+    def test_results_lookup_error(self, affiliate_items):
+        """It removes items that cause lookup errors."""
+        item_pks = affiliate_items.values_list('pk', flat=True)
+
+        def error_first(item):
+            if item.name == "0":
+                raise LookupError()
+
+        update_function = mock.Mock(side_effect=error_first)
+        batch_job = BatchJob(affiliate_items, update_function)
+
+        success_count = 0
+        for result in batch_job.run():
+            success_count += int(not result.is_error)
+
+        assert success_count == 3
+
+        items = AffiliateItem.objects.filter(pk__in=item_pks)
+        assert items.count() == 3
 
 
 @pytest.mark.django_db

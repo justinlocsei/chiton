@@ -6,7 +6,7 @@ from time import sleep
 from traceback import print_exc
 
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
-from chiton.rack.affiliates.exceptions import ThrottlingError
+from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
 
 
 # Default values for tuning batch jobs
@@ -86,6 +86,20 @@ class BatchJob:
                             is_error=True,
                             item_id=item.pk
                         ))
+
+                # If a lookup error occurred, which indicates that the item has
+                # since become invalid in its provider's API, remove it from
+                # inventory and add a removal error message to the queue
+                except LookupError:
+                    item_name = item.name
+                    item_id = item.pk
+                    item.delete()
+
+                    return queue.put(BatchJobResult(
+                        details='Removed invalid item: %s' % item_name,
+                        is_error=True,
+                        item_id=item_id
+                    ))
 
                 # If the API call resulted in an error of any kind, capture the
                 # error's traceback and add it as the message to the queue
