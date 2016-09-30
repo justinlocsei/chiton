@@ -1,5 +1,5 @@
 bottlenose==1.0.1
-cffi==1.7.0
+cffi==1.8.3
 contextlib2==0.5.4
 Django==1.10.0
 django-admin-sortable2==0.6.4
