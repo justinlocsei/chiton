@@ -87,8 +87,8 @@ class BatchJob:
                             item_id=item.pk
                         ))
 
-                # If the API call resuled in an error of any kind, capture the
-                # error's traceback and add it as the detail message to the queue
+                # If the API call resulted in an error of any kind, capture the
+                # error's traceback and add it as the message to the queue
                 except Exception:
                     error_buffer = StringIO()
                     print_exc(file=error_buffer)
