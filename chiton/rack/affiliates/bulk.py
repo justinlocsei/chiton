@@ -72,10 +72,10 @@ class BatchJob:
                 try:
                     item_updater(item)
 
-                # If we receive a throttling error from the API, and we have yet to
-                # exceed the maximum retries, randomly calculate a delay using an
-                # exponential backoff algorithm.  If the maximum retries have been
-                # exceeded, add an error message to the work queue.
+                # If we receive a throttling error from the API, and we have yet
+                # to exceed the maximum retries, randomly calculate a delay
+                # using an exponential backoff algorithm.  If the maximum
+                # retries have been exceeded, add an error message to the queue.
                 except ThrottlingError:
                     if retry_index < max_retries:
                         delay = random.uniform(1, min(MAX_API_SLEEP, API_TIMEOUT * 2 ** retry_index))
