@@ -1,10 +1,12 @@
+from time import sleep
+
 import mock
 import pytest
 
 from chiton.rack.models import AffiliateItem
 from chiton.rack.affiliates.bulk import BatchJob, bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
-from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
+from chiton.rack.affiliates.exceptions import BatchError, LookupError, ThrottlingError
 
 
 @pytest.fixture
@@ -138,6 +140,27 @@ class TestBatchJob:
 
             assert len(delay_timings) > 1
             assert len(delay_timings) <= delay_function.call_count
+
+    def test_queue_empty(self, affiliate_items):
+        """It gracefully handles queue timeout errors."""
+        tick = 0
+
+        def throttle(*args, **kwargs):
+            nonlocal tick
+            sleep(tick * 2)
+            tick += 1
+
+        update_function = mock.Mock(side_effect=throttle)
+        batch_job = BatchJob(affiliate_items, update_function)
+
+        completed_jobs = 0
+
+        with mock.patch('chiton.rack.affiliates.bulk.QUEUE_TIMEOUT', 1):
+            with pytest.raises(BatchError):
+                for result in batch_job.run():
+                    completed_jobs += 1
+
+        assert completed_jobs == 1
 
     @pytest.mark.django_db(transaction=True)
     def test_results_lookup_error(self, affiliate_items):

@@ -8,3 +8,7 @@ class ConfigurationError(Exception):
 
 class ThrottlingError(Exception):
     """An internal error raised when an API throttles a request."""
+
+
+class BatchError(Exception):
+    """An error raised when a batch of jobs fails."""

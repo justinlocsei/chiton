@@ -1,12 +1,12 @@
 from io import StringIO
 from multiprocessing.dummy import Pool as ThreadPool
-from queue import Queue
+from queue import Queue, Empty as QueueEmpty
 import random
 from time import sleep
 from traceback import print_exc
 
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
-from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
+from chiton.rack.affiliates.exceptions import BatchError, LookupError, ThrottlingError
 
 
 # Default values for tuning batch jobs
@@ -18,6 +18,9 @@ API_TIMEOUT = 1.5
 
 # The maximum API sleep time, in seconds
 MAX_API_SLEEP = 15
+
+# The timeout for fetching an item from the queue
+QUEUE_TIMEOUT = MAX_API_SLEEP * 2
 
 
 class BatchJobResult:
@@ -127,7 +130,12 @@ class BatchJob:
         processed_count = 0
 
         while True:
-            yield queue.get(timeout=10)
+            try:
+                yield queue.get(timeout=QUEUE_TIMEOUT)
+            except QueueEmpty:
+                pool.terminate()
+                raise BatchError('Job timed out after %d seconds' % QUEUE_TIMEOUT)
+
             queue.task_done()
 
             processed_count += 1
