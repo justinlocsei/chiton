@@ -3,6 +3,7 @@ import sys
 from django.core.management.base import BaseCommand
 
 from chiton.rack.affiliates.bulk import bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
+from chiton.rack.affiliates.exceptions import BatchError
 from chiton.rack.models import AffiliateItem
 
 
@@ -44,24 +45,37 @@ class Command(BaseCommand):
             create_batch_job = bulk_update_affiliate_item_details
 
         batch_job = create_batch_job(items, workers=options['workers'])
+
         error_count = 0
+        processed_count = 0
         failed_updates = []
 
         item_labels = {}
         for item in items:
             item_labels[item.pk] = '%s: %s' % (item.network.name, item.name)
 
-        for index, result in enumerate(batch_job.run()):
-            label = item_labels[result.item_id]
-            if result.is_error:
-                error_count += 1
-                self.stderr.write(self.style.ERROR('\n[!] %d/%d (%s)' % (index + 1, total_count, label)))
-                self.stderr.write(self.style.ERROR('--\n%s\n--\n' % result.details))
-                failed_updates.append(label)
-            else:
-                self.stdout.write('%d/%d (%s)' % (index + 1, total_count, label))
+        try:
+            for index, result in enumerate(batch_job.run()):
+                label = item_labels[result.item_id]
+                processed_count += 1
+                if result.is_error:
+                    error_count += 1
+                    self.stderr.write(self.style.ERROR('\n[!] %d/%d (%s)' % (index + 1, total_count, label)))
+                    self.stderr.write(self.style.ERROR('--\n%s\n--\n' % result.details))
+                    failed_updates.append(label)
+                else:
+                    self.stdout.write('%d/%d (%s)' % (index + 1, total_count, label))
+        except BatchError:
+            error_count = total_count - processed_count
+            aborted = True
+        else:
+            aborted = False
 
-        if error_count:
+        if aborted:
+            self.stderr.write(self.style.ERROR('Update aborted due to timeout'))
+            self.stderr.write(self.style.ERROR('\nUpdated %d/%d items' % (total_count - error_count, total_count)))
+            self.stderr.write(self.style.ERROR('%d items could not be updated' % error_count))
+        elif error_count:
             self.stderr.write(self.style.ERROR('\nUpdated %d/%d items' % (total_count - error_count, total_count)))
             self.stderr.write(self.style.ERROR('%d items could not be updated' % error_count))
             for failed_update in failed_updates:
