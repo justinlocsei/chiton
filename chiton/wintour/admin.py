@@ -38,8 +38,12 @@ class UnwantedCareTypeInline(admin.TabularInline):
 @admin.register(models.Person, site=site)
 class PersonAdmin(admin.ModelAdmin):
 
-    list_display = ('first_name', 'last_name')
-    ordering = ('last_name', 'first_name')
+    list_display = ('email', 'joined')
+    ordering = ('-joined',)
+
+    def email(self, person):
+        return person.email
+    email.short_description = _('Email')
 
 
 @admin.register(models.WardrobeProfile, site=site)
