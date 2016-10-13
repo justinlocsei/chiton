@@ -14,5 +14,5 @@ pytest-factoryboy==1.2.2
 pytest==3.0.3
 PyYAML==3.12
 six==1.10.0
-vcrpy==1.10.2
+vcrpy==1.10.3
 wrapt==1.10.8
