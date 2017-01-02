@@ -1,0 +1,64 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept-Encoding: [gzip]
+      Connection: [close]
+      Host: [webservices.amazon.com]
+      User-Agent: [Python-urllib/3.5]
+    method: GET
+    uri: http://webservices.amazon.com/onca/xml?ItemId=B01HMLBAAI&Operation=ItemLookup&ResponseGroup=ItemAttributes%2CVariations&Service=AWSECommerceService&Version=2013-08-01
+  response:
+    body:
+      string: !!binary |
+        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
+        bPmOV+pFqOglKv1/AQAA//8IVp+s5jkAAA==
+    headers:
+      Connection: [Keep-Alive]
+      Content-Encoding: [gzip]
+      Content-Type: [text/xml;charset=UTF-8]
+      Date: ['Mon, 02 Jan 2017 19:52:11 GMT']
+      Keep-Alive: ['timeout=2, max=20']
+      Server: [Apache-Coyote/1.1]
+      Vary: ['Accept-Encoding,User-Agent']
+    status: {code: 200, message: OK}
+version: 1

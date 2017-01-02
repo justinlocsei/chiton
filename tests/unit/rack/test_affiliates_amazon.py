@@ -195,6 +195,19 @@ class TestAmazonAffiliate:
             with pytest.raises(LookupError):
                 Affiliate().request_details('0000000000')
 
+    def test_request_details_no_variations(self, amazon_api_request):
+        """It fetches details when there are no item variations."""
+        with amazon_api_request():
+            details = Affiliate().request_details('B01HMLBAAI')
+
+        assert details['availability'] is True
+        assert 'B01HMLBAAI' in details['url']
+        assert details['name'] == "What Goes Around Comes Around Women's Chanel Jacket (Previously Owned)"
+        assert details['price'] == Decimal('2750.00')
+        assert details['colors'] == ['Black']
+        assert details['retailer'] == 'Amazon'
+        assert len([i for i in details['images'] if i.endswith('.jpg')]) == 2
+
     def test_request_details_throttling(self, http_error_factory):
         """It raises a throttling error in response to an HTTP 503 code."""
         affiliate = Affiliate()

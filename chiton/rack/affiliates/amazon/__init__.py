@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from contextlib import contextmanager
 import urllib
 from urllib.error import HTTPError
@@ -63,9 +64,9 @@ class Affiliate(BaseAffiliate):
         if 'Variations' not in item:
             raise LookupError('Details may not be provided for a child ASIN')
 
-        variations = item['Variations']['Item']
+        variations = self._extract_variations(item)
         price = self._calculate_price(variations)
-        images = [self._find_color_image(item, size, colors) for size in IMAGE_SIZES]
+        images = [self._find_color_image(variations, size, colors) for size in IMAGE_SIZES]
 
         return {
             'availability': True,
@@ -115,6 +116,22 @@ class Affiliate(BaseAffiliate):
 
         return self._validate_response(response, asin)
 
+    def _extract_variations(self, item):
+        """Extract a list of item variations from an item's details.
+
+        Args:
+            item (dict): An item's details from a parsed API response
+
+        Returns:
+            list: All item variations
+        """
+        variations = item['Variations']['Item']
+
+        if isinstance(variations, OrderedDict):
+            variations = [variations]
+
+        return variations
+
     def _calculate_price(self, variations):
         """Calculate the average price for the item based on all offers.
 
@@ -153,11 +170,11 @@ class Affiliate(BaseAffiliate):
 
         return sorted(colors)
 
-    def _find_images(self, parsed, size_names):
+    def _find_images(self, item, size_names):
         """Find all images for an item matching a list of sizes.
 
         Args:
-            parsed (dict): A parsed API response
+            item (dict): An item's details
             size_names (list): A list of all valid size names
 
         Returns:
@@ -165,21 +182,21 @@ class Affiliate(BaseAffiliate):
         """
         images = []
 
-        for variation in parsed['Variations']['Item']:
+        for variation in item['Variations']['Item']:
             for size_name in size_names:
                 if size_name in variation:
                     images.append(variation[size_name])
 
         return [image['URL'] for image in images]
 
-    def _find_color_image(self, parsed, size_name, color_names):
+    def _find_color_image(self, variations, size_name, color_names):
         """Find an image of a given size for an item of a given color.
 
         If no explicit image of the item in the given color can be found, this
         will fall back to using the generic product image.
 
         Args:
-            parsed (dict): A parsed API response
+            variations (list): A list of all item variations
             size_name (str): The name of the image size to use
             color_names (list): The names of the colors to search for
 
@@ -187,7 +204,6 @@ class Affiliate(BaseAffiliate):
             str: The URL of the image
         """
         image = None
-        variations = parsed['Variations']['Item']
 
         color_images = {}
         color_matches = [cn.lower() for cn in color_names]
