@@ -73,3 +73,33 @@ The following management commands are available:
 * `chiton_save_snapshot`: Export a snapshot of all current app data.
 * `chiton_update_basic_price_points`: Recalculate the price points for all basics
 * `chiton_update_stock`: Refresh affiliate items and update price points
+
+
+## Development Scripts
+
+The following development scripts are available:
+
+```sh
+$ cd scripts
+
+# Run the pipeline benchmark
+$ ./benchmark.sh pipeline
+
+# Run linting and testing
+$ ./check.sh
+
+# Lint all code
+$ ./lint.sh
+
+# Run all tests
+$ ./test.sh
+
+# Show debug output for tests
+$ ./test.sh -s
+
+# Run tests marked with `@pytest.mark.<mark>`
+$ ./test.sh -m <mark>
+
+# Run tests with a coverage report
+$ ./test.sh --cov=chiton
+```
