@@ -15,7 +15,7 @@ BASIC_FIELDS = [
 def load_fixtures():
     return [
         Fixture(Basic, initial=True, requires=[Category, Color], fields=BASIC_FIELDS),
-        Fixture(Category),
+        Fixture(Category, initial=True),
         Fixture(Formality),
         Fixture(Propriety, initial=True, queryset=Propriety.objects.for_export(), requires=[Basic, Formality]),
         Fixture(Style)
