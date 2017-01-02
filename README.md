@@ -77,8 +77,6 @@ The following management commands are available:
 
 ## Development Scripts
 
-The following development scripts are available:
-
 ```sh
 $ cd scripts
 
