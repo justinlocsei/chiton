@@ -80,9 +80,6 @@ The following management commands are available:
 ```sh
 $ cd scripts
 
-# Run the pipeline benchmark
-$ ./benchmark pipeline
-
 # Lint all code
 $ ./lint
 
@@ -97,4 +94,13 @@ $ ./test -m <mark>
 
 # Run tests with a coverage report
 $ ./test --cov=chiton
+
+# Run the pipeline benchmark
+$ ./benchmark pipeline
+
+# Exclude third-party function calls from the benchmark results
+$ ./benchmark pipeline --calls --source-only
+
+# Perform a benchmark with a custom number of runs
+$ ./benchmark pipeline --runs=5
 ```
