@@ -81,23 +81,23 @@ The following management commands are available:
 $ cd scripts
 
 # Run the pipeline benchmark
-$ ./benchmark.sh pipeline
+$ ./benchmark pipeline
 
 # Run linting and testing
-$ ./check.sh
+$ ./check
 
 # Lint all code
-$ ./lint.sh
+$ ./lint
 
 # Run all tests
-$ ./test.sh
+$ ./test
 
 # Show debug output for tests
-$ ./test.sh -s
+$ ./test -s
 
 # Run tests marked with `@pytest.mark.<mark>`
-$ ./test.sh -m <mark>
+$ ./test -m <mark>
 
 # Run tests with a coverage report
-$ ./test.sh --cov=chiton
+$ ./test --cov=chiton
 ```
