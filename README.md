@@ -83,9 +83,6 @@ $ cd scripts
 # Run the pipeline benchmark
 $ ./benchmark pipeline
 
-# Run linting and testing
-$ ./check
-
 # Lint all code
 $ ./lint
 
