@@ -45,6 +45,11 @@ class PersonAdmin(admin.ModelAdmin):
         return person.email
     email.short_description = _('Email')
 
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['email_addresses'] = sorted(models.Person.objects.list_email_addresses())
+        return super().changelist_view(request, extra_context=extra_context)
+
 
 @admin.register(models.WardrobeProfile, site=site)
 class WardrobeProfileAdmin(admin.ModelAdmin):

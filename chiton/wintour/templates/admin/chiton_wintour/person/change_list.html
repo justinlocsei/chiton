@@ -1,0 +1,44 @@
+{% extends "admin/change_list.html" %}
+
+{% load admin_static %}
+{% load i18n %}
+
+{% block object-tools-items %}
+
+    <script src="{% static 'wintour/js/vendor/jquery-2.2.3.min.js' %}"></script>
+
+    <style>
+        .show-email-addresses {
+            position: relative;
+        }
+
+        .show-email-addresses input {
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+            bottom: 100%;
+            display: none;
+            margin-bottom: 0.5em;
+            position: absolute;
+            right: 0;
+            width: 20em;
+        }
+    </style>
+
+    {{ block.super }}
+
+    <li class="show-email-addresses">
+        <a href="#">{% trans "Show Email Addresses" %}</a>
+        <input type="text" value="{{ email_addresses | join:', ' }}" />
+    </li>
+
+    <script>
+        (function() {
+            var $addresses = $('.show-email-addresses input');
+
+            $('.show-email-addresses a').click(function(e) {
+                e.preventDefault();
+                $addresses.toggle();
+            });
+        })();
+    </script>
+
+{% endblock %}
