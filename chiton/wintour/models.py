@@ -36,6 +36,15 @@ class PersonManager(models.Manager):
         else:
             return self.create(email=normalized)
 
+    def list_email_addresses(self):
+        """Get a list of all email addresses.
+
+        Returns:
+            list[str]: All email addresses
+        """
+        emails = [p.email for p in self.all()]
+        return [email for email in emails if email]
+
 
 class Person(models.Model):
     """A person who can receive recommendations."""

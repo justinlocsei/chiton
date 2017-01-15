@@ -76,3 +76,12 @@ class TestPerson:
 
         assert person.pk
         assert person.email == 'test@example'
+
+    def test_list_email_addresses(self):
+        """It returns a list of all known email addresses."""
+        Person.objects.create(first_name='John', email='john@example.com')
+        Person.objects.create(last_name='Jane', email='jane@example.com')
+        Person.objects.create(last_name='Jim')
+
+        emails = sorted(Person.objects.list_email_addresses())
+        assert emails == ['jane@example.com', 'john@example.com']
