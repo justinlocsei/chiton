@@ -85,3 +85,27 @@ class TestPerson:
 
         emails = sorted(Person.objects.list_email_addresses())
         assert emails == ['jane@example.com', 'john@example.com']
+
+    def test_clear_email_addresses(self):
+        """It unsets all email addresses."""
+        Person.objects.create(first_name='John', email='john@example.com')
+        Person.objects.create(last_name='Jane', email='jane@example.com')
+        Person.objects.create(last_name='Jim')
+
+        with_email = Person.objects.list_email_addresses()
+        assert len(with_email) == 2
+
+        Person.objects.clear_email_addresses()
+        with_email = Person.objects.list_email_addresses()
+        assert len(with_email) == 0
+
+    def test_clear_email_addresses_count(self):
+        """It returns the number of cleared email addresses."""
+        Person.objects.create(first_name='John', email='john@example.com')
+        Person.objects.create(last_name='Jim')
+
+        first_pass = Person.objects.clear_email_addresses()
+        second_pass = Person.objects.clear_email_addresses()
+
+        assert first_pass == 1
+        assert second_pass == 0

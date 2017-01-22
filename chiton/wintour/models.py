@@ -45,6 +45,23 @@ class PersonManager(models.Manager):
         emails = [p.email for p in self.all()]
         return [email for email in emails if email]
 
+    def clear_email_addresses(self):
+        """Clear the email addresses of all stored people.
+
+        Returns:
+            int: The number of email addresses cleared
+
+        """
+        cleared = 0
+
+        for p in self.all():
+            if p.email:
+                p.encrypted_email = ''
+                p.save()
+                cleared += 1
+
+        return cleared
+
 
 class Person(models.Model):
     """A person who can receive recommendations."""
