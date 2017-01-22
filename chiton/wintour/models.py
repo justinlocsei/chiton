@@ -55,9 +55,11 @@ class PersonManager(models.Manager):
         cleared = 0
 
         for p in self.all():
-            if p.email:
-                p.encrypted_email = ''
-                p.save()
+            previous_value = p.encrypted_email
+            p.encrypted_email = ''
+            p.save()
+
+            if previous_value != p.encrypted_email:
                 cleared += 1
 
         return cleared
