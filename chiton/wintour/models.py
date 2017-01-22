@@ -1,5 +1,5 @@
 from django.contrib.postgres.fields import JSONField
-from django.db import models
+from django.db import connection, models
 from django.utils.translation import ugettext_lazy as _
 from email_validator import EmailNotValidError, validate_email
 
@@ -52,17 +52,21 @@ class PersonManager(models.Manager):
             int: The number of email addresses cleared
 
         """
-        cleared = 0
+        previous_emails = set(self.values_list('encrypted_email', flat=True))
 
-        for p in self.all():
-            previous_value = p.encrypted_email
-            p.encrypted_email = ''
-            p.save()
+        # Null out the encrypted email directly via SQL, to bypass post-save
+        # signals that might read the email with an invalid encryption key
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE ' + self.model._meta.db_table + ' SET encrypted_email = %s', [''])
 
-            if previous_value != p.encrypted_email:
-                cleared += 1
+        # Re-save each person using Django's ORM, in order to trigger any
+        # post-save signals and refresh associated data
+        for person in self.all():
+            person.save()
 
-        return cleared
+        current_emails = set(self.values_list('encrypted_email', flat=True))
+
+        return len(previous_emails - current_emails)
 
 
 class Person(models.Model):

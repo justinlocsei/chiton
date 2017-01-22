@@ -109,3 +109,11 @@ class TestPerson:
 
         assert first_pass == 1
         assert second_pass == 0
+
+    def test_clear_email_addresses_signals(self):
+        """It updates cached email queries."""
+        original_id = Person.objects.ensure_exists_with_email('john@example.com').pk
+        Person.objects.clear_email_addresses()
+        next_id = Person.objects.ensure_exists_with_email('john@example.com').pk
+
+        assert original_id != next_id
