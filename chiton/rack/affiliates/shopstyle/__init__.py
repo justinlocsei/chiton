@@ -6,6 +6,7 @@ from django.conf import settings
 from moneyed import Money, USD
 import requests
 
+from chiton.core.uris import extract_query_param
 from chiton.rack.affiliates.shopstyle.urls import extract_product_id_from_api_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError
@@ -75,6 +76,12 @@ class Affiliate(BaseAffiliate):
     def provide_raw(self, product_id):
         response = self._request_product(product_id)
         return self._validate_response(response, product_id)
+
+    def provide_url_validity(self, url):
+        if not url:
+            return True
+        else:
+            return extract_query_param(url, 'pid') == [settings.SHOPSTYLE_UID]
 
     def _find_colors(self, parsed):
         """Find all colors in which an item is available.

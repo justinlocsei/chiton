@@ -278,3 +278,25 @@ class TestShopstyleAffiliate:
         with shopstyle_api_request():
             with pytest.raises(LookupError):
                 Affiliate().request_raw('0000000000')
+
+    def test_is_url_valid(self, settings):
+        """It flags any URLs with an incorrect product ID as invalid."""
+        settings.SHOPSTYLE_UID = '1234'
+        affiliate = Affiliate()
+
+        assert affiliate.is_url_valid('https://api.shopstyle.com?pid=1234')
+        assert not affiliate.is_url_valid('https://api.shopstyle.com?pid=4321')
+
+    def test_is_url_valid_missing_tag(self):
+        """It flags an item without a product ID as invalid."""
+        affiliate = Affiliate()
+
+        assert not affiliate.is_url_valid('https://api.shopstyle.com')
+        assert not affiliate.is_url_valid('https://api.shopstyle.com?id=12345')
+
+    def test_is_url_valid_blank(self):
+        """It flags an item without an affiliate URL as valid."""
+        affiliate = Affiliate()
+
+        assert affiliate.is_url_valid(None)
+        assert affiliate.is_url_valid('')
