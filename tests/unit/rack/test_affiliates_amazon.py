@@ -278,3 +278,25 @@ class TestAmazonAffiliate:
             affiliate.request_raw('B00ZGRB7S6')
 
         assert http_error.value.code == 400
+
+    def test_is_url_valid(self, settings):
+        """It flags any URLs with an incorrect tag as invalid."""
+        settings.AMAZON_ASSOCIATES_TRACKING_ID = 'development'
+        affiliate = Affiliate()
+
+        assert affiliate.is_url_valid('https://www.amazon.com?tag=development')
+        assert not affiliate.is_url_valid('https://www.amazon.com?tag=production')
+
+    def test_is_url_valid_missing_tag(self):
+        """It flags an item without a tracking tag as invalid."""
+        affiliate = Affiliate()
+
+        assert not affiliate.is_url_valid('https://www.amazon.com')
+        assert not affiliate.is_url_valid('https://www.amazon.com?camp=2025')
+
+    def test_is_url_valid_blank(self):
+        """It flags an item without an affiliate URL as valid."""
+        affiliate = Affiliate()
+
+        assert affiliate.is_url_valid(None)
+        assert affiliate.is_url_valid('')

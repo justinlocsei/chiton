@@ -8,6 +8,7 @@ from decimal import Decimal
 from django.conf import settings
 import xmltodict
 
+from chiton.core.uris import extract_query_param
 from chiton.rack.affiliates.amazon.urls import extract_asin_from_url
 from chiton.rack.affiliates.base import Affiliate as BaseAffiliate
 from chiton.rack.affiliates.exceptions import LookupError, ThrottlingError
@@ -85,6 +86,12 @@ class Affiliate(BaseAffiliate):
     def provide_raw(self, asin):
         data = self._request_combined_data(asin)
         return data['Items']
+
+    def provide_url_validity(self, url):
+        if not url:
+            return True
+        else:
+            return extract_query_param(url, 'tag') == [settings.AMAZON_ASSOCIATES_TRACKING_ID]
 
     def connect(self):
         """Return a connection to the Amazon Associates API.
