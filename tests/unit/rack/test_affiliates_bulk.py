@@ -262,19 +262,34 @@ class TestPruneAffiliateItems:
             items = affiliate_items_url_factory(['biz', 'com', 'net', 'org'])
             assert AffiliateItem.objects.count() == 4
 
-            prune_affiliate_items(items)
+            assert len(list(prune_affiliate_items(items))) == 4
             assert sorted([i.affiliate_url.split('.')[-1] for i in AffiliateItem.objects.all()]) == ['com', 'org']
 
-    def test_removed_count(self, affiliate_items_url_factory):
-        """It returns the number of removed items."""
+    def test_remove_yield(self, affiliate_items_url_factory, affiliate_network_factory):
+        """It yields information each examined item."""
+        network = affiliate_network_factory(name='Network')
+
         with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
             affiliate = ValidatingAffiliate()
-            affiliate.valid_tlds = ['com']
+            affiliate.valid_tlds = ['com', 'org']
             create_affiliate.return_value = affiliate
 
-            items = affiliate_items_url_factory(['com', 'net'])
-            pruned = prune_affiliate_items(items)
-            assert pruned == 1
+            items = affiliate_items_url_factory(['biz', 'com', 'net', 'org'])
+            for index, item in enumerate(items):
+                item.name = 'Item %d' % (index + 1)
+                item.network = network
+                item.save()
+
+            assert AffiliateItem.objects.count() == 4
+
+            pruned = []
+            for item_name, network_name, was_pruned in prune_affiliate_items(items.order_by('name')):
+                pruned.append([item_name, network_name, was_pruned])
+
+            assert pruned[0] == ['Item 1', 'Network', True]
+            assert pruned[1] == ['Item 2', 'Network', False]
+            assert pruned[2] == ['Item 3', 'Network', True]
+            assert pruned[3] == ['Item 4', 'Network', False]
 
     def test_multiple_affiliates(self, affiliate_network_factory, affiliate_item_factory):
         """It uses the appropriate affiliate to check for item validity."""
@@ -296,8 +311,7 @@ class TestPruneAffiliateItems:
         with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
             create_affiliate.side_effect = fetch_affiliate
 
-            pruned = prune_affiliate_items(AffiliateItem.objects.all())
-            assert pruned == 2
+            assert len(list(prune_affiliate_items(AffiliateItem.objects.all()))) == 4
 
             remaining = set(AffiliateItem.objects.all())
             assert set([valid_one, valid_two]) == remaining

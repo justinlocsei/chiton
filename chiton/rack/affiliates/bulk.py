@@ -187,18 +187,22 @@ def prune_affiliate_items(items):
     Args:
         items (django.db.models.query.QuerySet): A queryset of affiliate items
 
-    Returns:
-        int: The number of pruned items
+    Yields:
+        list: The name of the item, its network name, and whether or not it was pruned
     """
-    pruned = 0
     affiliates = {}
+    items = items.select_related('network')
 
     for item in items:
+        item_name = item.name
+        network_name = item.network.name
+        was_pruned = False
+
         network_slug = item.network.slug
         affiliate = affiliates.setdefault(network_slug, create_affiliate(slug=network_slug))
 
         if not affiliate.is_url_valid(item.affiliate_url):
             item.delete()
-            pruned += 1
+            was_pruned = True
 
-    return pruned
+        yield item_name, network_name, was_pruned
