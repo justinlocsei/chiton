@@ -5,6 +5,7 @@ import random
 from time import sleep
 from traceback import print_exc
 
+from chiton.rack.affiliates import create_affiliate
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
 from chiton.rack.affiliates.exceptions import BatchError, LookupError, ThrottlingError
 
@@ -178,3 +179,26 @@ def bulk_update_affiliate_item_details(items, workers=DEFAULT_WORKERS, max_retri
     """
     items = items.select_related('garment__basic', 'network')
     return BatchJob(items, update_affiliate_item_details, workers=workers, max_retries=max_retries)
+
+
+def prune_affiliate_items(items):
+    """Prune any affiliate items that report themselves as invalid.
+
+    Args:
+        items (django.db.models.query.QuerySet): A queryset of affiliate items
+
+    Returns:
+        int: The number of pruned items
+    """
+    pruned = 0
+    affiliates = {}
+
+    for item in items:
+        network_slug = item.network.slug
+        affiliate = affiliates.setdefault(network_slug, create_affiliate(slug=network_slug))
+
+        if affiliate.is_item_valid(item):
+            item.delete()
+            pruned += 1
+
+    return pruned

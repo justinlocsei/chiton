@@ -4,9 +4,19 @@ import mock
 import pytest
 
 from chiton.rack.models import AffiliateItem
-from chiton.rack.affiliates.bulk import BatchJob, bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata
+from chiton.rack.affiliates.base import Affiliate
+from chiton.rack.affiliates.bulk import BatchJob, bulk_update_affiliate_item_details, bulk_update_affiliate_item_metadata, prune_affiliate_items
 from chiton.rack.affiliates.data import update_affiliate_item_details, update_affiliate_item_metadata
 from chiton.rack.affiliates.exceptions import BatchError, LookupError, ThrottlingError
+
+
+class InvalidAffiliate(Affiliate):
+    """An affiliate that defines a function to check if an item is invalid."""
+
+    invalid_names = []
+
+    def provide_item_validity(self, item):
+        return item.name in self.invalid_names
 
 
 @pytest.fixture
@@ -14,6 +24,16 @@ def affiliate_items(affiliate_item_factory):
     for i in range(0, 4):
         affiliate_item_factory(name=str(i))
     return AffiliateItem.objects.all()
+
+
+@pytest.fixture
+def named_affiliate_items_factory(affiliate_item_factory):
+    def factory(names=[]):
+        for name in names:
+            affiliate_item_factory(name=name)
+        return AffiliateItem.objects.all()
+
+    return factory
 
 
 @pytest.mark.django_db
@@ -226,3 +246,57 @@ class TestBulkUpdateAffiliateItemDetails:
             call_kwargs = batch_job.call_args[1]
             assert call_kwargs['workers'] == 10
             assert call_kwargs['max_retries'] == 20
+
+
+@pytest.mark.django_db
+class TestPruneAffiliateItems:
+
+    def test_remove_invalid(self, named_affiliate_items_factory):
+        """It removes all affiliate items that report themselves as invalid."""
+        with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
+            affiliate = InvalidAffiliate()
+            affiliate.invalid_names = ['one', 'three']
+            create_affiliate.return_value = affiliate
+
+            items = named_affiliate_items_factory(['one', 'two', 'three', 'four'])
+            assert AffiliateItem.objects.count() == 4
+
+            prune_affiliate_items(items)
+            assert sorted([i.name for i in AffiliateItem.objects.all()]) == ['four', 'two']
+
+    def test_removed_count(self, named_affiliate_items_factory):
+        """It returns the number of removed items."""
+        with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
+            affiliate = InvalidAffiliate()
+            affiliate.invalid_names = ['one']
+            create_affiliate.return_value = affiliate
+
+            items = named_affiliate_items_factory(['one', 'two'])
+            pruned = prune_affiliate_items(items)
+            assert pruned == 1
+
+    def test_multiple_afiliates(self, affiliate_network_factory, affiliate_item_factory):
+        """It uses the appropriate affiliate to check for item validity."""
+        def fetch_affiliate(slug=None):
+            affiliate = InvalidAffiliate()
+            affiliate.invalid_names = [slug]
+
+            return affiliate
+
+        network_one = affiliate_network_factory(slug='one')
+        network_two = affiliate_network_factory(slug='two')
+
+        affiliate_item_factory(name='one', network=network_one)
+        affiliate_item_factory(name='two', network=network_two)
+
+        valid_one = affiliate_item_factory(name='two', network=network_one)
+        valid_two = affiliate_item_factory(name='one', network=network_two)
+
+        with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
+            create_affiliate.side_effect = fetch_affiliate
+
+            pruned = prune_affiliate_items(AffiliateItem.objects.all())
+            assert pruned == 2
+
+            remaining = set(AffiliateItem.objects.all())
+            assert set([valid_one, valid_two]) == remaining
