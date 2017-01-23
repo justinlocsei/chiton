@@ -46,7 +46,7 @@ class Affiliate:
             chiton.rack.affiliates.responses.ItemDetails: Details on the item
 
         Raises:
-            chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
+            chiton.rack.affiliates.exceptions.LookupError: If details could not be returned
         """
         data = self.provide_details(guid, colors)
 
@@ -70,7 +70,7 @@ class Affiliate:
             list: The URLs of all images
 
         Raises:
-            chiton.rack.afiliates.exceptions.LookupError: If details could not be returned
+            chiton.rack.affiliates.exceptions.LookupError: If details could not be returned
         """
         return self.provide_images(guid)
 
@@ -84,7 +84,7 @@ class Affiliate:
             dict: The raw API response for the item
 
         Raises:
-            chiton.rack.afiliates.exceptions.LookupError: If the response was unsuccessful
+            chiton.rack.affiliates.exceptions.LookupError: If the response was unsuccessful
         """
         raw = self.provide_raw(guid)
 
