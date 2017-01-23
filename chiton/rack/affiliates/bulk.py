@@ -197,7 +197,7 @@ def prune_affiliate_items(items):
         network_slug = item.network.slug
         affiliate = affiliates.setdefault(network_slug, create_affiliate(slug=network_slug))
 
-        if affiliate.is_item_valid(item):
+        if not affiliate.is_url_valid(item.affiliate_url):
             item.delete()
             pruned += 1
 

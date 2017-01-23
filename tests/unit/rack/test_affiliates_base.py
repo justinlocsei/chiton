@@ -154,25 +154,19 @@ class TestBaseAffiliate:
         with pytest.raises(NotImplementedError):
             DefaultAffiliate().request_raw('guid')
 
-    @pytest.mark.django_db
-    def test_is_item_valid(self, affiliate_item_factory):
-        """It reports all items as valid by default."""
-        item = affiliate_item_factory()
+    def test_is_url_valid(self):
+        """It reports all URLs as valid by default."""
         affiliate = DefaultAffiliate()
 
-        assert affiliate.is_item_valid(item)
+        assert affiliate.is_url_valid('http://example.com')
 
-    @pytest.mark.django_db
-    def test_is_item_valid_custom(self, affiliate_item_factory):
-        """It allows a child affiliate to customize its validity function."""
+    def test_is_url_valid_custom(self):
+        """It allows a child affiliate to customize its URL-validity function."""
         class Child(Affiliate):
-            def provide_item_validity(self, item):
-                return item.name in ['valid']
-
-        valid = affiliate_item_factory(name='valid')
-        invalid = affiliate_item_factory(name='iinvalid')
+            def provide_url_validity(self, url):
+                return '.com' in url
 
         affiliate = Child()
 
-        assert affiliate.is_item_valid(valid)
-        assert not affiliate.is_item_valid(invalid)
+        assert affiliate.is_url_valid('http://example.com')
+        assert not affiliate.is_url_valid('http://example.org')

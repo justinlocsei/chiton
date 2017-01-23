@@ -10,13 +10,14 @@ from chiton.rack.affiliates.data import update_affiliate_item_details, update_af
 from chiton.rack.affiliates.exceptions import BatchError, LookupError, ThrottlingError
 
 
-class InvalidAffiliate(Affiliate):
-    """An affiliate that defines a function to check if an item is invalid."""
+class ValidatingAffiliate(Affiliate):
+    """An affiliate that defines a function to check if an item's URL is valid."""
 
-    invalid_names = []
+    valid_tlds = []
 
-    def provide_item_validity(self, item):
-        return item.name in self.invalid_names
+    def provide_url_validity(self, url):
+        tld = url.split('.')[-1]
+        return tld in self.valid_tlds
 
 
 @pytest.fixture
@@ -27,10 +28,10 @@ def affiliate_items(affiliate_item_factory):
 
 
 @pytest.fixture
-def named_affiliate_items_factory(affiliate_item_factory):
-    def factory(names=[]):
-        for name in names:
-            affiliate_item_factory(name=name)
+def affiliate_items_url_factory(affiliate_item_factory):
+    def factory(tlds=[]):
+        for tld in tlds:
+            affiliate_item_factory(affiliate_url='http://example.%s' % tld)
         return AffiliateItem.objects.all()
 
     return factory
@@ -248,49 +249,50 @@ class TestBulkUpdateAffiliateItemDetails:
             assert call_kwargs['max_retries'] == 20
 
 
+@pytest.mark.current
 @pytest.mark.django_db
 class TestPruneAffiliateItems:
 
-    def test_remove_invalid(self, named_affiliate_items_factory):
+    def test_remove_invalid(self, affiliate_items_url_factory):
         """It removes all affiliate items that report themselves as invalid."""
         with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
-            affiliate = InvalidAffiliate()
-            affiliate.invalid_names = ['one', 'three']
+            affiliate = ValidatingAffiliate()
+            affiliate.valid_tlds = ['com', 'org']
             create_affiliate.return_value = affiliate
 
-            items = named_affiliate_items_factory(['one', 'two', 'three', 'four'])
+            items = affiliate_items_url_factory(['biz', 'com', 'net', 'org'])
             assert AffiliateItem.objects.count() == 4
 
             prune_affiliate_items(items)
-            assert sorted([i.name for i in AffiliateItem.objects.all()]) == ['four', 'two']
+            assert sorted([i.affiliate_url.split('.')[-1] for i in AffiliateItem.objects.all()]) == ['com', 'org']
 
-    def test_removed_count(self, named_affiliate_items_factory):
+    def test_removed_count(self, affiliate_items_url_factory):
         """It returns the number of removed items."""
         with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
-            affiliate = InvalidAffiliate()
-            affiliate.invalid_names = ['one']
+            affiliate = ValidatingAffiliate()
+            affiliate.valid_tlds = ['com']
             create_affiliate.return_value = affiliate
 
-            items = named_affiliate_items_factory(['one', 'two'])
+            items = affiliate_items_url_factory(['com', 'net'])
             pruned = prune_affiliate_items(items)
             assert pruned == 1
 
-    def test_multiple_afiliates(self, affiliate_network_factory, affiliate_item_factory):
+    def test_multiple_affiliates(self, affiliate_network_factory, affiliate_item_factory):
         """It uses the appropriate affiliate to check for item validity."""
         def fetch_affiliate(slug=None):
-            affiliate = InvalidAffiliate()
-            affiliate.invalid_names = [slug]
+            affiliate = ValidatingAffiliate()
+            affiliate.valid_tlds = [slug]
 
             return affiliate
 
-        network_one = affiliate_network_factory(slug='one')
-        network_two = affiliate_network_factory(slug='two')
+        network_one = affiliate_network_factory(slug='com')
+        network_two = affiliate_network_factory(slug='net')
 
-        affiliate_item_factory(name='one', network=network_one)
-        affiliate_item_factory(name='two', network=network_two)
+        affiliate_item_factory(affiliate_url='http://example.net', network=network_one)
+        affiliate_item_factory(affiliate_url='http://example.com', network=network_two)
 
-        valid_one = affiliate_item_factory(name='two', network=network_one)
-        valid_two = affiliate_item_factory(name='one', network=network_two)
+        valid_one = affiliate_item_factory(affiliate_url='http://example.com', network=network_one)
+        valid_two = affiliate_item_factory(affiliate_url='http://example.net', network=network_two)
 
         with mock.patch('chiton.rack.affiliates.bulk.create_affiliate') as create_affiliate:
             create_affiliate.side_effect = fetch_affiliate
