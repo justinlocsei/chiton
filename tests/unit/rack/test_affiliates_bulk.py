@@ -249,7 +249,6 @@ class TestBulkUpdateAffiliateItemDetails:
             assert call_kwargs['max_retries'] == 20
 
 
-@pytest.mark.current
 @pytest.mark.django_db
 class TestPruneAffiliateItems:
 
