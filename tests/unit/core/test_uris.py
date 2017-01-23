@@ -1,4 +1,19 @@
-from chiton.core.uris import file_path_to_relative_url, join_url
+from chiton.core.uris import extract_query_param, file_path_to_relative_url, join_url
+
+
+class TestExtractQueryParam:
+
+    def test_missing(self):
+        """It returns None when a param is missing."""
+        assert extract_query_param('http://example.com', 'id') is None
+
+    def test_single(self):
+        """It returns the param as a list when it is present."""
+        assert extract_query_param('http://example.com?id=1', 'id') == ['1']
+
+    def test_multiple(self):
+        """It returns all values for the value."""
+        assert extract_query_param('http://example.com?id=1&id=2', 'id') == ['1', '2']
 
 
 class TestFilePathToRelativeUrl:
