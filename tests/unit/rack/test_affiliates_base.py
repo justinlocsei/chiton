@@ -153,3 +153,26 @@ class TestBaseAffiliate:
         """It raises an error when an affiliate does not provide raw responses."""
         with pytest.raises(NotImplementedError):
             DefaultAffiliate().request_raw('guid')
+
+    @pytest.mark.django_db
+    def test_is_item_valid(self, affiliate_item_factory):
+        """It reports all items as valid by default."""
+        item = affiliate_item_factory()
+        affiliate = DefaultAffiliate()
+
+        assert affiliate.is_item_valid(item)
+
+    @pytest.mark.django_db
+    def test_is_item_valid_custom(self, affiliate_item_factory):
+        """It allows a child affiliate to customize its validity function."""
+        class Child(Affiliate):
+            def provide_item_validity(self, item):
+                return item.name in ['valid']
+
+        valid = affiliate_item_factory(name='valid')
+        invalid = affiliate_item_factory(name='iinvalid')
+
+        affiliate = Child()
+
+        assert affiliate.is_item_valid(valid)
+        assert not affiliate.is_item_valid(invalid)

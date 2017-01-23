@@ -93,6 +93,17 @@ class Affiliate:
 
         return raw
 
+    def is_item_valid(self, item):
+        """Determine if an affiliate item record is valid.
+
+        Args:
+            chiton.rack.models.AffiliateItem: An affiliate item
+
+        Returns:
+            bool: Whether the record is valid
+        """
+        return self.provide_item_validity(item)
+
     def provide_overview(self, url):
         """Allow a child affiliate to return an item's overview.
 
@@ -137,3 +148,14 @@ class Affiliate:
             dict: The raw API response data
         """
         raise NotImplementedError()
+
+    def provide_item_validity(self, item):
+        """Allow a child affiliate to determine if an affiliate item is valid.
+
+        Args:
+            chiton.rack.models.AffiliateItem: An affiliate item
+
+        Returns:
+            bool: Whether the record is valid
+        """
+        return True
