@@ -1,4 +1,4 @@
-bottlenose==1.0.1
+bottlenose==1.1.1
 cffi==1.9.1
 contextlib2==0.5.4
 Django==1.10.4
