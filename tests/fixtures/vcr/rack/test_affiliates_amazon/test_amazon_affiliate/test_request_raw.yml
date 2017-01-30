@@ -7,41 +7,41 @@ interactions:
       Host: [webservices.amazon.com]
       User-Agent: [Python-urllib/3.5]
     method: GET
-    uri: http://webservices.amazon.com/onca/xml?ItemId=B00ZGRB7UO&Operation=ItemLookup&ResponseGroup=ItemAttributes%2CVariations&Service=AWSECommerceService&Version=2013-08-01
+    uri: https://webservices.amazon.com/onca/xml?ItemId=B00ZGRB7UO&Operation=ItemLookup&ResponseGroup=ItemAttributes%2CVariations&Service=AWSECommerceService&Version=2013-08-01
   response:
     body:
       string: !!binary |
-        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
-        EwAA
+        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
+        //8kl63rjRMAAA==
     headers:
       Connection: [Keep-Alive]
       Content-Encoding: [gzip]
       Content-Type: [text/xml;charset=UTF-8]
-      Date: ['Sat, 09 Jul 2016 00:52:05 GMT']
-      Keep-Alive: ['timeout=2, max=19']
+      Date: ['Mon, 30 Jan 2017 01:11:13 GMT']
+      Keep-Alive: ['timeout=2, max=18']
       Server: [Apache-Coyote/1.1]
       Vary: ['Accept-Encoding,User-Agent']
     status: {code: 200, message: OK}

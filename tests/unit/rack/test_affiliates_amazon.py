@@ -80,7 +80,7 @@ class TestAmazonAffiliate:
         with amazon_api_request():
             details = Affiliate().request_details('B00ZGRB7S6')
 
-        assert details['url'].startswith('http://www.amazon.com')
+        assert details['url'].startswith('https://www.amazon.com')
         assert 'tag=coveryourbasics-test-20' in details['url']
 
     def test_request_details_retailer(self, amazon_api_request):
@@ -105,7 +105,7 @@ class TestAmazonAffiliate:
             raw = affiliate.request_raw('B00ZGRB7S6')
             details = affiliate.request_details('B00ZGRB7S6')
 
-        assert details['price'] == Decimal('69.99')
+        assert details['price'] == Decimal('59.95')
 
         prices = raw['Item']['VariationSummary']
         low_price = int(prices['LowestPrice']['Amount'])
